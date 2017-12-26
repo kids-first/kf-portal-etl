@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package io.kf.model;
+
+message program {
+    required string dbgap_accession_number = 1;
+    optional string id = 2;
+    required string name = 3;
+    optional string type = 4;
+}
