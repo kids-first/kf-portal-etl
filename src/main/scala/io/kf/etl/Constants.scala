@@ -4,6 +4,7 @@ object Constants {
   val CONFIG_FILE_URL = "kf.etl.config"
   val DEFAULT_CONFIG_FILE_NAME = "kf_etl"
   val DEFAULT_APP_NAME = "Kids-First-ETL"
+  val ROOT_PACKAGE = "io.kf.etl"
 
   val CONFIG_NAME_SPARK_APP_NAME = "io.kf.etl.spark.app.name"
   val CONFIG_NAME_SPARK_MASTER = "io.kf.etl.spark.master"

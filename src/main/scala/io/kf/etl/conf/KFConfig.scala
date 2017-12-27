@@ -18,6 +18,10 @@ class KFConfig(private val config: Config){
       Option(config.getString(CONFIG_NAME_SPARK_APP_NAME)) match {
         case Some(name) => name
         case None => DEFAULT_APP_NAME
+      },
+      Option(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
+        case Some(master) => master
+        case None => "local[*]"
       }
     )
   }

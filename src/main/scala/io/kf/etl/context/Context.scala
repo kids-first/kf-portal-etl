@@ -2,23 +2,32 @@ package io.kf.etl.context
 
 import java.net.URL
 
-import com.google.inject.{Guice, Injector}
+import com.google.inject.{AbstractModule, Guice, Injector}
 import com.typesafe.config.ConfigFactory
 import io.kf.etl.Constants._
 import io.kf.etl.conf.KFConfig
-import io.kf.etl.inject.SparkInjectModule
+import io.kf.etl.inject.GuiceModule
+import org.reflections.Reflections
+
+import scala.collection.convert.WrapAsScala
 
 object Context {
   lazy val injector = createInjector()
   lazy val config = loadConfig()
 
   private def createInjector():Injector = {
-    /*
-    *
-    *  here we could use the reflections library(refer to: https://github.com/ronmamo/reflections ) to get all guice modules
-    *  before the injector is created and initialize them at runtime
-    */
-    Guice.createInjector(new SparkInjectModule(config.sparkConfig));
+
+    Guice.createInjector(
+      WrapAsScala
+        .asScalaSet(
+          new Reflections(ROOT_PACKAGE).getTypesAnnotatedWith(classOf[GuiceModule])
+        )
+        .map(clazz => {
+          clazz.newInstance().asInstanceOf[AbstractModule]
+        })
+        .toSeq:_*
+    )
+
   }
 
   private def loadConfig(): KFConfig = {

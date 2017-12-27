@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   scalapb_runtime_grpc,
   scalapb_json4s,
   graphframes,
-  graphql_java
+  graphql_java,
+  reflections
 )
 
 resolvers ++= Seq(

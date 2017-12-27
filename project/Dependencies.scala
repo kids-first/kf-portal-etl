@@ -15,5 +15,5 @@ object Dependencies {
   val scalapb_json4s = "com.trueaccord.scalapb" %% "scalapb-json4s" % "0.3.2"
   val graphframes = "graphframes" % "graphframes" % "0.5.0-spark2.1-s_2.11"
   val graphql_java= "com.graphql-java" % "graphql-java" % "6.0"
-  val annotations =  "org.reflections" % "reflections" % "0.9.11"
+  val reflections =  "org.reflections" % "reflections" % "0.9.11"
 }
