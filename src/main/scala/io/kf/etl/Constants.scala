@@ -13,4 +13,5 @@ object Constants {
   val CONFIG_NAME_HDFS_DEFAULTFS = "io.kf.etl.hdfs.defaultFS"
   val CONFIG_NAME_PROCESSORS = "io.kf.etl.processors"
   val CONFIG_NAME_PIPELINE = "io.kf.etl.pipeline"
+  val CONFIG_NAME_REPOSITORY_URL = "io.kf.etl.repository.url"
 }

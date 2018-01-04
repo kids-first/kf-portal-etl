@@ -20,7 +20,9 @@ libraryDependencies ++= Seq(
   scalapb_json4s,
   graphframes,
   graphql_java,
-  reflections
+  reflections,
+  asyncHttp,
+  ftp4j
 )
 
 resolvers ++= Seq(
