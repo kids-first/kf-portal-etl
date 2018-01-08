@@ -10,9 +10,9 @@ class KFConfig(private val config: Config){
   lazy val sparkConfig = getSparkConfig()
   lazy val esConfig = getESConfig()
   lazy val hdfsConfig = getHDFSConfig()
+  lazy val repoConfig = getRepositoryConfig()
   lazy val processorsConfig = getProcessors()
   lazy val pipelineConfig = getPipeline()
-  lazy val repoConfig = getRepoConfig()
 
   private def getSparkConfig(): SparkConfig = {
     SparkConfig(
@@ -50,9 +50,10 @@ class KFConfig(private val config: Config){
     config.getConfig(CONFIG_NAME_PIPELINE)
   }
 
-  private def getRepoConfig(): RepoConfig = {
-    RepoConfig(config.getString(CONFIG_NAME_REPOSITORY_URL))
+  private def getRepositoryConfig(): RepositoryConfig = {
+    RepositoryConfig(config.getString(CONFIG_NAME_REPOSITORY_PATH))
   }
+
 }
 
 object KFConfig{
@@ -67,4 +68,4 @@ case class HDFSConfig(fs:String)
 
 case class ESConfig(url:String, index:String)
 
-case class RepoConfig(url: String)
+case class RepositoryConfig(path:String)

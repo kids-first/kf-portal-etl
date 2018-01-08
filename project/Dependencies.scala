@@ -18,4 +18,6 @@ object Dependencies {
   val reflections =  "org.reflections" % "reflections" % "0.9.11"
   val asyncHttp = "org.asynchttpclient" % "async-http-client" % "2.0.38"
   val ftp4j = "it.sauronsoftware" % "ftp4j" % "1.6"
+  val es_spark = "org.elasticsearch" %% "elasticsearch-spark-20" % "5.6.5"
+  val scalaz = "org.scalaz" %% "scalaz-core" % "7.2.18"
 }

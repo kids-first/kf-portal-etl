@@ -22,7 +22,9 @@ libraryDependencies ++= Seq(
   graphql_java,
   reflections,
   asyncHttp,
-  ftp4j
+  ftp4j,
+  es_spark,
+  scalaz
 )
 
 resolvers ++= Seq(

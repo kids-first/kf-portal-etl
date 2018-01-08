@@ -3,10 +3,13 @@ package io.kf.etl.context
 import java.net.URL
 
 import com.google.inject._
-import com.typesafe.config.ConfigFactory
+import com.google.inject.name.Names
+import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.Constants._
-import io.kf.etl.conf.{ESConfig, KFConfig, RepoConfig, SparkConfig}
+import io.kf.etl.conf.{ESConfig, KFConfig, RepositoryConfig, SparkConfig}
 import io.kf.etl.inject.GuiceModule
+import io.kf.etl.processor.Repository
+import io.kf.etl.processor.download.{HDFSRepository, LocalRepository}
 import org.apache.spark.sql.SparkSession
 import org.reflections.Reflections
 
@@ -31,9 +34,10 @@ object Context {
           +
 
         new AbstractModule {
-          override def configure(): Unit = ???
-          @Provides @Singleton
-          def getRepoConfig(): RepoConfig = config.repoConfig
+          override def configure(): Unit = {
+            bind(classOf[Repository]).annotatedWith(Names.named("hdfs")).to(classOf[HDFSRepository])
+            bind(classOf[Repository]).annotatedWith(Names.named("local")).to(classOf[LocalRepository])
+          }
           @Provides @Singleton
           def getSparkConfig(): SparkConfig = config.sparkConfig
           @Provides @Singleton
@@ -42,6 +46,22 @@ object Context {
           def createSparkSession():SparkSession = {
             SparkSession.builder().master(config.sparkConfig.master).appName(config.sparkConfig.appName).getOrCreate()
           }
+
+          @Provides
+          def getProcessorConfig(): String => Config = {
+
+            val func: (String => Config) = {
+              config.processorsConfig.get(_) match {
+                case Some(config) => config
+                case None => null
+              }
+            }
+
+            func
+          }
+
+          @Provides
+          def getRepositoryConfig(): RepositoryConfig = config.repoConfig
         }
       ).toSeq:_*
     )

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "io.kf.model";
+option java_package = "io.kf";
 
 message Program {
     string dbgap_accession_number = 1;
@@ -45,92 +45,31 @@ message Case {
 }
 
 message Demographic {
-    string cauth_of_death = 1;
-    string created_datetime = 2;
-    int32 days_to_birth = 3;
-    int32 days_to_death = 4;
-    string ethnicity = 5;
-    string gender = 6;
-    string id = 7;
-    string project_id = 8;
-    string race =9;
-    string state = 10;
-    string submitter_id = 11;
-    string type = 12;
-    string updated_datetime = 13;
-    string vital_status = 14;
-    int32 year_of_birth = 15;
-    int32 year_of_death = 16;
+    int32 age_at_last_follow_up_days = 1;
+    string cauth_of_death = 2;
+    string created_datetime = 3;
+    string ethnicity = 4;
+    string gender = 5;
+    string id = 6;
+    string project_id = 7;
+    string race =8;
+    string state = 9;
+    string submitter_id = 10;
+    string type = 11;
+    string updated_datetime = 12;
+    string vital_status = 13;
 }
 
 message Diagnosis {
-    int32 age_at_diagnosis = 1;
-    string ajcc_clinical_m = 2;
-    string ajcc_clinical_n = 3;
-    string ajcc_clinical_stage = 4;
-    string ajcc_clinical_t = 5;
-    string ajcc_pathologic_m = 6;
-    string ajcc_pathologic_n = 7;
-    string ajcc_pathologic_stage = 8;
-    string ajcc_pathologic_t = 9;
-    string ann_arbor_b_symptoms = 10;
-    string ann_arbor_clinical_stage = 11;
-    string ann_arbor_extranodal_involvement = 12;
-    string ann_arbor_pathologic_stage = 13;
-    string best_overall_response = 14;
-    string burkitt_lymphoma_clinical_variant = 15;
-    string cause_of_death = 16;
-    int32 circumferential_resection_margin = 17;
-    string classification_of_tumor = 18;
-    string colon_polyps_history = 19;
-    string created_datetime = 20;
-    int32 days_to_best_overall_response = 21;
-    int32 days_to_birth = 22;
-    int32 days_to_death = 23;
-    int32 days_to_diagnosis = 24;
-    int32 days_to_hiv_diagnosis = 25;
-    int32 days_to_last_follow_up = 26;
-    int32 days_to_last_known_disease_status = 27;
-    int32 days_to_new_event = 28;
-    int32 days_to_recurrence = 29;
-    string figo_stage = 30;
-    string hiv_positive = 31;
-    string hpv_positive_type = 32;
-    string hpv_status = 33;
-    string id = 34;
-    string iss_stage = 35;
-    string last_known_disease_status = 36;
-    string laterality = 37;
-    int32 ldh_level_at_diagnosis = 38;
-    int32 ldh_normal_range_upper = 39;
-    int32 lymph_nodes_positive = 40;
-    string lymphatic_invasion_present = 41;
-    string method_of_diagnosis = 42;
-    string morphology = 43;
-    string new_event_anatomic_site = 44;
-    string new_event_type = 45;
-    int32 overall_survival = 46;
-    string perineural_invasion_present = 47;
-    string primary_diagnosis = 48;
-    string prior_malignancy = 49;
-    string prior_treatment = 50;
-    int32 progression_free_survival = 51;
-    string progression_free_survival_event = 52;
-    string progression_or_recurrence = 53;
-    string project_id = 54;
-    string residual_disease = 55;
-    string site_of_resection_or_biopsy = 56;
-    string state = 57;
-    string submitter_id = 58;
-    string tissue_or_organ_of_origin = 59;
-    string tumor_grade = 60;
-    string tumor_stage = 61;
-    string type = 62;
-    string updated_datetime = 63;
-    string vascular_invasion_present = 64;
-    string vital_status = 65;
-    int32 year_of_diagnosis = 66;
-
+    int32 age_at_diagnosis_days = 1;
+    string created_datetime = 2;
+    string id = 3;
+    string primary_anatomic_site = 4;
+    string primary_diagnosis = 5;
+    string state = 6;
+    string submitter_id = 7;
+    string type = 8;
+    string updated_datetime = 9;
 }
 
 message Trio {

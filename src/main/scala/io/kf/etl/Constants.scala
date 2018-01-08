@@ -13,5 +13,15 @@ object Constants {
   val CONFIG_NAME_HDFS_DEFAULTFS = "io.kf.etl.hdfs.defaultFS"
   val CONFIG_NAME_PROCESSORS = "io.kf.etl.processors"
   val CONFIG_NAME_PIPELINE = "io.kf.etl.pipeline"
-  val CONFIG_NAME_REPOSITORY_URL = "io.kf.etl.repository.url"
+  val CONFIG_NAME_REPOSITORY_PATH = "io.kf.etl.repository.path"
+
+
+  val FILE_NAME_ALIQUOT = "aliquot.json"
+  val FILE_NAME_DEMOGRAPHIC = "demographic.json"
+  val FILE_NAME_READGROUP = "read_group.json"
+  val FILE_NAME_SUBMITTED_ALIGNED_READS = "submitted_aligned_reads.json"
+  val FILE_NAME_CASE = "case.json"
+  val FILE_NAME_DIAGNOSIS = "diagnosis.json"
+  val FILE_NAME_SAMPLE = "sample.json"
+  val fILE_NAME_TRIO = "trio.json"
 }
