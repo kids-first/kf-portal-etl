@@ -11,7 +11,7 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 
 import scala.collection.mutable.ListBuffer
 
-case class HDFSRepository(private val hdfsConfig:HDFSConfig, private val repoConfig:RepositoryConfig, private val subDir:String) extends Repository{
+case class HDFSRepository(private val hdfsConfig:HDFSConfig, private val repoConfig:RepositoryConfig, private val subPath:String) extends Repository{
   private lazy val fs = getFileSystem()
 
   private def getFileSystem(): FileSystem = {
@@ -20,19 +20,19 @@ case class HDFSRepository(private val hdfsConfig:HDFSConfig, private val repoCon
     FileSystem.get(conf)
   }
 
-  override def getPrograms(): Seq[(String, URL)] = {
-    extract(new URL(s"${fs.getUri.getPath}/${repoConfig.path}/${subDir}"), false)
+  override def getPrograms(): List[(String, URL)] = {
+    extract(new URL(s"${hdfsConfig.fs}/${repoConfig.path}/${subPath}"), false)
   }
 
-  override def getProjectsByProgram(program: URL): Seq[(String, URL)] = {
+  override def getProjectsByProgram(program: URL): List[(String, URL)] = {
     extract(program, false)
   }
 
-  override def getFilesByProject(project: URL): Seq[(String, URL)] = {
+  override def getFilesByProject(project: URL): List[(String, URL)] = {
     extract(project, true)
   }
 
-  private def extract(url: URL, checkingFile: Boolean): Seq[(String, URL)] = {
+  private def extract(url: URL, checkingFile: Boolean): List[(String, URL)] = {
     val rets = new ListBuffer[(String, URL)]
     val remoteIterator = fs.listFiles(new Path(url.getPath), false)
     while(remoteIterator.hasNext) {
