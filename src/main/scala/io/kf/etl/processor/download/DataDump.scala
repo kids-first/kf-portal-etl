@@ -20,8 +20,9 @@ class DataDump(val fs:FileSystem, val repo:RepositoryConfig, val postgresql: Pos
     val copyManager = conn.asInstanceOf[PGConnection].getCopyAPI
     tables.foreach(table => {
       val outputStream = fs.create(target)
-      copyManager.copyOut(s"COPY ${table} TO STDOUT ", outputStream)
+      copyManager.copyOut(s"COPY ${table} TO STDOUT (DELIMITER '\t')", outputStream)
       outputStream.flush()
+      outputStream.close()
     })
 
     HDFSRepository(fs, repo, subPath4Dump)

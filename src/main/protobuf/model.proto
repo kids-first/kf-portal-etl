@@ -7,7 +7,11 @@ message Program {
     optional string id = 2;
     required string name = 3;
     optional string type = 4;
-    repeated Project project = 5;
+}
+
+message ProgramNode {
+    required Program entity = 1;
+    repeated Project projects = 2;
 }
 
 message Project {
@@ -222,6 +226,10 @@ message Submitted_Aligned_Reads {
     optional string updated_datetime = 17;
 }
 
+message Node {
+    required string id = 1;
+    required string content = 2;
+}
 
 message Edge {
     required string left = 1;
