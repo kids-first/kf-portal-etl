@@ -11,17 +11,11 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 
 import scala.collection.mutable.ListBuffer
 
-case class HDFSRepository(private val hdfsConfig:HDFSConfig, private val repoConfig:RepositoryConfig, private val subPath:String) extends Repository{
-  private lazy val fs = getFileSystem()
+case class HDFSRepository(private val fs:FileSystem, private val repoConfig:RepositoryConfig, private val subPath:String) extends Repository{
 
-  private def getFileSystem(): FileSystem = {
-    val conf = new Configuration()
-    conf.set("fs.defaultFS", hdfsConfig.fs)
-    FileSystem.get(conf)
-  }
 
   override def getPrograms(): List[(String, URL)] = {
-    extract(new URL(s"${hdfsConfig.fs}/${repoConfig.path}/${subPath}"), false)
+    extract(new URL(s"${repoConfig.path}/${subPath}"), false)
   }
 
   override def getProjectsByProgram(program: URL): List[(String, URL)] = {

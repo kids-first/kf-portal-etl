@@ -24,7 +24,9 @@ libraryDependencies ++= Seq(
   asyncHttp,
   ftp4j,
   es_spark,
-  scalaz
+  scalaz,
+  gson,
+  postgres
 )
 
 resolvers ++= Seq(
@@ -40,3 +42,4 @@ resolvers ++= Seq(
 PB.targets in Compile := Seq(
   scalapb.gen() -> (sourceManaged in Compile).value
 )
+

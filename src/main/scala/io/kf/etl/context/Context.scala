@@ -10,6 +10,8 @@ import io.kf.etl.conf.{ESConfig, KFConfig, RepositoryConfig, SparkConfig}
 import io.kf.etl.inject.GuiceModule
 import io.kf.etl.processor.Repository
 import io.kf.etl.processor.download.{HDFSRepository, LocalRepository}
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
 import org.reflections.Reflections
 
@@ -18,6 +20,7 @@ import scala.collection.convert.WrapAsScala
 object Context {
   lazy val injector = createInjector()
   lazy val config = loadConfig()
+  lazy val fs = getHDFS()
 
   private def createInjector():Injector = {
 
@@ -76,5 +79,11 @@ object Context {
         case None => ConfigFactory.load(DEFAULT_CONFIG_FILE_NAME)
       }
     )
+  }
+
+  private def getHDFS(): FileSystem = {
+    val conf = new Configuration()
+    conf.set("fs.defaultFS", config.hdfsConfig.fs)
+    FileSystem.get(conf)
   }
 }

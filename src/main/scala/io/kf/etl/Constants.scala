@@ -6,14 +6,20 @@ object Constants {
   val DEFAULT_APP_NAME = "Kids-First-ETL"
   val ROOT_PACKAGE = "io.kf.etl"
 
-  val CONFIG_NAME_SPARK_APP_NAME = "io.kf.etl.spark.app.name"
-  val CONFIG_NAME_SPARK_MASTER = "io.kf.etl.spark.master"
-  val CONFIG_NAME_ES_URL = "io.kf.etl.elasticsearch.url"
-  val CONFIG_NAME_ES_INDEX = "io.kf.etl.elasticsearch.index"
-  val CONFIG_NAME_HDFS_DEFAULTFS = "io.kf.etl.hdfs.defaultFS"
-  val CONFIG_NAME_PROCESSORS = "io.kf.etl.processors"
-  val CONFIG_NAME_PIPELINE = "io.kf.etl.pipeline"
-  val CONFIG_NAME_REPOSITORY_PATH = "io.kf.etl.repository.path"
+  val CONFIG_NAME_SPARK_APP_NAME = s"${ROOT_PACKAGE}.spark.app.name"
+  val CONFIG_NAME_SPARK_MASTER = s"${ROOT_PACKAGE}.spark.master"
+  val CONFIG_NAME_ES_URL = s"${ROOT_PACKAGE}.elasticsearch.url"
+  val CONFIG_NAME_ES_INDEX = s"${ROOT_PACKAGE}.elasticsearch.index"
+  val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
+  val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root_path"
+  val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"
+  val CONFIG_NAME_PIPELINE = s"${ROOT_PACKAGE}.pipeline"
+  val CONFIG_NAME_REPOSITORY_PATH = s"${ROOT_PACKAGE}.repository.path"
+  val CONFIG_NAME_POSTGRESQL_HOST = s"${ROOT_PACKAGE}.postgresql.host"
+  val cONFIG_NAME_POSTGRESQL_DATABASE = s"${ROOT_PACKAGE}.postgresql.database"
+  val CONFIG_NAME_POSTGRESQL_USER = s"${ROOT_PACKAGE}.postgresql.user"
+  val CONFIG_NAME_POSTGRESQL_PASSWORD = s"${ROOT_PACKAGE}.postgresql.password"
+
 
 
   val FILE_NAME_ALIQUOT = "aliquot.json"
