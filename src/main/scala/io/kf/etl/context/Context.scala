@@ -47,7 +47,11 @@ object Context {
           def getESConfig(): ESConfig = config.esConfig
           @Provides @Singleton
           def createSparkSession():SparkSession = {
-            SparkSession.builder().master(config.sparkConfig.master).appName(config.sparkConfig.appName).getOrCreate()
+            SparkSession.builder()
+              .master(config.sparkConfig.master)
+              .appName(config.sparkConfig.appName)
+              .config("es.index.auto.create", "true")
+              .getOrCreate()
           }
 
           @Provides

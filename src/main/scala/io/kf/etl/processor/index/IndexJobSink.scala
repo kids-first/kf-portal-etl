@@ -1,9 +1,11 @@
 package io.kf.etl.processor.index
 
-import org.apache.spark.sql.Dataset
+import io.kf.etl.conf.ESConfig
+import org.apache.spark.sql.{Dataset, SparkSession}
 
-class IndexJobSink {
-  def sink(data:Dataset[_]):Unit = {
-    ???
+class IndexJobSink(val spark:SparkSession, val esConfig: ESConfig) {
+  def sink(data:Dataset[String]):Unit = {
+    import org.elasticsearch.spark.sql._
+    data.saveToEs(s"${esConfig.index}/doc")
   }
 }
