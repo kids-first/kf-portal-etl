@@ -3,12 +3,11 @@ package io.kf.etl.processor.download
 import java.io.File
 import java.net.URL
 
-import io.kf.etl.conf.RepositoryConfig
 import io.kf.etl.processor.Repository
 
-case class LocalRepository(private val repoConfig:RepositoryConfig, private val subPath:String) extends Repository{
+case class LocalRepository(private val path:String) extends Repository{
   override def getPrograms(): List[(String, URL)] = {
-    extract(s"${repoConfig.path}/${subPath}", false)
+    extract(s"${path}", false)
   }
 
   override def getProjectsByProgram(program: URL): List[(String, URL)] = {

@@ -2,20 +2,16 @@ package io.kf.etl.processor.download
 
 import java.net.URL
 
-import com.google.inject.Inject
-import com.google.inject.name.Named
-import io.kf.etl.conf.{HDFSConfig, RepositoryConfig}
 import io.kf.etl.processor.Repository
-import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 import scala.collection.mutable.ListBuffer
 
-case class HDFSRepository(private val fs:FileSystem, private val repoConfig:RepositoryConfig, private val subPath:String) extends Repository{
+case class HDFSRepository(private val fs:FileSystem, private val path:String) extends Repository{
 
 
   override def getPrograms(): List[(String, URL)] = {
-    extract(new URL(s"${repoConfig.path}/${subPath}"), false)
+    extract(new URL(s"${path}"), false)
   }
 
   override def getProjectsByProgram(program: URL): List[(String, URL)] = {

@@ -10,7 +10,6 @@ class KFConfig(private val config: Config){
   lazy val sparkConfig = getSparkConfig()
   lazy val esConfig = getESConfig()
   lazy val hdfsConfig = getHDFSConfig()
-  lazy val repoConfig = getRepositoryConfig()
   lazy val processorsConfig = getProcessors()
   lazy val pipelineConfig = getPipeline()
   lazy val postgresqlConfig = getPostgresql()
@@ -52,10 +51,6 @@ class KFConfig(private val config: Config){
     config.getConfig(CONFIG_NAME_PIPELINE)
   }
 
-  private def getRepositoryConfig(): RepositoryConfig = {
-    RepositoryConfig(config.getString(CONFIG_NAME_REPOSITORY_PATH))
-  }
-
   private def getPostgresql(): PostgresqlConfig = {
     PostgresqlConfig(
       config.getString(CONFIG_NAME_POSTGRESQL_HOST),
@@ -78,7 +73,5 @@ case class SparkConfig(appName:String, master:String)
 case class HDFSConfig(fs:String, root_path:String)
 
 case class ESConfig(url:String, index:String)
-
-case class RepositoryConfig(path:String)
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)

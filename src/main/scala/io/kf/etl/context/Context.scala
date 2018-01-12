@@ -6,7 +6,7 @@ import com.google.inject._
 import com.google.inject.name.Names
 import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.Constants._
-import io.kf.etl.conf.{ESConfig, KFConfig, RepositoryConfig, SparkConfig}
+import io.kf.etl.conf.{ESConfig, KFConfig, SparkConfig}
 import io.kf.etl.inject.GuiceModule
 import io.kf.etl.processor.Repository
 import io.kf.etl.processor.download.{HDFSRepository, LocalRepository}
@@ -63,8 +63,6 @@ object Context {
             func
           }
 
-          @Provides
-          def getRepositoryConfig(): RepositoryConfig = config.repoConfig
         }
       ).toSeq:_*
     )
