@@ -4,12 +4,13 @@ import java.net.URL
 
 import com.google.gson.GsonBuilder
 import io.kf.etl.processor.repo.Repository
+import io.kf.model.Doc
 import org.apache.spark.sql.{Dataset, Encoders, SparkSession}
 
 
 class StageJobTransformer(val context:StageJobContext) {
 
-  def transform(repo: Repository): Dataset[_] = {
+  def transform(repo: Repository): Dataset[Doc] = {
 
     ???
   }

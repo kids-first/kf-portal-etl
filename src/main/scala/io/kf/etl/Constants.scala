@@ -14,11 +14,11 @@ object Constants {
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root_path"
   val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"
   val CONFIG_NAME_PIPELINE = s"${ROOT_PACKAGE}.pipeline"
-  val CONFIG_NAME_REPOSITORY_PATH = s"${ROOT_PACKAGE}.repository.path"
   val CONFIG_NAME_POSTGRESQL_HOST = s"${ROOT_PACKAGE}.postgresql.host"
   val cONFIG_NAME_POSTGRESQL_DATABASE = s"${ROOT_PACKAGE}.postgresql.database"
   val CONFIG_NAME_POSTGRESQL_USER = s"${ROOT_PACKAGE}.postgresql.user"
   val CONFIG_NAME_POSTGRESQL_PASSWORD = s"${ROOT_PACKAGE}.postgresql.password"
+  val CONFIG_NAME_RELATIVE_PATH = "relative_path"
 
 
 
@@ -29,5 +29,9 @@ object Constants {
   val FILE_NAME_CASE = "case.json"
   val FILE_NAME_DIAGNOSIS = "diagnosis.json"
   val FILE_NAME_SAMPLE = "sample.json"
-  val fILE_NAME_TRIO = "trio.json"
+  val FILE_NAME_TRIO = "trio.json"
+
+  val STAGE_DEFAULT_RELATIVE_PATH = "/stage"
+  val DOCUMENT_DEFAULT_RELATIVE_PATH = "/document"
+  val INDEX_DEFAULT_RELATIVE_PATH = "/index"
 }

@@ -17,7 +17,7 @@ import scala.collection.convert.WrapAsScala
 object Context {
   lazy val injector = createInjector()
   lazy val config = loadConfig()
-  lazy val fs = getHDFS()
+  lazy val hdfs = getHDFS()
 
   private def createInjector():Injector = {
 
@@ -73,8 +73,8 @@ object Context {
 
     KFConfig(
       Option( System.getProperty(CONFIG_FILE_URL) ) match {
-        case Some(path) => ConfigFactory.parseURL(new URL(path))
-        case None => ConfigFactory.load(DEFAULT_CONFIG_FILE_NAME)
+        case Some(path) => ConfigFactory.parseURL(new URL(path)).resolve()
+        case None => ConfigFactory.load(DEFAULT_CONFIG_FILE_NAME).resolve()
       }
     )
   }

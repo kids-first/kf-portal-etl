@@ -25,7 +25,7 @@ object Repository {
 
   def apply(url: URL): Repository = {
     url.getProtocol match {
-      case "hdfs" => new HDFSRepository(url, Context.fs)
+      case "hdfs" => new HDFSRepository(url, Context.hdfs)
       case "file" => new LocalRepository(url)
       case _ => throw new UnrecognizedRepositoryProtocolException(url.getProtocol)
     }
