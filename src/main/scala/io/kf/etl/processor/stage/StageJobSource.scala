@@ -1,6 +1,7 @@
 package io.kf.etl.processor.stage
 
-import io.kf.etl.processor.Repository
+import io.kf.etl.processor.repo.Repository
+
 
 class StageJobSource {
 

@@ -3,13 +3,10 @@ package io.kf.etl.context
 import java.net.URL
 
 import com.google.inject._
-import com.google.inject.name.Names
 import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.Constants._
 import io.kf.etl.conf.{ESConfig, KFConfig, SparkConfig}
 import io.kf.etl.inject.GuiceModule
-import io.kf.etl.processor.Repository
-import io.kf.etl.processor.download.{HDFSRepository, LocalRepository}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
@@ -38,8 +35,7 @@ object Context {
 
         new AbstractModule {
           override def configure(): Unit = {
-            bind(classOf[Repository]).annotatedWith(Names.named("hdfs")).to(classOf[HDFSRepository])
-            bind(classOf[Repository]).annotatedWith(Names.named("local")).to(classOf[LocalRepository])
+
           }
           @Provides @Singleton
           def getSparkConfig(): SparkConfig = config.sparkConfig

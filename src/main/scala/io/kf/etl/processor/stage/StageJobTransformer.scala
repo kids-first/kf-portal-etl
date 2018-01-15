@@ -3,7 +3,7 @@ package io.kf.etl.processor.stage
 import java.net.URL
 
 import com.google.gson.GsonBuilder
-import io.kf.etl.processor.Repository
+import io.kf.etl.processor.repo.Repository
 import org.apache.spark.sql.{Dataset, Encoders, SparkSession}
 
 
