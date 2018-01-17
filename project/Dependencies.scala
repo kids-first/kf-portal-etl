@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
 
   val spark_version = "2.2.1"
-  val spark_sql = ("org.apache.spark" %% "spark-sql" % spark_version).exclude("io.netty", "netty")
+  val spark_sql = "org.apache.spark" %% "spark-sql" % spark_version
   val spark_graphx =  "org.apache.spark" %% "spark-graphx" % spark_version
   val typesafe_config = "com.typesafe" % "config" % "1.3.2"
   val json4s_jackson =  "org.json4s" %% "json4s-jackson" % "3.5.3"
