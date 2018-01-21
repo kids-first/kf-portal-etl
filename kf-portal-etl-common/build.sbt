@@ -3,7 +3,8 @@ import Dependencies._
 name := "kf-portal-etl-common"
 
 libraryDependencies ++= Seq(
-  spark_sql.exclude("io.netty", "netty"),
+  spark_sql.exclude("io.netty", "netty") % Provided,
+  hadoop265,
   typesafe_config,
   parquet_protobuf,
   google_guice,

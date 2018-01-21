@@ -22,4 +22,5 @@ object Dependencies {
   val scalaz = "org.scalaz" %% "scalaz-core" % "7.2.18"
   val gson= "com.google.code.gson" % "gson" % "2.8.2"
   val postgres = "org.postgresql" % "postgresql" % "42.1.4"
+  val hadoop265 = "org.apache.hadoop" % "hadoop-client" % "2.6.5"
 }

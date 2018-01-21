@@ -10,9 +10,8 @@ class DocumentJob (source: => Repository, transform: Repository => Dataset[Strin
 
   def process():Repository = {
     val context: DocumentJobContext = ???
-    sink(
-      transform(source)
-    )
+
+    transform.andThen(sink)(source)
 
     Repository(new URL(context.root_path.toString + "/document"))
 

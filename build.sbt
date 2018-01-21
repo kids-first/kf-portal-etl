@@ -15,7 +15,25 @@ lazy val commonSettings = Seq(
     novus,
     twitter,
     spark_packages
-  )
+  ),
+  test in assembly := {},
+
+  assemblyMergeStrategy in assembly := {
+    case PathList("io", "netty", xs @ _*) => MergeStrategy.last
+    case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
+    case PathList("javax", "ws", xs @ _*) => MergeStrategy.last
+    case PathList("javax", "inject", xs @ _*) => MergeStrategy.last
+    case PathList("com", "sun", "research", xs @ _*) => MergeStrategy.last
+    case PathList("org", "apache", "commons", xs @ _*) => MergeStrategy.last
+    case PathList("org", "apache", "hadoop", xs @ _*) => MergeStrategy.last
+    case PathList("org", "aopalliance", xs @ _*) => MergeStrategy.last
+    case PathList("org", "apache", "spark", "unused", xs @ _*) => MergeStrategy.discard
+    case "META-INF/io.netty.versions.properties" => MergeStrategy.last
+    case "overview.html" => MergeStrategy.last
+    case x =>
+      val oldStrategy = (assemblyMergeStrategy in assembly).value
+      oldStrategy(x)
+  }
 )
 
 lazy val root = (project in file(".")).aggregate(common, processors)

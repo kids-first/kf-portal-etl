@@ -9,9 +9,8 @@ class IndexJob(source: => Repository, transform: Repository => Dataset[String], 
   def process():Unit = {
 
     val context: IndexJobContext = ???
-    sink(
-      transform(source)
-    )
+
+    transform.andThen(sink)(source)
 
     Repository(new URL(context.root_path.toString + context.getRelativePath()))
 
