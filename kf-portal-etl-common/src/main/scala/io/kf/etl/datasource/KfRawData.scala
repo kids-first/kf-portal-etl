@@ -7,7 +7,7 @@ import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.sql.sources.{BaseRelation, TableScan}
 import org.apache.spark.sql.types.StructType
 
-class KidsFirstRelation(override val sqlContext: SQLContext) extends BaseRelation with TableScan{
+class KfRawData(override val sqlContext: SQLContext) extends BaseRelation with TableScan{
 
   override val schema: StructType = ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor)
 
@@ -16,8 +16,8 @@ class KidsFirstRelation(override val sqlContext: SQLContext) extends BaseRelatio
 
 }
 
-object KidsFirstRelation {
-  def apply(sc: SQLContext): KidsFirstRelation = {
-    new KidsFirstRelation(sc)
+object KfRawData {
+  def apply(sc: SQLContext): KfRawData = {
+    new KfRawData(sc)
   }
 }
