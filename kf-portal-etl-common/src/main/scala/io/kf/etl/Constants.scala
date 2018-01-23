@@ -34,4 +34,11 @@ object Constants {
   val STAGE_DEFAULT_RELATIVE_PATH = "/stage"
   val DOCUMENT_DEFAULT_RELATIVE_PATH = "/document"
   val INDEX_DEFAULT_RELATIVE_PATH = "/index"
+
+  val DATASOURCE_OPTION_PROCESSOR_NAME = "kf.etl.processor.name"
+  val DATASOURCE_OPTION_PATH = "path"
+  val HDFS_DATASOURCE_SHORT_NAME = "kf-hdfs"
+
+  val PROCESSOR_DOCUMENT = "document"
+  val PROCESSOR_INDEX = "index"
 }
