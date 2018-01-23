@@ -24,11 +24,14 @@ class KfHdfsDataProvider extends RelationProvider with DataSourceRegister{
       throw KfDataProviderParametersMissingException(missingKeys)
     }
 
-    parameters.get(DATASOURCE_OPTION_PROCESSOR_NAME).collect({
-      case PROCESSOR_DOCUMENT => KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get)
-      case PROCESSOR_INDEX => KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get)
-      case _ => KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get)
-    }).get
+
+    parameters
+      .get(DATASOURCE_OPTION_PROCESSOR_NAME)
+      .map(_ match {
+        case PROCESSOR_DOCUMENT => KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get)
+        case PROCESSOR_INDEX => KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get)
+      })
+      .getOrElse(KfHdfsParquetData[Doc](sqlContext, ProtoBuf2StructType.parseDescriptor(In.scalaDescriptor), parameters.get(DATASOURCE_OPTION_PATH).get))
 
   }
 
