@@ -1,1 +1,2 @@
 io.kf.etl.processor.datasource.KfHdfsDataProvider
+io.kf.etl.common.datasource.KfRawDataProvider

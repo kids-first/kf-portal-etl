@@ -2,7 +2,7 @@ package io.kf.etl.processor.repo
 
 import java.net.URL
 
-import io.kf.etl.context.Context
+import io.kf.etl.common.context.Context
 import org.apache.hadoop.fs.FileSystem
 
 

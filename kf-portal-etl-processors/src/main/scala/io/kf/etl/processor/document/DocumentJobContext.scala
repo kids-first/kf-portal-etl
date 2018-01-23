@@ -5,7 +5,7 @@ import java.net.URL
 import com.typesafe.config.Config
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
-import io.kf.etl.Constants._
+import io.kf.etl.common.Constants._
 
 import scala.util.{Failure, Success, Try}
 

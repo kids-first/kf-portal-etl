@@ -1,4 +1,4 @@
-package io.kf.etl.inject;
+package io.kf.etl.common.inject;
 
 public @interface GuiceModule {
 }

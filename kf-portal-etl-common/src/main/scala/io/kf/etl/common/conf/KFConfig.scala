@@ -1,7 +1,7 @@
-package io.kf.etl.conf
+package io.kf.etl.common.conf
 
 import com.typesafe.config.Config
-import io.kf.etl.Constants._
+import io.kf.etl.common.Constants._
 
 import scala.collection.convert.WrapAsScala
 

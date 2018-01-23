@@ -1,12 +1,12 @@
-package io.kf.etl.context
+package io.kf.etl.common.context
 
 import java.net.URL
 
 import com.google.inject._
 import com.typesafe.config.{Config, ConfigFactory}
-import io.kf.etl.Constants._
-import io.kf.etl.conf.{ESConfig, KFConfig, SparkConfig}
-import io.kf.etl.inject.GuiceModule
+import io.kf.etl.common.Constants._
+import io.kf.etl.common.conf.{ESConfig, KFConfig, SparkConfig}
+import io.kf.etl.common.inject.GuiceModule
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession

@@ -1,6 +1,6 @@
 package io.kf.etl.processor.index
 
-import io.kf.etl.conf.ESConfig
+import io.kf.etl.common.conf.ESConfig
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 class IndexJobSink(val spark:SparkSession, val esConfig: ESConfig) {
