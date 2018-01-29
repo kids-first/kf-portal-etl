@@ -1,14 +1,14 @@
-package io.kf.etl.processor.document
+package io.kf.etl.processor.download
 
 import io.kf.model.Doc
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class DocumentJobSink {
+class DownloadJobSink(val context: DownloadJobContext) {
   def sink(data:Dataset[Doc]):Unit = {
-    val context: DocumentJobContext = ???
 
     context.hdfs.delete(new Path(context.getJobDataPath()), true)
+
     data.write.parquet(context.getJobDataPath())
   }
 }

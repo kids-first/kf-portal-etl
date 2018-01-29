@@ -8,13 +8,13 @@ import org.json4s.jackson.Serialization
 
 class DocumentJobTransformer(val spark:SparkSession) {
 
-  def transform(data:Dataset[Doc]):Dataset[String] = {
-    import spark.implicits._
-    data.map(doc => {
-      implicit val formats = Serialization.formats(NoTypeHints)
-      Serialization.writePretty(doc)
-    })
-  }
+//  def transform(data:Dataset[Doc]):Dataset[String] = {
+//    import spark.implicits._
+//    data.map(doc => {
+//      implicit val formats = Serialization.formats(NoTypeHints)
+//      Serialization.writePretty(doc)
+//    })
+//  }
 
   def transform(repo: Repository):Dataset[String] = {
     import spark.implicits._
@@ -23,6 +23,10 @@ class DocumentJobTransformer(val spark:SparkSession) {
       implicit val formats = Serialization.formats(NoTypeHints)
       Serialization.writePretty(doc)
     })
+  }
+
+  def transform(input: Dataset[Doc]): Dataset[Doc] = {
+    input
   }
 
 }

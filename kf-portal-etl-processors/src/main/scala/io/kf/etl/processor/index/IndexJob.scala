@@ -1,18 +1,17 @@
 package io.kf.etl.processor.index
 
-import java.net.URL
-
 import io.kf.etl.processor.repo.Repository
+import io.kf.model.Doc
 import org.apache.spark.sql.Dataset
 
-class IndexJob(source: => Repository, transform: Repository => Dataset[String], sink: Dataset[String] => Unit) {
+class IndexJob(source: Repository => Dataset[Doc], transform: Dataset[Doc] => Dataset[Doc], sink: Dataset[Doc] => Unit) {
   def process():Unit = {
 
     val context: IndexJobContext = ???
 
-    transform.andThen(sink)(source)
+//    transform.andThen(sink)(source)
 
-    Repository(new URL(context.root_path.toString + context.getRelativePath()))
+    source.andThen(transform).andThen(sink)
 
   }
 }

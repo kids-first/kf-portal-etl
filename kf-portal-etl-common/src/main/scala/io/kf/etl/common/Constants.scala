@@ -18,25 +18,24 @@ object Constants {
   val cONFIG_NAME_POSTGRESQL_DATABASE = s"${ROOT_PACKAGE}.postgresql.database"
   val CONFIG_NAME_POSTGRESQL_USER = s"${ROOT_PACKAGE}.postgresql.user"
   val CONFIG_NAME_POSTGRESQL_PASSWORD = s"${ROOT_PACKAGE}.postgresql.password"
-  val CONFIG_NAME_RELATIVE_PATH = "relative_path"
+  val CONFIG_NAME_DATA_PATH = "data_path"
 
 
+//  val FILE_NAME_ALIQUOT = "aliquot.json"
+//  val FILE_NAME_DEMOGRAPHIC = "demographic.json"
+//  val FILE_NAME_READGROUP = "read_group.json"
+//  val FILE_NAME_SUBMITTED_ALIGNED_READS = "submitted_aligned_reads.json"
+//  val FILE_NAME_CASE = "case.json"
+//  val FILE_NAME_DIAGNOSIS = "diagnosis.json"
+//  val FILE_NAME_SAMPLE = "sample.json"
+//  val FILE_NAME_TRIO = "trio.json"
 
-  val FILE_NAME_ALIQUOT = "aliquot.json"
-  val FILE_NAME_DEMOGRAPHIC = "demographic.json"
-  val FILE_NAME_READGROUP = "read_group.json"
-  val FILE_NAME_SUBMITTED_ALIGNED_READS = "submitted_aligned_reads.json"
-  val FILE_NAME_CASE = "case.json"
-  val FILE_NAME_DIAGNOSIS = "diagnosis.json"
-  val FILE_NAME_SAMPLE = "sample.json"
-  val FILE_NAME_TRIO = "trio.json"
-
-  val STAGE_DEFAULT_RELATIVE_PATH = "/stage"
-  val DOCUMENT_DEFAULT_RELATIVE_PATH = "/document"
-  val INDEX_DEFAULT_RELATIVE_PATH = "/index"
+  val DOWNLOAD_DEFAULT_DATA_PATH = "download"
+  val DOCUMENT_DEFAULT_DATA_PATH = "document"
+  val INDEX_DEFAULT_DATA_PATH = "index"
 
   val DATASOURCE_OPTION_PROCESSOR_NAME = "kf.etl.processor.name"
-  val DATASOURCE_OPTION_PATH = "path"
+  val SPARK_DATASOURCE_OPTION_PATH = "path"
   val HDFS_DATASOURCE_SHORT_NAME = "kf-hdfs"
   val RAW_DATASOURCE_SHORT_NAME = "kf-raw"
 
