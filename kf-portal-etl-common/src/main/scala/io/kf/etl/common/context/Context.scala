@@ -15,59 +15,13 @@ import org.reflections.Reflections
 import scala.collection.convert.WrapAsScala
 
 object Context {
-  lazy val injector = createInjector()
-  lazy val config = loadConfig()
-  lazy val hdfs = getHDFS()
+  private lazy val config = loadConfig()
+  lazy val (hdfs, rootPath) = getHDFS()
   lazy val sparkSession = getSparkSession()
 
-  private def createInjector():Injector = {
 
-    // load all of the Guice-enabled modules through reflections library
-    Guice.createInjector(
-      (
-        WrapAsScala
-          .asScalaSet(
-            new Reflections(ROOT_PACKAGE).getTypesAnnotatedWith(classOf[GuiceModule])
-          )
-          .map(clazz => {
-            clazz.newInstance().asInstanceOf[AbstractModule]
-          })
-          +
-
-        new AbstractModule {
-          override def configure(): Unit = {
-
-          }
-          @Provides @Singleton
-          def getSparkConfig(): SparkConfig = config.sparkConfig
-          @Provides @Singleton
-          def getESConfig(): ESConfig = config.esConfig
-          @Provides @Singleton
-          def createSparkSession():SparkSession = {
-            SparkSession.builder()
-              .master(config.sparkConfig.master)
-              .appName(config.sparkConfig.appName)
-              .config("es.index.auto.create", "true")
-              .getOrCreate()
-          }
-
-          @Provides
-          def getProcessorConfig(): String => Config = {
-
-            val func: (String => Config) = {
-              config.processorsConfig.get(_) match {
-                case Some(config) => config
-                case None => null
-              }
-            }
-
-            func
-          }
-
-        }
-      ).toSeq:_*
-    )
-
+  def getProcessConfig(name: String): Option[Config] = {
+    config.processorsConfig.get(name)
   }
 
   private def loadConfig(): KFConfig = {
@@ -80,13 +34,17 @@ object Context {
     )
   }
 
-  private def getHDFS(): FileSystem = {
+  private def getHDFS(): (FileSystem, String) = {
     val conf = new Configuration()
     conf.set("fs.defaultFS", config.hdfsConfig.fs)
-    FileSystem.get(conf)
+    (FileSystem.get(conf), config.hdfsConfig.root_path)
   }
 
   private def getSparkSession(): SparkSession = {
-    injector.getInstance(classOf[SparkSession])
+    SparkSession.builder()
+      .master(config.sparkConfig.master)
+      .appName(config.sparkConfig.appName)
+      .config("es.index.auto.create", "true")
+      .getOrCreate()
   }
 }

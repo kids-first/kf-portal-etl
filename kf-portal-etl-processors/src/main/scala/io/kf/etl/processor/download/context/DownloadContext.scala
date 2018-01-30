@@ -1,19 +1,17 @@
-package io.kf.etl.processor.download
-
-import java.net.URL
+package io.kf.etl.processor.download.context
 
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
-import io.kf.etl.processor.common.job.JobContext
+import io.kf.etl.processor.common.job.ProcessorContext
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.SparkSession
 
 import scala.util.{Failure, Success, Try}
 
-case class DownloadJobContext(override val hdfs: HDFS,
-                              override val sparkSession: SparkSession,
-                              override val appRootPath:String,
-                              override val config: Option[Config]) extends JobContext {
+case class DownloadContext(override val sparkSession: SparkSession,
+                            override val hdfs: HDFS,
+                           override val appRootPath:String,
+                           override val config: Option[Config]) extends ProcessorContext {
   def getJobDataPath():String = {
     config match {
       case Some(cc) => {

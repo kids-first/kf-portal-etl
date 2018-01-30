@@ -1,0 +1,12 @@
+package io.kf.etl.processor.index.context
+
+import com.typesafe.config.Config
+import io.kf.etl.processor.common.job.ProcessorContext
+import org.apache.hadoop.fs.{FileSystem => HDFS}
+import org.apache.spark.sql.SparkSession
+
+
+class IndexContext(override val sparkSession: SparkSession,
+                    override val hdfs: HDFS,
+                   override val appRootPath:String,
+                   override val config: Option[Config]) extends ProcessorContext

@@ -4,7 +4,7 @@ import com.typesafe.config.Config
 import org.apache.hadoop.fs.{FileSystem => HDFSFileSystem}
 import org.apache.spark.sql.SparkSession
 
-trait JobContext {
+trait ProcessorContext {
   def hdfs: HDFSFileSystem
   def sparkSession: SparkSession
   def appRootPath: String
