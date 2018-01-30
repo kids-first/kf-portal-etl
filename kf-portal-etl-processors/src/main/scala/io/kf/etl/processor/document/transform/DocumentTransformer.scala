@@ -8,22 +8,14 @@ import org.json4s.jackson.Serialization
 
 class DocumentTransformer(val spark:SparkSession) {
 
-//  def transform(data:Dataset[Doc]):Dataset[String] = {
+//  def transform(repo: Repository[Doc]):Dataset[String] = {
 //    import spark.implicits._
-//    data.map(doc => {
+//    val one_path:String = ???
+//    spark.read.parquet("").as[Doc].map(doc => {
 //      implicit val formats = Serialization.formats(NoTypeHints)
 //      Serialization.writePretty(doc)
 //    })
 //  }
-
-  def transform(repo: Repository[Doc]):Dataset[String] = {
-    import spark.implicits._
-    val one_path:String = ???
-    spark.read.parquet("").as[Doc].map(doc => {
-      implicit val formats = Serialization.formats(NoTypeHints)
-      Serialization.writePretty(doc)
-    })
-  }
 
   def transform(input: Dataset[Doc]): Dataset[Doc] = {
     input

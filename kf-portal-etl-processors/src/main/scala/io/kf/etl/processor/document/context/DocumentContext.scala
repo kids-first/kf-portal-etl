@@ -8,11 +8,10 @@ import org.apache.spark.sql.SparkSession
 
 import scala.util.{Failure, Success, Try}
 
-case class DocumentContext(
-                               override val sparkSession: SparkSession,
-                               override val hdfs: HDFS,
-                               override val appRootPath: String,
-                               override val config: Option[Config]) extends ProcessorContext{
+case class DocumentContext(override val sparkSession: SparkSession,
+                           override val hdfs: HDFS,
+                           override val appRootPath: String,
+                           override val config: Option[Config]) extends ProcessorContext{
   def getJobDataPath():String = {
     config match {
       case Some(cc) => {
