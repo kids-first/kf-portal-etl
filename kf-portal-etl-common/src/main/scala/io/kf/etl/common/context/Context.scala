@@ -18,6 +18,7 @@ object Context {
   lazy val injector = createInjector()
   lazy val config = loadConfig()
   lazy val hdfs = getHDFS()
+  lazy val sparkSession = getSparkSession()
 
   private def createInjector():Injector = {
 
@@ -83,5 +84,9 @@ object Context {
     val conf = new Configuration()
     conf.set("fs.defaultFS", config.hdfsConfig.fs)
     FileSystem.get(conf)
+  }
+
+  private def getSparkSession(): SparkSession = {
+    injector.getInstance(classOf[SparkSession])
   }
 }

@@ -10,8 +10,8 @@ import org.apache.spark.sql.{Dataset, Encoders, SparkSession}
 
 class DownloadJobTransformer(val context:DownloadJobContext) {
 
-  def transform(repo: Repository): Dataset[Doc] = {
-    repo.load[Doc]()
+  def transform(repo: Repository[Doc]): Dataset[Doc] = {
+    repo.load()
   }
 
 }

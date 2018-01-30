@@ -6,7 +6,7 @@ import org.apache.spark.sql.Dataset
 
 
 class IndexJobSource(val context: IndexJobContext) {
-  def source(repo: Repository): Dataset[Doc] = {
-    repo.load[Doc]()
+  def source(repo: Repository[Doc]): Dataset[Doc] = {
+    repo.load()
   }
 }

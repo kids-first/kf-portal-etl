@@ -8,9 +8,9 @@ import org.apache.spark.sql.Dataset
 
 import scala.util.Try
 
-class DownloadJob(source: Unit => Repository, transform: Repository => Dataset[Doc], sink: Dataset[Doc] => Unit) {
+class DownloadJob(source: Unit => Repository[Doc], transform: Repository[Doc] => Dataset[Doc], sink: Dataset[Doc] => Unit) {
 
-  def process():Try[Repository] = {
+  def process():Try[Repository[Doc]] = {
     val context: DownloadJobContext = ???
 
 //    transform.andThen(sink)(source)

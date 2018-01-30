@@ -16,7 +16,7 @@ class DocumentJobTransformer(val spark:SparkSession) {
 //    })
 //  }
 
-  def transform(repo: Repository):Dataset[String] = {
+  def transform(repo: Repository[Doc]):Dataset[String] = {
     import spark.implicits._
     val one_path:String = ???
     spark.read.parquet("").as[Doc].map(doc => {

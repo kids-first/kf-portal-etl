@@ -5,8 +5,8 @@ import io.kf.model.Doc
 import org.apache.spark.sql.Dataset
 
 
-class DocumentJobSource {
-  def source(repo: Repository): Dataset[Doc] = {
-    repo.load[Doc]()
+class DocumentJobSource(val context: DocumentJobContext) {
+  def source(repo: Repository[Doc]): Dataset[Doc] = {
+    repo.load()
   }
 }

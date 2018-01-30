@@ -5,6 +5,7 @@ import java.sql.DriverManager
 
 import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.processor.repo.Repository
+import io.kf.model.Doc
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.postgresql.PGConnection
 
@@ -12,7 +13,7 @@ class DataSourceDump(val fs:FileSystem, val root_path:URL, val postgresql: Postg
 
   private val tables = List("")
 
-  def dump():Repository = {
+  def dump():Repository[Doc] = {
 
     val fullpath = s"${root_path.toString}/dump"
 
