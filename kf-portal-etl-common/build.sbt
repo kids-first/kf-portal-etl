@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   asyncHttp,
   ftp4j,
   es_spark,
-  postgres
+  postgres,
+  scalatest_scalactic % "test"
 )
 
 PB.targets in Compile := Seq(

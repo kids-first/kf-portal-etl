@@ -14,7 +14,8 @@ lazy val commonSettings = Seq(
     maven_local,
     novus,
     twitter,
-    spark_packages
+    spark_packages,
+    artima
   ),
   test in assembly := {},
 

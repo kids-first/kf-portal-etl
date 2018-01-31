@@ -3,7 +3,6 @@ package io.kf.etl.processor.datasource
 import io.kf.etl.common.datasource.KfDataProviderParametersMissingException
 import io.kf.etl.common.transform.ProtoBuf2StructType
 import io.kf.model.Doc
-import io.kf.play.In
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
 import io.kf.etl.common.Constants._
@@ -31,7 +30,7 @@ class KfHdfsDataProvider extends RelationProvider with DataSourceRegister{
         case PROCESSOR_DOCUMENT => KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
         case PROCESSOR_INDEX => KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
       })
-      .getOrElse(KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(In.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
+      .getOrElse(KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
 
   }
 
