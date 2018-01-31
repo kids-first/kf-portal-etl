@@ -36,11 +36,13 @@ lazy val commonSettings = Seq(
   }
 )
 
-lazy val root = (project in file(".")).aggregate(common, processors)
+lazy val root = (project in file(".")).aggregate(model, common, processors)
 
-lazy val common = (project in file("kf-portal-etl-common")).settings(commonSettings:_*)
+lazy val model = (project in file("kf-portal-etl-model")).settings(commonSettings:_*)
 
-lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common).settings(commonSettings:_*)
+lazy val common = (project in file("kf-portal-etl-common")).dependsOn(model).settings(commonSettings:_*)
+
+lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common).dependsOn(model).settings(commonSettings:_*)
 
 //lazy val pipeline = (project in file("kf-portal-etl-pipeline")).dependsOn(processors).settings(commonSettings:_*)
 
