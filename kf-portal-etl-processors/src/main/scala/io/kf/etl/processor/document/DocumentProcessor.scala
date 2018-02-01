@@ -11,12 +11,11 @@ import org.apache.spark.sql.Dataset
 class DocumentProcessor(context: DocumentContext,
                         source: Repository[Doc] => Dataset[Doc],
                         transform: Dataset[Doc] => Dataset[Doc],
-                        sink: Dataset[Doc] => Unit) extends Processor[Repository[Doc], Repository[Doc]]{
+                        sink: Dataset[Doc] => Unit,
+                        output: Unit => Repository[Doc]) extends Processor[Repository[Doc], Repository[Doc]]{
 
   def process(input: Repository[Doc]):Repository[Doc] = {
-    source.andThen(transform).andThen(sink)(input)
-    Repository(new URL(context.getJobDataPath()))
-
+    source.andThen(transform).andThen(sink).andThen(output)(input)
   }
 
 }

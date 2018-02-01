@@ -13,9 +13,13 @@ libraryDependencies ++= Seq(
   ftp4j,
   es_spark,
   postgres,
-  scalatest_scalactic % "test"
+  scalatest % "test"
 )
 
 PB.targets in Compile := Seq(
   scalapb.gen() -> (sourceManaged in Compile).value
+)
+
+PB.targets in Test := Seq(
+  scalapb.gen() -> (sourceManaged in Test).value
 )

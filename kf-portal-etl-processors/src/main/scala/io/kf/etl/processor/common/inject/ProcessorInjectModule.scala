@@ -14,6 +14,7 @@ abstract class ProcessorInjectModule(val sparkSession: SparkSession,
   type SOURCE
   type SINK
   type TRANSFORMER
+  type OUTPUT
 
   def getContext(): CONTEXT
   def getProcessor(): PROCESSOR
@@ -21,5 +22,6 @@ abstract class ProcessorInjectModule(val sparkSession: SparkSession,
   def getSource(context: CONTEXT): SOURCE
   def getSink(context: CONTEXT): SINK
   def getTransformer(context: CONTEXT): TRANSFORMER
+  def getOutput(context: CONTEXT): OUTPUT
 
 }

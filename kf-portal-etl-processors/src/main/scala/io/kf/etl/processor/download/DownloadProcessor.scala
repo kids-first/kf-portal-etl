@@ -13,12 +13,11 @@ import scala.util.Try
 class DownloadProcessor(context: DownloadContext,
                         source: Unit => Repository[Doc],
                         transform: Repository[Doc] => Dataset[Doc],
-                        sink: Dataset[Doc] => Unit) extends Processor[Unit, Try[Repository[Doc]]]{
+                        sink: Dataset[Doc] => Unit,
+                        output: Unit => Try[Repository[Doc]]) extends Processor[Unit, Try[Repository[Doc]]]{
 
   def process(input:Unit):Try[Repository[Doc]] = {
-    source.andThen(transform).andThen(sink)
-    Try(Repository(new URL(context.getJobDataPath())))
-
+    source.andThen(transform).andThen(sink).andThen(output)()
   }
 
 }

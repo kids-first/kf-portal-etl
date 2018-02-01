@@ -6,6 +6,7 @@ import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.download.DownloadProcessor
 import io.kf.etl.processor.download.context.DownloadContext
+import io.kf.etl.processor.download.output.DownloadOutput
 import io.kf.etl.processor.download.sink.DownloadSink
 import io.kf.etl.processor.download.source.DownloadSource
 import io.kf.etl.processor.download.transform.DownloadTransformer
@@ -22,6 +23,7 @@ class DownloadInjectModule(sparkSession: SparkSession,
   type SOURCE = DownloadSource
   type SINK = DownloadSink
   type TRANSFORMER = DownloadTransformer
+  type OUTPUT = DownloadOutput
 
   override def getContext(): DownloadContext = {
     new DownloadContext(sparkSession, hdfs, appRootPath, config)
@@ -33,12 +35,14 @@ class DownloadInjectModule(sparkSession: SparkSession,
     val source = getSource(context)
     val sink = getSink(context)
     val transformer = getTransformer(context)
+    val output = getOutput(context)
 
     new DownloadProcessor(
       context,
       source.getRepository,
       transformer.transform,
-      sink.sink
+      sink.sink,
+      output.output
     )
   }
 
@@ -55,4 +59,8 @@ class DownloadInjectModule(sparkSession: SparkSession,
   }
 
   override def configure(): Unit = ???
+
+  override def getOutput(context: DownloadContext): DownloadOutput = {
+    new DownloadOutput(context)
+  }
 }

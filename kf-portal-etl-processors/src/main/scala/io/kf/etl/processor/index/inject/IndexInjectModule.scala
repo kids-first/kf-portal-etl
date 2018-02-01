@@ -25,6 +25,7 @@ class IndexInjectModule(sparkSession: SparkSession,
   type SOURCE = IndexSource
   type SINK = IndexSink
   type TRANSFORMER = IndexTransformer
+  type OUTPUT = Unit
 
   private def checkConfig(): Boolean = {
     config.isDefined && (
@@ -77,4 +78,8 @@ class IndexInjectModule(sparkSession: SparkSession,
   }
 
   override def configure(): Unit = ???
+
+  override def getOutput(context: IndexContext): Unit = {
+    Unit
+  }
 }

@@ -6,6 +6,7 @@ import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.document.DocumentProcessor
 import io.kf.etl.processor.document.context.DocumentContext
+import io.kf.etl.processor.document.output.DocumentOutput
 import io.kf.etl.processor.document.sink.DocumentSink
 import io.kf.etl.processor.document.source.DocumentSource
 import io.kf.etl.processor.document.transform.DocumentTransformer
@@ -23,6 +24,7 @@ class DocumentInjectModule(sparkSession: SparkSession,
   type SOURCE = DocumentSource
   type SINK = DocumentSink
   type TRANSFORMER = DocumentTransformer
+  type OUTPUT = DocumentOutput
 
   override def configure(): Unit = ???
 
@@ -36,12 +38,14 @@ class DocumentInjectModule(sparkSession: SparkSession,
     val source = getSource(context)
     val sink = getSink(context)
     val transformer = getTransformer(context)
+    val output = getOutput(context)
 
     new DocumentProcessor(
       context,
       source.source,
       transformer.transform,
-      sink.sink
+      sink.sink,
+      output.output
     )
 
   }
@@ -56,5 +60,9 @@ class DocumentInjectModule(sparkSession: SparkSession,
 
   override def getTransformer(context: DocumentContext): DocumentTransformer = {
     new DocumentTransformer(sparkSession)
+  }
+
+  override def getOutput(context: DocumentContext): DocumentOutput = {
+    new DocumentOutput(context)
   }
 }
