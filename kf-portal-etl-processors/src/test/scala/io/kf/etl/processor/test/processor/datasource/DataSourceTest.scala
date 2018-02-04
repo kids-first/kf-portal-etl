@@ -1,6 +1,7 @@
 package io.kf.etl.processor.test.processor.datasource
 
-import io.kf.etl.processor.test.common.{KfEtlTestEnv, KfEtlUnitTestSpec}
+import io.kf.etl.common.test.common.KfEtlUnitTestSpec
+import io.kf.etl.processor.test.common.KfEtlTestEnv
 import io.kf.model.Doc
 import org.apache.hadoop.fs.Path
 

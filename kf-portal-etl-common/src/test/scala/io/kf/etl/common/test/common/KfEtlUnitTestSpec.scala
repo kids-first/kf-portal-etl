@@ -1,4 +1,4 @@
-package io.kf.etl.processor.test.common
+package io.kf.etl.common.test.common
 
 import org.scalatest._
 
