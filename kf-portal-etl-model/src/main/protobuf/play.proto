@@ -3,12 +3,12 @@ syntax = "proto2";
 package io.kf;
 
 message In {
-    required string id = 1;
+    optional string id = 1;
     required string name = 2;
 }
 message Out{
-    repeated In inners = 1;
-    required string sex = 2;
-    optional string address = 3;
+    optional string address = 1;
+    required string unique_sex = 2;
+    repeated In inners = 3;
 }
 

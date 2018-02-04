@@ -1,4 +1,4 @@
-package io.kf.etl.processor.common.job
+package io.kf.etl.processor.common
 
 import com.typesafe.config.Config
 import org.apache.hadoop.fs.{FileSystem => HDFSFileSystem}

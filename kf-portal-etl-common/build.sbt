@@ -7,6 +7,7 @@ libraryDependencies ++= Seq(
   hadoop265,
   typesafe_config,
   parquet_protobuf,
+  scalapb_json4s,
   google_guice,
   reflections,
   asyncHttp,

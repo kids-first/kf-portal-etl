@@ -3,7 +3,7 @@ package io.kf.etl.common.datasource
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.transform.ProtoBuf2StructType
+import io.kf.etl.common.transform.ScalaPB2SparkStructType
 import io.kf.model.Doc
 
 class KfRawDataProvider extends RelationProvider with DataSourceRegister {
@@ -25,7 +25,7 @@ class KfRawDataProvider extends RelationProvider with DataSourceRegister {
 
     KfRawData(
       sqlContext,
-      ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor)
+      ScalaPB2SparkStructType.parseDescriptor(Doc.scalaDescriptor)
     )
   }
 

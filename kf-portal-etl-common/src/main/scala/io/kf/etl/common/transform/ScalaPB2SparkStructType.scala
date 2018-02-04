@@ -4,7 +4,7 @@ import org.apache.spark.sql.types._
 
 import scalapb.descriptors.{Descriptor, FieldDescriptor, ScalaType}
 
-object ProtoBuf2StructType {
+object ScalaPB2SparkStructType {
   private def toSparkSQLType(fd:FieldDescriptor): DataType = {
 
     val basicType: DataType =

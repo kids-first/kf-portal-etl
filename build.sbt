@@ -43,7 +43,7 @@ lazy val model = (project in file("kf-portal-etl-model")).settings(commonSetting
 
 lazy val common = (project in file("kf-portal-etl-common")).dependsOn(model).settings(commonSettings:_*)
 
-lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common).dependsOn(model).settings(commonSettings:_*)
+lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common).settings(commonSettings:_*)
 
 //lazy val pipeline = (project in file("kf-portal-etl-pipeline")).dependsOn(processors).settings(commonSettings:_*)
 

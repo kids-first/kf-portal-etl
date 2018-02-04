@@ -2,7 +2,7 @@ package io.kf.etl.processor.download.context
 
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
-import io.kf.etl.processor.common.job.ProcessorContext
+import io.kf.etl.processor.common.ProcessorContext
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.SparkSession
 

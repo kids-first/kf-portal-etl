@@ -1,7 +1,7 @@
 package io.kf.etl.processor.datasource
 
 import io.kf.etl.common.datasource.KfDataProviderParametersMissingException
-import io.kf.etl.common.transform.ProtoBuf2StructType
+import io.kf.etl.common.transform.ScalaPB2SparkStructType
 import io.kf.model.Doc
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
@@ -27,10 +27,10 @@ class KfHdfsDataProvider extends RelationProvider with DataSourceRegister{
     parameters
       .get(DATASOURCE_OPTION_PROCESSOR_NAME)
       .map(_ match {
-        case PROCESSOR_DOCUMENT => KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
-        case PROCESSOR_INDEX => KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
+        case PROCESSOR_DOCUMENT => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
+        case PROCESSOR_INDEX => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
       })
-      .getOrElse(KfHdfsParquetData(sqlContext, ProtoBuf2StructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
+      .getOrElse(KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(Doc.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
 
   }
 
