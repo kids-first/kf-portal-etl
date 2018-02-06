@@ -3,10 +3,14 @@ package io.kf.etl.processor.index.sink
 import io.kf.etl.common.conf.ESConfig
 import io.kf.model.Doc
 import org.apache.spark.sql.{Dataset, SparkSession}
+import org.elasticsearch.spark.rdd.EsSpark
 
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig) {
   def sink(data:Dataset[Doc]):Unit = {
     import org.elasticsearch.spark.sql._
-    data.saveToEs(s"${esConfig.index}/doc")
+    import io.kf.etl.common.transform.ScalaPB2Json4s._
+    import spark.implicits._
+//    data.map(_.toJsonString()).toDF().saveToEs(s"${esConfig.index}/doc")
+    EsSpark.saveJsonToEs(data.map(_.toJsonString()).rdd, s"${esConfig.index}/doc")
   }
 }

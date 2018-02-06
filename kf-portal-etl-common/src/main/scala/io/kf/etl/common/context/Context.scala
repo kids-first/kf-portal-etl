@@ -37,7 +37,7 @@ object Context {
   private def getHDFS(): (FileSystem, String) = {
     val conf = new Configuration()
     conf.set("fs.defaultFS", config.hdfsConfig.fs)
-    (FileSystem.get(conf), config.hdfsConfig.root_path)
+    (FileSystem.get(conf), config.hdfsConfig.root)
   }
 
   private def getSparkSession(): SparkSession = {
@@ -45,6 +45,7 @@ object Context {
       .master(config.sparkConfig.master)
       .appName(config.sparkConfig.appName)
       .config("es.index.auto.create", "true")
+      .config("es.nodes", config.esConfig.url)
       .getOrCreate()
   }
 }

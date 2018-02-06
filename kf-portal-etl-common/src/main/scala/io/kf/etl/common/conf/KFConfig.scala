@@ -70,7 +70,7 @@ object KFConfig{
 
 case class SparkConfig(appName:String, master:String)
 
-case class HDFSConfig(fs:String, root_path:String)
+case class HDFSConfig(fs:String, root:String)
 
 case class ESConfig(url:String, index:String)
 

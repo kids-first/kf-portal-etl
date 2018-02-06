@@ -17,37 +17,16 @@ object KfEtlTestEnv {
 
   private def createEmbeddedElasticsearch(): EmbeddedElastic = {
     EmbeddedElastic.builder()
-      .withElasticVersion("5.0.0")
+      .withElasticVersion("5.6.5")
       .withSetting(PopularProperties.TRANSPORT_TCP_PORT, 9350)
       .withSetting(PopularProperties.CLUSTER_NAME, "kf-es-cluster")
       .build()
-      .start()
+//      .start()
   }
 
-  private lazy val hdfs = createHdfsMap()
+  lazy val mock_Doc_Entity = createMockDocEntity()
 
-  private def createHdfsMap(): Map[String, FileSystem] = {
-    Map[String, FileSystem]()
-  }
-
-  def getHdfs(url: String = "hdfs://localhost:8020"): FileSystem = {
-
-    hdfs.get(url) match {
-      case Some(fs) => fs
-      case None => {
-        val conf = new Configuration()
-        conf.set("fs.defaultFS", url)
-        val fs = FileSystem.get(conf)
-        hdfs.put(url, fs)
-        fs
-      }
-    }
-
-  }
-
-  lazy val fake_Doc_Entity = createFakeDocEntity()
-
-  private def createFakeDocEntity(): Doc = {
+  private def createMockDocEntity(): Doc = {
 
     JsonFormat.fromJson[Doc](
       JsonMethods.parse(
@@ -61,7 +40,7 @@ object KfEtlTestEnv {
   lazy val spark = createSparkSession()
 
   private def createSparkSession(): SparkSession = {
-    SparkSession.builder().master("local[*]").appName("kf-test").config("es.index.auto.create", "true").getOrCreate()
+    SparkSession.builder().master("local[*]").appName("kf-test").config("es.index.auto.create", "true").config("es.nodes", "localhost").getOrCreate()
   }
 
 }

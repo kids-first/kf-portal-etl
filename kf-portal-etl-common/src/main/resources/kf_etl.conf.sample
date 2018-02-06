@@ -28,7 +28,12 @@ io.kf.etl {
     },
     {
       name = "document"
-      data_path = "document" //this field is optional. Each job context should define the default values
+      /**
+       **  each processor has a "data_path" field which defines a full URL path for the current processor to store the its data.
+       **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
+       **  A user could use this field to control where the data would be written
+       **/
+      data_path = ${io.kf.etl.hdfs.root}/document
     },
     {
       name = "index"

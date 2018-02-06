@@ -6,6 +6,7 @@ libraryDependencies ++= Seq(
   spark_sql.exclude("io.netty", "netty"),
   embedded_elasticsearch % "test",
   scalatest % "test"
+//  "org.json4s" %% "json4s-jackson" % "3.2.11"
 )
 
 dependencyOverrides ++= Seq(
@@ -15,7 +16,6 @@ dependencyOverrides ++= Seq(
   "com.fasterxml.jackson.core" % "jackson-annotation" % "2.6.5",
   "org.json4s" %% "json4s-jackson" % "3.2.11"
 )
-
 
 assemblyJarName in assembly := "kf-portal-etl.jar"
 

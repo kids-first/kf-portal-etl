@@ -27,7 +27,12 @@ object ScalaPB2SparkStructType {
   }
 
   private def parseFieldDescriptor(fd: FieldDescriptor): StructField = {
-    StructField(fd.name, toSparkSQLType(fd), fd.isOptional)
+//    StructField(fd.name, toSparkSQLType(fd), fd.isOptional)
+    /**
+      * when scalapb handles fields which contain undercore in the name, all of the underscores are removed
+      * so here use "fd.asProto.jsonName.get" as StructField name
+      */
+    StructField(fd.asProto.jsonName.get, toSparkSQLType(fd), fd.isOptional)
   }
 
   def parseDescriptor(descriptor: Descriptor): StructType = {
