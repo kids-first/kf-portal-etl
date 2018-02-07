@@ -14,6 +14,9 @@ import io.kf.etl.processor.index.transform.IndexTransformer
 import io.kf.etl.processor.repo.Repository
 import io.kf.etl.processor.test.common.KfEtlTestEnv
 import org.apache.commons.io.FileUtils
+import org.asynchttpclient.AsyncHandler
+import org.json4s.JsonAST.JString
+import org.json4s.jackson.JsonMethods
 
 class IndexProcessorTest extends KfEtlUnitTestSpec{
 
@@ -60,8 +63,21 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
       Repository(new URL(s"file://${tmp}"))
     )
 
+    import org.asynchttpclient.Dsl._
+    val client = asyncHttpClient()
+
+    val jvalue =
+    (JsonMethods.parse(
+      client.prepareGet("http://localhost:9200/index_processor_test/doc/_search").execute().get().getResponseBody
+    ) \ "hits" \ "hits")(0) \ "_source"
+
+    jvalue \ "created_datetime" match {
+      case JString(value) => assert(value.equals("mock-datetime"))
+      case _ => assert(false)
+    }
 
     FileUtils.deleteDirectory(new File(tmp))
+    KfEtlTestEnv.elasticsearch.deleteIndices()
     KfEtlTestEnv.elasticsearch.stop()
   }
 

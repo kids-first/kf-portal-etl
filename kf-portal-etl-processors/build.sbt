@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   es_spark,
   postgres,
   embedded_elasticsearch % "test",
-  scalatest % "test"
+  scalatest % "test",
+  asyncHttp % "test"
 )
 
 dependencyOverrides ++= Seq(
