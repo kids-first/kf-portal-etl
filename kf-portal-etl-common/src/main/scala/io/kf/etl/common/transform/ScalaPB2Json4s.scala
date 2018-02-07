@@ -21,7 +21,7 @@ object ScalaPB2Json4s {
         pValue match {
           case PEmpty => JNothing
           case PInt(value) => JInt(value)
-          case PLong(value) => JLong(value)
+          case PLong(value) => JInt(value)
           case PString(value) => JString(value)
           case PDouble(value) => JDouble(value)
           case PFloat(value) => JDouble(value)

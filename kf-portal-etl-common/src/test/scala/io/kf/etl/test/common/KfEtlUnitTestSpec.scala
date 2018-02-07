@@ -1,4 +1,4 @@
-package io.kf.etl.common.test.common
+package io.kf.etl.test.common
 
 import io.kf.etl.common.url.ClasspathURLEnabler
 import org.scalatest._
