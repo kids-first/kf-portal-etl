@@ -25,6 +25,8 @@ io.kf.etl {
   processors = [
     {
       name = "download"
+      postgresql = ${io.kf.etl.postgresql}
+      dump_path = ${io.kf.etl.hdfs.root}/pg_dump
     },
     {
       name = "document"

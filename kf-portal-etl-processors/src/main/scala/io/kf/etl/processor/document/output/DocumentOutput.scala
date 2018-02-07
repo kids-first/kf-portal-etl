@@ -7,7 +7,7 @@ import io.kf.etl.processor.repo.Repository
 import io.kf.model.Doc
 
 class DocumentOutput(val context: DocumentContext) {
-  def output(placeholder:Unit):Repository[Doc] = {
+  def output(placeholder:Unit):Repository = {
     Repository(new URL(context.getJobDataPath()))
   }
 }

@@ -2,16 +2,20 @@ package io.kf.etl.processor.download.inject
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
+import io.kf.etl.common.Constants.CONFIG_NAME_DATA_PATH
+import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.download.DownloadProcessor
-import io.kf.etl.processor.download.context.DownloadContext
+import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext}
 import io.kf.etl.processor.download.output.DownloadOutput
 import io.kf.etl.processor.download.sink.DownloadSink
 import io.kf.etl.processor.download.source.DownloadSource
 import io.kf.etl.processor.download.transform.DownloadTransformer
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
+
+import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
 class DownloadInjectModule(sparkSession: SparkSession,
@@ -26,7 +30,25 @@ class DownloadInjectModule(sparkSession: SparkSession,
   type OUTPUT = DownloadOutput
 
   override def getContext(): DownloadContext = {
-    new DownloadContext(sparkSession, hdfs, appRootPath, config)
+
+    val cc = DownloadConfig(
+      config.get.getString("name"),
+      {
+        val postgres = config.get.getConfig("postgresql")
+        PostgresqlConfig(
+          postgres.getString("host"),
+          postgres.getString("database"),
+          postgres.getString("user"),
+          postgres.getString("password")
+        )
+      },
+      config.get.getString("dump_path"),
+      Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
+        case Success(path) => Some(path)
+        case Failure(_) => None
+      }
+    )
+    new DownloadContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   @Provides

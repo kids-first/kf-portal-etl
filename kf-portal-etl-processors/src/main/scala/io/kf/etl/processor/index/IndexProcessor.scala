@@ -7,11 +7,11 @@ import io.kf.model.Doc
 import org.apache.spark.sql.Dataset
 
 class IndexProcessor(context: IndexContext,
-                     source: Repository[Doc] => Dataset[Doc],
+                     source: Repository => Dataset[Doc],
                      transform: Dataset[Doc] => Dataset[Doc],
-                     sink: Dataset[Doc] => Unit) extends Processor[Repository[Doc], Unit]{
+                     sink: Dataset[Doc] => Unit) extends Processor[Repository, Unit]{
 
-  def process(input: Repository[Doc]):Unit = {
+  def process(input: Repository):Unit = {
     source.andThen(transform).andThen(sink)(input)
 
   }

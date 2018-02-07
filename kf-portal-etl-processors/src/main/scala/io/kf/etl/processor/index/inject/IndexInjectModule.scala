@@ -6,7 +6,7 @@ import io.kf.etl.common.conf.ESConfig
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.index.IndexProcessor
-import io.kf.etl.processor.index.context.IndexContext
+import io.kf.etl.processor.index.context.{IndexContext, IndexConfig}
 import io.kf.etl.processor.index.sink.IndexSink
 import io.kf.etl.processor.index.source.IndexSource
 import io.kf.etl.processor.index.transform.IndexTransformer
@@ -39,7 +39,20 @@ class IndexInjectModule(sparkSession: SparkSession,
   require(checkConfig())
 
   override def getContext(): IndexContext = {
-    new IndexContext(sparkSession, hdfs, appRootPath, config)
+
+    val cc = IndexConfig(
+      config.get.getString("name"),
+      {
+        val esConfig = config.get.getConfig("elasticsearch")
+        ESConfig(
+          esConfig.getString("url"),
+          esConfig.getString("index")
+        )
+      },
+      None
+    )
+
+    new IndexContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   @Provides
@@ -63,13 +76,9 @@ class IndexInjectModule(sparkSession: SparkSession,
 
   override def getSink(context: IndexContext): IndexSink = {
 
-    val esConfig = config.get.getConfig("elasticsearch")
     new IndexSink(
       sparkSession,
-      ESConfig(
-        esConfig.getString("url"),
-        esConfig.getString("index")
-      )
+      context.config.eSConfig
     )
   }
 

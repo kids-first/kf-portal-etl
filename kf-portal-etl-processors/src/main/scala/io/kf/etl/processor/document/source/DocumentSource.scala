@@ -7,7 +7,9 @@ import org.apache.spark.sql.Dataset
 
 
 class DocumentSource(val context: DocumentContext) {
-  def source(repo: Repository[Doc]): Dataset[Doc] = {
-    repo.load()
+  def source(repo: Repository): Dataset[Doc] = {
+    import io.kf.etl.processor.datasource.KfHdfsParquetData._
+    import context.sparkSession.implicits._
+    context.sparkSession.read.kfHdfs(repo.url.toString).as[Doc]
   }
 }

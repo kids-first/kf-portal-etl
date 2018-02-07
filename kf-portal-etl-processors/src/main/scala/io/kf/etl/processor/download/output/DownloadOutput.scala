@@ -9,7 +9,7 @@ import io.kf.model.Doc
 import scala.util.Try
 
 class DownloadOutput(val context: DownloadContext) {
-  def output(placeholder: Unit): Try[Repository[Doc]] = {
+  def output(placeholder: Unit): Try[Repository] = {
     Try(Repository(new URL(context.getJobDataPath())))
   }
 }

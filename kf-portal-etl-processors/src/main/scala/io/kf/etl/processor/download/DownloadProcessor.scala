@@ -11,12 +11,12 @@ import org.apache.spark.sql.Dataset
 import scala.util.Try
 
 class DownloadProcessor(context: DownloadContext,
-                        source: Unit => Repository[Doc],
-                        transform: Repository[Doc] => Dataset[Doc],
+                        source: Unit => Repository,
+                        transform: Repository => Dataset[Doc],
                         sink: Dataset[Doc] => Unit,
-                        output: Unit => Try[Repository[Doc]]) extends Processor[Unit, Try[Repository[Doc]]]{
+                        output: Unit => Try[Repository]) extends Processor[Unit, Try[Repository]]{
 
-  def process(input:Unit):Try[Repository[Doc]] = {
+  def process(input:Unit):Try[Repository] = {
     source.andThen(transform).andThen(sink).andThen(output)()
   }
 

@@ -8,8 +8,8 @@ import org.apache.spark.sql.Dataset
 
 class DownloadTransformer(val context:DownloadContext) {
 
-  def transform(repo: Repository[Doc]): Dataset[Doc] = {
-    repo.load()
+  def transform(repo: Repository): Dataset[Doc] = {
+    ???
   }
 
 }

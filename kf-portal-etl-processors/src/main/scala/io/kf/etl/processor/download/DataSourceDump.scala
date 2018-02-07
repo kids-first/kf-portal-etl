@@ -3,25 +3,28 @@ package io.kf.etl.processor.download
 import java.net.URL
 import java.sql.DriverManager
 
-import io.kf.etl.common.conf.PostgresqlConfig
+import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
 import io.kf.model.Doc
-import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.Path
 import org.postgresql.PGConnection
 
-class DataSourceDump(val fs:FileSystem, val root_path:URL, val postgresql: PostgresqlConfig) {
+class DataSourceDump(val context: DownloadContext) {
 
   private val tables = List("")
 
-  def dump():Repository[Doc] = {
+  def dump():Repository = {
 
-    val fullpath = s"${root_path.toString}/dump"
+    val fullpath = s"${context.config.dumpPath}"
 
-    val target = new Path(fullpath)
+
+    val postgresql = context.config.postgresql
+    val fs = context.hdfs
 
     val conn = DriverManager.getConnection("jdbc:postgresql://" + postgresql.host + "/" + postgresql.database, postgresql.user, postgresql.password)
     val copyManager = conn.asInstanceOf[PGConnection].getCopyAPI
     tables.foreach(table => {
+      val target = new Path(s"${fullpath}/${table}")
       val outputStream = fs.create(target)
       copyManager.copyOut(s"COPY ${table} TO STDOUT (DELIMITER '\t')", outputStream)
       outputStream.flush()

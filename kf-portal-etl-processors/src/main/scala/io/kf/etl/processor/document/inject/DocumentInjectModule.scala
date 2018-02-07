@@ -5,13 +5,16 @@ import com.typesafe.config.Config
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.document.DocumentProcessor
-import io.kf.etl.processor.document.context.DocumentContext
+import io.kf.etl.processor.document.context.{DocumentConfig, DocumentContext}
 import io.kf.etl.processor.document.output.DocumentOutput
 import io.kf.etl.processor.document.sink.DocumentSink
 import io.kf.etl.processor.document.source.DocumentSource
 import io.kf.etl.processor.document.transform.DocumentTransformer
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
+import io.kf.etl.common.Constants._
+
+import scala.util.{Failure, Success, Try}
 
 
 @GuiceModule(name = "document")
@@ -29,7 +32,14 @@ class DocumentInjectModule(sparkSession: SparkSession,
   override def configure(): Unit = ???
 
   override def getContext(): DocumentContext = {
-    new DocumentContext(sparkSession, hdfs, appRootPath, config)
+    val cc = DocumentConfig(
+      config.get.getString("name"),
+      Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
+        case Success(path) => Some(path)
+        case Failure(_) => None
+      }
+    )
+    new DocumentContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   @Provides
