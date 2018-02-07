@@ -2,7 +2,7 @@ package io.kf.etl.processor.repo
 
 import java.net.{URI, URL}
 
-import io.kf.etl.common.context.Context
+import io.kf.etl.context.Context
 import io.kf.model.Doc
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.{Dataset, SparkSession}

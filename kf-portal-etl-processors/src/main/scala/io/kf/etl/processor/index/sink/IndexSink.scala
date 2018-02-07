@@ -8,7 +8,7 @@ import org.elasticsearch.spark.rdd.EsSpark
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig) {
   def sink(data:Dataset[Doc]):Unit = {
     import org.elasticsearch.spark.sql._
-    import io.kf.etl.common.transform.ScalaPB2Json4s._
+    import io.kf.etl.transform.ScalaPB2Json4s._
     import spark.implicits._
 //    data.map(_.toJsonString()).toDF().saveToEs(s"${esConfig.index}/doc")
     EsSpark.saveJsonToEs(data.map(_.toJsonString()).rdd, s"${esConfig.index}/doc")

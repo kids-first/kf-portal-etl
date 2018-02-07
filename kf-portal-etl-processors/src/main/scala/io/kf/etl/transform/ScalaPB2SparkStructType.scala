@@ -1,4 +1,4 @@
-package io.kf.etl.common.transform
+package io.kf.etl.transform
 
 import org.apache.spark.sql.types._
 

@@ -1,4 +1,4 @@
-package io.kf.etl.test.transform
+package io.kf.etl.processor.test.transform
 
 import java.net.URL
 
@@ -12,7 +12,7 @@ class ScalaPB2Json4STest extends KfEtlUnitTestSpec {
 
     val json = parse(new URL("classpath:///mock_doc_entity.json").openStream())
 
-    import io.kf.etl.common.transform.ScalaPB2Json4s._
+    import io.kf.etl.transform.ScalaPB2Json4s._
     val testDoc = Doc(
       createdDatetime = Some("mock-datetime"),
       dataCategory = "dataCategory",

@@ -1,7 +1,7 @@
 package io.kf.etl.processor.datasource
 
-import io.kf.etl.common.datasource.KfDataProviderParametersMissingException
-import io.kf.etl.common.transform.ScalaPB2SparkStructType
+import io.kf.etl.datasource.KfDataProviderParametersMissingException
+import io.kf.etl.transform.ScalaPB2SparkStructType
 import io.kf.model.Doc
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}

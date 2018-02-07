@@ -1,4 +1,4 @@
-package io.kf.etl.common.datasource
+package io.kf.etl.datasource
 
 import io.kf.etl.common.Constants.RAW_DATASOURCE_SHORT_NAME
 import org.apache.spark.rdd.RDD

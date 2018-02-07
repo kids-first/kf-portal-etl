@@ -1,30 +1,20 @@
-package io.kf.etl.common.context
+package io.kf.etl.context
 
 import java.net.URL
 
-import com.google.inject._
 import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{ESConfig, KFConfig, SparkConfig}
-import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.common.conf.KFConfig
+import io.kf.etl.common.context.ContextTrait
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
-import org.reflections.Reflections
 
-import scala.collection.convert.WrapAsScala
-
-object Context {
-  private lazy val config = loadConfig()
+object Context extends ContextTrait{
   lazy val (hdfs, rootPath) = getHDFS()
   lazy val sparkSession = getSparkSession()
 
-
-  def getProcessConfig(name: String): Option[Config] = {
-    config.processorsConfig.get(name)
-  }
-
-  private def loadConfig(): KFConfig = {
+  override def loadConfig(): KFConfig = {
 
     KFConfig(
       Option( System.getProperty(CONFIG_FILE_URL) ) match {

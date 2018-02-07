@@ -1,0 +1,69 @@
+{
+  "createdDatetime": "mock-datetime",
+  "dataCategory": "mock-category",
+  "dataFormat": "mock-format",
+  "dataType": "mock-type",
+  "experimentalStrategy": "mock-strategy",
+  "fileName": "mock-name",
+  "fileSize": 100,
+  "md5sum": "mock-md5",
+  "submitterId": "submittier-1",
+  "cases":[
+    {
+      "submitterId": "submitter-1",
+      "dataset":{
+        "code": "mock-code",
+        "dbgapAccessionNumber": "",
+        "diseaseType": "mock-disease-type",
+        "name": "mock-name",
+        "primarySite": "mock-primary-site"
+      },
+      "demographic" :{
+        "ethnicity": "mock-ethnicity",
+        "gender": "mock-gender",
+        "race": "mock-race"
+      },
+      "diagnosis": {
+        "ageAtDiagnosisDays": 32,
+        "primaryAnatomicSite": "mock-anatomic_site",
+        "primaryDiagnosis": "mock-primary-diagnosis"
+      },
+      "program": {
+        "dbgapAccessionNumber": "mock-accession_number",
+        "name": "mock-program-name"
+      },
+      "trio": {
+        "id": "mock-trio-id"
+      },
+      "sample": [
+        {
+          "composition": "mock-composition",
+          "submitterId": "mock-submitter_id-1",
+          "slide": {
+            "sectionLocation": "mock-location",
+            "submitterId": "mock-submitter_id-1"
+          },
+          "aliquot": [
+            {
+              "analyteType": "mock-type",
+              "submitterId": "mock-submitter_id-1",
+              "readGroup": [
+                {
+                  "experimentName": "mock-name",
+                  "isPairedEnd": false,
+                  "libraryName": "mock-library-name",
+                  "libraryStrategy": "mock-library_strategy",
+                  "platform": "mock-platform",
+                  "readGroupName": "mock-read_group_name",
+                  "readLength": 100,
+                  "sequencingCenter": "mock-sequencing_center",
+                  "submitterId": "mock-submitter_id-1"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

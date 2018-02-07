@@ -4,9 +4,14 @@ name := "kf-portal-etl-processors"
 
 libraryDependencies ++= Seq(
   spark_sql.exclude("io.netty", "netty"),
+  hadoop265,
+  parquet_protobuf,
+  google_guice,
+  reflections,
+  es_spark,
+  postgres,
   embedded_elasticsearch % "test",
   scalatest % "test"
-//  "org.json4s" %% "json4s-jackson" % "3.2.11"
 )
 
 dependencyOverrides ++= Seq(
@@ -18,8 +23,3 @@ dependencyOverrides ++= Seq(
 )
 
 assemblyJarName in assembly := "kf-portal-etl.jar"
-
-//assemblyShadeRules in assembly := Seq(
-//  ShadeRule.rename("com.fasterxml.jackson.**" -> "io.kf.etl.shade.@1").inLibrary("com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"),
-//  ShadeRule.rename("org.json4s.**" -> "io.kf.etl.shade.@1").inLibrary("org.json4s" %% "json4s-jackson" % "3.5.1")
-//)

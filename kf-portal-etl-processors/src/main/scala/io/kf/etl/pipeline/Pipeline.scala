@@ -2,10 +2,10 @@ package io.kf.etl.pipeline
 
 import com.google.inject.{AbstractModule, Guice, Injector}
 import com.typesafe.config.Config
-import io.kf.etl.common.context.Context
 import io.kf.etl.common.inject.GuiceModule
 import org.reflections.Reflections
 import io.kf.etl.common.Constants._
+import io.kf.etl.context.Context
 import io.kf.etl.processor.document.DocumentProcessor
 import io.kf.etl.processor.download.DownloadProcessor
 import io.kf.etl.processor.index.IndexProcessor
