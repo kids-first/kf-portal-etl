@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigFactory
 import io.kf.etl.common.conf.ESConfig
 import io.kf.etl.test.common.KfEtlUnitTestSpec
 import io.kf.etl.processor.index.IndexProcessor
-import io.kf.etl.processor.index.context.IndexContext
+import io.kf.etl.processor.index.context.{IndexConfig, IndexContext}
 import io.kf.etl.processor.index.sink.IndexSink
 import io.kf.etl.processor.index.source.IndexSource
 import io.kf.etl.processor.index.transform.IndexTransformer
@@ -47,7 +47,17 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
       """.stripMargin)
 
     val esConfig = in_line_config.getConfig("elasticsearch")
-    val context = new IndexContext(spark, null, "/ttt", Some(in_line_config))
+    val context = new IndexContext(spark, null, "/ttt", IndexConfig(
+      in_line_config.getString("name"),
+      {
+        val esConfig = in_line_config.getConfig("elasticsearch")
+        ESConfig(
+          esConfig.getString("url"),
+          esConfig.getString("index")
+        )
+      },
+      None
+    ))
     val source = new IndexSource(context)
     val transformer = new IndexTransformer(context)
     val sink = new IndexSink(spark,
