@@ -1,6 +1,5 @@
 package io.kf.etl.processor.index.context
 
-import com.typesafe.config.Config
 import io.kf.etl.common.conf.ESConfig
 import io.kf.etl.processor.common.{ProcessorConfig, ProcessorContext}
 import org.apache.hadoop.fs.{FileSystem => HDFS}

@@ -1,7 +1,5 @@
 package io.kf.etl.processor.document
 
-import java.net.URL
-
 import io.kf.etl.processor.common.Processor
 import io.kf.etl.processor.document.context.DocumentContext
 import io.kf.etl.processor.repo.Repository

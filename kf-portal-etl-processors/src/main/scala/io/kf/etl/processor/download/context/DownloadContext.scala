@@ -1,13 +1,10 @@
 package io.kf.etl.processor.download.context
 
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{ESConfig, PostgresqlConfig}
+import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.processor.common.{ProcessorConfig, ProcessorContext}
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.SparkSession
-
-import scala.util.{Failure, Success, Try}
 
 case class DownloadContext(override val sparkSession: SparkSession,
                             override val hdfs: HDFS,

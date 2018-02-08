@@ -1,7 +1,5 @@
 package io.kf.etl.processor.download
 
-import java.net.URL
-
 import io.kf.etl.processor.common.Processor
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository

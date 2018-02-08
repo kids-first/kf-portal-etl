@@ -5,7 +5,6 @@ import java.sql.DriverManager
 
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.model.Doc
 import org.apache.hadoop.fs.Path
 import org.postgresql.PGConnection
 

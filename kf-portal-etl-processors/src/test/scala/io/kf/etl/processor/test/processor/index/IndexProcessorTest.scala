@@ -14,7 +14,6 @@ import io.kf.etl.processor.index.transform.IndexTransformer
 import io.kf.etl.processor.repo.Repository
 import io.kf.etl.processor.test.common.KfEtlTestEnv
 import org.apache.commons.io.FileUtils
-import org.asynchttpclient.AsyncHandler
 import org.json4s.JsonAST.JString
 import org.json4s.jackson.JsonMethods
 
