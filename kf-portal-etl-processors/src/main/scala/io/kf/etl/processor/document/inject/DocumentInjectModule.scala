@@ -29,7 +29,7 @@ class DocumentInjectModule(sparkSession: SparkSession,
   type TRANSFORMER = DocumentTransformer
   type OUTPUT = DocumentOutput
 
-  override def configure(): Unit = ???
+  override def configure(): Unit = {}
 
   override def getContext(): DocumentContext = {
     val cc = DocumentConfig(

@@ -13,7 +13,7 @@ object Dependencies {
   val scalapb_runtime_grpc = "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % com.trueaccord.scalapb.compiler.Version.scalapbVersion
   val graphframes = "graphframes" % "graphframes" % "0.5.0-spark2.1-s_2.11"
   val graphql_java= "com.graphql-java" % "graphql-java" % "6.0"
-  val reflections =  "org.reflections" % "reflections" % "0.9.11"
+  val reflections =  "org.reflections" % "reflections" % "0.9.9"
   val asyncHttp = "org.asynchttpclient" % "async-http-client" % "2.0.38"
   val ftp4j = "it.sauronsoftware" % "ftp4j" % "1.6"
   val es_spark = "org.elasticsearch" %% "elasticsearch-spark-20" % "6.1.3"

@@ -2,7 +2,7 @@ package io.kf.etl.common
 
 object Constants {
   val CONFIG_FILE_URL = "kf.etl.config"
-  val DEFAULT_CONFIG_FILE_NAME = "kf_etl"
+  val DEFAULT_CONFIG_FILE_NAME = "kf_etl.conf"
   val DEFAULT_APP_NAME = "Kids-First-ETL"
   val ROOT_PACKAGE = "io.kf.etl"
   val PROCESSOR_PACKAGE = "io.kf.etl.processor"
@@ -20,16 +20,6 @@ object Constants {
   val CONFIG_NAME_POSTGRESQL_USER = s"${ROOT_PACKAGE}.postgresql.user"
   val CONFIG_NAME_POSTGRESQL_PASSWORD = s"${ROOT_PACKAGE}.postgresql.password"
   val CONFIG_NAME_DATA_PATH = "data_path"
-
-
-//  val FILE_NAME_ALIQUOT = "aliquot.json"
-//  val FILE_NAME_DEMOGRAPHIC = "demographic.json"
-//  val FILE_NAME_READGROUP = "read_group.json"
-//  val FILE_NAME_SUBMITTED_ALIGNED_READS = "submitted_aligned_reads.json"
-//  val FILE_NAME_CASE = "case.json"
-//  val FILE_NAME_DIAGNOSIS = "diagnosis.json"
-//  val FILE_NAME_SAMPLE = "sample.json"
-//  val FILE_NAME_TRIO = "trio.json"
 
   val DOWNLOAD_DEFAULT_DATA_PATH = "download"
   val DOCUMENT_DEFAULT_DATA_PATH = "document"

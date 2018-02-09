@@ -31,7 +31,7 @@ io.kf.etl {
     {
       name = "document"
       /**
-       **  each processor has a "data_path" field which defines a full URL path for the current processor to store the its data.
+       **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
        **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
        **  A user could use this field to control where the data would be written
        **/

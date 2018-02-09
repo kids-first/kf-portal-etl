@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 
 import scala.collection.convert.WrapAsScala
+import scala.util.{Failure, Success, Try}
 
 class KFConfig(private val config: Config){
 
@@ -20,9 +21,9 @@ class KFConfig(private val config: Config){
         case Some(name) => name
         case None => DEFAULT_APP_NAME
       },
-      Option(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
-        case Some(master) => master
-        case None => "local[*]"
+      Try(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
+        case Success(master) => Some(master)
+        case _ => None
       }
     )
   }
@@ -68,7 +69,7 @@ object KFConfig{
   }
 }
 
-case class SparkConfig(appName:String, master:String)
+case class SparkConfig(appName:String, master:Option[String])
 
 case class HDFSConfig(fs:String, root:String)
 

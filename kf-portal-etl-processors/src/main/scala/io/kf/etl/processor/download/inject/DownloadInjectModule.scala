@@ -80,7 +80,7 @@ class DownloadInjectModule(sparkSession: SparkSession,
     new DownloadTransformer(context)
   }
 
-  override def configure(): Unit = ???
+  override def configure(): Unit = {}
 
   override def getOutput(context: DownloadContext): DownloadOutput = {
     new DownloadOutput(context)

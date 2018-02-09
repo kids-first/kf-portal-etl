@@ -86,7 +86,7 @@ class IndexInjectModule(sparkSession: SparkSession,
     new IndexTransformer(context)
   }
 
-  override def configure(): Unit = ???
+  override def configure(): Unit = {}
 
   override def getOutput(context: IndexContext): Unit = {
     Unit
