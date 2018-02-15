@@ -1,6 +1,6 @@
 package io.kf.etl.processor.test.common
 
-import io.kf.model.Doc
+import io.kf.test.Doc
 import org.apache.spark.sql.SparkSession
 import pl.allegro.tech.embeddedelasticsearch.{EmbeddedElastic, PopularProperties}
 

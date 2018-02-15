@@ -1,0 +1,200 @@
+syntax = "proto2";
+
+package io.kf;
+
+message Doc {
+    optional string created_datetime = 1;
+    required string data_category = 2;
+    required string data_format = 3;
+    required string data_type = 4;
+    optional string derived_from = 5;
+    required string experimental_strategy = 6;
+    required string file_name = 7;
+    required int32 file_size = 8;
+    optional string id = 9;
+    required string md5sum = 10;
+    required string submitter_id = 11;
+    optional string updated_datetime = 12;
+    repeated Case cases = 13;
+}
+
+message Case {
+    required string submitter_id = 1;
+    optional string created_datetime = 2;
+    optional int32 days_to_lost_to_followup = 3;
+    optional string disease_type = 4;
+    optional string id = 5;
+    optional string index_date = 6;
+    optional bool lost_to_followup = 7;
+    optional string primary_site = 8;
+    optional string updated_datetime = 9;
+    required Dataset dataset = 10;
+    required Demographic demographic = 11;
+    required Diagnosis diagnosis = 12;
+    required Program program = 13;
+    required Trio trio = 14;
+    repeated Sample sample = 15;
+}
+
+message Dataset {
+    required string code = 1;
+    required string dbgap_accession_number = 2;
+    required string disease_type = 3;
+    optional string id = 4;
+    optional string intended_release_date = 5;
+    required string name = 6;
+    required string primary_site = 7;
+}
+
+message Demographic {
+    optional int32 age_at_last_follow_up_days = 1;
+    optional string cauth_of_death = 2;
+    optional string created_datetime = 3;
+    required string ethnicity = 4;
+    required string gender = 5;
+    optional string id = 6;
+    required string race =7;
+    optional string state = 8;
+    optional string submitter_id = 9;
+    optional string updated_datetime = 10;
+    optional string vital_status = 11;
+}
+
+message Diagnosis {
+    required int32 age_at_diagnosis_days = 1;
+    optional string created_datetime = 2;
+    optional string id = 3;
+    required string primary_anatomic_site = 4;
+    required string primary_diagnosis = 5;
+    optional string state = 6;
+    optional string submitter_id = 7;
+    optional string updated_datetime = 8;
+}
+
+message Program {
+    required string dbgap_accession_number = 1;
+    optional string id = 2;
+    required string name = 3;
+    optional string type = 4;
+}
+
+message Trio {
+    optional string created_datetime = 1;
+    optional string id = 2;
+    optional string state = 3;
+    optional string submitter_id = 4;
+    optional string updated_datetime = 5;
+}
+
+message Sample {
+    optional string biospecimen_anatomic_site = 1;
+    required string composition = 2;
+    optional string created_datetime = 3;
+    optional int64 current_weight = 4;
+    optional int32 days_to_collection = 5;
+    optional int32 days_to_sample_procurement = 6;
+    optional string diagnosis_pathologically_confirmed = 7;
+    optional string id = 8;
+    optional int64 initial_weight = 9;
+    optional int32 intermediate_dimension = 10;
+    optional int32 longest_dimension = 11;
+    optional string method_of_sample_procurement = 12;
+    optional string preservation_method = 13;
+    optional int32 shortest_dimension = 14;
+    optional string state = 15;
+    required string submitter_id = 16;
+    optional int32 time_between_clamping_and_freezing = 17;
+    optional int32 time_between_excision_and_freezing = 18;
+    optional string tissue_type = 19;
+    optional string tumor_descriptor = 20;
+    optional string updated_datetime = 21;
+    required Slide slide = 22;
+    repeated Aliquot aliquot = 23;
+}
+
+message Slide {
+    optional string created_datetime = 1;
+    optional string id = 2;
+    optional int32 number_proliferating_cells = 3;
+    optional int64 percent_eosinophil_infiltration = 4;
+    optional int64 percent_granulocyte_infiltration = 5;
+    optional int64 percent_inflam_infiltration = 6;
+    optional int64 percent_lymphocyte_infiltration = 7;
+    optional int64 percent_monocyte_infiltration = 8;
+    optional int64 percent_necrosis = 9;
+    optional int64 percent_neutrophil_infiltration = 10;
+    optional int64 percent_normal_cells = 11;
+    optional int64 percent_stromal_cells = 12;
+    optional int64 percent_tumor_cells = 13;
+    optional int64 percent_tumor_nuclei = 14;
+    required string section_location = 15;
+    optional string state = 16;
+    required string submitter_id = 17;
+    optional string updated_datetime = 18;
+}
+
+message Aliquot {
+    optional double a260_a280_ratio = 1;
+    optional int64 aliquot_quantity = 2;
+    optional int64 aliquot_volume = 3;
+    optional int32 amount = 4;
+    optional int64 analyte_quantity = 5;
+    required string analyte_type = 6;
+    optional int64 analyte_volume = 7;
+    optional int64 concentration = 8;
+    optional string created_datetime = 9;
+    optional string id = 10;
+    optional string normal_tumor_genotype_snp_match = 11;
+    optional double ribosomal_rna_28s_16s_ratio = 12;
+    optional string shipment_date = 13;
+    optional string shipment_destination = 14;
+    optional string shipment_origin = 15;
+    optional string source_center = 16;
+    optional string spectrophotometer_method = 17;
+    optional string state = 18;
+    required string submitter_id = 19;
+    optional string updated_datetime = 20;
+    optional string well_number = 21;
+    repeated ReadGroup read_group = 22;
+}
+
+message ReadGroup {
+    optional int32 RIN = 1;
+    optional string adapter_name = 2;
+    optional string adapter_sequence = 3;
+    optional string base_caller_name = 4;
+    optional string base_caller_version = 5;
+    optional string created_datetime = 6;
+    required string experiment_name = 7;
+    optional string flow_cell_barcode = 8;
+    optional string id = 9;
+    optional bool includes_spike_ins = 10;
+    optional string instrument_model = 11;
+    required bool is_paired_end = 12;
+    required string library_name = 13;
+    optional string library_preparation_kit_catalog_number = 14;
+    optional string library_preparation_kit_name = 15;
+    optional string library_preparation_kit_vendor = 16;
+    optional string library_preparation_kit_version = 17;
+    optional string library_selection = 18;
+    optional string library_strand = 19;
+    required string library_strategy = 20;
+    required string platform = 21;
+    optional string project_id = 22;
+    required string read_group_name = 23;
+    required int32 read_length = 24;
+    required string sequencing_center = 25;
+    optional string sequencing_date = 26;
+    optional string size_selection_range = 27;
+    optional string spike_ins_concentration = 28;
+    optional string spike_ins_fasta = 29;
+    optional string state = 30;
+    required string submitter_id = 31;
+    optional string target_capture_kit_catalog_number = 32;
+    optional string target_capture_kit_name = 33;
+    optional string target_capture_kit_target_region = 34;
+    optional string target_capture_kit_vendor = 35;
+    optional string target_capture_kit_version = 36;
+    optional bool to_trim_adapter_sequence = 37;
+    optional string updated_datetime = 38;
+}

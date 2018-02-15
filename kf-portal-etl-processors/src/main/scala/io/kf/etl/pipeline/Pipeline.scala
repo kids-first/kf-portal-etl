@@ -9,6 +9,7 @@ import io.kf.etl.context.Context
 import io.kf.etl.processor.document.DocumentProcessor
 import io.kf.etl.processor.download.DownloadProcessor
 import io.kf.etl.processor.index.IndexProcessor
+import io.kf.etl.processor.repo.Repository
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
 
@@ -48,7 +49,11 @@ object Pipeline {
     val document = injector.getInstance(classOf[DocumentProcessor])
     val index = injector.getInstance(classOf[IndexProcessor])
 
-    download.process().map(index.process(_))
+//    download.process().map(index.process(_))
+
+    val dp:Unit => Repository = download.process
+
+    dp.andThen(index.process)()
 
   }
 

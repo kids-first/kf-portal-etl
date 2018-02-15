@@ -1,21 +1,23 @@
 package io.kf.etl.processor.download
 
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import io.kf.etl.processor.common.Processor
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.model.Doc
+import io.kf.etl.model.DocType
 import org.apache.spark.sql.Dataset
 
 import scala.util.Try
 
 class DownloadProcessor(context: DownloadContext,
                         source: Unit => Repository,
-                        transform: Repository => Dataset[Doc],
-                        sink: Dataset[Doc] => Unit,
-                        output: Unit => Try[Repository]) extends Processor[Unit, Try[Repository]]{
+                        transform: Repository => DatasetsFromDBTables,
+                        sink: DatasetsFromDBTables => Unit,
+                        output: Unit => Repository) extends Processor[Unit, Repository]{
 
-  def process(input:Unit):Try[Repository] = {
-    source.andThen(transform).andThen(sink).andThen(output)()
+  def process(input:Unit):Repository = {
+//    source.andThen(transform).andThen(sink).andThen(output)()
+    source() // return the dump_path directly
   }
 
 }

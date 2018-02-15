@@ -4,7 +4,7 @@ import java.io.File
 
 import io.kf.etl.test.common.KfEtlUnitTestSpec
 import io.kf.etl.processor.test.common.KfEtlTestEnv
-import io.kf.model.Doc
+import io.kf.test.Doc
 import org.apache.commons.io.FileUtils
 
 class DataSourceTest extends KfEtlUnitTestSpec{
@@ -25,7 +25,7 @@ class DataSourceTest extends KfEtlUnitTestSpec{
     val ds = spark.createDataset(Seq(KfEtlTestEnv.mock_Doc_Entity))
     ds.write.parquet(tmp)
 
-    val loaded = spark.read.kfHdfs(tmp).as[Doc].cache().collect()
+    val loaded = spark.read.kfHdfsParquet(tmp).as[Doc].cache().collect()
     assert(loaded.size == 1)
     val doc = loaded(0)
     assert(doc.dataFormat.equals("dataFormat"))

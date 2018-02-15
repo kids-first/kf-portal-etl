@@ -32,4 +32,5 @@ object Constants {
 
   val PROCESSOR_DOCUMENT = "document"
   val PROCESSOR_INDEX = "index"
+
 }

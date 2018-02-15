@@ -20,7 +20,7 @@ object KfHdfsParquetData {
   }
 
   implicit class KfHdfsParquetDataWrapper(reader: DataFrameReader){
-    def kfHdfs(path: String): DataFrame = {
+    def kfHdfsParquet(path: String): DataFrame = {
       reader.format(HDFS_DATASOURCE_SHORT_NAME).load(path)
     }
   }

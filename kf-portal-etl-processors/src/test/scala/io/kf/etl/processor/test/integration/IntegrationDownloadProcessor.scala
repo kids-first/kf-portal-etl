@@ -6,7 +6,7 @@ import java.net.URL
 import io.kf.etl.processor.common.Processor
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.model.Doc
+import io.kf.test.Doc
 import org.apache.commons.io.FileUtils
 
 import scala.util.{Success, Try}

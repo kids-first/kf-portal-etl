@@ -7,10 +7,9 @@ import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
 import org.apache.hadoop.fs.Path
 import org.postgresql.PGConnection
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.DBTables
 
 class DataSourceDump(val context: DownloadContext) {
-
-  private val tables = List("")
 
   def dump():Repository = {
 
@@ -22,10 +21,10 @@ class DataSourceDump(val context: DownloadContext) {
 
     val conn = DriverManager.getConnection("jdbc:postgresql://" + postgresql.host + "/" + postgresql.database, postgresql.user, postgresql.password)
     val copyManager = conn.asInstanceOf[PGConnection].getCopyAPI
-    tables.foreach(table => {
-      val target = new Path(s"${fullpath}/${table}")
+    DBTables.values.foreach(table => {
+      val target = new Path(s"${fullpath}/${table.toString}")
       val outputStream = fs.create(target)
-      copyManager.copyOut(s"COPY ${table} TO STDOUT (DELIMITER '\t')", outputStream)
+      copyManager.copyOut(s"COPY ${table.toString} TO STDOUT (DELIMITER '\t', NULL 'null')", outputStream)
       outputStream.flush()
       outputStream.close()
     })

@@ -1,12 +1,12 @@
 package io.kf.etl.processor.index.sink
 
 import io.kf.etl.common.conf.ESConfig
-import io.kf.model.Doc
+import io.kf.etl.model.DocType
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.elasticsearch.spark.rdd.EsSpark
 
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig) {
-  def sink(data:Dataset[Doc]):Unit = {
+  def sink(data:Dataset[DocType]):Unit = {
     import org.elasticsearch.spark.sql._
     import io.kf.etl.transform.ScalaPB2Json4s._
     import spark.implicits._

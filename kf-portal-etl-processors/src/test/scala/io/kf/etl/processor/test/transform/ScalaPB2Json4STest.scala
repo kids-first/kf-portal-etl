@@ -3,7 +3,7 @@ package io.kf.etl.processor.test.transform
 import java.net.URL
 
 import io.kf.etl.test.common.KfEtlUnitTestSpec
-import io.kf.model.Doc
+import io.kf.test.Doc
 import org.json4s.jackson.JsonMethods._
 
 class ScalaPB2Json4STest extends KfEtlUnitTestSpec {

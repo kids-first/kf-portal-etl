@@ -4,7 +4,6 @@ import java.net.URL
 
 import io.kf.etl.processor.document.context.DocumentContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.model.Doc
 
 class DocumentOutput(val context: DocumentContext) {
   def output(placeholder:Unit):Repository = {
