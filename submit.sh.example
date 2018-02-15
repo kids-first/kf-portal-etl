@@ -1,0 +1,11 @@
+#! /bin/bash
+
+${SPARK_HOME}/bin/spark-submit --master spark://${master_node_ip}:7077 --deploy-mode cluster --class ${full_main_class_name} --driver-java-options "-Dkf.etl.config=classpath:///kf_etl.conf" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=classpath:///kf_etl.conf" ./kf-portal-etl-processors/target/scala-2.11/kf-portal-etl.jar
+
+or
+
+${SPARK_HOME}/bin/spark-submit --master spark://${master_node_ip}:7077 --deploy-mode cluster --class ${full_main_class_name} --driver-java-options "-Dkf.etl.config=file:///.../kf_etl.conf" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=file:///.../kf_etl.conf" ./kf-portal-etl-processors/target/scala-2.11/kf-portal-etl.jar
+
+or
+
+${SPARK_HOME}/bin/spark-submit --master spark://${master_node_ip}:7077 --deploy-mode cluster --class ${full_main_class_name} --driver-java-options "-Dkf.etl.config=http://${http_server_ip}/.../kf_etl.conf" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=http://${http_server_ip}/.../kf_etl.conf" http://.../kf-portal-etl.jar

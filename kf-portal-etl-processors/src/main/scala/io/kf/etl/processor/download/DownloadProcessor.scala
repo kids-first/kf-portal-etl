@@ -16,8 +16,7 @@ class DownloadProcessor(context: DownloadContext,
                         output: Unit => Repository) extends Processor[Unit, Repository]{
 
   def process(input:Unit):Repository = {
-//    source.andThen(transform).andThen(sink).andThen(output)()
-    source() // return the dump_path directly
+    source.andThen(transform).andThen(sink).andThen(output)()
   }
 
 }
