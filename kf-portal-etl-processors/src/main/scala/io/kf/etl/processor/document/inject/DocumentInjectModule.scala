@@ -13,6 +13,7 @@ import io.kf.etl.processor.document.transform.DocumentTransformer
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import io.kf.etl.common.Constants._
+import io.kf.etl.common.conf.PostgresqlConfig
 
 import scala.util.{Failure, Success, Try}
 
@@ -37,6 +38,15 @@ class DocumentInjectModule(sparkSession: SparkSession,
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
+      },
+      {
+        val postgres = config.get.getConfig("postgresql")
+        PostgresqlConfig(
+          postgres.getString("host"),
+          postgres.getString("database"),
+          postgres.getString("user"),
+          postgres.getString("password")
+        )
       }
     )
     new DocumentContext(sparkSession, hdfs, appRootPath, cc)
@@ -69,7 +79,7 @@ class DocumentInjectModule(sparkSession: SparkSession,
   }
 
   override def getTransformer(context: DocumentContext): DocumentTransformer = {
-    new DocumentTransformer(sparkSession)
+    new DocumentTransformer(context)
   }
 
   override def getOutput(context: DocumentContext): DocumentOutput = {

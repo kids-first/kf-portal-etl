@@ -22,6 +22,7 @@ message TDemographic {
     optional string race = 5;
     optional string ethnicity = 6;
     optional string gender = 7;
+    required string participant_id = 8;
 }
 
 message TParticipant {
@@ -44,6 +45,7 @@ message TSample {
     optional string tumor_descriptor = 7;
     optional string anatomical_site = 8;
     optional int64 age_at_event_days = 9;
+    required string participant_id = 10;
 }
 
 message TAliquot {
@@ -57,6 +59,7 @@ message TAliquot {
     optional float volume = 8;
     optional string shipment_date = 9;
     optional string analyte_type = 10;
+    required string sample_id = 11;
 }
 
 message TSequencingExperiment {
@@ -79,6 +82,7 @@ message TSequencingExperiment {
     optional int64 mean_read_length = 17;
     optional int64 min_insert_size = 18;
     optional string external_id = 19;
+    required string aliquot_id = 20;
 }
 
 message TDiagnosis {
@@ -91,6 +95,7 @@ message TDiagnosis {
     optional string diagnosis = 7;
     optional string external_id = 8;
     optional string tumor_location = 9;
+    required string participant_id = 10;
 }
 
 message TPhenotype {
@@ -102,6 +107,7 @@ message TPhenotype {
     optional string hpo_id= 6;
     optional int64 age_at_event_days = 7;
     optional string observed = 8;
+    required string participant_id = 9;
 }
 
 message TOutcome {
@@ -112,6 +118,7 @@ message TOutcome {
     optional string vital_status= 5;
     optional string disease_related = 6;
     optional string age_at_event_days = 7;
+    required string participant_id = 8;
 }
 
 message TGenomicFile {
@@ -125,6 +132,7 @@ message TGenomicFile {
     optional string file_url = 8;
     optional bool controlled_access = 9;
     optional string md5sum = 10;
+    required string sequencing_experiment_id = 11;
 }
 
 message TWorkflow {

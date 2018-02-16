@@ -50,6 +50,7 @@ message Participant {
     repeated Study studies = 13;
     optional string ethnicity = 14;
     optional string race = 15;
+    optional string consent_type = 16;
 }
 
 message Diagnosis {
@@ -84,7 +85,7 @@ message FamilyMember {
     optional string gender = 4;
     optional bool is_proband = 5;
     required string modified_at = 6;
-    optional Phenotype phenotype = 7;
+    repeated Phenotype phenotype = 7;
     optional string relationship = 8;
     repeated Study studies = 9;
     required string uuid = 10;

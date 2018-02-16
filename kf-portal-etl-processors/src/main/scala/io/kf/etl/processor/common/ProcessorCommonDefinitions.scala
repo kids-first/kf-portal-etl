@@ -1,6 +1,7 @@
 package io.kf.etl.processor.common
 
 import io.kf.etl.dbschema._
+import io.kf.etl.model.Participant
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -39,4 +40,12 @@ object ProcessorCommonDefinitions {
   object DBTables extends Enumeration{
     val Participant, Study, Demographic, Sample, Aliquot, SequencingExperiment, Diagnosis, Phenotype, Outcome, GenomicFile, Workflow, FamilyRelationship, ParticipantAlias, WorkflowGenomicFile = Value
   }
+
+  type RelativeId = String
+  type RelativeToParticipantRelation = Option[String]
+
+  case class ParticipantDataTypes(kfId:String, datatypes:Seq[String])
+
+  case class FamilyMemberRelation(kfId:String, relative: Participant, relation: RelativeToParticipantRelation)
+
 }
