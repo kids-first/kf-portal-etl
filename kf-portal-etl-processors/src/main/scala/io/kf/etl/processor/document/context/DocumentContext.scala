@@ -20,4 +20,4 @@ case class DocumentContext(override val sparkSession: SparkSession,
 }
 
 
-case class DocumentConfig(override val name:String, override val dataPath: Option[String], val postgresql: PostgresqlConfig) extends ProcessorConfig
+case class DocumentConfig(override val name:String, override val dataPath: Option[String]) extends ProcessorConfig

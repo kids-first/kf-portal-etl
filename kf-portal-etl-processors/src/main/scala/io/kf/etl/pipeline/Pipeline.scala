@@ -5,6 +5,7 @@ import com.typesafe.config.Config
 import io.kf.etl.common.inject.GuiceModule
 import org.reflections.Reflections
 import io.kf.etl.common.Constants._
+import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.context.Context
 import io.kf.etl.processor.document.DocumentProcessor
 import io.kf.etl.processor.download.DownloadProcessor
@@ -49,11 +50,9 @@ object Pipeline {
     val document = injector.getInstance(classOf[DocumentProcessor])
     val index = injector.getInstance(classOf[IndexProcessor])
 
-//    download.process().map(index.process(_))
-
     val dp:Unit => Repository = download.process
 
-    dp.andThen(index.process)()
+    dp.andThen(document.process).andThen(index.process)()
 
   }
 

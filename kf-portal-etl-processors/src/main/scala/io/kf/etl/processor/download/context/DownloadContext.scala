@@ -19,4 +19,4 @@ case class DownloadContext(override val sparkSession: SparkSession,
 }
 
 
-case class DownloadConfig(override val name:String, postgresql: PostgresqlConfig, dumpPath:String, override val dataPath:Option[String]) extends ProcessorConfig
+case class DownloadConfig(override val name:String, postgresql: PostgresqlConfig,dumpPath:String, override val dataPath:Option[String]) extends ProcessorConfig

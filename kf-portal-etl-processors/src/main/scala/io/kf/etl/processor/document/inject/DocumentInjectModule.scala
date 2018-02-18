@@ -38,15 +38,6 @@ class DocumentInjectModule(sparkSession: SparkSession,
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
-      },
-      {
-        val postgres = config.get.getConfig("postgresql")
-        PostgresqlConfig(
-          postgres.getString("host"),
-          postgres.getString("database"),
-          postgres.getString("user"),
-          postgres.getString("password")
-        )
       }
     )
     new DocumentContext(sparkSession, hdfs, appRootPath, cc)
