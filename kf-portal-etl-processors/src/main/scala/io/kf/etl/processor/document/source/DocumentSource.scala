@@ -26,7 +26,8 @@ class DocumentSource(val context: DocumentContext) {
       context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/${Workflow.toString}").as[TWorkflow].cache(),
       context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/${FamilyRelationship.toString}").as[TFamilyRelationship].cache(),
       context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/${ParticipantAlias.toString}").as[TParticipantAlias].cache(),
-      context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/${WorkflowGenomicFile.toString}").as[TWorkflowGenomicFile].cache()
+      context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/${WorkflowGenomicFile.toString}").as[TWorkflowGenomicFile].cache(),
+      context.sparkSession.read.kfHdfsParquet(s"${repo.url.toString}/hpo").as[TGraphPath].cache()
     )
   }
 

@@ -175,3 +175,9 @@ message TWorkflowGenomicFile {
     required string workflow_id = 6;
     optional bool is_input = 7;
 }
+message TGraphPath{
+    required int32 term1 = 1;
+    required int32 term2 = 2;
+    required int32 distance = 3;
+}
+

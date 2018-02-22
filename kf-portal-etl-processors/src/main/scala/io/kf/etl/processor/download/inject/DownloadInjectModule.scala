@@ -7,7 +7,7 @@ import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.download.DownloadProcessor
-import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext}
+import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext, HpoConfig}
 import io.kf.etl.processor.download.output.DownloadOutput
 import io.kf.etl.processor.download.sink.DownloadSink
 import io.kf.etl.processor.download.source.DownloadSource
@@ -46,6 +46,17 @@ class DownloadInjectModule(sparkSession: SparkSession,
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
+      },
+      {
+        val pg_hpo = config.get.getConfig("hpo.postgresql")
+        HpoConfig(
+          PostgresqlConfig(
+            pg_hpo.getString("host"),
+            pg_hpo.getString("database"),
+            pg_hpo.getString("user"),
+            pg_hpo.getString("password")
+          )
+        )
       }
     )
     new DownloadContext(sparkSession, hdfs, appRootPath, cc)

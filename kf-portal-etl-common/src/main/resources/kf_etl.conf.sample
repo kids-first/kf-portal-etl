@@ -26,6 +26,9 @@ io.kf.etl {
     {
       name = "download"
       postgresql = ${io.kf.etl.postgresql}
+      hpo {
+        postgresql = ${io.kf.etl.postgresql}
+      }
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump
     },
     {

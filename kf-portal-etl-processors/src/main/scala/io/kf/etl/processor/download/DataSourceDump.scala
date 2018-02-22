@@ -29,6 +29,14 @@ class DataSourceDump(val context: DownloadContext) {
       outputStream.close()
     })
 
+    // dump HPO reference data
+    val target = new Path(s"${fullpath}/hpo")
+    val outputStream = fs.create(target)
+    val hpo_table_name = "graph_path"
+    copyManager.copyOut(s"COPY ${hpo_table_name} TO STDOUT (DELIMITER '\t', NULL 'null')", outputStream)
+    outputStream.flush()
+    outputStream.close()
+
     Repository(new URL(fullpath))
 
   }

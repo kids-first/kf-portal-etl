@@ -1,7 +1,7 @@
 package io.kf.etl.processor.common
 
 import io.kf.etl.dbschema._
-import io.kf.etl.model.Participant
+import io.kf.etl.model.{Participant, Sample, SequencingExperiment, Workflow}
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -19,6 +19,7 @@ object ProcessorCommonDefinitions {
   type DS_FAMILYRELATIONSHIP = Dataset[TFamilyRelationship]
   type DS_PARTICIPANTALIAS = Dataset[TParticipantAlias]
   type DS_WORKFLOWGENOMICFILE = Dataset[TWorkflowGenomicFile]
+  type DS_GRAPHPATH = Dataset[TGraphPath]
 
   case class DatasetsFromDBTables(
      study: DS_STUDY,
@@ -34,18 +35,29 @@ object ProcessorCommonDefinitions {
      workflow: DS_WORKFLOW,
      familyRelationship: DS_FAMILYRELATIONSHIP,
      participantAlis: DS_PARTICIPANTALIAS,
-     workflowGenomicFile: DS_WORKFLOWGENOMICFILE
+     workflowGenomicFile: DS_WORKFLOWGENOMICFILE,
+     graphPath: DS_GRAPHPATH
   )
 
   object DBTables extends Enumeration{
-    val Participant, Study, Demographic, Sample, Aliquot, SequencingExperiment, Diagnosis, Phenotype, Outcome, GenomicFile, Workflow, FamilyRelationship, ParticipantAlias, WorkflowGenomicFile = Value
+    val Participant, Study, Demographic, Sample, Aliquot, SequencingExperiment, Diagnosis, Phenotype, Outcome, GenomicFile, Workflow, FamilyRelationship, ParticipantAlias, WorkflowGenomicFile, GraphPath = Value
   }
 
   type RelativeId = String
   type RelativeToParticipantRelation = Option[String]
 
-  case class ParticipantDataTypes(kfId:String, datatypes:Seq[String])
-
   case class FamilyMemberRelation(kfId:String, relative: Participant, relation: RelativeToParticipantRelation)
+
+  case class ParticipantToGenomicFiles(kfId:String, fielIds:Seq[String], dataTypes:Seq[String])
+
+  case class ParticipantToSamples(kfId:String, samples:Seq[Sample])
+
+  case class GenomicFileToSeqExps(kfId:String, exps: Seq[SequencingExperiment])
+
+  case class GenomicFileToWorkflows(kfId:String, flows: Seq[Workflow])
+
+  case class GenomicFileToParticipants(kfId:String, participants:Seq[Participant])
+
+  case class HPOReference(term:String, ancestors: Seq[String])
 
 }

@@ -30,7 +30,8 @@ class DownloadTransformer(val context:DownloadContext) {
       generateDataset(Workflow).map(row2Workflow),
       generateDataset(FamilyRelationship).map(row2FamilyRelationship),
       generateDataset(ParticipantAlias).map(row2ParticipantAlias),
-      generateDataset(WorkflowGenomicFile).map(row2WorkflowGenomicFile)
+      generateDataset(WorkflowGenomicFile).map(row2WorkflowGenomicFile),
+      generateDataset(GraphPath).map(row2GraphPath)
     )
   }
 
@@ -101,5 +102,7 @@ class DownloadTransformer(val context:DownloadContext) {
   val row2ParticipantAlias: Row=>TParticipantAlias = ???
 
   val row2WorkflowGenomicFile: Row=>TWorkflowGenomicFile = ???
+
+  val row2GraphPath: Row=>TGraphPath = ???
 
 }
