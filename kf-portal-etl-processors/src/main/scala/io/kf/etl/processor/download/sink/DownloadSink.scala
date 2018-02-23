@@ -4,6 +4,7 @@ import io.kf.etl.processor.common.ProcessorCommonDefinitions.DatasetsFromDBTable
 import io.kf.etl.processor.download.context.DownloadContext
 import org.apache.hadoop.fs.Path
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.DBTables._
+import io.kf.etl.common.Constants.HPO_REF_DATA
 
 class DownloadSink(val context: DownloadContext) {
   def sink(data:DatasetsFromDBTables):Unit = {
@@ -23,6 +24,7 @@ class DownloadSink(val context: DownloadContext) {
     data.sample.write.parquet(s"${context.getJobDataPath()}/${Sample.toString}")
     data.workflow.write.parquet(s"${context.getJobDataPath()}/${Workflow.toString}")
     data.workflowGenomicFile.write.parquet(s"${context.getJobDataPath()}/${WorkflowGenomicFile.toString}")
+    data.graphPath.write.parquet(s"${context.getJobDataPath()}/${HPO_REF_DATA}")
 
   }
 }

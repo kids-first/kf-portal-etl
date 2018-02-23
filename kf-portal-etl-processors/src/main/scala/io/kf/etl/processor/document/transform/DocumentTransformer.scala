@@ -323,7 +323,7 @@ class DocumentTransformer(val context: DocumentContext) {
               val ancestors =
                 data.positive.flatMap(id => {
                   hpoRefs.value.get(id).toList.flatten
-                })
+                }).toSet.toSeq
 
               Phenotype(
                 Some(

@@ -8,8 +8,7 @@ import org.apache.spark.sql.Dataset
 
 class IndexSource(val context: IndexContext) {
   def source(repo: Repository): Dataset[FileCentric] = {
-    import io.kf.etl.processor.datasource.KfHdfsParquetData._
     import context.sparkSession.implicits._
-    context.sparkSession.read.kfHdfsParquet(repo.url.toString).as[FileCentric]
+    context.sparkSession.read.parquet(repo.url.toString).as[FileCentric]
   }
 }
