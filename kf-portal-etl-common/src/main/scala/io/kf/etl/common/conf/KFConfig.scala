@@ -76,3 +76,5 @@ case class HDFSConfig(fs:String, root:String)
 case class ESConfig(url:String, index:String)
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
+
+case class MysqlConfig(host:String, database:String, user:String, password:String)

@@ -25,7 +25,7 @@ class DocumentSource(val context: DocumentContext) {
       context.sparkSession.read.parquet(s"${repo.url.toString}/${GenomicFile.toString}").as[TGenomicFile].cache(),
       context.sparkSession.read.parquet(s"${repo.url.toString}/${Workflow.toString}").as[TWorkflow].cache(),
       context.sparkSession.read.parquet(s"${repo.url.toString}/${FamilyRelationship.toString}").as[TFamilyRelationship].cache(),
-      context.sparkSession.read.parquet(s"${repo.url.toString}/${ParticipantAlias.toString}").as[TParticipantAlias].cache(),
+//      context.sparkSession.read.parquet(s"${repo.url.toString}/${ParticipantAlias.toString}").as[TParticipantAlias].cache(),
       context.sparkSession.read.parquet(s"${repo.url.toString}/${WorkflowGenomicFile.toString}").as[TWorkflowGenomicFile].cache(),
       context.sparkSession.read.parquet(s"${repo.url.toString}/${HPO_REF_DATA}").as[TGraphPath].cache()
     )

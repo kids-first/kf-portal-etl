@@ -61,7 +61,7 @@ class DocumentTransformer(val context: DocumentContext) {
     all.genomicFile.createOrReplaceGlobalTempView("GF")
     all.workflow.createOrReplaceGlobalTempView("WF")
     all.familyRelationship.createOrReplaceGlobalTempView("FR")
-    all.participantAlis.createOrReplaceGlobalTempView("PA")
+//    all.participantAlis.createOrReplaceGlobalTempView("PA")
     all.workflowGenomicFile.createOrReplaceGlobalTempView("WG")
   }
 

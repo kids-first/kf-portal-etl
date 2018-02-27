@@ -2,8 +2,8 @@ package io.kf.etl.processor.download.source
 
 import java.net.URL
 
-import io.kf.etl.processor.download.DataSourceDump
 import io.kf.etl.processor.download.context.DownloadContext
+import io.kf.etl.processor.download.dump.DataSourceDump
 import io.kf.etl.processor.repo.Repository
 
 

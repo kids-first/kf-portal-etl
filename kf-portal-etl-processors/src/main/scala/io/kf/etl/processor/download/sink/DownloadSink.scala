@@ -18,7 +18,7 @@ class DownloadSink(val context: DownloadContext) {
     data.study.write.parquet(s"${context.getJobDataPath()}/${Study.toString}")
     data.familyRelationship.write.parquet(s"${context.getJobDataPath()}/${FamilyRelationship.toString}")
     data.participant.write.parquet(s"${context.getJobDataPath()}/${Participant.toString}")
-    data.participantAlis.write.parquet(s"${context.getJobDataPath()}/${ParticipantAlias.toString}")
+//    data.participantAlis.write.parquet(s"${context.getJobDataPath()}/${ParticipantAlias.toString}")
     data.outcome.write.parquet(s"${context.getJobDataPath()}/${Outcome.toString}")
     data.phenotype.write.parquet(s"${context.getJobDataPath()}/${Phenotype.toString}")
     data.sample.write.parquet(s"${context.getJobDataPath()}/${Sample.toString}")

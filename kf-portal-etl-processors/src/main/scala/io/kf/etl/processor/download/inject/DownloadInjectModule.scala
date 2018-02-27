@@ -3,7 +3,7 @@ package io.kf.etl.processor.download.inject
 import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.CONFIG_NAME_DATA_PATH
-import io.kf.etl.common.conf.PostgresqlConfig
+import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processor.common.inject.ProcessorInjectModule
 import io.kf.etl.processor.download.DownloadProcessor
@@ -48,9 +48,9 @@ class DownloadInjectModule(sparkSession: SparkSession,
         case Failure(_) => None
       },
       {
-        val pg_hpo = config.get.getConfig("hpo.postgresql")
+        val pg_hpo = config.get.getConfig("hpo.mysql")
         HpoConfig(
-          PostgresqlConfig(
+          MysqlConfig(
             pg_hpo.getString("host"),
             pg_hpo.getString("database"),
             pg_hpo.getString("user"),

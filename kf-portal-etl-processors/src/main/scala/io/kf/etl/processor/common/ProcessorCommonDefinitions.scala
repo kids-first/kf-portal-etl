@@ -17,7 +17,7 @@ object ProcessorCommonDefinitions {
   type DS_GENOMICFILE = Dataset[TGenomicFile]
   type DS_WORKFLOW = Dataset[TWorkflow]
   type DS_FAMILYRELATIONSHIP = Dataset[TFamilyRelationship]
-  type DS_PARTICIPANTALIAS = Dataset[TParticipantAlias]
+//  type DS_PARTICIPANTALIAS = Dataset[TParticipantAlias]
   type DS_WORKFLOWGENOMICFILE = Dataset[TWorkflowGenomicFile]
   type DS_GRAPHPATH = Dataset[TGraphPath]
 
@@ -34,7 +34,7 @@ object ProcessorCommonDefinitions {
      genomicFile: DS_GENOMICFILE,
      workflow: DS_WORKFLOW,
      familyRelationship: DS_FAMILYRELATIONSHIP,
-     participantAlis: DS_PARTICIPANTALIAS,
+//     participantAlis: DS_PARTICIPANTALIAS,
      workflowGenomicFile: DS_WORKFLOWGENOMICFILE,
      graphPath: DS_GRAPHPATH
   )

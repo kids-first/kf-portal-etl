@@ -12,6 +12,7 @@ message TStudy {
     optional string version = 7;
     optional string name = 8;
     optional string attribution= 9;
+    optional string investigator_id = 10;
 }
 
 message TDemographic {
@@ -23,6 +24,7 @@ message TDemographic {
     optional string ethnicity = 6;
     optional string gender = 7;
     required string participant_id = 8;
+    optional string external_id = 9;
 }
 
 message TParticipant {
@@ -33,6 +35,8 @@ message TParticipant {
     optional string family_id = 5;
     optional bool is_proband = 6;
     optional string consent_type = 7;
+    optional string external_id = 8;
+    optional string study_id = 9;
 }
 
 message TSample {
@@ -46,6 +50,7 @@ message TSample {
     optional string anatomical_site = 8;
     optional int64 age_at_event_days = 9;
     required string participant_id = 10;
+    optional string external_id = 11;
 }
 
 message TAliquot {
@@ -60,6 +65,7 @@ message TAliquot {
     optional string shipment_date = 9;
     optional string analyte_type = 10;
     required string sample_id = 11;
+    optional string external_id = 12;
 }
 
 message TSequencingExperiment {
@@ -117,7 +123,7 @@ message TOutcome {
     required string modified_at = 4;
     optional string vital_status= 5;
     optional string disease_related = 6;
-    optional string age_at_event_days = 7;
+    optional int64 age_at_event_days = 7;
     required string participant_id = 8;
 }
 
