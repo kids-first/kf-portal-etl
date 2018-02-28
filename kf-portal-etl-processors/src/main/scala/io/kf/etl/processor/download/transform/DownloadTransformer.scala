@@ -235,7 +235,9 @@ class DownloadTransformer(val context:DownloadContext) {
       },
       isPairedEnd = row.getString(9) match {
         case "null" => None
-        case value:String => Some(value.toBoolean)
+        case value:String => Some(
+          if(value.trim().equals("t")) true else false
+        )
       },
       platform = row.getString(10) match {
         case "null" => None
@@ -251,11 +253,11 @@ class DownloadTransformer(val context:DownloadContext) {
       },
       meanInsertSize = row.getString(13) match {
         case "null" => None
-        case value:String => Some(value.toLong)
+        case value:String => Some(value.toDouble)
       },
       meanDepth = row.getString(14) match {
         case "null" => None
-        case value:String => Some(value.toLong)
+        case value:String => Some(value.toDouble)
       },
       totalReads = row.getString(15) match {
         case "null" => None

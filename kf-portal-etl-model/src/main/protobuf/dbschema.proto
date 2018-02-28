@@ -82,8 +82,8 @@ message TSequencingExperiment {
     optional string platform = 11;
     optional string instrument_model = 12;
     optional int64 max_insert_size = 13;
-    optional int64 mean_insert_size = 14;
-    optional int64 mean_depth = 15;
+    optional double mean_insert_size = 14;
+    optional double mean_depth = 15;
     optional int64 total_reads = 16;
     optional int64 mean_read_length = 17;
     optional int64 min_insert_size = 18;

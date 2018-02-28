@@ -157,8 +157,8 @@ message SequencingExperiment {
     optional string platform = 8;
     optional string instrument_model = 9;
     optional int64 max_insert_size = 10;
-    optional int64 mean_insert_size = 11;
-    optional int64 mean_depth = 12;
+    optional double mean_insert_size = 11;
+    optional double mean_depth = 12;
     optional int64 total_reads = 13;
     optional int64 mean_read_length = 14;
     optional int64 min_insert_size = 15;

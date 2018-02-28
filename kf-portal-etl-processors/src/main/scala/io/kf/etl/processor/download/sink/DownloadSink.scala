@@ -29,6 +29,7 @@ class DownloadSink(val context: DownloadContext) {
     data.sample.write.parquet(s"${context.getJobDataPath()}/${Sample.toString}")
     data.workflow.write.parquet(s"${context.getJobDataPath()}/${Workflow.toString}")
     data.workflowGenomicFile.write.parquet(s"${context.getJobDataPath()}/${Workflow_Genomic_File.toString}")
+    data.sequencingExperiment.write.parquet(s"${context.getJobDataPath()}/${Sequencing_Experiment.toString}")
     data.graphPath.write.parquet(s"${context.getJobDataPath()}/${HPO_GRAPH_PATH}")
 
   }
