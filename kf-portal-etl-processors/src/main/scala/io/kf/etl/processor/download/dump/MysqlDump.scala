@@ -8,7 +8,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 import io.kf.etl.common.Constants._
 
-private[dump] object MysqlDump {
+object MysqlDump {
 
   def dump(ctx:DownloadContext):Unit = {
     Class.forName("com.mysql.jdbc.Driver")
@@ -22,11 +22,11 @@ private[dump] object MysqlDump {
         val rs = stmt.executeQuery(s"select * from graph_path;")
         val list = new ListBuffer[String]
         while(rs.next()){
-          list.append(s"${rs.getInt(0)}\t${rs.getInt(1)}\t${rs.getInt(2)}")
+          list.append(s"${rs.getInt(1)}\t${rs.getInt(2)}\t${rs.getInt(3)}")
         }
 
         import ctx.sparkSession.implicits._
-        ctx.sparkSession.createDataset(list).write.csv(s"${ctx.config.dumpPath}/${HPO_REF_DATA}")
+        ctx.sparkSession.createDataset(list).write.csv(s"${ctx.config.dumpPath}/${HPO_GRAPH_PATH}")
       }
       case Failure(_) => {
 

@@ -139,6 +139,7 @@ message TGenomicFile {
     optional bool controlled_access = 9;
     optional string md5sum = 10;
     required string sequencing_experiment_id = 11;
+    optional int64 file_size = 12;
 }
 
 message TWorkflow {

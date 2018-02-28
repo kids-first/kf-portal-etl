@@ -42,7 +42,7 @@ class DownloadInjectModule(sparkSession: SparkSession,
           postgres.getString("password")
         )
       },
-      config.get.getString("dump_path"),
+      getDumpPath(),
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
@@ -60,6 +60,15 @@ class DownloadInjectModule(sparkSession: SparkSession,
       }
     )
     new DownloadContext(sparkSession, hdfs, appRootPath, cc)
+  }
+
+  private def getDumpPath():String = {
+    // if dump_path is not available, get the local java temporary directory instead
+
+    Try(config.get.getString("dump_path")) match {
+      case Success(path) => path
+      case Failure(_) => s"file://${System.getProperty("java.io.tmpdir")}/dump"
+    }
   }
 
   @Provides

@@ -1,11 +1,12 @@
 package io.kf.etl.processor.download.transform
 
-import io.kf.etl.processor.common.ProcessorCommonDefinitions.{DBTables, DatasetsFromDBTables}
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.etl.processor.common.ProcessorCommonDefinitions.DBTables._
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.PostgresqlDBTables._
 import io.kf.etl.dbschema._
-import org.apache.spark.sql.{DataFrame, Dataset, Encoders, Row}
+import io.kf.etl.common.Constants._
+import org.apache.spark.sql.{DataFrame, Row}
 
 
 
@@ -17,25 +18,25 @@ class DownloadTransformer(val context:DownloadContext) {
     implicit val repository = repo
 
     DatasetsFromDBTables(
-      generateDataset(Study).map(row2TStudy),
-      generateDataset(Participant).map(row2Participant),
-      generateDataset(Demographic).map(row2Demographic),
-      generateDataset(Sample).map(row2Sample),
-      generateDataset(Aliquot).map(row2Aliquot),
-      generateDataset(SequencingExperiment).map(row2SequencingExperiment),
-      generateDataset(Diagnosis).map(row2Diagnosis),
-      generateDataset(Phenotype).map(row2Phenotype),
-      generateDataset(Outcome).map(row2Outcome),
-      generateDataset(GenomicFile).map(row2GenomicFile),
-      generateDataset(Workflow).map(row2Workflow),
-      generateDataset(FamilyRelationship).map(row2FamilyRelationship),
-//      generateDataset(ParticipantAlias).map(row2ParticipantAlias),
-      generateDataset(WorkflowGenomicFile).map(row2WorkflowGenomicFile),
-      generateDataset(GraphPath).map(row2GraphPath)
+      generateDataset(Study.toString).map(row2TStudy),
+      generateDataset(Participant.toString).map(row2Participant),
+      generateDataset(Demographic.toString).map(row2Demographic),
+      generateDataset(Sample.toString).map(row2Sample),
+      generateDataset(Aliquot.toString).map(row2Aliquot),
+      generateDataset(Sequencing_Experiment.toString).map(row2SequencingExperiment),
+      generateDataset(Diagnosis.toString).map(row2Diagnosis),
+      generateDataset(Phenotype.toString).map(row2Phenotype),
+      generateDataset(Outcome.toString).map(row2Outcome),
+      generateDataset(Genomic_File.toString).map(row2GenomicFile),
+      generateDataset(Workflow.toString).map(row2Workflow),
+      generateDataset(Family_Relationship.toString).map(row2FamilyRelationship),
+//      generateDataset(ParticipantAlias.toString).map(row2ParticipantAlias),
+      generateDataset(Workflow_Genomic_File.toString).map(row2WorkflowGenomicFile),
+      generateDataset(HPO_GRAPH_PATH).map(row2GraphPath)
     )
   }
 
-  def generateDataset(table: DBTables.Value)(implicit repo:Repository): DataFrame = {
+  def generateDataset(table: String)(implicit repo:Repository): DataFrame = {
     context.sparkSession.read.option("sep", "\t").csv(s"${repo.url.toString}/${table.toString}")
   }
 
@@ -89,7 +90,9 @@ class DownloadTransformer(val context:DownloadContext) {
       },
       isProband = row.getString(5) match {
         case "null" => None
-        case value:String => Some(value.toBoolean)
+        case value:String => Some(
+          if(value.trim.equals("t")) true else false
+        )
       },
       consentType = row.getString(6) match {
         case "null" => None
@@ -362,20 +365,24 @@ class DownloadTransformer(val context:DownloadContext) {
         case "null" => None
         case value:String => Some(value)
       },
-      fileUrl = row.getString(6) match {
+      fileSize = row.getString(6) match {
+        case "null" => None
+        case value:String => Some(value.toLong)
+      },
+      fileUrl = row.getString(7) match {
         case "null" => None
         case value:String => Some(value)
       },
-      md5Sum = row.getString(7) match {
+      md5Sum = row.getString(8) match {
         case "null" => None
         case value:String => Some(value)
       },
-      controlledAccess = row.getString(8) match {
+      controlledAccess = row.getString(9) match {
         case "null" => None
         case value:String => Some(value.toBoolean)
       },
-      sequencingExperimentId = row.getString(9),
-      kfId = row.getString(10)
+      sequencingExperimentId = row.getString(10),
+      kfId = row.getString(11)
     )
   }
 
@@ -419,7 +426,7 @@ class DownloadTransformer(val context:DownloadContext) {
     )
   }
 
-  val row2ParticipantAlias: Row=>TParticipantAlias = ???
+//  val row2ParticipantAlias: Row=>TParticipantAlias = ???
 
   val row2WorkflowGenomicFile: Row=>TWorkflowGenomicFile = row => {
     TWorkflowGenomicFile(
@@ -438,9 +445,9 @@ class DownloadTransformer(val context:DownloadContext) {
 
   val row2GraphPath: Row=>TGraphPath = row => {
     TGraphPath(
-      term1 = row.getInt(0),
-      term2 = row.getInt(1),
-      distance = row.getInt(3)
+      term1 = row.getString(0).toInt,
+      term2 = row.getString(1).toInt,
+      distance = row.getString(2).toInt
     )
   }
 

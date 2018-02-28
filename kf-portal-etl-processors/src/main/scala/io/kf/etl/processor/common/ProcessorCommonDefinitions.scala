@@ -39,8 +39,22 @@ object ProcessorCommonDefinitions {
      graphPath: DS_GRAPHPATH
   )
 
-  object DBTables extends Enumeration{
-    val Participant, Study, Demographic, Sample, Aliquot, SequencingExperiment, Diagnosis, Phenotype, Outcome, GenomicFile, Workflow, FamilyRelationship, ParticipantAlias, WorkflowGenomicFile, GraphPath = Value
+  object PostgresqlDBTables extends Enumeration{
+    val Participant = Value("participant")
+    val Study = Value("study")
+    val Demographic = Value("demographic")
+    val Sample = Value("sample")
+    val Aliquot = Value("aliquot")
+    val Sequencing_Experiment = Value("sequencing_experiment")
+    val Diagnosis = Value("diagnosis")
+    val Phenotype = Value("phenotype")
+    val Outcome = Value("outcome")
+    val Genomic_File = Value("genomic_file")
+    val Workflow = Value("workflow")
+    val Family_Relationship = Value("family_relationship")
+    /*ParticipantAlias = Value("")*/
+    val Workflow_Genomic_File = Value("workflow_genomic_file")
+
   }
 
   type RelativeId = String
