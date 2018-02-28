@@ -1,6 +1,6 @@
 package io.kf.etl.processor.download.transform
 
-import io.kf.etl.processor.common.ProcessorCommonDefinitions.DatasetsFromDBTables
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, TransformedGraphPath}
 import io.kf.etl.processor.download.context.DownloadContext
 import io.kf.etl.processor.repo.Repository
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.PostgresqlDBTables._
@@ -445,12 +445,11 @@ class DownloadTransformer(val context:DownloadContext) {
     )
   }
 
-  val row2GraphPath: Row=>TGraphPath = row => {
-    TGraphPath(
-      term1 = row.getString(0).toInt,
-      term2 = row.getString(1).toInt,
+  val row2GraphPath: Row=>TransformedGraphPath = row => {
+    TransformedGraphPath(
+      term1 = "HP:%07d".format(row.getString(0).toInt),
+      term2 = "HP:%07d".format(row.getString(1).toInt),
       distance = row.getString(2).toInt
     )
   }
-
 }

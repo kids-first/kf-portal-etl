@@ -2,7 +2,7 @@ package io.kf.etl.processor.document.transform.steps
 
 import io.kf.etl.dbschema.{TGraphPath, TPhenotype}
 import io.kf.etl.model.{HPO, Participant, Phenotype}
-import io.kf.etl.processor.common.ProcessorCommonDefinitions.HPOReference
+import io.kf.etl.processor.common.ProcessorCommonDefinitions.{HPOReference, TransformedGraphPath}
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.Dataset
 
@@ -35,7 +35,7 @@ class MergePhenotype(override val ctx:StepContext) extends StepExecutable[Datase
         HPOReference(
           term = term.toString,
           ancestors = {
-            list.tail.foldLeft((list(0), new ListBuffer[TGraphPath])){ (tuple, curr) => {
+            list.tail.foldLeft((list(0), new ListBuffer[TransformedGraphPath])){ (tuple, curr) => {
               if(curr.distance < tuple._1.distance){
                 tuple._2.append(curr)
                 (tuple._1, tuple._2)

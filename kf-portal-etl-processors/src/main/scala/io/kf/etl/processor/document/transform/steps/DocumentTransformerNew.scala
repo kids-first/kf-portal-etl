@@ -31,33 +31,32 @@ class DocumentTransformerNew(val context: DocumentContext) {
 
   }
 
-  private def registerSparkTempViewsForPGTables(all: DatasetsFromDBTables) = {
-    all.study.createOrReplaceGlobalTempView("ST")
-    all.participant.createOrReplaceGlobalTempView("PAR")
-    all.demographic.createOrReplaceGlobalTempView("DG")
-    all.sample.createOrReplaceGlobalTempView("SA")
-    all.aliquot.createOrReplaceGlobalTempView("AL")
-    all.sequencingExperiment.createOrReplaceGlobalTempView("SE")
-    all.diagnosis.createOrReplaceGlobalTempView("DI")
-    all.phenotype.createOrReplaceGlobalTempView("PT")
-    all.outcome.createOrReplaceGlobalTempView("OC")
-    all.genomicFile.createOrReplaceGlobalTempView("GF")
-    all.workflow.createOrReplaceGlobalTempView("WF")
-    all.familyRelationship.createOrReplaceGlobalTempView("FR")
-//    all.participantAlis.createOrReplaceGlobalTempView("PA")
-    all.workflowGenomicFile.createOrReplaceGlobalTempView("WG")
+  def registerSparkTempViewsForPGTables(all: DatasetsFromDBTables) = {
+    all.study.createOrReplaceTempView("ST")
+    all.participant.createOrReplaceTempView("PAR")
+    all.demographic.createOrReplaceTempView("DG")
+    all.sample.createOrReplaceTempView("SA")
+    all.aliquot.createOrReplaceTempView("AL")
+    all.sequencingExperiment.createOrReplaceTempView("SE")
+    all.diagnosis.createOrReplaceTempView("DI")
+    all.phenotype.createOrReplaceTempView("PT")
+//    all.outcome.createOrReplaceTempView("OC")
+    all.genomicFile.createOrReplaceTempView("GF")
+//    all.workflow.createOrReplaceTempView("WF")
+    all.familyRelationship.createOrReplaceTempView("FR")
+//    all.workflowGenomicFile.createOrReplaceTempView("WG")
   }
 
-  private def mapParticipantAndGenomicFile(): Dataset[ParticipantToGenomicFiles] = {
+  def mapParticipantAndGenomicFile(): Dataset[ParticipantToGenomicFiles] = {
     val sql =
       """
-         select PAR.kfId, AA.gfId, AA.dataType from PAR left join (
-           (select SA.participantId as kfId, BB.gfId, BB.dataType from SA left join (
-             (select AL.sampleId as kfId, CC.gfId, CC.dataType from AL left join (
+         select PAR.kfId, AA.gfId, AA.dataType from PAR left join
+           (select SA.participantId as kfId, BB.gfId, BB.dataType from SA left join
+             (select AL.sampleId as kfId, CC.gfId, CC.dataType from AL left join
                 (select SE.aliquotId as kfId, GF.kfId as gfId, GF.dataType from SE left join GF on SE.kfId = GF.sequencingExperimentId) as CC
-              ) on AL.kfId = CC.kfId) as BB
-            ) on SA.kfId = BB.kfId ) as AA
-         ) on PAR.kfId = AA.kfId
+               on AL.kfId = CC.kfId) as BB
+             on SA.kfId = BB.kfId ) as AA
+          on PAR.kfId = AA.kfId
       """.stripMargin
 
     import context.sparkSession.implicits._

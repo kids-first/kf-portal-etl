@@ -6,10 +6,7 @@ import org.apache.spark.sql.Dataset
 
 case class Step[I, O](val description: String, val handler: StepExecutable[I, O], val posthandler: StepExecutable[O, O] = DefaultPostHandler[O]()) extends Function1[I, O]{
   override def apply(input: I): O = {
-    posthandler match {
-      case _:DefaultPostHandler[_] => handler.andThen(posthandler)(input)
-      case _ => handler(input)
-    }
+    handler.andThen(posthandler)(input)
   }
 }
 

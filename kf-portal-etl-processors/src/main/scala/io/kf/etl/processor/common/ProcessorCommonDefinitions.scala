@@ -19,7 +19,7 @@ object ProcessorCommonDefinitions {
   type DS_FAMILYRELATIONSHIP = Dataset[TFamilyRelationship]
 //  type DS_PARTICIPANTALIAS = Dataset[TParticipantAlias]
   type DS_WORKFLOWGENOMICFILE = Dataset[TWorkflowGenomicFile]
-  type DS_GRAPHPATH = Dataset[TGraphPath]
+  type DS_GRAPHPATH = Dataset[TransformedGraphPath]
 
   case class DatasetsFromDBTables(
      study: DS_STUDY,
@@ -73,5 +73,7 @@ object ProcessorCommonDefinitions {
   case class GenomicFileToParticipants(kfId:String, participants:Seq[Participant])
 
   case class HPOReference(term:String, ancestors: Seq[String])
+
+  case class TransformedGraphPath(term1:String, term2:String, distance:Int)
 
 }

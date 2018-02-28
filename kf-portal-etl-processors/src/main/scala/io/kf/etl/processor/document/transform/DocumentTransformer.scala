@@ -30,7 +30,7 @@ class DocumentTransformer(val context: DocumentContext) {
         HPOReference(
           term = term.toString,
           ancestors = {
-            list.tail.foldLeft((list(0), new ListBuffer[TGraphPath])){ (tuple, curr) => {
+            list.tail.foldLeft((list(0), new ListBuffer[TransformedGraphPath])){ (tuple, curr) => {
               if(curr.distance < tuple._1.distance){
                 tuple._2.append(curr)
                 (tuple._1, tuple._2)
