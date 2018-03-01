@@ -9,11 +9,18 @@ class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[P
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
     import ctx.parentContext.sparkSession.implicits._
     val samples = buildSample(ctx.dbTables)
-    participants.joinWith(samples, col("kfId"), "left").groupByKey(_._1.kfId).mapGroups((parId, iterator) => {
-      val list = iterator.toList.filter(_._2!= null)
-      list(0)._1.copy(samples = {
-        list.flatMap(_._2.samples)
-      })
+    participants.joinWith(samples, participants.col("kfId") === samples.col("kfId"), "left").groupByKey(_._1.kfId).mapGroups((parId, iterator) => {
+      val list = iterator.toList
+      val filteredList = list.filter(_._2!= null)
+      if(filteredList.size == 0) {
+        list(0)._1
+      }
+      else {
+        list(0)._1.copy(samples = {
+          filteredList.flatMap(_._2.samples)
+        })
+      }
+
     })
   }
 

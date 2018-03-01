@@ -8,7 +8,7 @@ class MergeAvailableDataTypesForParticipant(override val ctx:StepContext) extend
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
     import ctx.parentContext.sparkSession.implicits._
 
-    participants.joinWith(ctx.participant2GenomicFiles, col("kfId"), "left").map(tuple => {
+    participants.joinWith(ctx.participant2GenomicFiles, participants.col("kfId") === ctx.participant2GenomicFiles.col("kfId"), "left").map(tuple => {
       Option(tuple._2) match {
         case Some(files) => tuple._1.copy(availableDataTypes = files.dataTypes)
         case None => tuple._1

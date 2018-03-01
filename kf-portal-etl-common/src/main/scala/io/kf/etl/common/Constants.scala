@@ -20,6 +20,7 @@ object Constants {
   val CONFIG_NAME_POSTGRESQL_USER = s"${ROOT_PACKAGE}.postgresql.user"
   val CONFIG_NAME_POSTGRESQL_PASSWORD = s"${ROOT_PACKAGE}.postgresql.password"
   val CONFIG_NAME_DATA_PATH = "data_path"
+  val CONFIG_NAME_WRITE_INTERMEDIATE_DATA = "write_intermediate_data"
   val CONFIG_NAME_HPO = s"${ROOT_PACKAGE}.hpo"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"

@@ -9,11 +9,10 @@ import io.kf.etl.processor.document.context.{DocumentConfig, DocumentContext}
 import io.kf.etl.processor.document.output.DocumentOutput
 import io.kf.etl.processor.document.sink.DocumentSink
 import io.kf.etl.processor.document.source.DocumentSource
-import io.kf.etl.processor.document.transform.DocumentTransformer
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.PostgresqlConfig
+import io.kf.etl.processor.document.transform.DocumentTransformer
 
 import scala.util.{Failure, Success, Try}
 
@@ -33,13 +32,22 @@ class DocumentInjectModule(sparkSession: SparkSession,
   override def configure(): Unit = {}
 
   override def getContext(): DocumentContext = {
+
+    val write_intermediate_data = Try(config.get.getString(""))
+
+
     val cc = DocumentConfig(
       config.get.getString("name"),
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
+      },
+      Try(config.get.getBoolean(CONFIG_NAME_WRITE_INTERMEDIATE_DATA)) match {
+        case Success(bWrite) => bWrite
+        case Failure(_) => false
       }
     )
+
     new DocumentContext(sparkSession, hdfs, appRootPath, cc)
   }
 

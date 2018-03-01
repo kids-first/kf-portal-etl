@@ -57,12 +57,9 @@ object ProcessorCommonDefinitions {
 
   }
 
-  type RelativeId = String
-  type RelativeToParticipantRelation = Option[String]
+  case class FamilyMemberRelation(kfId:String, relative: Participant, relativeToParcitipantRelation: Option[String])
 
-  case class FamilyMemberRelation(kfId:String, relative: Participant, relation: RelativeToParticipantRelation)
-
-  case class ParticipantToGenomicFiles(kfId:String, fielIds:Seq[String], dataTypes:Seq[String])
+  case class ParticipantToGenomicFiles(kfId:String, fileIds:Seq[String], dataTypes:Seq[String])
 
   case class ParticipantToSamples(kfId:String, samples:Seq[Sample])
 

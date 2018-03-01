@@ -45,6 +45,7 @@ io.kf.etl {
        **  A user could use this field to control where the data would be written
        **/
       data_path = ${io.kf.etl.hdfs.root}/document
+      write_intermediate_data = false
     },
     {
       name = "index"
