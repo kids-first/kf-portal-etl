@@ -15,7 +15,7 @@ class WriteParticipantsToJsonFile(override val ctx: StepContext, filename:String
     import io.kf.etl.transform.ScalaPB2Json4s._
     import ctx.parentContext.sparkSession.implicits._
     val cached = input.cache()
-    val target_path = new URL(s"${ctx.parentContext.getJobDataPath()}/steps/${filename}")
+    val target_path = new URL(s"${ctx.parentContext.getProcessorDataPath()}/steps/${filename}")
 
     val json_path =
       target_path.getProtocol match {

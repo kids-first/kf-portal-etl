@@ -14,7 +14,7 @@ class WriteFileCentricToJsonFile(override val ctx: StepContext) extends StepExec
     import io.kf.etl.transform.ScalaPB2Json4s._
     import ctx.parentContext.sparkSession.implicits._
     val cached = input.cache()
-    val target_path = new URL(s"${ctx.parentContext.getJobDataPath()}/steps/filecentric")
+    val target_path = new URL(s"${ctx.parentContext.getProcessorDataPath()}/steps/filecentric")
     val json_path =
       target_path.getProtocol match {
         case "file" => {

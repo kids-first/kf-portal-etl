@@ -11,11 +11,15 @@ case class DocumentContext(override val sparkSession: SparkSession,
                            override val hdfs: HDFS,
                            override val appRootPath: String,
                            override val config: DocumentConfig) extends ProcessorContext{
-  def getJobDataPath():String = {
+  def getProcessorDataPath():String = {
     config.dataPath match {
       case Some(cc) => cc
       case None => s"${appRootPath}/${DOCUMENT_DEFAULT_DATA_PATH}"
     }
+  }
+
+  def getProcessorSinkDataPath():String = {
+    getProcessorDataPath() + "/sink"
   }
 }
 

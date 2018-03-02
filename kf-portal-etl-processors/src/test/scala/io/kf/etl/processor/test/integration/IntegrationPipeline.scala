@@ -3,12 +3,12 @@ package io.kf.etl.processor.test.integration
 import com.google.inject.{AbstractModule, Guice, Injector}
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, PROCESSOR_PACKAGE}
-import io.kf.etl.common.conf.PostgresqlConfig
+import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
 import io.kf.etl.processor.document.DocumentProcessor
 import io.kf.etl.processor.download.DownloadProcessor
-import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext}
+import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext, HpoConfig}
 import io.kf.etl.processor.index.IndexProcessor
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
@@ -68,6 +68,17 @@ object IntegrationPipeline {
             Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
               case Success(path) => Some(path)
               case Failure(_) => None
+            },
+            {
+              val pg_hpo = config.get.getConfig("hpo.mysql")
+              HpoConfig(
+                MysqlConfig(
+                  pg_hpo.getString("host"),
+                  pg_hpo.getString("database"),
+                  pg_hpo.getString("user"),
+                  pg_hpo.getString("password")
+                )
+              )
             }
           )
         }
