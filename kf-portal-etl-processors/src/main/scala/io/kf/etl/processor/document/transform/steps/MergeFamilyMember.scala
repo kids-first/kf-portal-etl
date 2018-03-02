@@ -11,7 +11,7 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
 
     import ctx.parentContext.sparkSession.implicits._
 
-    val family_relations = familyMemberRelationship(participants, ctx.dbTables.familyRelationship)
+    val family_relations = MergeFamilyMemberHelper.familyMemberRelationship(ctx, participants, ctx.dbTables.familyRelationship)
 
     val ds =
     participants.joinWith(ctx.participant2GenomicFiles, participants.col("kfId") === ctx.participant2GenomicFiles.col("kfId"), "left").map(tuple => {
@@ -32,19 +32,24 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
         list(0)._1
       }
       else{
-        buildFamily(filteredList(0)._1, filteredList.map(_._2))
+        MergeFamilyMemberHelper.buildFamily(filteredList(0)._1, filteredList.map(_._2))
       }
 
     })
   }
 
+}
+
+
+// helper class is defined for avoiding to make MergeFamilyMember serializable
+object MergeFamilyMemberHelper {
   /**
     * this method returns participant and his relatives, where a participant is represented by only kfId, a relative is represented by a instance of Participant. Plus also the relationship from a relative to a participant
     * @param left
     * @param right
     * @return
     */
-  private def familyMemberRelationship(left: Dataset[Participant], right: Dataset[TFamilyRelationship]): Dataset[FamilyMemberRelation] = {
+  def familyMemberRelationship(ctx: StepContext, left: Dataset[Participant], right: Dataset[TFamilyRelationship]): Dataset[FamilyMemberRelation] = {
     import ctx.parentContext.sparkSession.implicits._
 
     left.joinWith(right, left.col("kfId") === right.col("relativeId")).map(tuple => {
@@ -57,7 +62,7 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
     })
   }
 
-  private def buildFamily(participant: Participant, relatives: Seq[FamilyMemberRelation]): Participant = {
+  def buildFamily(participant: Participant, relatives: Seq[FamilyMemberRelation]): Participant = {
 
     def buildFamilyData(composition:String, fmr: FamilyMemberRelation): FamilyData = {
       FamilyData(
@@ -178,5 +183,4 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
       }
     }
   }
-
 }

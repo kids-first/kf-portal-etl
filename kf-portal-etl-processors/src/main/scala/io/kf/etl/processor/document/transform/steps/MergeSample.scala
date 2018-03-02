@@ -8,7 +8,7 @@ import org.apache.spark.sql.functions.col
 class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]] {
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
     import ctx.parentContext.sparkSession.implicits._
-    val samples = buildSample(ctx.dbTables)
+    val samples = MergeSampleHelper.buildSample(ctx)
     participants.joinWith(samples, participants.col("kfId") === samples.col("kfId"), "left").groupByKey(_._1.kfId).mapGroups((parId, iterator) => {
       val list = iterator.toList
       val filteredList = list.filter(_._2!= null)
@@ -24,9 +24,14 @@ class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[P
     })
   }
 
-  private def buildSample(all: DatasetsFromDBTables): Dataset[ParticipantToSamples] = {
+}
+
+// helper class is defined for avoiding to make MergeSample serializable
+object MergeSampleHelper {
+  def buildSample(ctx: StepContext): Dataset[ParticipantToSamples] = {
     import ctx.parentContext.sparkSession.implicits._
 
+    val all: DatasetsFromDBTables = ctx.dbTables
     all.sample.joinWith(all.aliquot, all.sample.col("kfId") === all.aliquot.col("sampleId"), "left").groupByKey(_._1.kfId).mapGroups((sampleId, iterator) => {
       val list = iterator.toList
       val tsample = list(0)._1
@@ -68,4 +73,5 @@ class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[P
       )
     })
   }
+
 }
