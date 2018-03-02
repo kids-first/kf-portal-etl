@@ -1,16 +1,16 @@
-package io.kf.etl.processor.document.sink
+package io.kf.etl.processor.filecentric.sink
 
 import java.io.File
 import java.net.URL
 
-import io.kf.etl.processor.document.context.DocumentContext
-import io.kf.etl.model.FileCentric
+import io.kf.etl.processor.filecentric.context.DocumentContext
+import io.kf.etl.model.filecentric.FileCentric
 import io.kf.etl.processor.common.exceptions.KfExceptions.{CreateDataSinkDirectoryFailedException, DataSinkTargetNotSupportedException}
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class DocumentSink(val context: DocumentContext) {
+class FileCentricSink(val context: DocumentContext) {
 
   private lazy val sinkDataPath = context.getProcessorSinkDataPath()
 

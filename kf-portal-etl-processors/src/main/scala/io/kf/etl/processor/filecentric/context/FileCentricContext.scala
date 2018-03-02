@@ -1,4 +1,4 @@
-package io.kf.etl.processor.document.context
+package io.kf.etl.processor.filecentric.context
 
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.conf.PostgresqlConfig
@@ -10,7 +10,7 @@ import org.apache.spark.sql.SparkSession
 case class DocumentContext(override val sparkSession: SparkSession,
                            override val hdfs: HDFS,
                            override val appRootPath: String,
-                           override val config: DocumentConfig) extends ProcessorContext{
+                           override val config: FileCentricConfig) extends ProcessorContext{
   def getProcessorDataPath():String = {
     config.dataPath match {
       case Some(cc) => cc
@@ -24,4 +24,4 @@ case class DocumentContext(override val sparkSession: SparkSession,
 }
 
 
-case class DocumentConfig(override val name:String, override val dataPath: Option[String], val write_intermediate_data: Boolean) extends ProcessorConfig
+case class FileCentricConfig(override val name:String, override val dataPath: Option[String], val write_intermediate_data: Boolean) extends ProcessorConfig

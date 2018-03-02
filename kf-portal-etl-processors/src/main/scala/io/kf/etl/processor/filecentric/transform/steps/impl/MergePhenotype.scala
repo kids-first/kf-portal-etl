@@ -1,14 +1,16 @@
-package io.kf.etl.processor.document.transform.steps
+package io.kf.etl.processor.filecentric.transform.steps.impl
 
-import io.kf.etl.dbschema.{TGraphPath, TPhenotype}
-import io.kf.etl.model.{HPO, Participant, Phenotype}
+import io.kf.etl.dbschema.TPhenotype
+import io.kf.etl.model.filecentric.{HPO, Participant, Phenotype}
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.{HPOReference, TransformedGraphPath}
+import io.kf.etl.processor.filecentric.transform.steps.StepExecutable
+import io.kf.etl.processor.filecentric.transform.steps.context.FileCentricStepContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.Dataset
 
 import scala.collection.mutable.ListBuffer
 
-class MergePhenotype(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]] {
+class MergePhenotype(override val ctx:FileCentricStepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]] {
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
 
     import ctx.parentContext.sparkSession.implicits._

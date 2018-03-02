@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package io.kf.etl;
+package io.kf.etl.model;
 
 message FileCentric {
     optional bool controlled_access = 1;

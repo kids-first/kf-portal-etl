@@ -1,11 +1,12 @@
-package io.kf.etl.processor.document.transform.steps
+package io.kf.etl.processor.filecentric.transform.steps.impl
 
-import io.kf.etl.model.{Aliquot, Participant, Sample}
+import io.kf.etl.model.filecentric.{Aliquot, Participant, Sample}
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, ParticipantToSamples}
+import io.kf.etl.processor.filecentric.transform.steps.StepExecutable
+import io.kf.etl.processor.filecentric.transform.steps.context.FileCentricStepContext
 import org.apache.spark.sql.Dataset
-import org.apache.spark.sql.functions.col
 
-class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]] {
+class MergeSample(override val ctx:FileCentricStepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]] {
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
     import ctx.parentContext.sparkSession.implicits._
     val samples = MergeSampleHelper.buildSample(ctx)
@@ -28,7 +29,7 @@ class MergeSample(override val ctx:StepContext) extends StepExecutable[Dataset[P
 
 // helper class is defined for avoiding to make MergeSample serializable
 object MergeSampleHelper {
-  def buildSample(ctx: StepContext): Dataset[ParticipantToSamples] = {
+  def buildSample(ctx: FileCentricStepContext): Dataset[ParticipantToSamples] = {
     import ctx.parentContext.sparkSession.implicits._
 
     val all: DatasetsFromDBTables = ctx.dbTables

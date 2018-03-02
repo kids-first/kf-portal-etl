@@ -1,16 +1,16 @@
-package io.kf.etl.processor.document.source
+package io.kf.etl.processor.filecentric.source
 
 import java.util.Formatter
 
 import io.kf.etl.common.Constants.HPO_GRAPH_PATH
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, TransformedGraphPath}
-import io.kf.etl.processor.document.context.DocumentContext
+import io.kf.etl.processor.filecentric.context.DocumentContext
 import io.kf.etl.processor.repo.Repository
 import io.kf.etl.dbschema._
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.PostgresqlDBTables._
 
 
-class DocumentSource(val context: DocumentContext) {
+class FileCentricSource(val context: DocumentContext) {
 
   def source(repo:Repository): DatasetsFromDBTables = {
     import context.sparkSession.implicits._

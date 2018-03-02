@@ -7,7 +7,7 @@ import org.reflections.Reflections
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.conf.PostgresqlConfig
 import io.kf.etl.context.Context
-import io.kf.etl.processor.document.DocumentProcessor
+import io.kf.etl.processor.filecentric.FileCentricProcessor
 import io.kf.etl.processor.download.DownloadProcessor
 import io.kf.etl.processor.index.IndexProcessor
 import io.kf.etl.processor.repo.Repository
@@ -47,7 +47,7 @@ object Pipeline {
 
   def run():Unit = {
     val download = injector.getInstance(classOf[DownloadProcessor])
-    val document = injector.getInstance(classOf[DocumentProcessor])
+    val document = injector.getInstance(classOf[FileCentricProcessor])
     val index = injector.getInstance(classOf[IndexProcessor])
 
     val dp:Unit => Repository = download.process

@@ -1,9 +1,11 @@
-package io.kf.etl.processor.document.transform.steps
+package io.kf.etl.processor.filecentric.transform.steps.impl
 
-import io.kf.etl.model.{Diagnosis, Participant}
+import io.kf.etl.model.filecentric.{Diagnosis, Participant}
+import io.kf.etl.processor.filecentric.transform.steps.StepExecutable
+import io.kf.etl.processor.filecentric.transform.steps.context.FileCentricStepContext
 import org.apache.spark.sql.Dataset
 
-class MergeDiagnosis(override val ctx: StepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]]{
+class MergeDiagnosis(override val ctx: FileCentricStepContext) extends StepExecutable[Dataset[Participant], Dataset[Participant]]{
   override def process(participants: Dataset[Participant]): Dataset[Participant] = {
 
     import ctx.parentContext.sparkSession.implicits._

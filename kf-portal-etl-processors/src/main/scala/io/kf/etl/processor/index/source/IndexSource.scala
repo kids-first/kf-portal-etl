@@ -2,7 +2,7 @@ package io.kf.etl.processor.index.source
 
 import io.kf.etl.processor.index.context.IndexContext
 import io.kf.etl.processor.repo.Repository
-import io.kf.etl.model.FileCentric
+import io.kf.etl.model.filecentric.FileCentric
 import org.apache.spark.sql.Dataset
 
 

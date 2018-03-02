@@ -6,7 +6,7 @@ import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, PROCESSOR_PACKAGE}
 import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
-import io.kf.etl.processor.document.DocumentProcessor
+import io.kf.etl.processor.filecentric.FileCentricProcessor
 import io.kf.etl.processor.download.DownloadProcessor
 import io.kf.etl.processor.download.context.{DownloadConfig, DownloadContext, HpoConfig}
 import io.kf.etl.processor.index.IndexProcessor

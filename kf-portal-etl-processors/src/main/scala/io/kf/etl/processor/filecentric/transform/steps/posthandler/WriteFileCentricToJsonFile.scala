@@ -1,22 +1,21 @@
-package io.kf.etl.processor.document.transform.steps.posthandler
+package io.kf.etl.processor.filecentric.transform.steps.posthandler
 
 import java.io.File
 import java.net.URL
 
-import io.kf.etl.model.Participant
-import io.kf.etl.processor.document.transform.steps.{StepContext, StepExecutable}
+import io.kf.etl.model.filecentric.FileCentric
+import io.kf.etl.processor.filecentric.transform.steps.StepExecutable
+import io.kf.etl.processor.filecentric.transform.steps.context.FileCentricStepContext
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class WriteParticipantsToJsonFile(override val ctx: StepContext, filename:String) extends StepExecutable[Dataset[Participant], Dataset[Participant]]{
-  override def process(input: Dataset[Participant]): Dataset[Participant] = {
-
+class WriteFileCentricToJsonFile(override val ctx: FileCentricStepContext) extends StepExecutable[Dataset[FileCentric], Dataset[FileCentric]]{
+  override def process(input: Dataset[FileCentric]): Dataset[FileCentric] = {
     import io.kf.etl.transform.ScalaPB2Json4s._
     import ctx.parentContext.sparkSession.implicits._
     val cached = input.cache()
-    val target_path = new URL(s"${ctx.parentContext.getProcessorDataPath()}/steps/${filename}")
-
+    val target_path = new URL(s"${ctx.parentContext.getProcessorDataPath()}/steps/filecentric")
     val json_path =
       target_path.getProtocol match {
         case "file" => {
@@ -34,7 +33,6 @@ class WriteParticipantsToJsonFile(override val ctx: StepContext, filename:String
         }
         case _ => throw StepResultTargetNotSupportedException(target_path)
       }
-
     cached.map(_.toJsonString()).write.text(json_path)
     cached
   }

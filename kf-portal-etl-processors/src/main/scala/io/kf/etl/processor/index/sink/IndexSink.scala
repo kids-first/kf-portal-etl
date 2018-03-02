@@ -1,7 +1,7 @@
 package io.kf.etl.processor.index.sink
 
 import io.kf.etl.common.conf.ESConfig
-import io.kf.etl.model.FileCentric
+import io.kf.etl.model.filecentric.FileCentric
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.elasticsearch.spark.rdd.EsSpark
 

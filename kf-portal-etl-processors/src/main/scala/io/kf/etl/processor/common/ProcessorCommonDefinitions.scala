@@ -1,7 +1,7 @@
 package io.kf.etl.processor.common
 
 import io.kf.etl.dbschema._
-import io.kf.etl.model.{Participant, Sample, SequencingExperiment, Workflow}
+import io.kf.etl.model.filecentric.{Participant, Sample, SequencingExperiment, Workflow}
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {

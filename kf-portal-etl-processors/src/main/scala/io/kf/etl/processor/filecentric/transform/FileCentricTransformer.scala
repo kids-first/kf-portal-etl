@@ -1,13 +1,15 @@
-package io.kf.etl.processor.document.transform
+package io.kf.etl.processor.filecentric.transform
 
-import io.kf.etl.model.{FileCentric, Participant}
+import io.kf.etl.model.filecentric.{FileCentric, Participant}
 import io.kf.etl.processor.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, ParticipantToGenomicFiles}
-import io.kf.etl.processor.document.context.DocumentContext
-import io.kf.etl.processor.document.transform.steps._
-import io.kf.etl.processor.document.transform.steps.posthandler.{DefaultPostHandler, WriteFileCentricToJsonFile, WriteParticipantsToJsonFile}
+import io.kf.etl.processor.filecentric.context.DocumentContext
+import io.kf.etl.processor.filecentric.transform.steps.FileCentricStep
+import io.kf.etl.processor.filecentric.transform.steps.context.FileCentricStepContext
+import io.kf.etl.processor.filecentric.transform.steps.impl._
+import io.kf.etl.processor.filecentric.transform.steps.posthandler.{DefaultPostHandler, WriteFileCentricToJsonFile, WriteParticipantsToJsonFile}
 import org.apache.spark.sql.Dataset
 
-class DocumentTransformer(val context: DocumentContext) {
+class FileCentricTransformer(val context: DocumentContext) {
 
   def transform(input: DatasetsFromDBTables): Dataset[FileCentric] = {
 
@@ -15,7 +17,7 @@ class DocumentTransformer(val context: DocumentContext) {
     registerSparkTempViewsForPGTables(input)
     val participantToGenomicFiles = mapParticipantAndGenomicFile()
 
-    val ctx = StepContext(context, input, participantToGenomicFiles)
+    val ctx = FileCentricStepContext(context, input, participantToGenomicFiles)
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
@@ -26,16 +28,16 @@ class DocumentTransformer(val context: DocumentContext) {
 
     Function.chain(
       Seq(
-        Step[Dataset[Participant], Dataset[Participant]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
-        Step[Dataset[Participant], Dataset[Participant]]("02. merge Demographic into Participant", new MergeDemographic(ctx), posthandler1("step2")),
-        Step[Dataset[Participant], Dataset[Participant]]("03. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step3")),
-        Step[Dataset[Participant], Dataset[Participant]]("04. compute HPO reference data and then merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
-        Step[Dataset[Participant], Dataset[Participant]]("05. merge 'availableDataTypes' into Participant", new MergeAvailableDataTypesForParticipant(ctx), posthandler1("step5")),
-        Step[Dataset[Participant], Dataset[Participant]]("06. merge family member into Participant", new MergeFamilyMember(ctx), posthandler1("step6")),
-        Step[Dataset[Participant], Dataset[Participant]]("07. merge Sample, Aliquot into Participant", new MergeSample(ctx), posthandler1("step7"))
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("02. merge Demographic into Participant", new MergeDemographic(ctx), posthandler1("step2")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("03. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step3")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("04. compute HPO reference data and then merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("05. merge 'availableDataTypes' into Participant", new MergeAvailableDataTypesForParticipant(ctx), posthandler1("step5")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("06. merge family member into Participant", new MergeFamilyMember(ctx), posthandler1("step6")),
+        FileCentricStep[Dataset[Participant], Dataset[Participant]]("07. merge Sample, Aliquot into Participant", new MergeSample(ctx), posthandler1("step7"))
       )
     ).andThen(
-      Step[Dataset[Participant], Dataset[FileCentric]]("08. build final FileCentric", new BuildFiles(ctx), posthandler2)
+      FileCentricStep[Dataset[Participant], Dataset[FileCentric]]("08. build final FileCentric", new BuildFiles(ctx), posthandler2)
     )(context.sparkSession.emptyDataset[Participant])
 
   }

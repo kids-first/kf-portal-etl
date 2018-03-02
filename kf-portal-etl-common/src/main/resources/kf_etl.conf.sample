@@ -38,7 +38,7 @@ io.kf.etl {
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump
     },
     {
-      name = "document"
+      name = "filecentric"
       /**
        **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
        **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
