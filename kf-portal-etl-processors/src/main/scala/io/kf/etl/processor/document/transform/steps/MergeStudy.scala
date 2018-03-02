@@ -17,7 +17,7 @@ class MergeStudy(override val ctx:StepContext) extends StepExecutable[Dataset[Pa
           case Some(id) => Some(Family(familyId = id))
           case None => None
         },
-        studies = Seq(
+        study = Some(
           Study(
             kfId = tuple._2.kfId,
             uuid = tuple._2.uuid,

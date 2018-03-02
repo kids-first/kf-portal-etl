@@ -85,6 +85,7 @@ class BuildFiles(override val ctx:StepContext) extends StepExecutable[Dataset[Pa
           createdAt = tgf.createdAt,
           modifiedAt = tgf.modifiedAt,
           fileName = tgf.fileName,
+          fileSize = tgf.fileSize,
           dataType = tgf.dataType,
           fileFormat = tgf.fileFormat,
           fileUrl = tgf.fileUrl,

@@ -79,7 +79,7 @@ class DocumentTransformer(val context: DocumentContext) {
           case row if(row.getString(1) != null) => row.getString(1)
         },
         list.collect{
-          case row if(row.getString(2) != null) => row.getString(1)
+          case row if(row.getString(2) != null) => row.getString(2)
         }
       )
     }).cache()

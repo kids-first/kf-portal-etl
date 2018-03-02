@@ -46,7 +46,7 @@ message Participant {
     optional Family family = 10;
     optional Phenotype phenotype = 11;
     repeated Sample samples = 12;
-    repeated Study studies = 13;
+    optional Study study = 13;
     optional string ethnicity = 14;
     optional string race = 15;
     optional string consent_type = 16;
@@ -86,7 +86,7 @@ message FamilyMember {
     required string modified_at = 6;
     optional Phenotype phenotype = 7;
     optional string relationship = 8;
-    repeated Study studies = 9;
+    optional Study study = 9;
     required string uuid = 10;
     optional string ethnicity = 11;
     optional string race = 12;

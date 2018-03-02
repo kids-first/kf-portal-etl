@@ -166,7 +166,7 @@ object MergeFamilyMemberHelper {
                             pt.hpo.get.copy(sharedHpoIds = familySharedHPOIds)
                           ))
                         }),
-                        studies = p.relative.studies,
+                        study = p.relative.study,
                         race = p.relative.race,
                         ethnicity = p.relative.ethnicity,
                         relationship = p.relativeToParcitipantRelation
