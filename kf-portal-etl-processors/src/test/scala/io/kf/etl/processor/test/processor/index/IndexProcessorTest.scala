@@ -69,7 +69,7 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
     val index_processor = new IndexProcessor(context, source.source, transformer.transform, sink.sink)
 
     index_processor.process(
-      Repository(new URL(s"file://${tmp}"))
+      ("file-centric", Repository(new URL(s"file://${tmp}")))
     )
 
     import org.asynchttpclient.Dsl._

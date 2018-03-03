@@ -11,9 +11,9 @@ class FileCentricProcessor(context: DocumentContext,
                            source: Repository => DatasetsFromDBTables,
                            transform: DatasetsFromDBTables => Dataset[FileCentric],
                            sink: Dataset[FileCentric] => Unit,
-                           output: Unit => Repository) extends Processor[Repository, Repository]{
+                           output: Unit => (String,Repository)) extends Processor[Repository, (String,Repository)]{
 
-  def process(input: Repository):Repository = {
+  def process(input: Repository):(String,Repository) = {
     source.andThen(transform).andThen(sink).andThen(output)(input)
   }
 

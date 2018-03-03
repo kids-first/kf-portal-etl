@@ -86,7 +86,7 @@ object IntegrationPipeline {
     )
     val index = injector.getInstance(classOf[IndexProcessor])
 
-    download.process().map(index.process(_))
+    download.process().map(t => index.process(Tuple2("file-centric",t)))
 
   }
 }

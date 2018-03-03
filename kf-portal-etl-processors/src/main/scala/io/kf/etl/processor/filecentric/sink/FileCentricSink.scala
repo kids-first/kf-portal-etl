@@ -17,7 +17,9 @@ class FileCentricSink(val context: DocumentContext) {
   def sink(data:Dataset[FileCentric]):Unit = {
     checkSinkDirectory(new URL(sinkDataPath))
 
-    data.write.parquet(sinkDataPath)
+    import io.kf.etl.transform.ScalaPB2Json4s._
+    import context.sparkSession.implicits._
+    data.map(_.toJsonString()).write.text(sinkDataPath)
   }
 
   private def checkSinkDirectory(url: URL):Unit = {
@@ -26,16 +28,11 @@ class FileCentricSink(val context: DocumentContext) {
       case "hdfs" => {
         val dir = new Path(url.toString)
         context.hdfs.delete(dir, true)
-//        context.hdfs.mkdirs(dir)
       }
       case "file" => {
         val dir = new File(url.getFile)
         if(dir.exists())
           FileUtils.deleteDirectory(dir)
-//        dir.mkdir() match {
-//          case false => throw CreateDataSinkDirectoryFailedException(url)
-//          case true =>
-//        }
       }
       case value => DataSinkTargetNotSupportedException(url)
     }
