@@ -1,0 +1,209 @@
+syntax = "proto2";
+
+package io.kf.etl;
+
+message FileCentric {
+    optional bool controlled_access = 1;
+    required string created_at = 2;
+    optional string data_type = 3;
+    optional string file_format = 4;
+    optional string file_name = 5;
+    optional int64 file_size = 6;
+    optional string file_url = 7;
+    required string kf_id = 8;
+    optional string md5sum = 9;
+    required string modified_at = 10;
+    repeated Participant participants = 11;
+    repeated SequencingExperiment sequencing_experiments = 12;
+    repeated Workflow workflow = 13;
+    required string uuid = 14;
+}
+
+message ParticipantCentric {
+    required string kf_id = 1;
+    required string uuid = 2;
+    required string created_at = 3;
+    required string modified_at = 4;
+    repeated string aliases = 5;
+    repeated string available_data_types = 6;
+    optional string consent_type = 7;
+    optional string ethnicity = 8;
+    repeated Diagnosis diagnoses = 9;
+    optional string external_id = 10;
+    repeated File files = 11;
+    optional Family family = 12;
+    optional string gender = 13;
+    optional bool is_proband = 14;
+    optional Phenotype phenotype = 15;
+    optional string race = 16;
+    repeated Sample samples = 17;
+    optional Study study = 18;
+}
+
+message File {
+    optional bool controlled_access = 1;
+    required string created_at = 2;
+    optional string data_type = 3;
+    optional string file_format = 4;
+    optional string file_name = 5;
+    optional int64 file_size = 6;
+    optional string file_url = 7;
+    required string kf_id = 8;
+    optional string md5sum = 9;
+    required string modified_at = 10;
+    repeated SequencingExperiment sequencing_experiments = 11;
+    repeated Workflow workflow = 12;
+    optional Study study = 13;
+    required string uuid = 14;
+}
+
+message Workflow {
+    optional string github_url = 1;
+    repeated string input_files = 2;
+    required string kf_id = 3;
+    repeated string output_files = 4;
+    optional string name = 5;
+    optional string version = 6;
+    required string created_at = 7;
+    required string modified_at = 8;
+    optional string task_id = 9;
+    required string uuid = 10;
+}
+
+
+message Participant {
+    repeated string available_data_types = 1;
+    optional string gender = 2;
+    required string kf_id = 3;
+    required string created_at = 4;
+    required string modified_at = 5;
+    optional string external_id = 6;
+    optional bool is_proband = 7;
+    required string uuid = 8;
+    repeated Diagnosis diagnoses = 9;
+    optional Family family = 10;
+    optional Phenotype phenotype = 11;
+    repeated Sample samples = 12;
+    optional Study study = 13;
+    optional string ethnicity = 14;
+    optional string race = 15;
+    optional string consent_type = 16;
+    repeated string aliases = 17;
+}
+
+message Diagnosis {
+     optional int64 age_at_event_days = 1;
+     optional string diagnosis_category = 2;
+     required string created_at = 3;
+     optional string diagnosis = 4;
+     required string modified_at = 5;
+     optional string external_id = 6;
+     required string kf_id = 7;
+     optional string tumor_location = 8;
+     required string uuid = 9;
+
+}
+
+message Family{
+    repeated FamilyData family_data = 1;
+    required string family_id = 2;
+    repeated FamilyMember family_members = 3;
+}
+
+message FamilyData {
+    repeated string available_data_types = 1;
+    required string composition= 2;
+    repeated string shared_hpo_ids = 3;
+}
+
+message FamilyMember {
+    repeated string available_data_types = 1;
+    required string kf_id = 2;
+    required string created_at = 3;
+    optional string gender = 4;
+    optional bool is_proband = 5;
+    required string modified_at = 6;
+    optional Phenotype phenotype = 7;
+    optional string relationship = 8;
+    optional Study study = 9;
+    required string uuid = 10;
+    optional string ethnicity = 11;
+    optional string race = 12;
+
+}
+
+message Phenotype {
+    optional HPO hpo = 1;
+}
+
+message HPO {
+    repeated int64 age_at_event_days = 1;
+    repeated string ancestral_hpo_ids= 2;
+    repeated string observed= 3;
+    repeated string phenotype = 4;
+    repeated string created_at = 5;
+    repeated string modified_at = 6;
+    repeated string negative_hpo_ids = 7;
+    repeated string hpo_ids = 8;
+    repeated string shared_hpo_ids= 9;
+}
+
+message Sample {
+    required string kf_id = 1;
+    optional string tissue_type = 2;
+    optional string composition = 3;
+    optional string anatomical_site = 4;
+    optional int64 age_at_event_days = 5;
+    optional string external_id = 6;
+    optional string tumor_descriptor = 7;
+    required string uuid = 8;
+    repeated Aliquot aliquots = 9;
+}
+
+message Aliquot {
+    required string kf_id = 1;
+    optional string shipment_origin = 2;
+    optional string shipment_destination = 3;
+    optional float concentration = 4;
+    optional float volume = 5;
+    optional string shipment_date = 6;
+    optional string analyte_type = 7;
+    required string created_at = 8;
+    required string modified_at = 9;
+    required string uuid = 10;
+}
+
+message Study {
+    required string kf_id = 1;
+    optional string attribution = 2;
+    optional string name = 3;
+    optional string version = 4;
+    optional string external_id = 5;
+    required string created_at = 6;
+    required string modified_at = 7;
+    required string uuid = 8;
+    optional string data_access_authority = 9;
+}
+
+message SequencingExperiment {
+    required string kf_id = 1;
+    optional string experiment_date = 2;
+    optional string experiment_strategy = 3;
+    optional string center = 4;
+    optional string library_name = 5;
+    optional string library_strand = 6;
+    optional bool is_paired_end = 7;
+    optional string platform = 8;
+    optional string instrument_model = 9;
+    optional int64 max_insert_size = 10;
+    optional double mean_insert_size = 11;
+    optional double mean_depth = 12;
+    optional int64 total_reads = 13;
+    optional int64 mean_read_length = 14;
+    optional int64 min_insert_size = 15;
+    optional string external_id = 16;
+    required string created_at = 17;
+    required string modified_at = 18;
+    required string uuid = 19;
+
+}

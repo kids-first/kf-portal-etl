@@ -44,7 +44,12 @@ io.kf.etl {
        **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
        **  A user could use this field to control where the data would be written
        **/
-      data_path = ${io.kf.etl.hdfs.root}/document
+      data_path = ${io.kf.etl.hdfs.root}/filecentric
+      write_intermediate_data = false
+    },
+    {
+      name = "participantcentric"
+      data_path = ${io.kf.etl.hdfs.root}/participantcentric
       write_intermediate_data = false
     },
     {
