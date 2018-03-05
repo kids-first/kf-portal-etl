@@ -26,7 +26,8 @@ object Constants {
   val HPO_GRAPH_PATH = "graph_path"
 
   val DOWNLOAD_DEFAULT_DATA_PATH = "download"
-  val DOCUMENT_DEFAULT_DATA_PATH = "document"
+  val FILECENTRIC_DEFAULT_DATA_PATH = "filecentric"
+  val PARTICIPANTCENTRIC_DEFAULT_DATA_PATH = "participantcentric"
   val INDEX_DEFAULT_DATA_PATH = "index"
 
   val DATASOURCE_OPTION_PROCESSOR_NAME = "kf.etl.processor.name"
