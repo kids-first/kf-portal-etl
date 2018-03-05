@@ -16,7 +16,7 @@ import org.apache.hadoop.fs.{FileSystem => HDFS}
 
 import scala.util.{Failure, Success, Try}
 
-@GuiceModule(name = "participantcentric")
+@GuiceModule(name = "participant-centric")
 class ParticipantCentricInjectModule(sparkSession: SparkSession,
                                      hdfs: HDFS,
                                      appRootPath: String,

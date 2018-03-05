@@ -30,8 +30,8 @@ class BuildParticipantCentric(override val ctx:StepContext) extends StepExecutab
           fileName = tFile.fileName,
           fileUrl = tFile.fileUrl,
           md5Sum = tFile.md5Sum,
-          sequencingExperiments = iterator.collect{
-            case tuple if(tuple._2 != null) => {
+          sequencingExperiments = list.collect{
+            case tuple => {
               val tseq = tuple._2
               SequencingExperiment(
                 kfId = tseq.kfId,
@@ -54,7 +54,7 @@ class BuildParticipantCentric(override val ctx:StepContext) extends StepExecutab
                 totalReads = tseq.totalReads
               )
             }
-          }.toSeq
+          }
         )
       })
 

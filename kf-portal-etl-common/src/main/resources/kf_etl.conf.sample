@@ -15,6 +15,7 @@ io.kf.etl {
   elasticsearch {
     url = ""
     index = ""
+    index_version = ""  // will append index name
   }
 
   hdfs {
@@ -38,7 +39,7 @@ io.kf.etl {
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump
     },
     {
-      name = "filecentric"
+      name = "file-centric" //used as index name and type name
       /**
        **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
        **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
@@ -48,7 +49,7 @@ io.kf.etl {
       write_intermediate_data = false
     },
     {
-      name = "participantcentric"
+      name = "participant-centric" // used as index name and type name
       data_path = ${io.kf.etl.hdfs.root}/participantcentric
       write_intermediate_data = false
     },

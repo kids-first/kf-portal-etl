@@ -7,6 +7,6 @@ import io.kf.etl.processors.repo.Repository
 
 class FileCentricOutput(val context: FileCentricContext) {
   def output(placeholder:Unit):(String,Repository) = {
-    ("file-centric", Repository(new URL(context.getProcessorSinkDataPath())))
+    (context.config.name, Repository(new URL(context.getProcessorSinkDataPath())))
   }
 }

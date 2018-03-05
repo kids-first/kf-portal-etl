@@ -31,7 +31,8 @@ class KFConfig(private val config: Config){
   private def getESConfig(): ESConfig = {
     ESConfig(
       config.getString(CONFIG_NAME_ES_URL),
-      config.getString(CONFIG_NAME_ES_INDEX)
+      config.getString(CONFIG_NAME_ES_INDEX),
+      config.getString(CONFIG_NAME_ES_INDEX_VERSION)
     )
   }
 
@@ -73,7 +74,7 @@ case class SparkConfig(appName:String, master:Option[String])
 
 case class HDFSConfig(fs:String, root:String)
 
-case class ESConfig(url:String, index:String)
+case class ESConfig(url:String, index:String, index_version: String)
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
 

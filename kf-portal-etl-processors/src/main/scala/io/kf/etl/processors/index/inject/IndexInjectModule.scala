@@ -46,7 +46,8 @@ class IndexInjectModule(sparkSession: SparkSession,
         val esConfig = config.get.getConfig("elasticsearch")
         ESConfig(
           esConfig.getString("url"),
-          esConfig.getString("index")
+          esConfig.getString("index"),
+          esConfig.getString("index_version")
         )
       },
       None

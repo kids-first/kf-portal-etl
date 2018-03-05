@@ -11,6 +11,7 @@ object Constants {
   val CONFIG_NAME_SPARK_MASTER = s"${ROOT_PACKAGE}.spark.master"
   val CONFIG_NAME_ES_URL = s"${ROOT_PACKAGE}.elasticsearch.url"
   val CONFIG_NAME_ES_INDEX = s"${ROOT_PACKAGE}.elasticsearch.index"
+  val CONFIG_NAME_ES_INDEX_VERSION = s"${ROOT_PACKAGE}.elasticsearch.index_version"
   val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root"
   val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"
