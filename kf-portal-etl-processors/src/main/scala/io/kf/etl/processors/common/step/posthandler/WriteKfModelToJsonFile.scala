@@ -1,20 +1,19 @@
-package io.kf.etl.processors.filecentric.transform.steps.posthandler
+package io.kf.etl.processors.common.step.posthandler
 
 import java.io.File
 import java.net.URL
 
-import io.kf.etl.model.FileCentric
+import com.trueaccord.scalapb.GeneratedMessageCompanion
 import io.kf.etl.processors.common.step.StepExecutable
-import io.kf.etl.processors.common.step.posthandler.StepResultTargetNotSupportedException
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class WriteFileCentricToJsonFile(override val ctx: StepContext) extends StepExecutable[Dataset[FileCentric], Dataset[FileCentric]]{
-  override def process(input: Dataset[FileCentric]): Dataset[FileCentric] = {
-    import io.kf.etl.transform.ScalaPB2Json4s._
+class WriteKfModelToJsonFile[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](override val ctx: StepContext)(implicit meta: GeneratedMessageCompanion[T]) extends StepExecutable[Dataset[T], Dataset[T]]{
+  override def process(input: Dataset[T]): Dataset[T] = {
     import ctx.spark.implicits._
+    import io.kf.etl.transform.ScalaPB2Json4s._
     val cached = input.cache()
     val target_path = new URL(s"${ctx.processorDataPath}/steps/${ctx.processorName}")
     val json_path =

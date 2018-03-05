@@ -33,7 +33,8 @@ class DownloadTransformer(val context:DownloadContext) {
       generateDataset(Workflow_Genomic_File.toString).map(row2WorkflowGenomicFile),
 //      generateDataset(Participant_Alias.toString).map(row2ParticipantAlias),
       generateDataset(HPO_GRAPH_PATH).map(row2GraphPath),
-      null
+      null, // participant => genomic_file
+      null // genomic_file => study
     )
   }
 

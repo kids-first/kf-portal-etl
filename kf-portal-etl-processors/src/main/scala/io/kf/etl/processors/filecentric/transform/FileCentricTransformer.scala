@@ -4,11 +4,10 @@ import io.kf.etl.model.{FileCentric, Participant}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, ParticipantToGenomicFiles}
 import io.kf.etl.processors.common.step.Step
 import io.kf.etl.processors.common.step.impl._
-import io.kf.etl.processors.common.step.posthandler.DefaultPostHandler
+import io.kf.etl.processors.common.step.posthandler.{DefaultPostHandler, WriteKfModelToJsonFile, WriteParticipantsToJsonFile}
 import io.kf.etl.processors.filecentric.context.FileCentricContext
+import io.kf.etl.processors.filecentric.transform.steps.BuildFileCentric
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
-import io.kf.etl.processors.filecentric.transform.steps.impl._
-import io.kf.etl.processors.filecentric.transform.steps.posthandler.{WriteFileCentricToJsonFile, WriteParticipantsToJsonFile}
 import org.apache.spark.sql.Dataset
 
 class FileCentricTransformer(val context: FileCentricContext) {
@@ -17,11 +16,17 @@ class FileCentricTransformer(val context: FileCentricContext) {
 
     import context.sparkSession.implicits._
 
-    val ctx = StepContext(context.sparkSession, context.getProcessorDataPath(), context.hdfs, input)
+    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, input)
 
+//    val (posthandler1, posthandler2) = {
+//      context.config.write_intermediate_data match {
+//        case true => ((filename:String) => new WriteParticipantsToJsonFile(ctx, filename), new WriteFileCentricToJsonFile(ctx))
+//        case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant]](), new DefaultPostHandler[Dataset[FileCentric]]())
+//      }
+//    }
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
-        case true => ((filename:String) => new WriteParticipantsToJsonFile(ctx, filename), new WriteFileCentricToJsonFile(ctx))
+        case true => ((filename:String) => new WriteKfModelToJsonFile[Participant](ctx), new WriteKfModelToJsonFile[FileCentric](ctx))
         case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant]](), new DefaultPostHandler[Dataset[FileCentric]]())
       }
     }
@@ -37,7 +42,7 @@ class FileCentricTransformer(val context: FileCentricContext) {
         Step[Dataset[Participant], Dataset[Participant]]("07. merge Sample, Aliquot into Participant", new MergeSample(ctx), posthandler1("step7"))
       )
     ).andThen(
-      Step[Dataset[Participant], Dataset[FileCentric]]("08. build final FileCentric", new BuildFiles(ctx), posthandler2)
+      Step[Dataset[Participant], Dataset[FileCentric]]("08. build final FileCentric", new BuildFileCentric(ctx), posthandler2)
     )(context.sparkSession.emptyDataset[Participant])
 
   }

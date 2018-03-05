@@ -1,11 +1,10 @@
-package io.kf.etl.processors.filecentric.transform.steps.posthandler
+package io.kf.etl.processors.common.step.posthandler
 
 import java.io.File
 import java.net.URL
 
 import io.kf.etl.model.Participant
 import io.kf.etl.processors.common.step.StepExecutable
-import io.kf.etl.processors.common.step.posthandler.StepResultTargetNotSupportedException
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
@@ -14,8 +13,8 @@ import org.apache.spark.sql.Dataset
 class WriteParticipantsToJsonFile(override val ctx: StepContext, filename:String) extends StepExecutable[Dataset[Participant], Dataset[Participant]]{
   override def process(input: Dataset[Participant]): Dataset[Participant] = {
 
-    import io.kf.etl.transform.ScalaPB2Json4s._
     import ctx.spark.implicits._
+    import io.kf.etl.transform.ScalaPB2Json4s._
     val cached = input.cache()
     val target_path = new URL(s"${ctx.processorDataPath}/steps/${filename}")
 

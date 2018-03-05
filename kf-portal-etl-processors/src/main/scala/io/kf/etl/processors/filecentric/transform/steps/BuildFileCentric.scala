@@ -1,4 +1,4 @@
-package io.kf.etl.processors.filecentric.transform.steps.impl
+package io.kf.etl.processors.filecentric.transform.steps
 
 import io.kf.etl.model.{FileCentric, Participant, SequencingExperiment}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{GenomicFileToParticipants, GenomicFileToSeqExps}
@@ -6,7 +6,7 @@ import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
-class BuildFiles(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[FileCentric]] {
+class BuildFileCentric(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[FileCentric]] {
   override def process(participants: Dataset[Participant]): Dataset[FileCentric] = {
     import ctx.spark.implicits._
     val file2SeqExps =

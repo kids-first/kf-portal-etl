@@ -1,7 +1,7 @@
 package io.kf.etl.processors.common
 
 import io.kf.etl.dbschema._
-import io.kf.etl.model.{Participant, Sample, SequencingExperiment, Workflow}
+import io.kf.etl.model._
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -21,6 +21,7 @@ object ProcessorCommonDefinitions {
   type DS_WORKFLOWGENOMICFILE = Dataset[TWorkflowGenomicFile]
   type DS_GRAPHPATH = Dataset[TransformedGraphPath]
   type DS_PARTICIPANT_GENOMICFILE = Dataset[ParticipantToGenomicFiles]
+  type DS_GENOMICFILE_STUDY = Dataset[GenomicFileToStudy]
 
   case class DatasetsFromDBTables(
      study: DS_STUDY,
@@ -38,7 +39,8 @@ object ProcessorCommonDefinitions {
      workflowGenomicFile: DS_WORKFLOWGENOMICFILE,
 //     participantAlis: DS_PARTICIPANTALIAS,
      graphPath: DS_GRAPHPATH,
-     participantGenomicFile: DS_PARTICIPANT_GENOMICFILE
+     participantGenomicFile: DS_PARTICIPANT_GENOMICFILE,
+     genomicFileToStudy: DS_GENOMICFILE_STUDY
   )
 
   object PostgresqlDBTables extends Enumeration{
@@ -74,5 +76,13 @@ object ProcessorCommonDefinitions {
   case class HPOReference(term:String, ancestors: Seq[String])
 
   case class TransformedGraphPath(term1:String, term2:String, distance:Int)
+
+  case class GenomicFileToStudyId(kfId:String, studyId: Option[String]) //kfId is genomic_file id
+
+  case class GenomicFileToStudy(kfId:String, study: Study)
+
+  case class GenomicFileId_ParticipantId(fileId:String, parId:String)
+
+  case class ParticipantIdToFiles(parId:String, files: Seq[File])
 
 }

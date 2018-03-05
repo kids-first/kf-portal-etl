@@ -14,5 +14,7 @@ class ParticipantCentricProcessor(
                                  sink: Dataset[ParticipantCentric] => Unit,
                                  output: Unit => (String,Repository)
                                  ) extends Processor[Repository, (String,Repository)]{
-  override def process(input: Repository): (String, Repository) = ???
+  override def process(input: Repository): (String, Repository) = {
+    source.andThen(transform).andThen(sink).andThen(output)(input)
+  }
 }
