@@ -43,6 +43,7 @@ object Context extends ContextTrait with ClasspathURLEnabler{
       session
         .config("es.index.auto.create", "true")
         .config("es.nodes", config.esConfig.url)
+        .config("es.nodes.wan.only", "true")
         .getOrCreate()
     }).get
 
