@@ -6,6 +6,6 @@ import org.elasticsearch.spark.rdd.EsSpark
 
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig) {
   def sink(data:(String, Dataset[String])):Unit = {
-    EsSpark.saveJsonToEs(data._2.rdd, s"${esConfig.index}/${data._1}")
+    EsSpark.saveJsonToEs(data._2.rdd, s"${data._1}/${data._1}")
   }
 }
