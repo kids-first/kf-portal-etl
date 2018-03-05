@@ -1,5 +1,6 @@
 package io.kf.etl.processors.common.step.posthandler
 
+import java.beans.Transient
 import java.io.File
 import java.net.URL
 
@@ -10,7 +11,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class WriteKfModelToJsonFile[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](override val ctx: StepContext)(implicit meta: GeneratedMessageCompanion[T]) extends StepExecutable[Dataset[T], Dataset[T]]{
+class WriteKfModelToJsonFile[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](@transient override val ctx: StepContext)(implicit meta: GeneratedMessageCompanion[T]) extends StepExecutable[Dataset[T], Dataset[T]]{
+
   override def process(input: Dataset[T]): Dataset[T] = {
     import ctx.spark.implicits._
     import io.kf.etl.transform.ScalaPB2Json4s._

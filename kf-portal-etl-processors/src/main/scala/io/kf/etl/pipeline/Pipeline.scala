@@ -9,6 +9,7 @@ import io.kf.etl.context.Context
 import io.kf.etl.processors.filecentric.FileCentricProcessor
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.index.IndexProcessor
+import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
 import io.kf.etl.processors.repo.Repository
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
@@ -46,12 +47,15 @@ object Pipeline {
 
   def run():Unit = {
     val download = injector.getInstance(classOf[DownloadProcessor])
-    val document = injector.getInstance(classOf[FileCentricProcessor])
+    val filecentric = injector.getInstance(classOf[FileCentricProcessor])
+    val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
     val index = injector.getInstance(classOf[IndexProcessor])
 
     val dp:Unit => Repository = download.process
 
-    dp.andThen(document.process).andThen(index.process)()
+    dp.andThen(filecentric.process).andThen(index.process)()
+
+    dp.andThen(participantcentric.process).andThen(index.process)()
 
   }
 

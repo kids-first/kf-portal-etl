@@ -1,5 +1,6 @@
 package io.kf.etl.processors.participantcentric.inject
 
+import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
@@ -45,6 +46,7 @@ class ParticipantCentricInjectModule(sparkSession: SparkSession,
     new ParticipantCentricContext(sparkSession, hdfs, appRootPath, cc)
   }
 
+  @Provides
   override def getProcessor(): ParticipantCentricProcessor = {
     val context = getContext()
     val source = getSource(context)
