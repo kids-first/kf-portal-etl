@@ -12,7 +12,24 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
 
     import ctx.spark.implicits._
 
-    val family_relations = MergeFamilyMemberHelper.familyMemberRelationship(ctx, participants, ctx.dbTables.familyRelationship)
+    val flattenedFamilyRelationship =
+      ctx.dbTables.familyRelationship.flatMap(tf => {
+        Seq(
+          tf,
+          TFamilyRelationship(
+            kfId = tf.kfId,
+            uuid = tf.uuid,
+            createdAt = tf.createdAt,
+            modifiedAt = tf.modifiedAt,
+            participantId = tf.relativeId,
+            relativeId = tf.participantId,
+            relativeToParticipantRelation = tf.participantToRelativeRelation,
+            participantToRelativeRelation = tf.relativeToParticipantRelation
+          )
+        )
+      })
+
+    val family_relations = MergeFamilyMemberHelper.familyMemberRelationship(ctx, participants, flattenedFamilyRelationship)
 
     val ds =
     participants.joinWith(ctx.dbTables.participantGenomicFile, participants.col("kfId") === ctx.dbTables.participantGenomicFile.col("kfId"), "left").map(tuple => {
