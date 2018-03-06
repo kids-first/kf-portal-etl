@@ -1,11 +1,13 @@
 package io.kf.etl.processors.index.sink
 
 import io.kf.etl.common.conf.ESConfig
+import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.elasticsearch.spark.rdd.EsSpark
 
-class IndexSink(val spark:SparkSession, val esConfig: ESConfig) {
+class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTag:ReleaseTag) {
   def sink(data:(String, Dataset[String])):Unit = {
-    EsSpark.saveJsonToEs(data._2.rdd, s"${data._1}-${esConfig.index_version}/${data._1}")
+
+    EsSpark.saveJsonToEs(data._2.rdd, s"${data._1}_${releaseTag.releaseTag}/${data._1}")
   }
 }

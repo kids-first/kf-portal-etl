@@ -40,11 +40,16 @@ object Context extends ContextTrait with ClasspathURLEnabler{
         case None => session
       }
     }).map(session => {
+
+      config.esConfig.configs.map(tuple => {
+        session.config(tuple._1, tuple._2)
+      })
+
       session
-        .config("es.index.auto.create", "true")
-        .config("es.nodes", config.esConfig.url)
         .config("es.nodes.wan.only", "true")
+        .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
         .getOrCreate()
+
     }).get
 
   }

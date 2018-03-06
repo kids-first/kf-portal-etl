@@ -30,9 +30,29 @@ class KFConfig(private val config: Config){
 
   private def getESConfig(): ESConfig = {
     ESConfig(
-      config.getString(CONFIG_NAME_ES_URL),
-      config.getString(CONFIG_NAME_ES_INDEX),
-      config.getString(CONFIG_NAME_ES_INDEX_VERSION)
+      host = config.getString(CONFIG_NAME_ES_HOST),
+      cluster_name = config.getString(CONFIG_NAME_ES_CLUSTER_NAME),
+      http_port = Try(config.getInt(CONFIG_NAME_ES_HTTP_PORT)) match {
+        case Success(port) => port
+        case Failure(_) => 9200
+      },
+      transport_port = Try(config.getInt(CONFIG_NAME_ES_TRANSPORT_PORT))  match {
+        case Success(port) => port
+        case Failure(_) => 9300
+      },
+      configs = {
+        Try(config.getConfig(CONFIG_NAME_ES_CONFIGS)) match {
+          case Success(config) => {
+            WrapAsScala.asScalaSet(config.entrySet()).map(entry => {
+              (
+                entry.getKey,
+                entry.getValue.unwrapped().toString
+              )
+            }).toMap
+          }
+          case Failure(_) => Map.empty[String, String]
+        }
+      }
     )
   }
 
@@ -74,7 +94,7 @@ case class SparkConfig(appName:String, master:Option[String])
 
 case class HDFSConfig(fs:String, root:String)
 
-case class ESConfig(url:String, index:String, index_version: String)
+case class ESConfig(cluster_name:String, host:String, http_port:Int, transport_port:Int, configs: Map[String, String])
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
 
