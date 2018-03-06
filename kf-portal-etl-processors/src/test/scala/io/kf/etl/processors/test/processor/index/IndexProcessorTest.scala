@@ -79,7 +79,8 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
         esConfig.getInt("transport_port"),
         Map.empty[String, String]
       ),
-      new DateTimeReleaseTag(Map("pattern" -> "yyyy_MM_dd"))
+      new DateTimeReleaseTag(Map("pattern" -> "yyyy_MM_dd")),
+      null
     )
 
     val index_processor = new IndexProcessor(context, source.source, transformer.transform, sink.sink)

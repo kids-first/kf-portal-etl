@@ -1,0 +1,501 @@
+{
+  "mappings": {
+    "file_centric": {
+      "properties": {
+        "controlled_access": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+        },
+        "data_type": {
+          "type": "keyword"
+        },
+        "file_format": {
+          "type": "keyword"
+        },
+        "file_name": {
+          "type": "text"
+        },
+        "file_size": {
+          "type": "long"
+        },
+        "file_url": {
+          "type": "text"
+        },
+        "kf_id": {
+          "type": "keyword"
+        },
+        "md5sum": {
+          "type": "keyword"
+        },
+        "modified_at": {
+          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+        },
+        "participants": {
+          "type": "nested",
+          "properties": {
+            "aliases": {
+              "type": "keyword"
+            },
+            "available_data_types": {
+              "type": "keyword"
+            },
+            "consent_type": {
+              "type": "keyword"
+            },
+            "created_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "diagnoses": {
+              "type": "nested",
+              "properties": {
+                "age_at_event_days": {
+                  "type": "long"
+                },
+                "created_at": {
+                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                },
+                "diagnosis": {
+                  "type": "text"
+                },
+                "diagnosis_category": {
+                  "type": "keyword"
+                },
+                "external_id": {
+                  "type": "keyword"
+                },
+                "kf_id": {
+                  "type": "keyword"
+                },
+                "modified_at": {
+                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                },
+                "tumor_location": {
+                  "type": "keyword"
+                },
+                "uuid": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "ethnicity": {
+              "type": "keyword"
+            },
+            "external_id": {
+              "type": "keyword"
+            },
+            "family": {
+              "properties": {
+                "family_data": {
+                  "type": "nested",
+                  "properties": {
+                    "available_data_types": {
+                      "type": "keyword"
+                    },
+                    "composition": {
+                      "type": "keyword"
+                    },
+                    "shared_hpo_ids": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "family_id": {
+                  "type": "keyword"
+                },
+                "family_members": {
+                  "type": "nested",
+                  "properties": {
+                    "aliases": {
+                      "type": "keyword"
+                    },
+                    "available_data_types": {
+                      "type": "keyword"
+                    },
+                    "consent_type": {
+                      "type": "keyword"
+                    },
+                    "created_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "diagnoses": {
+                      "type": "nested",
+                      "properties": {
+                        "age_at_event_days": {
+                          "type": "long"
+                        },
+                        "created_at": {
+                          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                        },
+                        "diagnosis": {
+                          "type": "text"
+                        },
+                        "diagnosis_category": {
+                          "type": "keyword"
+                        },
+                        "external_id": {
+                          "type": "keyword"
+                        },
+                        "kf_id": {
+                          "type": "keyword"
+                        },
+                        "modified_at": {
+                          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                        },
+                        "tumor_location": {
+                          "type": "keyword"
+                        },
+                        "uuid": {
+                          "type": "keyword"
+                        }
+                      }
+                    },
+                    "ethnicity": {
+                      "type": "keyword"
+                    },
+                    "gender": {
+                      "type": "keyword"
+                    },
+                    "is_proband": {
+                      "type": "boolean"
+                    },
+                    "kf_id": {
+                      "type": "keyword"
+                    },
+                    "modified_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "phenotype": {
+                      "properties": {
+                        "hpo": {
+                          "properties": {
+                            "age_at_event_days": {
+                              "type": "long"
+                            },
+                            "ancestral_hpo_ids": {
+                              "type": "keyword"
+                            },
+                            "created_at": {
+                              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                            },
+                            "modified_at": {
+                              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                            },
+                            "observed": {
+                              "type": "text"
+                            },
+                            "phenotype": {
+                              "type": "text"
+                            },
+                            "negative_hpo_ids": {
+                              "type": "keyword"
+                            },
+                            "hpo_ids": {
+                              "type": "keyword"
+                            },
+                            "shared_hpo_ids": {
+                              "type": "keyword"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "race": {
+                      "type": "keyword"
+                    },
+                    "relationship": {
+                      "type": "keyword"
+                    },
+                    "uuid": {
+                      "type": "keyword"
+                    }
+                  }
+                }
+              }
+            },
+            "gender": {
+              "type": "keyword"
+            },
+            "is_proband": {
+              "type": "boolean"
+            },
+            "kf_id": {
+              "type": "keyword"
+            },
+            "modified_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "phenotype": {
+              "properties": {
+                "hpo": {
+                  "properties": {
+                    "age_at_event_days": {
+                      "type": "long"
+                    },
+                    "ancestral_hpo_ids": {
+                      "type": "keyword"
+                    },
+                    "created_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "modified_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "observed": {
+                      "type": "text"
+                    },
+                    "phenotype": {
+                      "type": "text"
+                    },
+                    "negative_hpo_ids": {
+                      "type": "keyword"
+                    },
+                    "hpo_ids": {
+                      "type": "keyword"
+                    }
+                  }
+                }
+              }
+            },
+            "race": {
+              "type": "keyword"
+            },
+            "samples": {
+              "type": "nested",
+              "properties": {
+                "age_at_event_days": {
+                  "type": "long"
+                },
+                "aliquots": {
+                  "properties": {
+                    "analyte_type": {
+                      "type": "keyword"
+                    },
+                    "created_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "concentration": {
+                      "type": "float"
+                    },
+                    "kf_id": {
+                      "type": "keyword"
+                    },
+                    "modified_at": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "shipment_date": {
+                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                    },
+                    "shipment_destination": {
+                      "type": "keyword"
+                    },
+                    "shipment_origin": {
+                      "type": "keyword"
+                    },
+                    "volume": {
+                      "type": "float"
+                    },
+                    "uuid": {
+                      "type": "keyword"
+                    }
+                  }
+                },
+                "anatomical_site": {
+                  "type": "keyword"
+                },
+                "composition": {
+                  "type": "keyword"
+                },
+                "external_id": {
+                  "type": "keyword"
+                },
+                "kf_id": {
+                  "type": "keyword"
+                },
+                "tissue_type": {
+                  "type": "keyword"
+                },
+                "tumor_descriptor": {
+                  "type": "keyword"
+                },
+                "uuid": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "study": {
+              "properties": {
+                "attribution": {
+                  "type": "text"
+                },
+                "created_at": {
+                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                },
+                "data_access_authority": {
+                  "type": "keyword"
+                },
+                "external_id": {
+                  "type": "keyword"
+                },
+                "kf_id": {
+                  "type": "keyword"
+                },
+                "modified_at": {
+                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                },
+                "name": {
+                  "type": "text"
+                },
+                "version": {
+                  "type": "keyword"
+                },
+                "uuid": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "uuid": {
+              "type": "keyword"
+            }
+          }
+        },
+        "sequencing_experiments": {
+          "type": "nested",
+          "properties": {
+            "center": {
+              "type": "keyword"
+            },
+            "created_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "experiment_date": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "experiment_strategy": {
+              "type": "keyword"
+            },
+            "external_id": {
+              "type": "keyword"
+            },
+            "instrument_model": {
+              "type": "keyword"
+            },
+            "is_paired_end": {
+              "type": "boolean"
+            },
+            "kf_id": {
+              "type": "keyword"
+            },
+            "library_name": {
+              "type": "keyword"
+            },
+            "library_strand": {
+              "type": "keyword"
+            },
+            "max_insert_size": {
+              "type": "long"
+            },
+            "mean_depth": {
+              "type": "long"
+            },
+            "mean_insert_size": {
+              "type": "long"
+            },
+            "mean_read_length": {
+              "type": "long"
+            },
+            "min_insert_size": {
+              "type": "long"
+            },
+            "modified_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "platform": {
+              "type": "keyword"
+            },
+            "total_reads": {
+              "type": "long"
+            },
+            "uuid": {
+              "type": "keyword"
+            }
+          }
+        },
+        "workflow": {
+          "properties": {
+            "created_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "github_url": {
+              "type": "text"
+            },
+            "input_files": {
+              "type": "keyword"
+            },
+            "kf_id": {
+              "type": "keyword"
+            },
+            "modified_at": {
+              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+            },
+            "output_files": {
+              "type": "keyword"
+            },
+            "task_id": {
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "version": {
+              "type": "keyword"
+            },
+            "uuid": {
+              "type": "keyword"
+            }
+          }
+        },
+        "uuid": {
+          "type": "keyword"
+        }
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "autocomplete_analyzed": {
+          "filter": [
+            "lowercase",
+            "edge_ngram"
+          ],
+          "tokenizer": "standard"
+        },
+        "autocomplete_prefix": {
+          "filter": [
+            "lowercase",
+            "edge_ngram"
+          ],
+          "tokenizer": "keyword"
+        },
+        "lowercase_keyword": {
+          "filter": [
+            "lowercase"
+          ],
+          "tokenizer": "keyword"
+        }
+      },
+      "filter": {
+        "edge_ngram": {
+          "max_gram": "20",
+          "min_gram": "1",
+          "side": "front",
+          "type": "edge_ngram"
+        }
+      }
+    },
+    "index.mapping.nested_fields.limit": 100,
+    "index.max_result_window": 100000000
+  }
+}

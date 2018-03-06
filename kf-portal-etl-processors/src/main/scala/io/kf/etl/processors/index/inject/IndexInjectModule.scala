@@ -1,5 +1,7 @@
 package io.kf.etl.processors.index.inject
 
+import java.net.InetAddress
+
 import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
@@ -15,6 +17,10 @@ import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 import io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
+import org.elasticsearch.client.transport.TransportClient
+import org.elasticsearch.common.settings.Settings
+import org.elasticsearch.common.transport.TransportAddress
+import org.elasticsearch.transport.client.PreBuiltTransportClient
 
 import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
@@ -31,6 +37,8 @@ class IndexInjectModule(sparkSession: SparkSession,
   type TRANSFORMER = IndexTransformer
   type OUTPUT = Unit
 
+  lazy private val esConfig = parseESConfig()
+
   private def checkConfig(): Boolean = {
     config.isDefined && (
       Try(config.get.getConfig("elasticsearch")) match {
@@ -42,39 +50,41 @@ class IndexInjectModule(sparkSession: SparkSession,
 
   require(checkConfig())
 
+  private def parseESConfig(): ESConfig = {
+    val esConfig = config.get.getConfig("elasticsearch")
+
+    ESConfig(
+      host = esConfig.getString("host"),
+      cluster_name = esConfig.getString("cluster_name"),
+      http_port = Try(esConfig.getInt("http_port")) match {
+        case Success(port) => port
+        case Failure(_) => 9200
+      },
+      transport_port = Try(esConfig.getInt("transport_port"))  match {
+        case Success(port) => port
+        case Failure(_) => 9300
+      },
+      configs = {
+        Try(esConfig.getConfig("configs")) match {
+          case Success(config) => {
+            WrapAsScala.asScalaSet(config.entrySet()).map(entry => {
+              (
+                entry.getKey,
+                entry.getValue.unwrapped().toString
+              )
+            }).toMap
+          }
+          case Failure(_) => Map.empty[String, String]
+        }
+      }
+    )
+  }
+
   override def getContext(): IndexContext = {
 
     val cc = IndexConfig(
       config.get.getString("name"),
-      {
-        val esConfig = config.get.getConfig("elasticsearch")
-
-        ESConfig(
-          host = esConfig.getString("host"),
-          cluster_name = esConfig.getString("cluster_name"),
-          http_port = Try(esConfig.getInt("http_port")) match {
-            case Success(port) => port
-            case Failure(_) => 9200
-          },
-          transport_port = Try(esConfig.getInt("transport_port"))  match {
-            case Success(port) => port
-            case Failure(_) => 9300
-          },
-          configs = {
-            Try(esConfig.getConfig("configs")) match {
-              case Success(config) => {
-                WrapAsScala.asScalaSet(config.entrySet()).map(entry => {
-                  (
-                    entry.getKey,
-                    entry.getValue.unwrapped().toString
-                  )
-                }).toMap
-              }
-              case Failure(_) => Map.empty[String, String]
-            }
-          }
-        )
-      },
+      esConfig,
       None
     )
 
@@ -94,6 +104,14 @@ class IndexInjectModule(sparkSession: SparkSession,
       }
       case Failure(_) => new DateTimeReleaseTag(Map.empty[String, String])
     }
+  }
+
+  private def getESClient(): TransportClient = {
+    (new PreBuiltTransportClient(
+      Settings.builder()
+        .put("cluster.name", esConfig.cluster_name)
+        .build()
+    )).addTransportAddress(new TransportAddress(InetAddress.getByName(esConfig.host), esConfig.transport_port))
   }
 
   @Provides
@@ -120,7 +138,8 @@ class IndexInjectModule(sparkSession: SparkSession,
     new IndexSink(
       sparkSession,
       context.config.eSConfig,
-      getReleaseTagInstance()
+      getReleaseTagInstance(),
+      getESClient()
     )
   }
 
