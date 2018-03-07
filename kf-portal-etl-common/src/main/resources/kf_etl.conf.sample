@@ -13,9 +13,13 @@ io.kf.etl {
   }
 
   elasticsearch {
-    url = ""
-    index = ""
-    index_version = ""  // will append index name
+    cluster_name = ""
+    host = ""
+    http_port = 9200
+    transport_port = 9300
+    configs {
+      "es.nodes.wan.only": true
+    }
   }
 
   hdfs {
@@ -56,6 +60,10 @@ io.kf.etl {
     {
       name = "index"
       elasticsearch = ${io.kf.etl.elasticsearch}
+      release_tag {
+        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag"
+        pattern = "yyyy_MM_dd"
+      }
     }
   ]
 

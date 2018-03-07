@@ -17,7 +17,7 @@ import io.kf.etl.processors.filecentric.transform.FileCentricTransformer
 import scala.util.{Failure, Success, Try}
 
 
-@GuiceModule(name = "file-centric")
+@GuiceModule(name = "file_centric")
 class FileCentricInjectModule(sparkSession: SparkSession,
                               hdfs: HDFS,
                               appRootPath: String,

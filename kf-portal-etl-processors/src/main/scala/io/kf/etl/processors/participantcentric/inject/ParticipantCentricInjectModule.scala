@@ -2,7 +2,7 @@ package io.kf.etl.processors.participantcentric.inject
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
-import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
+import io.kf.etl.common.Constants._
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
@@ -16,7 +16,7 @@ import org.apache.hadoop.fs.{FileSystem => HDFS}
 
 import scala.util.{Failure, Success, Try}
 
-@GuiceModule(name = "participant-centric")
+@GuiceModule(name = "participant_centric")
 class ParticipantCentricInjectModule(sparkSession: SparkSession,
                                      hdfs: HDFS,
                                      appRootPath: String,

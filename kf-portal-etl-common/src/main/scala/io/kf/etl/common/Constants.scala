@@ -9,9 +9,11 @@ object Constants {
 
   val CONFIG_NAME_SPARK_APP_NAME = s"${ROOT_PACKAGE}.spark.app.name"
   val CONFIG_NAME_SPARK_MASTER = s"${ROOT_PACKAGE}.spark.master"
-  val CONFIG_NAME_ES_URL = s"${ROOT_PACKAGE}.elasticsearch.url"
-  val CONFIG_NAME_ES_INDEX = s"${ROOT_PACKAGE}.elasticsearch.index"
-  val CONFIG_NAME_ES_INDEX_VERSION = s"${ROOT_PACKAGE}.elasticsearch.index_version"
+  val CONFIG_NAME_ES_HOST = s"${ROOT_PACKAGE}.elasticsearch.host"
+  val CONFIG_NAME_ES_CLUSTER_NAME = s"${ROOT_PACKAGE}.elasticsearch.cluster_name"
+  val CONFIG_NAME_ES_HTTP_PORT = s"${ROOT_PACKAGE}.elasticsearch.http_port"
+  val CONFIG_NAME_ES_TRANSPORT_PORT = s"${ROOT_PACKAGE}.elasticsearch.transport_port"
+  val CONFIG_NAME_ES_CONFIGS = s"${ROOT_PACKAGE}.elasticsearch.configs"
   val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root"
   val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"
@@ -25,6 +27,11 @@ object Constants {
   val CONFIG_NAME_HPO = s"${ROOT_PACKAGE}.hpo"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"
+
+  val FILE_CENTRIC_PROCESSOR_NAME = "file_centric"
+  val PARTICIPANT_CENTRIC_PROCESSOR_NAME = "participant_centric"
+  val RELEASE_TAG = "release_tag"
+  val RELEASE_TAG_CLASS_NAME = "release_tag_class_name"
 
   val DOWNLOAD_DEFAULT_DATA_PATH = "download"
   val FILECENTRIC_DEFAULT_DATA_PATH = "filecentric"

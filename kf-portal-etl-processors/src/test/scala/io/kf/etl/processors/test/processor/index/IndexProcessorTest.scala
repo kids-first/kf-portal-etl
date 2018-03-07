@@ -11,6 +11,7 @@ import io.kf.etl.processors.index.context.{IndexConfig, IndexContext}
 import io.kf.etl.processors.index.sink.IndexSink
 import io.kf.etl.processors.index.source.IndexSource
 import io.kf.etl.processors.index.transform.IndexTransformer
+import io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag
 import io.kf.etl.processors.repo.Repository
 import io.kf.etl.processors.test.common.KfEtlTestEnv
 import org.apache.commons.io.FileUtils
@@ -41,6 +42,14 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
        elasticsearch {
        index = "index_processor_test"
        url = "localhost"
+           cluster_name = ""
+     host = ""
+     http_port = 9200
+     transport_port = 9300
+     index_version = "v3"
+     configs {
+       "es.nodes.wan.only": true
+     }
        }
       }
       """.stripMargin)
@@ -51,8 +60,11 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
       {
         val esConfig = in_line_config.getConfig("elasticsearch")
         ESConfig(
-          esConfig.getString("url"),
-          esConfig.getString("index")
+          esConfig.getString("cluster_name"),
+          esConfig.getString("host"),
+          esConfig.getInt("http_port"),
+          esConfig.getInt("transport_port"),
+          Map.empty[String, String]
         )
       },
       None
@@ -61,9 +73,14 @@ class IndexProcessorTest extends KfEtlUnitTestSpec{
     val transformer = new IndexTransformer(context)
     val sink = new IndexSink(spark,
       ESConfig(
-        esConfig.getString("url"),
-        esConfig.getString("index")
-      )
+        esConfig.getString("cluster_name"),
+        esConfig.getString("host"),
+        esConfig.getInt("http_port"),
+        esConfig.getInt("transport_port"),
+        Map.empty[String, String]
+      ),
+      new DateTimeReleaseTag(Map("pattern" -> "yyyy_MM_dd")),
+      null
     )
 
     val index_processor = new IndexProcessor(context, source.source, transformer.transform, sink.sink)

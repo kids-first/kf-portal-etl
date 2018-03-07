@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   google_guice,
   reflections,
   es_spark,
+  elasticsearch,
   postgres,
   mysql,
   embedded_elasticsearch % "test",
