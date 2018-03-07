@@ -7,6 +7,7 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.conf.ESConfig
 import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.context.Context
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.index.context.{IndexConfig, IndexContext}
@@ -37,7 +38,7 @@ class IndexInjectModule(sparkSession: SparkSession,
   type TRANSFORMER = IndexTransformer
   type OUTPUT = Unit
 
-  lazy private val esConfig = parseESConfig()
+  private val esConfig = parseESConfig()
 
   private def checkConfig(): Boolean = {
     config.isDefined && (
@@ -106,14 +107,6 @@ class IndexInjectModule(sparkSession: SparkSession,
     }
   }
 
-  private def getESClient(): TransportClient = {
-    (new PreBuiltTransportClient(
-      Settings.builder()
-        .put("cluster.name", esConfig.cluster_name)
-        .build()
-    )).addTransportAddress(new TransportAddress(InetAddress.getByName(esConfig.host), esConfig.transport_port))
-  }
-
   @Provides
   override def getProcessor(): IndexProcessor = {
     val context = getContext()
@@ -139,7 +132,7 @@ class IndexInjectModule(sparkSession: SparkSession,
       sparkSession,
       context.config.eSConfig,
       getReleaseTagInstance(),
-      getESClient()
+      Context.esClient
     )
   }
 

@@ -15,6 +15,8 @@ class MergeStudy(override val ctx:StepContext) extends StepExecutable[Dataset[Pa
         uuid = tuple._1.uuid,
         createdAt = tuple._1.createdAt,
         modifiedAt = tuple._1.modifiedAt,
+        isProband = tuple._1.isProband,
+        consentType = tuple._1.consentType,
         family = tuple._1.familyId match {
           case Some(id) => Some(Family(familyId = id))
           case None => None

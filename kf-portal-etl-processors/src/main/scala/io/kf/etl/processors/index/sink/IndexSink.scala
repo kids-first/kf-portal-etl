@@ -5,7 +5,9 @@ import io.kf.etl.processors.index.mapping.MappingFiles
 import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 import org.apache.spark.sql.{Dataset, SparkSession}
 import org.elasticsearch.client.transport.TransportClient
+import org.elasticsearch.common.xcontent.{XContentBuilder, XContentType}
 import org.elasticsearch.spark.rdd.EsSpark
+import org.json4s.jackson.JsonMethods._
 
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTagInstance:ReleaseTag, val client: TransportClient) {
   def sink(data:(String, Dataset[String])):Unit = {
@@ -20,9 +22,21 @@ class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTagIn
   }
 
   private def createMapping(index_name_prefix:String, release_tag: String):Unit = {
-    val mapping = MappingFiles.getMapping(index_name_prefix)
+    val content = MappingFiles.getMapping(index_name_prefix)
 
-    client.admin().indices().prepareCreate(mapping).get()
+    val jvalue = parse(content)
+
+    val mappings = compact(render(jvalue \ "mappings" \ index_name_prefix))
+    val settings = compact(render(jvalue \ "settings"))
+
+    println(mappings)
+    println(settings)
+
+    client.admin().indices()
+      .prepareCreate(s"${index_name_prefix}_${release_tag}")
+      .setSettings(settings, XContentType.JSON)
+      .addMapping(index_name_prefix, mappings, XContentType.JSON)
+      .get()
 
     println(s"Successfully created index ${index_name_prefix}_${release_tag}")
 

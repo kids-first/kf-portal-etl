@@ -15,8 +15,6 @@ class MergeDemographic(override val ctx: StepContext) extends StepExecutable[Dat
       Option(tuple._2) match {
         case Some(dg) => {
           tuple._1.copy(
-            isProband = tuple._1.isProband,
-            consentType = tuple._1.consentType,
             race = tuple._2.race,
             ethnicity = tuple._2.ethnicity,
             gender = tuple._2.gender
