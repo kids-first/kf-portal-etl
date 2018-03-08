@@ -6,7 +6,8 @@
           "type": "boolean"
         },
         "created_at": {
-          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
         },
         "data_type": {
           "type": "keyword"
@@ -30,7 +31,8 @@
           "type": "keyword"
         },
         "modified_at": {
-          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
         },
         "participants": {
           "type": "nested",
@@ -45,7 +47,8 @@
               "type": "keyword"
             },
             "created_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "diagnoses": {
               "type": "nested",
@@ -54,7 +57,8 @@
                   "type": "long"
                 },
                 "created_at": {
-                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                  "type": "date",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                 },
                 "diagnosis": {
                   "type": "keyword"
@@ -69,7 +73,8 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                  "type": "date",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                 },
                 "tumor_location": {
                   "type": "keyword"
@@ -117,7 +122,8 @@
                       "type": "keyword"
                     },
                     "created_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "diagnoses": {
                       "type": "nested",
@@ -126,7 +132,8 @@
                           "type": "long"
                         },
                         "created_at": {
-                          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                          "type": "date",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                         },
                         "diagnosis": {
                           "type": "keyword"
@@ -141,7 +148,8 @@
                           "type": "keyword"
                         },
                         "modified_at": {
-                          "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                          "type": "date",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                         },
                         "tumor_location": {
                           "type": "keyword"
@@ -164,7 +172,8 @@
                       "type": "keyword"
                     },
                     "modified_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "phenotype": {
                       "properties": {
@@ -177,10 +186,12 @@
                               "type": "keyword"
                             },
                             "created_at": {
-                              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                              "type": "date",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                             },
                             "modified_at": {
-                              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                              "type": "date",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                             },
                             "observed": {
                               "type": "text"
@@ -207,6 +218,39 @@
                     "relationship": {
                       "type": "keyword"
                     },
+                    "study": {
+                      "properties": {
+                        "attribution": {
+                          "type": "text"
+                        },
+                        "created_at": {
+                          "type": "date",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                        },
+                        "data_access_authority": {
+                          "type": "keyword"
+                        },
+                        "external_id": {
+                          "type": "keyword"
+                        },
+                        "kf_id": {
+                          "type": "keyword"
+                        },
+                        "modified_at": {
+                          "type": "date",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                        },
+                        "name": {
+                          "type": "text"
+                        },
+                        "version": {
+                          "type": "keyword"
+                        },
+                        "uuid": {
+                          "type": "keyword"
+                        }
+                      }
+                    },
                     "uuid": {
                       "type": "keyword"
                     }
@@ -224,7 +268,8 @@
               "type": "keyword"
             },
             "modified_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "phenotype": {
               "properties": {
@@ -237,10 +282,12 @@
                       "type": "keyword"
                     },
                     "created_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "modified_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "observed": {
                       "type": "text"
@@ -273,7 +320,8 @@
                       "type": "keyword"
                     },
                     "created_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "concentration": {
                       "type": "float"
@@ -282,10 +330,12 @@
                       "type": "keyword"
                     },
                     "modified_at": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "shipment_date": {
-                      "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                      "type": "date",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                     },
                     "shipment_destination": {
                       "type": "keyword"
@@ -330,7 +380,8 @@
                   "type": "text"
                 },
                 "created_at": {
-                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                  "type": "date",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                 },
                 "data_access_authority": {
                   "type": "keyword"
@@ -342,7 +393,8 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+                  "type": "date",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
                 },
                 "name": {
                   "type": "text"
@@ -367,10 +419,12 @@
               "type": "keyword"
             },
             "created_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "experiment_date": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "experiment_strategy": {
               "type": "keyword"
@@ -409,7 +463,8 @@
               "type": "long"
             },
             "modified_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "platform": {
               "type": "keyword"
@@ -425,7 +480,8 @@
         "workflow": {
           "properties": {
             "created_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "github_url": {
               "type": "text"
@@ -437,7 +493,8 @@
               "type": "keyword"
             },
             "modified_at": {
-              "type": "date", "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
+              "type": "date",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
             },
             "output_files": {
               "type": "keyword"
