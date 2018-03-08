@@ -379,7 +379,7 @@ class DownloadTransformer(val context:DownloadContext) {
       },
       md5Sum = row.getString(8) match {
         case "null" => None
-        case value:String => Some(value)
+        case value:String => Some(value.replace("-", ""))
       },
       controlledAccess = row.getString(9) match {
         case "null" => None
