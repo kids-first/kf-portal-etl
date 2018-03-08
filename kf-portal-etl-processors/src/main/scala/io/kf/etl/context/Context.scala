@@ -67,6 +67,7 @@ object Context extends ContextTrait with ClasspathURLEnabler{
       session
         .config("es.nodes.wan.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
+//          .config("spark.driver.host", "localhost")
         .getOrCreate()
 
     }).get

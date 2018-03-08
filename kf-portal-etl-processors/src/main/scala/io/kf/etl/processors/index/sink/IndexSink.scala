@@ -29,9 +29,6 @@ class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTagIn
     val mappings = compact(render(jvalue \ "mappings" \ index_name_prefix))
     val settings = compact(render(jvalue \ "settings"))
 
-    println(mappings)
-    println(settings)
-
     client.admin().indices()
       .prepareCreate(s"${index_name_prefix}_${release_tag}")
       .setSettings(settings, XContentType.JSON)

@@ -51,11 +51,18 @@ object Pipeline {
     val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
     val index = injector.getInstance(classOf[IndexProcessor])
 
-    val dp:Unit => Repository = download.process
 
-    dp.andThen(filecentric.process).andThen(index.process)()
+    val dump_location = download.process()
 
-    dp.andThen(participantcentric.process).andThen(index.process)()
+    val fp = filecentric.process _
+    fp.andThen(index.process)(dump_location)
+
+    val pp = participantcentric.process _
+    pp.andThen(index.process)(dump_location)
+
+//    val dp:Unit => Repository = download.process
+//    dp.andThen(filecentric.process).andThen(index.process)()
+//    dp.andThen(participantcentric.process).andThen(index.process)()
 
   }
 

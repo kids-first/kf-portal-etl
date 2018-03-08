@@ -383,7 +383,9 @@ class DownloadTransformer(val context:DownloadContext) {
       },
       controlledAccess = row.getString(9) match {
         case "null" => None
-        case value:String => Some(value.toBoolean)
+        case value:String => Some(
+          if(value.trim.equals("t")) true else false
+        )
       },
       sequencingExperimentId = row.getString(10),
       kfId = row.getString(11)
