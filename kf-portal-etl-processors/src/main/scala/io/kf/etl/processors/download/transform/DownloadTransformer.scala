@@ -49,27 +49,27 @@ class DownloadTransformer(val context:DownloadContext) {
         createdAt = row.getString(1),
         modifiedAt = row.getString(2),
         dataAccessAuthority = row.getString(3) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         externalId = row.getString(4) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         version = row.getString(5) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         name = row.getString(6) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         attribution = row.getString(7) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         investigatorId = row.getString(8) match {
-          case "null" => None
+          case null | "null" => None
           case value:String => Some(value)
         },
         kfId = row.getString(9)
@@ -83,25 +83,25 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       familyId = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       isProband = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(
           if(value.trim.equals("t")) true else false
         )
       },
       consentType = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       studyId = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       kfId = row.getString(8)
@@ -114,19 +114,19 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       race = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       ethnicity = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       gender = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       participantId = row.getString(7),
@@ -140,27 +140,27 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       tissueType = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       composition = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       anatomicalSite = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       ageAtEventDays = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value: String => Some(value.toLong)
       },
       tumorDescriptor = row.getString(8) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       participantId = row.getString(9),
@@ -174,31 +174,31 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       shipmentOrigin = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       shipmentDestination = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       analyteType = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       concentration = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toFloat)
       },
       volume = row.getString(8) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toFloat)
       },
       shipmentDate = row.getString(9) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       sampleId = row.getString(10),
@@ -212,61 +212,61 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       experimentDate = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       experimentStrategy = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       center = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       libraryName = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       libraryStrand = row.getString(8) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       isPairedEnd = row.getString(9) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(
           if(value.trim().equals("t")) true else false
         )
       },
       platform = row.getString(10) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       instrumentModel = row.getString(11) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       maxInsertSize = row.getString(12) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       meanInsertSize = row.getString(13) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toDouble)
       },
       meanDepth = row.getString(14) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toDouble)
       },
       totalReads = row.getString(15) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       meanReadLength = row.getString(16) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       aliquotId = row.getString(17),
@@ -280,23 +280,23 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       externalId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       diagnosis = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       diagnosisCategory = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       tumorLocation = row.getString(6) match {
-        case "null" => None
+        case null | "null"  => None
         case value:String => Some(value)
       },
       ageAtEventDays = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       participantId = row.getString(8),
@@ -310,19 +310,19 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       phenotype = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       hpoId = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       observed = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       ageAtEventDays = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       participantId = row.getString(7),
@@ -336,15 +336,15 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       vitalStatus = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       diseaseRelated = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       ageAtEventDays = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       participantId = row.getString(6),
@@ -358,31 +358,31 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       fileName = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       dataType = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       fileFormat = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       fileSize = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toLong)
       },
       fileUrl = row.getString(7) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       md5Sum = row.getString(8) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.replace("-", ""))
       },
       controlledAccess = row.getString(9) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(
           if(value.trim.equals("t")) true else false
         )
@@ -398,15 +398,15 @@ class DownloadTransformer(val context:DownloadContext) {
       createdAt = row.getString(1),
       modifiedAt = row.getString(2),
       taskId = row.getString(3) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       name = row.getString(4) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       githubUrl = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       kfId = row.getString(6)
@@ -421,11 +421,11 @@ class DownloadTransformer(val context:DownloadContext) {
       participantId = row.getString(3),
       relativeId = row.getString(4),
       participantToRelativeRelation = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       relativeToParticipantRelation = row.getString(6) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value)
       },
       kfId = row.getString(7)
@@ -444,7 +444,7 @@ class DownloadTransformer(val context:DownloadContext) {
       genomicFileId = row.getString(3),
       workflowId = row.getString(4),
       isInput = row.getString(5) match {
-        case "null" => None
+        case null | "null" => None
         case value:String => Some(value.toBoolean)
       },
       kfId = row.getString(6)
