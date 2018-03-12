@@ -61,5 +61,5 @@ object ProcessorCommonDefinitions {
     val Workflow_Genomic_File = Value("workflow_genomic_file")
 
   }
-  
+
 }
