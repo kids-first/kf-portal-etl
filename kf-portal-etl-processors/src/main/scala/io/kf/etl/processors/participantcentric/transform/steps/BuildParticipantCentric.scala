@@ -1,9 +1,9 @@
 package io.kf.etl.processors.participantcentric.transform.steps
 
+import io.kf.etl.model.utils.{GenomicFileId_ParticipantId, ParticipantIdToFiles}
 import io.kf.etl.model.{File, Participant, ParticipantCentric, SequencingExperiment}
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
-import io.kf.etl.processors.participantcentric.transform.steps.BuildParticipantCentric.{GenomicFileId_ParticipantId, ParticipantIdToFiles}
 import org.apache.spark.sql.Dataset
 
 class BuildParticipantCentric(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[ParticipantCentric]] {
@@ -119,11 +119,4 @@ class BuildParticipantCentric(override val ctx:StepContext) extends StepExecutab
 
     })
   }
-}
-
-object BuildParticipantCentric{
-  case class ParticipantIdToFiles(parId:String, files: Seq[File])
-  case class GenomicFileId_ParticipantId(fileId:String, parId:String)
-
-
 }

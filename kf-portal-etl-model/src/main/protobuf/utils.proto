@@ -70,3 +70,17 @@ message GfId_Participants {
      required string gfId = 1;
      repeated Participant participants = 2;
 }
+
+message ParticipantIdToFiles{
+    required string parId = 1;
+    repeated File files = 2;
+}
+message GenomicFileId_ParticipantId {
+    required string fileId = 1;
+    required string parId = 2;
+}
+
+message ParticipantToSamples {
+    required string kfId = 1;
+    repeated Sample samples = 2;
+}
