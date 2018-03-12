@@ -61,18 +61,5 @@ object ProcessorCommonDefinitions {
     val Workflow_Genomic_File = Value("workflow_genomic_file")
 
   }
-
-//  case class ParticipantToGenomicFiles(kfId:String, fileIds:Seq[String], dataTypes:Seq[String])
-//
-//  case class GenomicFileToWorkflows(kfId:String, flows: Seq[Workflow])
-//
-//  case class HPOReference(term:String, ancestors: Seq[String])
-//
-//  case class TransformedGraphPath(term1:String, term2:String, distance:Int)
-//
-//  case class GenomicFileToStudyId(kfId:String, studyId: Option[String]) //kfId is genomic_file id
-//
-//  case class GenomicFileToStudy(kfId:String, study: Study)
-
-
+  
 }
