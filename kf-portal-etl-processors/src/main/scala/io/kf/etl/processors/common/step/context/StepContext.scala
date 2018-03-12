@@ -1,6 +1,6 @@
 package io.kf.etl.processors.filecentric.transform.steps.context
 
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, ParticipantToGenomicFiles}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.{Dataset, SparkSession}
 

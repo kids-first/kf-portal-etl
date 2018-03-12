@@ -7,6 +7,7 @@ import io.kf.etl.processors.common.ProcessorCommonDefinitions._
 import io.kf.etl.processors.filecentric.context.FileCentricContext
 import io.kf.etl.processors.repo.Repository
 import io.kf.etl.dbschema._
+import io.kf.etl.model.utils.{GenomicFileToStudy, GenomicFileToStudyId, ParticipantToGenomicFiles, TransformedGraphPath}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.PostgresqlDBTables._
 import org.apache.spark.sql.Dataset
 

@@ -2,8 +2,8 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.dbschema.TFamilyRelationship
 import io.kf.etl.model.{Family, FamilyData, FamilyMember, Participant}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.FamilyMemberRelation
 import io.kf.etl.processors.common.step.StepExecutable
+import io.kf.etl.processors.common.step.impl.MergeFamilyMember.FamilyMemberRelation
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
@@ -55,6 +55,11 @@ class MergeFamilyMember(override val ctx:StepContext) extends StepExecutable[Dat
 
     })
   }
+
+}
+
+object MergeFamilyMember{
+  case class FamilyMemberRelation(kfId:String, relative: Participant, relativeToParcitipantRelation: Option[String])
 
 }
 

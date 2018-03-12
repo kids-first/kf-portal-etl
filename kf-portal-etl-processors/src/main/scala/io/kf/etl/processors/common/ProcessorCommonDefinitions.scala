@@ -2,6 +2,7 @@ package io.kf.etl.processors.common
 
 import io.kf.etl.dbschema._
 import io.kf.etl.model._
+import io.kf.etl.model.utils.{GenomicFileToStudy, ParticipantToGenomicFiles, TransformedGraphPath}
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -61,28 +62,17 @@ object ProcessorCommonDefinitions {
 
   }
 
-  case class FamilyMemberRelation(kfId:String, relative: Participant, relativeToParcitipantRelation: Option[String])
+//  case class ParticipantToGenomicFiles(kfId:String, fileIds:Seq[String], dataTypes:Seq[String])
+//
+//  case class GenomicFileToWorkflows(kfId:String, flows: Seq[Workflow])
+//
+//  case class HPOReference(term:String, ancestors: Seq[String])
+//
+//  case class TransformedGraphPath(term1:String, term2:String, distance:Int)
+//
+//  case class GenomicFileToStudyId(kfId:String, studyId: Option[String]) //kfId is genomic_file id
+//
+//  case class GenomicFileToStudy(kfId:String, study: Study)
 
-  case class ParticipantToGenomicFiles(kfId:String, fileIds:Seq[String], dataTypes:Seq[String])
-
-  case class ParticipantToSamples(kfId:String, samples:Seq[Sample])
-
-  case class GenomicFileToSeqExps(kfId:String, exps: Seq[SequencingExperiment])
-
-  case class GenomicFileToWorkflows(kfId:String, flows: Seq[Workflow])
-
-  case class GenomicFileToParticipants(kfId:String, participants:Seq[Participant])
-
-  case class HPOReference(term:String, ancestors: Seq[String])
-
-  case class TransformedGraphPath(term1:String, term2:String, distance:Int)
-
-  case class GenomicFileToStudyId(kfId:String, studyId: Option[String]) //kfId is genomic_file id
-
-  case class GenomicFileToStudy(kfId:String, study: Study)
-
-  case class GenomicFileId_ParticipantId(fileId:String, parId:String)
-
-  case class ParticipantIdToFiles(parId:String, files: Seq[File])
 
 }

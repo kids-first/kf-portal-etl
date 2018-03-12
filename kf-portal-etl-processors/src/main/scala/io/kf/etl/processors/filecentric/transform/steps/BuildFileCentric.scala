@@ -1,8 +1,8 @@
 package io.kf.etl.processors.filecentric.transform.steps
 
 import io.kf.etl.model.{FileCentric, Participant, SequencingExperiment}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{GenomicFileToParticipants, GenomicFileToSeqExps}
 import io.kf.etl.processors.common.step.StepExecutable
+import io.kf.etl.processors.filecentric.transform.steps.BuildFileCentric.{GenomicFileToParticipants, GenomicFileToSeqExps}
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
@@ -118,4 +118,10 @@ class BuildFileCentric(override val ctx:StepContext) extends StepExecutable[Data
         )
     })
   }
+}
+
+object BuildFileCentric{
+  case class GenomicFileToParticipants(kfId:String, participants:Seq[Participant])
+  case class GenomicFileToSeqExps(kfId:String, exps: Seq[SequencingExperiment])
+
 }

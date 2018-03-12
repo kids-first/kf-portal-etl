@@ -1,8 +1,8 @@
 package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.dbschema.TPhenotype
+import io.kf.etl.model.utils.{HPOReference, TransformedGraphPath}
 import io.kf.etl.model.{HPO, Participant, Phenotype}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{HPOReference, TransformedGraphPath}
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.broadcast.Broadcast

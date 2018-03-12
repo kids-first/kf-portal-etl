@@ -18,7 +18,7 @@ class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTagIn
 
     createMapping(data._1, release_tag)
 
-    EsSpark.saveJsonToEs(data._2.rdd, s"${index_name}/${type_name}")
+    EsSpark.saveJsonToEs(data._2.rdd, s"${index_name}/${type_name}", Map("es.mapping.id" -> "kf_id"))
   }
 
   private def createMapping(index_name_prefix:String, release_tag: String):Unit = {

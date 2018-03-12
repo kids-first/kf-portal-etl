@@ -1,11 +1,12 @@
 package io.kf.etl.processors.download.transform
 
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, TransformedGraphPath}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.repo.Repository
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.PostgresqlDBTables._
 import io.kf.etl.dbschema._
 import io.kf.etl.common.Constants._
+import io.kf.etl.model.utils.TransformedGraphPath
 import org.apache.spark.sql.{DataFrame, Row}
 
 

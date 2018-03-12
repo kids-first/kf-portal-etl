@@ -1,8 +1,9 @@
 package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.model.{Aliquot, Participant, Sample}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, ParticipantToSamples}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import io.kf.etl.processors.common.step.StepExecutable
+import io.kf.etl.processors.common.step.impl.MergeSample.ParticipantToSamples
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
@@ -74,5 +75,10 @@ object MergeSampleHelper {
       )
     })
   }
+
+}
+
+object MergeSample {
+  case class ParticipantToSamples(kfId:String, samples:Seq[Sample])
 
 }

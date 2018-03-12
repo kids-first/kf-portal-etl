@@ -315,6 +315,7 @@
                   "type": "long"
                 },
                 "aliquots": {
+                  "type": "nested",
                   "properties": {
                     "analyte_type": {
                       "type": "keyword"
