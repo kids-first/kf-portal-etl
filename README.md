@@ -14,7 +14,7 @@ Then get the application jar file from
 
 ## Configuration
 
-Kis-First ETL uses [lightbend/config](https://github.com/lightbend/config) as the configuration library. [kf_etl.conf.sample](./kf-portal-etl-processors/src/main/resources/kf_etl.conf.sample) defines all of the configuration objects used by ETL
+Kis-First ETL uses [lightbend/config](https://github.com/lightbend/config) as the configuration library. [kf_etl.conf.sample](./kf-portal-etl-common/src/main/resources/kf_etl.conf.sample) defines all of the configuration objects used by ETL
 
 The top namespace of the configuration is `io.kf.etl`. To refer to any specific configuration object, please prefix the namespace string.
 
@@ -47,7 +47,7 @@ There are some prerequisites to run Kids-First ETL, refer to [submit.sh.example]
 * PostgresQL
 * MySQL
 * Spark 2.2.1 
-* Configuration file: refer to [Configuration]() for the format and contents of the file
+* Configuration file: refer to [Configuration](#Configuration) for the format and contents of the file
 
 To submit the application to Spark, run the following in the command line
 
