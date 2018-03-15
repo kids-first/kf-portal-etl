@@ -43,7 +43,7 @@ io.kf.etl {
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump
     },
     {
-      name = "file-centric" //used as index name and type name
+      name = "file_centric" //used as prefix of the index name and type name
       /**
        **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
        **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
@@ -53,7 +53,7 @@ io.kf.etl {
       write_intermediate_data = false
     },
     {
-      name = "participant-centric" // used as index name and type name
+      name = "participant_entric" // used as prefix of the index name and type name
       data_path = ${io.kf.etl.hdfs.root}/participantcentric
       write_intermediate_data = false
     },
@@ -62,8 +62,12 @@ io.kf.etl {
       elasticsearch = ${io.kf.etl.elasticsearch}
       release_tag {
         release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag"
-        pattern = "yyyy_MM_dd"
+        pattern = "yyyy_MM_dd_HH_mm_ss"
       }
+      //      release_tag {
+      //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
+      //        pattern = "sample_aliquot_fix"
+      //      }
     }
   ]
 

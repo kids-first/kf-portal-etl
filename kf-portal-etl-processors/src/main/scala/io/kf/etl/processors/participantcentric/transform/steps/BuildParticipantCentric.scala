@@ -60,25 +60,13 @@ class BuildParticipantCentric(override val ctx:StepContext) extends StepExecutab
 
     val all = ctx.dbTables
 
-    val file_SE_ST =
-      fileWithSE.joinWith(all.genomicFileToStudy, fileWithSE.col("kfId") === all.genomicFileToStudy.col("kfId"), "left").map(tuple => {
-        if(tuple._2 == null){
-          tuple._1
-        }
-        else {
-          tuple._1.copy(
-            study = Some(tuple._2.study)
-          )
-        }
-      })
-
     val gf_par =
       all.participantGenomicFile.flatMap(pgf => {
         pgf.fileIds.map(fileId => GenomicFileId_ParticipantId(fileId, pgf.kfId))
       })
 
     val parId2Files =
-      gf_par.joinWith(file_SE_ST, gf_par.col("fileId") === file_SE_ST.col("kfId")).groupByKey(_._1.parId).mapGroups((parId, iterator) => {
+      gf_par.joinWith(fileWithSE, gf_par.col("fileId") === fileWithSE.col("kfId")).groupByKey(_._1.parId).mapGroups((parId, iterator) => {
         ParticipantIdToFiles(
           parId,
           iterator.toList.map(_._2)

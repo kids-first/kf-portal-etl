@@ -72,7 +72,7 @@
               "type": "keyword"
             },
             "file_name": {
-              "type": "text"
+              "type": "keyword"
             },
             "file_size": {
               "type": "long"
@@ -149,39 +149,6 @@
                 },
                 "total_reads": {
                   "type": "long"
-                },
-                "uuid": {
-                  "type": "keyword"
-                }
-              }
-            },
-            "study": {
-              "properties": {
-                "attribution": {
-                  "type": "text"
-                },
-                "created_at": {
-                  "type": "date",
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
-                },
-                "data_access_authority": {
-                  "type": "keyword"
-                },
-                "external_id": {
-                  "type": "keyword"
-                },
-                "kf_id": {
-                  "type": "keyword"
-                },
-                "modified_at": {
-                  "type": "date",
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss"
-                },
-                "name": {
-                  "type": "text"
-                },
-                "version": {
-                  "type": "keyword"
                 },
                 "uuid": {
                   "type": "keyword"
