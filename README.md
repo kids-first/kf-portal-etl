@@ -42,18 +42,13 @@ If `kf.etl.config` is not provided when the application is submitted to Spark, E
 
 ## Running Application
 
-There are some prerequisites to run Kids-First ETL, refer to [submit.sh.example](submit.sh.example)
+There are some dependencies to run Kids-First ETL, refer to [submit.sh.example](submit.sh.example)
 
-* PostgresQL
-* MySQL
+* PostgresQL: primary storage for Kids-First data models
+* MySQL: HPO reference data. The reference DB dump file could be found [here](http://human-phenotype-ontology.github.io/downloads.html)
 * Spark 2.2.1 
 * Configuration file: refer to [Configuration](#Configuration) for the format and contents of the file
 
 To submit the application to Spark, run the following in the command line
 
 ``` ${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} ```
-
-
-## HPO reference data
-
-Before running any ETL, a MySQL database for HPO should be restored, the DB dump file could be found[here](http://human-phenotype-ontology.github.io/downloads.html)
