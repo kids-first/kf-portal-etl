@@ -16,7 +16,7 @@
           "type": "keyword"
         },
         "file_name": {
-          "type": "text"
+          "type": "keyword"
         },
         "file_size": {
           "type": "long"

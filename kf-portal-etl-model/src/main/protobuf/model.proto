@@ -53,8 +53,7 @@ message File {
     required string modified_at = 10;
     repeated SequencingExperiment sequencing_experiments = 11;
     repeated Workflow workflow = 12;
-    optional Study study = 13;
-    required string uuid = 14;
+    required string uuid = 13;
 }
 
 message Workflow {
