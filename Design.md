@@ -1,21 +1,3 @@
----
-layout: post
-title:  "Introducing the Kids-First ETL"
-breadcrumb: true
-author: grant_guo
-date: 2018-03-19
-categories: grant_guo
-tags:
-    - Functional Programming(FP), Scala
-teaser:
-    info: An introduction of how to apply Scala's functional programming features to the Kids-First ETL
-    image: lambda.png
-header:
-    version: small
-    title: Software Engineering Blog
-    image: header-logo-crop.png
-    icon: icon-blog
----
 
 ## Abstractions
 
@@ -32,10 +14,6 @@ Each `Processor` manages subordinate but important abstractions for the purpose 
 
 We can visualize all of these parts as a Class diagram: 
 ![Kids-First ETL Classes](images/kf-etl-classes.jpg)
-<figure>
-    <img src="{{site.urlimg}}grant_guo/kf-etl-classes.jpg" />
-    <figcaption>Kids-First ETL Classes</figcaption>
-</figure>
 
 Most of the processors have been defined as Scala [Function1[-T1, +R]](http://www.scala-lang.org/api/2.11.12/#scala.Function1)
 
@@ -154,10 +132,7 @@ computation match {
 
 This section explains how the ETL applies Scala's functional features.
 ![Kids-First Pipeline](images/pipeline.png)
-<figure>
-    <img src="{{site.urlimg}}grant_guo/pipeline.png" />
-    <figcaption>Kids-First ETL Pipeline</figcaption>
-</figure>
+
 
 ### Data Models
 
