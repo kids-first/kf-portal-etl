@@ -18,6 +18,9 @@ trait Pipeline[T] {
 }
 
 object Pipeline {
+  def from[O](p: Processor[Unit, O]): Pipeline[O] =  {
+    new PipelineFromProcessor[O](p)
+  }
   def from[T](s:T): Pipeline[T] = {
     new PipelineFrom[T](s)
   }

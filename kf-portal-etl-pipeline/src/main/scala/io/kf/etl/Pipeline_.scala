@@ -30,16 +30,12 @@ object Pipeline_ {
         .map(clazz => {
           val guiceModuleName = clazz.getAnnotation(classOf[GuiceModule]).name()
           clazz.getConstructor(
-                classOf[SparkSession],
-                classOf[FileSystem],
-                classOf[String],
-                classOf[Option[Config]])
-              .newInstance(
-                Context.sparkSession,
-                Context.hdfs,
-                Context.rootPath,
-                Context.getProcessConfig(guiceModuleName)
-              ).asInstanceOf[AbstractModule]
+            classOf[Option[Config]]
+          )
+          .newInstance(
+            Context.getProcessConfig(guiceModuleName)
+          )
+          .asInstanceOf[AbstractModule]
         }).toSeq:_*
     )
   }
