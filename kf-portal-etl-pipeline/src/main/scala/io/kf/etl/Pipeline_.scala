@@ -1,22 +1,21 @@
-package io.kf.etl.pipeline
+package io.kf.etl
 
 import com.google.inject.{AbstractModule, Guice, Injector}
 import com.typesafe.config.Config
-import io.kf.etl.common.inject.GuiceModule
-import org.reflections.Reflections
 import io.kf.etl.common.Constants._
+import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
-import io.kf.etl.processors.filecentric.FileCentricProcessor
 import io.kf.etl.processors.download.DownloadProcessor
+import io.kf.etl.processors.filecentric.FileCentricProcessor
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
-import io.kf.etl.processors.repo.Repository
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
+import org.reflections.Reflections
 
 import scala.collection.convert.WrapAsScala
 
-object Pipeline {
+object Pipeline_ {
 
   private lazy val injector = createInjector()
 
