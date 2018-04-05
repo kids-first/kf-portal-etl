@@ -3,7 +3,7 @@ import sbt._
 
 object Dependencies {
 
-  val spark_version = "2.2.1"
+  val spark_version = "2.3.0"
   val spark_sql = "org.apache.spark" %% "spark-sql" % spark_version
   val spark_graphx =  "org.apache.spark" %% "spark-graphx" % spark_version
   val typesafe_config = "com.typesafe" % "config" % "1.3.2"
