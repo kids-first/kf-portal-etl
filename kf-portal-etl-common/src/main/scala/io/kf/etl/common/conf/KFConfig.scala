@@ -1,5 +1,7 @@
 package io.kf.etl.common.conf
 
+import java.util.Properties
+
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 
@@ -98,4 +100,4 @@ case class ESConfig(cluster_name:String, host:String, http_port:Int, transport_p
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
 
-case class MysqlConfig(host:String, database:String, user:String, password:String)
+case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])

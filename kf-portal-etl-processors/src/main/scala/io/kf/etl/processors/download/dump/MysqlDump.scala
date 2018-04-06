@@ -14,7 +14,8 @@ object MysqlDump {
     Class.forName("com.mysql.jdbc.Driver")
     Try(
       DriverManager.getConnection(
-        s"jdbc:mysql://${ctx.config.hpo.mysql.user}:${ctx.config.hpo.mysql.password}@${ctx.config.hpo.mysql.host}/${ctx.config.hpo.mysql.database}"
+        s"jdbc:mysql://${ctx.config.hpo.mysql.host}/${ctx.config.hpo.mysql.database}?user=${ctx.config.hpo.mysql.user}&password=${ctx.config.hpo.mysql.password}" +
+          ctx.config.hpo.mysql.properties.mkString("&", "&", "")
       )
     ) match {
       case Success(conn) => {
@@ -28,8 +29,8 @@ object MysqlDump {
         import ctx.sparkSession.implicits._
         ctx.sparkSession.createDataset(list).write.csv(s"${ctx.config.dumpPath}/${HPO_GRAPH_PATH}")
       }
-      case Failure(_) => {
-
+      case Failure(exception) => {
+        throw new Exception("Failed to connect to MYSQL: ", exception)
       }
     }
   }
