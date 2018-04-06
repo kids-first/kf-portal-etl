@@ -3,7 +3,9 @@ io.kf.etl {
   spark {
     app.name = ""
 //    master = ""
-    properties = [""]
+    properties {
+//      "spark.executor.cores" = 4
+    }
   }
 
   postgresql {
