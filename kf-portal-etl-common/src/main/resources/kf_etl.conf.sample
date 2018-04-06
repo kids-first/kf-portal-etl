@@ -38,6 +38,7 @@ io.kf.etl {
           database = ""
           user = ""
           password = ""
+          properties = ["useSSL=false"]
         }
       }
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump
