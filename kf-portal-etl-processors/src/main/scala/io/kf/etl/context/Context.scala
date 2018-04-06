@@ -64,6 +64,16 @@ object Context extends ContextTrait with ClasspathURLEnabler{
         session.config(tuple._1, tuple._2)
       })
 
+      config.sparkConfig.properties match {
+        case Some(properties) => {
+          properties.foreach(property => {
+            val pair = property.split('=')
+            session.config(pair(0).trim(), pair(1).trim)
+          })
+        }
+        case None =>
+      }
+
       session
         .config("es.nodes.wan.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")

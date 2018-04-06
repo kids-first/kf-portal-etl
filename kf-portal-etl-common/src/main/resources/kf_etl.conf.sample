@@ -2,7 +2,8 @@ io.kf.etl {
 
   spark {
     app.name = ""
-    master = ""
+//    master = ""
+    properties = [""]
   }
 
   postgresql {

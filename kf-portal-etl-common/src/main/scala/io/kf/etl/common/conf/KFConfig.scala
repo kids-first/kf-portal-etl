@@ -26,6 +26,12 @@ class KFConfig(private val config: Config){
       Try(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
         case Success(master) => Some(master)
         case _ => None
+      },
+      Try(config.getStringList(CONFIG_NAME_SPARK_PROPERTIES)) match {
+        case Success(properties) => {
+          Some(WrapAsScala.asScalaBuffer(properties))
+        }
+        case _ => None
       }
     )
   }
@@ -92,7 +98,7 @@ object KFConfig{
   }
 }
 
-case class SparkConfig(appName:String, master:Option[String])
+case class SparkConfig(appName:String, master:Option[String], properties: Option[Seq[String]])
 
 case class HDFSConfig(fs:String, root:String)
 

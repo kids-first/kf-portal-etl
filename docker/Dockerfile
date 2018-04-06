@@ -13,12 +13,6 @@ ADD http://httpd-mirror.sergal.org/apache/spark/spark-${SPARK_VERSION}/spark-${S
 
 RUN tar xfz spark-${SPARK_VERSION}-bin-hadoop2.7.tgz && mv spark-${SPARK_VERSION}-bin-hadoop2.7/ spark/ && rm spark-${SPARK_VERSION}-bin-hadoop2.7.tgz
 
-RUN mkdir lib/ conf/
-
-#ADD $ETL_JAR_URL lib/
-
-#ADD $ETL_CONFIGURATION_FILE_URL conf/
-
 COPY kf-etl-submit.sh .
 
 RUN chown -R root:root /kf-etl
@@ -28,9 +22,4 @@ ENV SPARK_MASTER=$SPARK_MASTER
 ENV ETL_JAR_URL=$ETL_JAR_URL
 ENV ETL_CONFIGURATION_FILE_URL=$ETL_CONFIGURATION_FILE_URL
 
-#ENTRYPOINT ["/kf-etl/kf-etl-submit.sh"]
-
-RUN ls -al /kf-etl
-RUN ls -al /kf-etl/lib
-RUN ls -al /kf-etl/conf
-RUN cat /kf-etl/kf-etl-submit.sh
+ENTRYPOINT ["/kf-etl/kf-etl-submit.sh"]
