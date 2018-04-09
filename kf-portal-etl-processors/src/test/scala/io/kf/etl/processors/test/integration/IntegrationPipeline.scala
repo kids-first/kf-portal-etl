@@ -76,7 +76,8 @@ object IntegrationPipeline {
                   pg_hpo.getString("host"),
                   pg_hpo.getString("database"),
                   pg_hpo.getString("user"),
-                  pg_hpo.getString("password")
+                  pg_hpo.getString("password"),
+                  Seq("useSSL=false")
                 )
               )
             }

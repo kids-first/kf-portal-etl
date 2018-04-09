@@ -9,6 +9,7 @@ object Constants {
 
   val CONFIG_NAME_SPARK_APP_NAME = s"${ROOT_PACKAGE}.spark.app.name"
   val CONFIG_NAME_SPARK_MASTER = s"${ROOT_PACKAGE}.spark.master"
+  val CONFIG_NAME_SPARK_PROPERTIES = s"${ROOT_PACKAGE}.spark.properties"
   val CONFIG_NAME_ES_HOST = s"${ROOT_PACKAGE}.elasticsearch.host"
   val CONFIG_NAME_ES_CLUSTER_NAME = s"${ROOT_PACKAGE}.elasticsearch.cluster_name"
   val CONFIG_NAME_ES_HTTP_PORT = s"${ROOT_PACKAGE}.elasticsearch.http_port"

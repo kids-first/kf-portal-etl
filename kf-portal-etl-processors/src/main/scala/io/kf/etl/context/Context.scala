@@ -60,8 +60,15 @@ object Context extends ContextTrait with ClasspathURLEnabler{
       }
     }).map(session => {
 
-      config.esConfig.configs.map(tuple => {
-        session.config(tuple._1, tuple._2)
+      Seq(
+        config.esConfig.configs,
+        config.sparkConfig.properties
+      ).foreach(entries => {
+        entries.foreach(entry => {
+          session.config(
+            entry._1.substring(entry._1.indexOf("\"") + 1, entry._1.lastIndexOf("\"")) , // remove starting and ending double quotes
+            entry._2)
+        })
       })
 
       session

@@ -1,5 +1,6 @@
 package io.kf.etl.common.conf
 
+
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 
@@ -17,13 +18,26 @@ class KFConfig(private val config: Config){
 
   private def getSparkConfig(): SparkConfig = {
     SparkConfig(
-      Option(config.getString(CONFIG_NAME_SPARK_APP_NAME)) match {
+      appName = Option(config.getString(CONFIG_NAME_SPARK_APP_NAME)) match {
         case Some(name) => name
         case None => DEFAULT_APP_NAME
       },
-      Try(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
+      master = Try(config.getString(CONFIG_NAME_SPARK_MASTER)) match {
         case Success(master) => Some(master)
         case _ => None
+      },
+      properties = {
+        Try(config.getConfig(CONFIG_NAME_SPARK_PROPERTIES)) match {
+          case Success(config) => {
+            WrapAsScala.asScalaSet(config.entrySet()).map(entry => {
+              (
+                entry.getKey,
+                entry.getValue.unwrapped().toString
+              )
+            }).toMap
+          }
+          case Failure(_) => Map.empty[String, String]
+        }
       }
     )
   }
@@ -90,7 +104,7 @@ object KFConfig{
   }
 }
 
-case class SparkConfig(appName:String, master:Option[String])
+case class SparkConfig(appName:String, master:Option[String], properties: Map[String, String])
 
 case class HDFSConfig(fs:String, root:String)
 
@@ -98,4 +112,4 @@ case class ESConfig(cluster_name:String, host:String, http_port:Int, transport_p
 
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
 
-case class MysqlConfig(host:String, database:String, user:String, password:String)
+case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])

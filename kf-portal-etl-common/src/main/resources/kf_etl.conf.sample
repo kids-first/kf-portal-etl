@@ -2,7 +2,10 @@ io.kf.etl {
 
   spark {
     app.name = ""
-    master = ""
+//    master = ""
+    properties {
+//      "spark.executor.cores" = 4
+    }
   }
 
   postgresql {
@@ -38,6 +41,7 @@ io.kf.etl {
           database = ""
           user = ""
           password = ""
+          properties = ["useSSL=false"]
         }
       }
       dump_path = ${io.kf.etl.hdfs.root}/pg_dump

@@ -25,6 +25,6 @@ object Dependencies {
   val scalatest = "org.scalatest" %% "scalatest" % "3.0.4"
   val embedded_elasticsearch = "pl.allegro.tech" % "embedded-elasticsearch" % "2.4.2"
   val json4s = "org.json4s" %% "json4s-jackson" % "3.2.11"
-  val mysql = "mysql" % "mysql-connector-java" % "6.0.6"
+  val mysql = "mysql" % "mysql-connector-java" % "5.1.46"
 
 }

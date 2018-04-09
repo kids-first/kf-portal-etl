@@ -15,6 +15,7 @@ import io.kf.etl.processors.download.transform.DownloadTransformer
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 
+import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
@@ -54,7 +55,8 @@ class DownloadInjectModule(sparkSession: SparkSession,
             pg_hpo.getString("host"),
             pg_hpo.getString("database"),
             pg_hpo.getString("user"),
-            pg_hpo.getString("password")
+            pg_hpo.getString("password"),
+            WrapAsScala.asScalaBuffer( pg_hpo.getStringList("properties") )
           )
         )
       }
