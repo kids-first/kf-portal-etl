@@ -15,6 +15,14 @@ io.kf.etl {
     password = ""
   }
 
+  mysql = {
+    host = ""
+    database = ""
+    user = ""
+    password = ""
+    properties = ["useSSL=false"]
+  }
+
   elasticsearch {
     cluster_name = ""
     host = ""
@@ -34,17 +42,9 @@ io.kf.etl {
     {
       name = "download"
       postgresql = ${io.kf.etl.postgresql}
-      hpo {
-//        postgresql = ${io.kf.etl.postgresql}
-        mysql = {
-          host = ""
-          database = ""
-          user = ""
-          password = ""
-          properties = ["useSSL=false"]
-        }
-      }
-      dump_path = ${io.kf.etl.hdfs.root}/pg_dump
+      mysql = ${io.kf.etl.mysql}
+      dump_path = ${io.kf.etl.hdfs.root}/dump
+      data_path = ${io.kf.etl.hdfs.root}/download
     },
     {
       name = "file_centric" //used as prefix of the index name and type name

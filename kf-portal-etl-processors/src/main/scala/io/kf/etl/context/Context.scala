@@ -4,7 +4,7 @@ import java.net.{InetAddress, URL}
 
 import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{ESConfig, KFConfig, PostgresqlConfig}
+import io.kf.etl.common.conf.{ESConfig, KFConfig, MysqlConfig, PostgresqlConfig}
 import io.kf.etl.common.context.ContextTrait
 import io.kf.etl.common.url.ClasspathURLEnabler
 import org.apache.hadoop.conf.Configuration
@@ -15,13 +15,11 @@ import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.common.transport.TransportAddress
 import org.elasticsearch.transport.client.PreBuiltTransportClient
 
-import scala.collection.convert.WrapAsScala
-import scala.util.{Failure, Success, Try}
-
 object Context extends ContextTrait with ClasspathURLEnabler{
   lazy val (hdfs, rootPath) = getHDFS()
   lazy val sparkSession = getSparkSession()
   lazy val postgresql = getPostgresql()
+  lazy val mysql = getMysql()
   lazy val esClient = getESClient()
 
   override def loadConfig(): KFConfig = {
@@ -83,5 +81,9 @@ object Context extends ContextTrait with ClasspathURLEnabler{
 
   private def getPostgresql(): PostgresqlConfig = {
     config.postgresqlConfig
+  }
+
+  private def getMysql(): MysqlConfig = {
+    config.mysqlConfig
   }
 }
