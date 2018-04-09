@@ -13,7 +13,6 @@ import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
 import org.reflections.Reflections
 
 import scala.collection.convert.WrapAsScala
-import io.kf.etl.pipeline.internal.PipelineConversion.function1ToProcessor
 
 object ETLMain extends App{
 
@@ -49,8 +48,6 @@ object ETLMain extends App{
     Seq(tuples._1, tuples._2).map(tuple => {
       index.process(tuple)
     })
-  })
-
-
+  }).run()
 
 }

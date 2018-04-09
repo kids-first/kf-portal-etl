@@ -3,12 +3,10 @@ package io.kf.etl.pipeline.internal.operators
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 
 import io.kf.etl.pipeline.Pipeline
-import io.kf.etl.processors.common.processor.Processor
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
 
-class PipelineCombine[T, A1, A2](val source: Pipeline[T], p1: Processor[T, A1], p2: Processor[T, A2]) extends Pipeline[(A1, A2)]{
+class PipelineCombine[T, A1, A2](val source: Pipeline[T], p1: Function1[T, A1], p2: Function1[T, A2]) extends Pipeline[(A1, A2)]{
   override def run(): (A1, A2) = {
     import scala.concurrent.ExecutionContext.Implicits.global
     val latch = new CountDownLatch(2)

@@ -42,11 +42,9 @@ io.kf.etl {
     {
       name = "download"
       postgresql = ${io.kf.etl.postgresql}
-      hpo {
-//        postgresql = ${io.kf.etl.postgresql}
-        mysql = ${io.kf.etl.mysql}
-      }
-      dump_path = ${io.kf.etl.hdfs.root}/pg_dump
+      mysql = ${io.kf.etl.mysql}
+      dump_path = ${io.kf.etl.hdfs.root}/dump
+      data_path = ${io.kf.etl.hdfs.root}/download
     },
     {
       name = "file_centric" //used as prefix of the index name and type name

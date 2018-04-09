@@ -5,8 +5,11 @@ import io.kf.etl.processors.common.processor.Processor
 
 trait Pipeline[T] {
 
+  def map[A](p: Function1[T, A]): Pipeline[A] = {
+    new PipelineMapForFunction1[T, A](this, p)
+  }
   def map[A](p: Processor[T, A]): Pipeline[A] = {
-    new PipelineMap[T, A](this, p)
+    new PipelineMapForProcessor[T, A](this, p)
   }
   def combine[A1, A2](p1: Processor[T, A1], p2: Processor[T, A2]): Pipeline[(A1, A2)] = {
     new PipelineCombine[T, A1, A2](this, p1, p2)
@@ -18,7 +21,7 @@ trait Pipeline[T] {
 }
 
 object Pipeline {
-  def from[O](p: Processor[Unit, O]): Pipeline[O] =  {
+  def from[O](p: Function1[Unit, O]): Pipeline[O] =  {
     new PipelineFromProcessor[O](p)
   }
   def from[T](s:T): Pipeline[T] = {

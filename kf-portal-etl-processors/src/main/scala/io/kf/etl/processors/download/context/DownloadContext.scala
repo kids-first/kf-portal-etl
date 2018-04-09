@@ -18,6 +18,4 @@ case class DownloadContext(override val sparkSession: SparkSession,
   }
 }
 
-case class HpoConfig(mysql: MysqlConfig)
-
-case class DownloadConfig(override val name:String, postgresql: PostgresqlConfig,dumpPath:String, override val dataPath:Option[String], hpo: HpoConfig) extends ProcessorConfig
+case class DownloadConfig(override val name:String, postgresql: PostgresqlConfig,dumpPath:String, override val dataPath:Option[String], mysql: MysqlConfig) extends ProcessorConfig

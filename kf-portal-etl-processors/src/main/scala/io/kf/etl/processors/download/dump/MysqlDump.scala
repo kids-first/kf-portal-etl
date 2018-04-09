@@ -14,8 +14,8 @@ object MysqlDump {
     Class.forName("com.mysql.jdbc.Driver")
     Try(
       DriverManager.getConnection(
-        s"jdbc:mysql://${ctx.config.hpo.mysql.host}/${ctx.config.hpo.mysql.database}?user=${ctx.config.hpo.mysql.user}&password=${ctx.config.hpo.mysql.password}" +
-          ctx.config.hpo.mysql.properties.mkString("&", "&", "")
+        s"jdbc:mysql://${ctx.config.mysql.host}/${ctx.config.mysql.database}?user=${ctx.config.mysql.user}&password=${ctx.config.mysql.password}" +
+          ctx.config.mysql.properties.mkString("&", "&", "")
       )
     ) match {
       case Success(conn) => {

@@ -3,12 +3,10 @@ package io.kf.etl.pipeline.internal.operators
 import java.util.concurrent.{CountDownLatch, TimeUnit}
 
 import io.kf.etl.pipeline.Pipeline
-import io.kf.etl.processors.common.processor.Processor
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future, Promise}
 
-class PipelineMerge[T, A1, A2, A3](val source:Pipeline[T], p1: Processor[T, A1], p2: Processor[T, A2], merge_func: (A1, A2)=>A3) extends Pipeline[A3]{
+class PipelineMerge[T, A1, A2, A3](val source:Pipeline[T], p1: Function1[T, A1], p2: Function1[T, A2], merge_func: (A1, A2)=>A3) extends Pipeline[A3]{
   override def run(): A3 = {
     import scala.concurrent.ExecutionContext.Implicits.global
     val latch = new CountDownLatch(2)

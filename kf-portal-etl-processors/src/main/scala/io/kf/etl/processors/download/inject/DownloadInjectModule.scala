@@ -2,20 +2,16 @@ package io.kf.etl.processors.download.inject
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
-import io.kf.etl.common.Constants.CONFIG_NAME_DATA_PATH
-import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
+import io.kf.etl.common.Constants._
 import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.context.Context
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.download.DownloadProcessor
-import io.kf.etl.processors.download.context.{DownloadConfig, DownloadContext, HpoConfig}
+import io.kf.etl.processors.download.context.{DownloadConfig, DownloadContext}
 import io.kf.etl.processors.download.output.DownloadOutput
 import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
-import org.apache.spark.sql.SparkSession
-import org.apache.hadoop.fs.{FileSystem => HDFS}
-
-import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
@@ -30,33 +26,16 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
   override def getContext(): DownloadContext = {
 
     val cc = DownloadConfig(
-      config.get.getString("name"),
-      {
-        val postgres = config.get.getConfig("postgresql")
-        PostgresqlConfig(
-          postgres.getString("host"),
-          postgres.getString("database"),
-          postgres.getString("user"),
-          postgres.getString("password")
-        )
-      },
-      getDumpPath(),
-      Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
+      name = config.get.getString("name"),
+      postgresql = Context.postgresql,
+      dumpPath = getDumpPath(),
+      dataPath = Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
       },
-      {
-        val mysql_hpo = config.get.getConfig("hpo.mysql")
-        HpoConfig(
-          MysqlConfig(
-            mysql_hpo.getString("host"),
-            mysql_hpo.getString("database"),
-            mysql_hpo.getString("user"),
-            mysql_hpo.getString("password"),
-            WrapAsScala.asScalaBuffer( mysql_hpo.getStringList("properties") )
-          )
-        )
-      }
+      mysql = Context.mysql
+
+
     )
     new DownloadContext(sparkSession, hdfs, appRootPath, cc)
   }
@@ -64,7 +43,7 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
   private def getDumpPath():String = {
     // if dump_path is not available, get the local java temporary directory instead
 
-    Try(config.get.getString("dump_path")) match {
+    Try(config.get.getString(CONFIG_NAME_DUMP_PATH)) match {
       case Success(path) => path
       case Failure(_) => s"file://${System.getProperty("java.io.tmpdir")}/dump"
     }
