@@ -15,6 +15,7 @@ class KFConfig(private val config: Config){
   lazy val processorsConfig = getProcessors()
   lazy val pipelineConfig = getPipeline()
   lazy val postgresqlConfig = getPostgresql()
+  lazy val mysqlConfig = getMysql()
 
   private def getSparkConfig(): SparkConfig = {
     SparkConfig(
@@ -93,6 +94,16 @@ class KFConfig(private val config: Config){
       config.getString(cONFIG_NAME_POSTGRESQL_DATABASE),
       config.getString(CONFIG_NAME_POSTGRESQL_USER),
       config.getString(CONFIG_NAME_POSTGRESQL_PASSWORD)
+    )
+  }
+
+  private def getMysql(): MysqlConfig = {
+    MysqlConfig(
+      config.getString(CONFIG_NAME_MYSQL_HOST),
+      config.getString(cONFIG_NAME_MYSQL_DATABASE),
+      config.getString(CONFIG_NAME_MYSQL_USER),
+      config.getString(CONFIG_NAME_MYSQL_PASSWORD),
+      WrapAsScala.asScalaBuffer( config.getStringList(CONFIG_NAME_MYSQL_PROPERTIES) )
     )
   }
 

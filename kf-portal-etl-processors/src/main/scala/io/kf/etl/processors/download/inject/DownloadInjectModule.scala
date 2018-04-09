@@ -19,10 +19,7 @@ import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
-class DownloadInjectModule(sparkSession: SparkSession,
-                           hdfs: HDFS,
-                           appRootPath: String,
-                           config: Option[Config]) extends ProcessorInjectModule(sparkSession, hdfs, appRootPath, config) {
+class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
   type CONTEXT = DownloadContext
   type PROCESSOR = DownloadProcessor
   type SOURCE = DownloadSource
@@ -49,14 +46,14 @@ class DownloadInjectModule(sparkSession: SparkSession,
         case Failure(_) => None
       },
       {
-        val pg_hpo = config.get.getConfig("hpo.mysql")
+        val mysql_hpo = config.get.getConfig("hpo.mysql")
         HpoConfig(
           MysqlConfig(
-            pg_hpo.getString("host"),
-            pg_hpo.getString("database"),
-            pg_hpo.getString("user"),
-            pg_hpo.getString("password"),
-            WrapAsScala.asScalaBuffer( pg_hpo.getStringList("properties") )
+            mysql_hpo.getString("host"),
+            mysql_hpo.getString("database"),
+            mysql_hpo.getString("user"),
+            mysql_hpo.getString("password"),
+            WrapAsScala.asScalaBuffer( mysql_hpo.getStringList("properties") )
           )
         )
       }

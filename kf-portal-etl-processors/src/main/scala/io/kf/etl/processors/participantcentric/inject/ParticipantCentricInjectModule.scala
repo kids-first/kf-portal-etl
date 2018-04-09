@@ -17,10 +17,7 @@ import org.apache.hadoop.fs.{FileSystem => HDFS}
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "participant_centric")
-class ParticipantCentricInjectModule(sparkSession: SparkSession,
-                                     hdfs: HDFS,
-                                     appRootPath: String,
-                                     config: Option[Config]) extends ProcessorInjectModule(sparkSession, hdfs, appRootPath, config) {
+class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
   type CONTEXT = ParticipantCentricContext
   type PROCESSOR = ParticipantCentricProcessor
   type OUTPUT = ParticipantCentricOutput

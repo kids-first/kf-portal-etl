@@ -18,10 +18,7 @@ import scala.util.{Failure, Success, Try}
 
 
 @GuiceModule(name = "file_centric")
-class FileCentricInjectModule(sparkSession: SparkSession,
-                              hdfs: HDFS,
-                              appRootPath: String,
-                              config: Option[Config]) extends ProcessorInjectModule(sparkSession, hdfs, appRootPath, config){
+class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config){
   type CONTEXT = FileCentricContext
   type PROCESSOR = FileCentricProcessor
   type SOURCE = FileCentricSource

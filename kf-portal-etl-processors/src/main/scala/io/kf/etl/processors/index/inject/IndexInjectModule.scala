@@ -27,10 +27,7 @@ import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "index")
-class IndexInjectModule(sparkSession: SparkSession,
-                        hdfs: HDFS,
-                        appRootPath: String,
-                        config: Option[Config]) extends ProcessorInjectModule(sparkSession, hdfs, appRootPath, config) {
+class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
   type CONTEXT = IndexContext
   type PROCESSOR = IndexProcessor
   type SOURCE = IndexSource
