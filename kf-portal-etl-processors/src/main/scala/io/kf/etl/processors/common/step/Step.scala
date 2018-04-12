@@ -15,5 +15,5 @@ abstract class StepExecutable[-I, +O] extends Function1[I, O] with Serializable 
   }
 
   def process(input: I):O
-  def ctx():StepContext
+  def ctx:StepContext
 }

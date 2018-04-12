@@ -6,9 +6,7 @@ import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, PROCESSOR_PACKAGE}
 import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
-import io.kf.etl.processors.filecentric.FileCentricProcessor
-import io.kf.etl.processors.download.DownloadProcessor
-import io.kf.etl.processors.download.context.{DownloadConfig, DownloadContext, HpoConfig}
+import io.kf.etl.processors.download.context.{DownloadConfig, DownloadContext}
 import io.kf.etl.processors.index.IndexProcessor
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
@@ -71,14 +69,12 @@ object IntegrationPipeline {
             },
             {
               val pg_hpo = config.get.getConfig("hpo.mysql")
-              HpoConfig(
-                MysqlConfig(
-                  pg_hpo.getString("host"),
-                  pg_hpo.getString("database"),
-                  pg_hpo.getString("user"),
-                  pg_hpo.getString("password"),
-                  Seq("useSSL=false")
-                )
+              MysqlConfig(
+                pg_hpo.getString("host"),
+                pg_hpo.getString("database"),
+                pg_hpo.getString("user"),
+                pg_hpo.getString("password"),
+                Seq("useSSL=false")
               )
             }
           )

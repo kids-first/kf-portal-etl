@@ -103,16 +103,16 @@ message Diagnosis {
 
 }
 
-message Family{
-    repeated FamilyData family_data = 1;
-    required string family_id = 2;
-    repeated FamilyMember family_members = 3;
+message Family {
+    required string family_id = 1;
+    repeated FamilyComposition family_compositions = 2;
 }
 
-message FamilyData {
-    repeated string available_data_types = 1;
-    required string composition= 2;
-    repeated string shared_hpo_ids = 3;
+message FamilyComposition {
+    required string composition = 1;
+    repeated string shared_hpo_ids = 2;
+    repeated string available_data_types = 3;
+    repeated FamilyMember family_members = 4;
 }
 
 message FamilyMember {
@@ -128,6 +128,7 @@ message FamilyMember {
     required string uuid = 10;
     optional string ethnicity = 11;
     optional string race = 12;
+    repeated Diagnosis diagnoses = 13;
 
 }
 

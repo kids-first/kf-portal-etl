@@ -1,6 +1,6 @@
 package io.kf.etl.processors.participantcentric.transform
 
-import io.kf.etl.model.{FileCentric, Participant, ParticipantCentric}
+import io.kf.etl.model.{Participant, ParticipantCentric}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.DatasetsFromDBTables
 import io.kf.etl.processors.common.step.Step
 import io.kf.etl.processors.common.step.impl._
@@ -16,12 +16,6 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
 
     val ctx = StepContext(context.sparkSession, "participantcentric", context.getProcessorDataPath(), context.hdfs, input)
 
-    //    val (posthandler1, posthandler2) = {
-    //      context.config.write_intermediate_data match {
-    //        case true => ((filename:String) => new WriteParticipantsToJsonFile(ctx, filename), new WriteFileCentricToJsonFile(ctx))
-    //        case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant]](), new DefaultPostHandler[Dataset[FileCentric]]())
-    //      }
-    //    }
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
         case true => ((filename:String) => new WriteKfModelToJsonFile[Participant](ctx), new WriteKfModelToJsonFile[ParticipantCentric](ctx))
@@ -36,7 +30,7 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
         Step[Dataset[Participant], Dataset[Participant]]("03. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step3")),
         Step[Dataset[Participant], Dataset[Participant]]("04. compute HPO reference data and then merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
         Step[Dataset[Participant], Dataset[Participant]]("05. merge 'availableDataTypes' into Participant", new MergeAvailableDataTypesForParticipant(ctx), posthandler1("step5")),
-        Step[Dataset[Participant], Dataset[Participant]]("06. merge family member into Participant", new MergeFamilyMember(ctx), posthandler1("step6")),
+        Step[Dataset[Participant], Dataset[Participant]]("06. merge family member into Participant", new MergeFamilyCompositions(ctx), posthandler1("step6")),
         Step[Dataset[Participant], Dataset[Participant]]("07. merge Sample, Aliquot into Participant", new MergeSample(ctx), posthandler1("step7"))
       )
     ).andThen(
