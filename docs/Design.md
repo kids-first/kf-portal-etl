@@ -13,7 +13,7 @@ Each `Processor` manages subordinate but important abstractions for the purpose 
 * `inject`: creates the instances of the above abstractions in a non-invasive way
 
 We can visualize all of these parts as a Class diagram: 
-![Kids-First ETL Classes](images/kf-etl-classes.jpg)
+![Kids-First ETL Classes](../images/kf-etl-classes.jpg)
 
 Most of the processors have been defined as Scala [Function1[-T1, +R]](http://www.scala-lang.org/api/2.11.12/#scala.Function1)
 
@@ -131,7 +131,7 @@ computation match {
 ## Implementation Details
 
 This section explains how the ETL applies Scala's functional features.
-![Kids-First Pipeline](images/pipeline.png)
+![Kids-First Pipeline](../images/pipeline.png)
 
 
 ### Data Models
