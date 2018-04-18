@@ -8,7 +8,7 @@ ARG SPARK_VERSION=2.2.1
 ARG ETL_JAR_URL
 ARG ETL_CONFIGURATION_FILE_URL
 ARG SPARK_MASTER
-ARG SPARK_DEPLOY_MODE=cluster
+ARG SPARK_DEPLOY_MODE=client
 
 ADD http://httpd-mirror.sergal.org/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop2.7.tgz .
 
