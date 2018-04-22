@@ -2,9 +2,9 @@ package io.kf.etl.context
 
 import java.net.{InetAddress, URL}
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{ESConfig, KFConfig, MysqlConfig, PostgresqlConfig}
+import io.kf.etl.common.conf._
 import io.kf.etl.common.context.ContextTrait
 import io.kf.etl.common.url.ClasspathURLEnabler
 import org.apache.hadoop.conf.Configuration
@@ -21,6 +21,7 @@ object Context extends ContextTrait with ClasspathURLEnabler{
   lazy val postgresql = getPostgresql()
   lazy val mysql = getMysql()
   lazy val esClient = getESClient()
+  lazy val dataService = getDataService()
 
   override def loadConfig(): KFConfig = {
 
@@ -30,6 +31,10 @@ object Context extends ContextTrait with ClasspathURLEnabler{
         case None => ConfigFactory.parseURL(new URL(s"classpath:///${DEFAULT_CONFIG_FILE_NAME}"))
       }).resolve()
     )
+  }
+
+  private def getDataService(): DataServiceConfig = {
+    config.dataServiceConfig
   }
 
   private def getESClient(): TransportClient = {

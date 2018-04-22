@@ -32,6 +32,9 @@ io.kf.etl {
       "es.nodes.wan.only": true
     }
   }
+  dataservice {
+    url = ""
+  }
 
   hdfs {
     defaultFS = "hdfs://"
@@ -45,6 +48,7 @@ io.kf.etl {
       mysql = ${io.kf.etl.mysql}
       dump_path = ${io.kf.etl.hdfs.root}/dump
       data_path = ${io.kf.etl.hdfs.root}/download
+      dataservice = ${io.kf.etl.dataservice}
     },
     {
       name = "file_centric" //used as prefix of the index name and type name

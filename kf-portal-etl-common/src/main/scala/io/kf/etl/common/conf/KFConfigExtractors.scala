@@ -86,4 +86,10 @@ object KFConfigExtractors {
       config.getString(CONFIG_NAME_HDFS_PATH)
     )
   }
+
+  def parseDataService(config:Config): DataServiceConfig = {
+    DataServiceConfig(
+      url = config.getString(CONFIG_NAME_DATASERVICE_URL)
+    )
+  }
 }

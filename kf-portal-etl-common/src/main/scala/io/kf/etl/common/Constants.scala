@@ -17,6 +17,7 @@ object Constants {
   val CONFIG_NAME_ES_HTTP_PORT = s"${ROOT_PACKAGE}.elasticsearch.http_port"
   val CONFIG_NAME_ES_TRANSPORT_PORT = s"${ROOT_PACKAGE}.elasticsearch.transport_port"
   val CONFIG_NAME_ES_CONFIGS = s"${ROOT_PACKAGE}.elasticsearch.configs"
+  val CONFIG_NAME_DATASERVICE_URL = s"${ROOT_PACKAGE}.dataservice.url"
   val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root"
   val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"

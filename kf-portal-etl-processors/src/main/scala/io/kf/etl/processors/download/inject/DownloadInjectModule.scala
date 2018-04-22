@@ -27,7 +27,7 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
 
     val cc = DownloadConfig(
       name = config.get.getString("name"),
-      postgresql = Context.postgresql,
+      dataService = Context.dataService,
       dumpPath = getDumpPath(),
       dataPath = Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)

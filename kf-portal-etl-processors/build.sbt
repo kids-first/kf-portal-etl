@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
   elasticsearch,
   postgres,
   mysql,
+  asyncHttp,
+  scalapb_json4s,
   embedded_elasticsearch % "test",
   scalatest % "test",
   asyncHttp % "test"

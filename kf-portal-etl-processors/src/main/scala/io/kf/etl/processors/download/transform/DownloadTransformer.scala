@@ -1,13 +1,16 @@
 package io.kf.etl.processors.download.transform
 
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.DatasetsFromDBTables
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DatasetsFromDBTables, EntityDataSet, EntityEndpointSet}
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.repo.Repository
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.PostgresqlDBTables._
 import io.kf.etl.dbschema._
 import io.kf.etl.common.Constants._
+import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.model.utils.TransformedGraphPath
+import io.kf.etl.processors.download.source.EntityDataRetrieval
 import org.apache.spark.sql.{DataFrame, Row}
+import org.json4s.JsonAST.JValue
 
 
 
@@ -434,7 +437,7 @@ class DownloadTransformer(val context:DownloadContext) {
   }
 
 //  val row2ParticipantAlias: Row=>TParticipantAlias = {
-//    ???
+//    scalaPbJson4sParser.fromJson[](json)
 //  }
 
   val row2WorkflowGenomicFile: Row=>TWorkflowGenomicFile = row => {
@@ -459,4 +462,75 @@ class DownloadTransformer(val context:DownloadContext) {
       distance = row.getString(2).toInt
     )
   }
+
+
+  def transform(endpoints: EntityEndpointSet): EntityDataSet = {
+    val retrieval = EntityDataRetrieval(context.config.dataService.url)
+    EntityDataSet(
+      participants = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.participants))).map(json2Participant),
+      families = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.families))).map(json2Family),
+      biospecimens = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.biospecimens))).map(json2Biospecimen),
+      diagnoses = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.diagnoses))).map(json2Diagnosis),
+      familyRelationships = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.familyRelationships))).map(json2FamilyRelationship),
+      genomicFiles = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.genomicFiles))).map(json2GenomicFile),
+      investigators = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.investigators))).map(json2Investigator),
+      outcomes = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.outcomes))).map(json2Outcome),
+      phenotypes = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.phenotypes))).map(json2Phenotype),
+      sequencingExperiments = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.sequencingExperiments))).map(json2SeqExp),
+      studies = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.studies))).map(json2Study),
+      studyFiles = context.sparkSession.createDataset(retrieval.retrieve(Some(endpoints.studyFiles))).map(json2StudyFile)
+    )
+  }
+
+  val scalaPbJson4sParser = new com.trueaccord.scalapb.json.Parser(preservingProtoFieldNames = true)
+
+  val json2Participant: JValue=>EParticipant = json => {
+
+    scalaPbJson4sParser.fromJson[EParticipant](json)
+  }
+
+  val json2Family: JValue=>EFamily = json => {
+    scalaPbJson4sParser.fromJson[EFamily](json)
+  }
+
+  val json2Biospecimen: JValue=>EBiospecimen = json => {
+    scalaPbJson4sParser.fromJson[EBiospecimen](json)
+  }
+  val json2Diagnosis: JValue=>EDiagnosis = json => {
+    scalaPbJson4sParser.fromJson[EDiagnosis](json)
+  }
+
+  val json2FamilyRelationship: JValue=>EFamilyRelationship = json => {
+    scalaPbJson4sParser.fromJson[EFamilyRelationship](json)
+  }
+
+  val json2GenomicFile: JValue=>EGenomicFile = json => {
+    scalaPbJson4sParser.fromJson[EGenomicFile](json)
+  }
+
+  val json2Investigator: JValue=>EInvestigator = json => {
+    scalaPbJson4sParser.fromJson[EInvestigator](json)
+  }
+
+  val json2Outcome: JValue=>EOutcome = json => {
+    scalaPbJson4sParser.fromJson[EOutcome](json)
+  }
+
+  val json2Phenotype: JValue=>EPhenotype = json => {
+    scalaPbJson4sParser.fromJson[EPhenotype](json)
+  }
+
+  val json2SeqExp: JValue=>ESequencingExperiment = json => {
+    scalaPbJson4sParser.fromJson[ESequencingExperiment](json)
+  }
+
+  val json2Study: JValue=>EStudy = json => {
+    scalaPbJson4sParser.fromJson[EStudy](json)
+  }
+
+  val json2StudyFile: JValue=>EStudyFile = json => {
+    scalaPbJson4sParser.fromJson[EStudyFile](json)
+  }
+
+
 }
