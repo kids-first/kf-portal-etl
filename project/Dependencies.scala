@@ -11,7 +11,6 @@ object Dependencies {
   val google_guice = "com.google.inject" % "guice" % "4.1.0"
   val scalapb_grpc_netty = "io.grpc" % "grpc-netty" % com.trueaccord.scalapb.compiler.Version.grpcJavaVersion
   val scalapb_runtime_grpc = "com.trueaccord.scalapb" %% "scalapb-runtime-grpc" % com.trueaccord.scalapb.compiler.Version.scalapbVersion
-  val scalapb_json4s = "com.trueaccord.scalapb" %% "scalapb-json4s" % "0.3.2"
   val graphframes = "graphframes" % "graphframes" % "0.5.0-spark2.1-s_2.11"
   val graphql_java= "com.graphql-java" % "graphql-java" % "6.0"
   val reflections =  "org.reflections" % "reflections" % "0.9.9"
@@ -27,4 +26,11 @@ object Dependencies {
   val embedded_elasticsearch = "pl.allegro.tech" % "embedded-elasticsearch" % "2.4.2"
   val json4s = "org.json4s" %% "json4s-jackson" % "3.2.11"
   val mysql = "mysql" % "mysql-connector-java" % "5.1.46"
+
+  /**
+    * val scalapb_json4s = "com.trueaccord.scalapb" %% "scalapb-json4s" % "0.3.3"
+    * remove the managed dependency, instead put the shaded assembly jar into kf-portal-etl-processors/lib directory
+    * in order to keep ther version compatibility, the scalapb-json4s version sticks to 0.3.3, and the scalapb plugin version sticks to 0.6.6
+    * any versions changed will result in rebuilding the shaded jar
+    */
 }

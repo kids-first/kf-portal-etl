@@ -86,16 +86,16 @@ message EMetadata {
 
 message EGenomicFile {
     optional string biospecimen_id = 1;
-    optional string controlled_access = 2;
+    optional bool controlled_access = 2;
     required string created_at = 3;
     optional string data_type = 4;
     optional string file_format = 5;
     optional string file_name = 6;
-    repeated EHash hashes = 7;
+    optional EHash hashes = 7;
     optional bool is_harmonized = 8;
     required string kf_id = 9;
     optional string latest_did = 10;
-    repeated EMetadata metadata = 11;
+    optional EMetadata metadata = 11;
     required string modified_at = 12;
     optional string reference_genome = 13;
     optional string sequencing_experiment_id = 14;

@@ -1,14 +1,20 @@
-package io.kf.etl.processors.download.source
+package io.kf.etl.processors.download.transform
 
 import org.asynchttpclient.AsyncHttpClient
-import org.json4s.JsonAST._
 import org.asynchttpclient.Dsl._
+import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
 
 
 case class EntityDataRetrieval(rootUrl:String) {
 
   private lazy val asyncClient = getAsyncClient()
+
+  def retrieveJsonString(entityPath: String): String = {
+
+       asyncClient.prepareGet(s"${rootUrl}${entityPath}").execute().get().getResponseBody
+
+  }
 
   def retrieve(entityPath: Option[String]): Seq[JValue] = {
     entityPath match {
@@ -18,7 +24,7 @@ case class EntityDataRetrieval(rootUrl:String) {
 
         val currentDataset =
           responseBody \ "results" match {
-            case JNull || JNothing => Seq.empty
+            case JNull | JNothing => Seq.empty
             case JArray(list) => {
               list.map(jvalue => {
                 jvalue.removeField{
@@ -31,7 +37,7 @@ case class EntityDataRetrieval(rootUrl:String) {
           }
 
         responseBody \ "_links" \ "next" match {
-          case JNull || JNothing => currentDataset
+          case JNull | JNothing => currentDataset
           case JString(next) => currentDataset ++ retrieve(Some(next))
         }
       }

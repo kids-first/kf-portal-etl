@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   postgres,
   mysql,
   asyncHttp,
-  scalapb_json4s,
+//  scalapb_json4s,
   embedded_elasticsearch % "test",
   scalatest % "test",
   asyncHttp % "test"
@@ -25,6 +25,7 @@ dependencyOverrides ++= Seq(
   "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.6.5",
   "com.fasterxml.jackson.core" % "jackson-annotation" % "2.6.5",
   "org.json4s" %% "json4s-jackson" % "3.2.11"
+//  "org.json4s" %% "json4s-jackson" % "3.5.1"
 )
 
 assemblyJarName in assembly := "kf-portal-etl.jar"

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package io.kf.etl.external;
+
+message GraphPath{
+    required int32 term1 = 1;
+    required int32 term2 = 2;
+    required int32 distance = 3;
+}

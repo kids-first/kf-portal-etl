@@ -30,6 +30,14 @@ lazy val commonSettings = Seq(
     case PathList("org", "aopalliance", xs @ _*) => MergeStrategy.last
     case PathList("org", "apache", "spark", "unused", xs @ _*) => MergeStrategy.last
     case PathList("javax", "annotation", xs @ _*) => MergeStrategy.first
+      // the following is for shading scalapb-json4s version 0.3.3
+    case PathList("com", "trueaccord", xs @ _*) => MergeStrategy.last
+    case PathList("fastparse", xs @ _*) => MergeStrategy.last
+    case PathList("scalapb", xs @ _*) => MergeStrategy.last
+    case PathList("sourcecode", xs @ _*) => MergeStrategy.last
+    case PathList("com", "thoughtworks", xs @ _*) => MergeStrategy.last
+    case PathList("com", "google", "protobuf", xs @ _*) => MergeStrategy.last
+      // end for shading scalapb-json4s
     case "META-INF/io.netty.versions.properties" => MergeStrategy.last
     case "overview.html" => MergeStrategy.last
     case "git.properties" => MergeStrategy.discard
