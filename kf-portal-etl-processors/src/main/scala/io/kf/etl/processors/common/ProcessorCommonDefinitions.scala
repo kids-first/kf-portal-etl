@@ -3,11 +3,8 @@ package io.kf.etl.processors.common
 import io.kf.etl.dbschema._
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.external.hpo.GraphPath
-import io.kf.etl.model._
 import io.kf.etl.model.utils.{GenomicFileToStudy, ParticipantToGenomicFiles, TransformedGraphPath}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.PostgresqlDBTables.Value
 import org.apache.spark.sql.Dataset
-import org.json4s.JsonAST.JValue
 
 object ProcessorCommonDefinitions {
   type DS_STUDY = Dataset[TStudy]

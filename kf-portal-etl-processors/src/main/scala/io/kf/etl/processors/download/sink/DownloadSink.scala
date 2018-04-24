@@ -72,6 +72,7 @@ class DownloadSink(val context: DownloadContext) {
     data.investigators.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Investigator}")
     data.outcomes.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Outcome}")
     data.phenotypes.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Phenotype}")
+    data.graphPath.write.parquet(s"${context.getJobDataPath()}/${HPO_GRAPH_PATH}")
 
   }
 }
