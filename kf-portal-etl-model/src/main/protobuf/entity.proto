@@ -33,14 +33,14 @@ message EBiospecimen {
     optional string analyte_type = 2;
     optional string anatomical_site = 3;
     optional string composition = 4;
-    optional string concentration_mg_per_ml = 5;
+    optional double concentration_mg_per_ml = 5;
     required string created_at = 6;
     optional string external_aliquot_id = 7;
     optional string external_sample_id = 8;
     repeated string genomic_files = 9;
     required string kf_id = 10;
     required string modified_at = 11;
-    required string participant_id = 12;
+//    required string participant_id = 12;
     optional string shipment_date = 13;
     optional string shipment_destination = 14;
     optional string shipment_origin = 15;

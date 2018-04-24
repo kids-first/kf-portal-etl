@@ -33,8 +33,8 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
         case Success(path) => Some(path)
         case Failure(_) => None
       },
-      mysql = Context.mysql
-
+      mysql = Context.mysql,
+      postgresql = Context.postgresql
 
     )
     new DownloadContext(sparkSession, hdfs, appRootPath, cc)

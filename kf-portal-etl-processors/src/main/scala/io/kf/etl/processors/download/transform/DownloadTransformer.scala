@@ -469,39 +469,19 @@ class DownloadTransformer(val context:DownloadContext) {
     import context.sparkSession.implicits._
     val retrieval = EntityDataRetrieval(context.config.dataService.url)
     EntityDataSet(
-      participants = context.sparkSession.createDataset(json2EntitySeq[EParticipant](retrieval.retrieveJsonString(endpoints.participants))),
-      families = context.sparkSession.createDataset(json2EntitySeq[EFamily](retrieval.retrieveJsonString(endpoints.families))),
-      biospecimens = context.sparkSession.createDataset(json2EntitySeq[EBiospecimen](retrieval.retrieveJsonString(endpoints.biospecimens))),
-      diagnoses = context.sparkSession.createDataset(json2EntitySeq[EDiagnosis](retrieval.retrieveJsonString(endpoints.diagnoses))),
-      familyRelationships = context.sparkSession.createDataset(json2EntitySeq[EFamilyRelationship](retrieval.retrieveJsonString(endpoints.familyRelationships))),
-      genomicFiles = context.sparkSession.createDataset(json2EntitySeq[EGenomicFile](retrieval.retrieveJsonString(endpoints.genomicFiles))),
-      investigators = context.sparkSession.createDataset(json2EntitySeq[EInvestigator](retrieval.retrieveJsonString(endpoints.investigators))),
-      outcomes = context.sparkSession.createDataset(json2EntitySeq[EOutcome](retrieval.retrieveJsonString(endpoints.outcomes))),
-      phenotypes = context.sparkSession.createDataset(json2EntitySeq[EPhenotype](retrieval.retrieveJsonString(endpoints.phenotypes))),
-      sequencingExperiments = context.sparkSession.createDataset(json2EntitySeq[ESequencingExperiment](retrieval.retrieveJsonString(endpoints.sequencingExperiments))),
-      studies = context.sparkSession.createDataset(json2EntitySeq[EStudy](retrieval.retrieveJsonString(endpoints.studies))),
-      studyFiles = context.sparkSession.createDataset(json2EntitySeq[EStudyFile](retrieval.retrieveJsonString(endpoints.studyFiles))),
+      participants = context.sparkSession.createDataset(retrieval.retrieve[EParticipant](Some(endpoints.participants))),
+      families = context.sparkSession.createDataset(retrieval.retrieve[EFamily](Some(endpoints.families))),
+      biospecimens = context.sparkSession.createDataset(retrieval.retrieve[EBiospecimen](Some(endpoints.biospecimens))),
+      diagnoses = context.sparkSession.createDataset(retrieval.retrieve[EDiagnosis](Some(endpoints.diagnoses))),
+      familyRelationships = context.sparkSession.createDataset(retrieval.retrieve[EFamilyRelationship](Some(endpoints.familyRelationships))),
+      genomicFiles = context.sparkSession.createDataset(retrieval.retrieve[EGenomicFile](Some(endpoints.genomicFiles))),
+      investigators = context.sparkSession.createDataset(retrieval.retrieve[EInvestigator](Some(endpoints.investigators))),
+      outcomes = context.sparkSession.createDataset(retrieval.retrieve[EOutcome](Some(endpoints.outcomes))),
+      phenotypes = context.sparkSession.createDataset(retrieval.retrieve[EPhenotype](Some(endpoints.phenotypes))),
+      sequencingExperiments = context.sparkSession.createDataset(retrieval.retrieve[ESequencingExperiment](Some(endpoints.sequencingExperiments))),
+      studies = context.sparkSession.createDataset(retrieval.retrieve[EStudy](Some(endpoints.studies))),
+      studyFiles = context.sparkSession.createDataset(retrieval.retrieve[EStudyFile](Some(endpoints.studyFiles))),
       graphPath = HPOGraphPath.get(context)
     )
   }
-
-  val scalaPbJson4sParser = new com.trueaccord.scalapb.json.Parser(preservingProtoFieldNames = true)
-
-  def json2EntitySeq[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](json:String)(implicit cmp: GeneratedMessageCompanion[T]): Seq[T] = {
-    JsonMethods.parse(json) \ "results" match {
-      case JNull | JNothing => Seq.empty
-      case JArray(entities) => {
-        entities.map(entity => {
-          scalaPbJson4sParser.fromJson[T](
-            entity.removeField{
-              case JField("_links", _) => true
-              case _ => false
-            }
-          )
-
-        })
-      }
-    }
-  }
-
 }

@@ -16,7 +16,8 @@ import org.elasticsearch.common.transport.TransportAddress
 import org.elasticsearch.transport.client.PreBuiltTransportClient
 
 object Context extends ContextTrait with ClasspathURLEnabler{
-  lazy val (hdfs, rootPath) = getHDFS()
+  lazy val hdfs = getHDFS()
+  lazy val rootPath = getRootPath()
   lazy val sparkSession = getSparkSession()
   lazy val postgresql = getPostgresql()
   lazy val mysql = getMysql()
@@ -46,10 +47,14 @@ object Context extends ContextTrait with ClasspathURLEnabler{
     )).addTransportAddress(new TransportAddress(InetAddress.getByName(config.esConfig.host), config.esConfig.transport_port))
   }
 
-  private def getHDFS(): (FileSystem, String) = {
+  private def getHDFS(): FileSystem = {
     val conf = new Configuration()
     conf.set("fs.defaultFS", config.hdfsConfig.fs)
-    (FileSystem.get(conf), config.hdfsConfig.root)
+    FileSystem.get(conf)
+  }
+
+  private def getRootPath():String = {
+    config.hdfsConfig.root
   }
 
   private def getSparkSession(): SparkSession = {
@@ -77,7 +82,7 @@ object Context extends ContextTrait with ClasspathURLEnabler{
       session
         .config("es.nodes.wan.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
-        .config("spark.scheduler.mode", "FAIR")
+//        .config("spark.scheduler.mode", "FAIR")
 //          .config("spark.driver.host", "localhost")
         .getOrCreate()
 

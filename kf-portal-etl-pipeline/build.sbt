@@ -3,9 +3,9 @@ import Dependencies._
 name := "kf-portal-etl-pipeline"
 
 libraryDependencies ++= Seq(
-  spark_sql.exclude("io.netty", "netty"),
+  spark_sql,
   hadoop265,
-  parquet_protobuf,
+//  parquet_protobuf,
   google_guice,
   reflections,
   es_spark,
