@@ -467,6 +467,7 @@ class DownloadTransformer(val context:DownloadContext) {
 
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
     import context.sparkSession.implicits._
+    import EntityParentIDExtractor._
     val retrieval = EntityDataRetrieval(context.config.dataService.url)
     EntityDataSet(
       participants = context.sparkSession.createDataset(retrieval.retrieve[EParticipant](Some(endpoints.participants))),

@@ -40,7 +40,7 @@ message EBiospecimen {
     repeated string genomic_files = 9;
     required string kf_id = 10;
     required string modified_at = 11;
-//    required string participant_id = 12;
+    optional string participant_id = 12;
     optional string shipment_date = 13;
     optional string shipment_destination = 14;
     optional string shipment_origin = 15;
@@ -60,7 +60,7 @@ message EDiagnosis {
     required string kf_id = 7;
     required string modified_at = 8;
     optional string mondo_id = 9;
-//    required string  participant_id = 10;
+    optional string  participant_id = 10;
     optional string tumor_location = 11;
     optional string uberon_id = 12;
 }
