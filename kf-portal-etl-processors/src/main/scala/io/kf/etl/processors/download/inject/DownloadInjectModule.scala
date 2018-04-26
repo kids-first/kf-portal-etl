@@ -59,7 +59,7 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
 
     new DownloadProcessor(
       context,
-      source.getRepository,
+      source.getEntitySet,
       transformer.transform,
       sink.sink,
       output.output

@@ -10,14 +10,6 @@ import io.kf.etl.processors.repo.Repository
 
 class DownloadSource(val context: DownloadContext) {
 
-  def getRepository(placeholder:Unit): Repository = {
-
-    val dumper = new DataSourceDump(context)
-    dumper.dump()
-
-    Repository(new URL(context.config.dumpPath))
-  }
-
   def getEntitySet(placeholder:Unit): EntityEndpointSet = {
 
     EntityEndpointSet(

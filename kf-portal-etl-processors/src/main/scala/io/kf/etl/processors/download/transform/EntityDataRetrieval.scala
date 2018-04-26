@@ -58,7 +58,16 @@ trait EntityParentIDExtractor[T <: com.trueaccord.scalapb.GeneratedMessage with 
 object EntityParentIDExtractor {
 
   implicit val participant:EntityParentIDExtractor[EParticipant] = new EntityParentIDExtractor[EParticipant] {
-    override def extract(entity: EParticipant, json: JValue): EParticipant = entity
+    override def extract(entity: EParticipant, json: JValue): EParticipant = {
+      json \ "_links" \ "study" match {
+        case JNull | JNothing => entity
+        case JString(endpoint) => {
+          entity.copy(
+            studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
   implicit val family:EntityParentIDExtractor[EFamily] = new EntityParentIDExtractor[EFamily] {
@@ -92,11 +101,50 @@ object EntityParentIDExtractor {
   }
 
   implicit val familyRelationship:EntityParentIDExtractor[EFamilyRelationship] = new EntityParentIDExtractor[EFamilyRelationship] {
-    override def extract(entity: EFamilyRelationship, json: JValue): EFamilyRelationship = entity
+    override def extract(entity: EFamilyRelationship, json: JValue): EFamilyRelationship = {
+      val entity1 =
+        json \ "_links" \ "participant" match {
+          case JNull | JNothing => entity
+          case JString(endpoint) => {
+            entity.copy(
+              participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+            )
+          }
+        }
+
+      json \ "_links" \ "relative" match {
+        case JNull | JNothing => entity1
+        case JString(endpoint) => {
+          entity1.copy(
+            relativeId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
   implicit val genomicFile: EntityParentIDExtractor[EGenomicFile] = new EntityParentIDExtractor[EGenomicFile] {
-    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = entity
+    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = {
+
+      val entityWithBio =
+        json \ "_links" \ "biospecimen" match {
+          case JNull | JNothing => entity
+          case JString(endpoint) => {
+            entity.copy(
+              biospecimenId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+            )
+          }
+        }
+
+      json \ "_links" \ "sequencing_experiment" match {
+        case JNull | JNothing => entityWithBio
+        case JString(endpoint) => {
+          entityWithBio.copy(
+            sequencingExperimentId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
   implicit val investigator: EntityParentIDExtractor[EInvestigator] = new EntityParentIDExtractor[EInvestigator] {
@@ -104,11 +152,29 @@ object EntityParentIDExtractor {
   }
 
   implicit val outcome: EntityParentIDExtractor[EOutcome] = new EntityParentIDExtractor[EOutcome] {
-    override def extract(entity: EOutcome, json: JValue): EOutcome = entity
+    override def extract(entity: EOutcome, json: JValue): EOutcome = {
+      json \ "_links" \ "participant" match {
+        case JNull | JNothing => entity
+        case JString(endpoint) => {
+          entity.copy(
+            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
   implicit val phenotype: EntityParentIDExtractor[EPhenotype] = new EntityParentIDExtractor[EPhenotype] {
-    override def extract(entity: EPhenotype, json: JValue): EPhenotype = entity
+    override def extract(entity: EPhenotype, json: JValue): EPhenotype = {
+      json \ "_links" \ "participant" match {
+        case JNull | JNothing => entity
+        case JString(endpoint) => {
+          entity.copy(
+            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
   implicit val seqExp: EntityParentIDExtractor[ESequencingExperiment] = new EntityParentIDExtractor[ESequencingExperiment] {
@@ -120,7 +186,16 @@ object EntityParentIDExtractor {
   }
 
   implicit val studyFile: EntityParentIDExtractor[EStudyFile] = new EntityParentIDExtractor[EStudyFile] {
-    override def extract(entity: EStudyFile, json: JValue): EStudyFile = entity
+    override def extract(entity: EStudyFile, json: JValue): EStudyFile = {
+      json \ "_links" \ "study" match {
+        case JNull | JNothing => entity
+        case JString(endpoint) => {
+          entity.copy(
+            studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+          )
+        }
+      }
+    }
   }
 
 
