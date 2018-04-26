@@ -1,4 +1,4 @@
-package io.kf.etl.processors.filecentric_new.transform.steps
+package io.kf.etl.processors.filecentric.transform.steps
 
 import io.kf.etl.dbschema.TPhenotype
 import io.kf.etl.es.models.{HPO_ES, Participant_ES, Phenotype_ES}

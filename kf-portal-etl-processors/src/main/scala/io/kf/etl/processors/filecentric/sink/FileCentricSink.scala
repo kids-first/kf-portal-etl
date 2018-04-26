@@ -3,18 +3,17 @@ package io.kf.etl.processors.filecentric.sink
 import java.io.File
 import java.net.URL
 
+import io.kf.etl.es.models.FileCentric_ES
+import io.kf.etl.processors.common.exceptions.KfExceptions.DataSinkTargetNotSupportedException
 import io.kf.etl.processors.filecentric.context.FileCentricContext
-import io.kf.etl.model.FileCentric
-import io.kf.etl.processors.common.exceptions.KfExceptions.{CreateDataSinkDirectoryFailedException, DataSinkTargetNotSupportedException}
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
 class FileCentricSink(val context: FileCentricContext) {
-
   private lazy val sinkDataPath = context.getProcessorSinkDataPath()
 
-  def sink(data:Dataset[FileCentric]):Unit = {
+  def sink(data:Dataset[FileCentric_ES]):Unit = {
     checkSinkDirectory(new URL(sinkDataPath))
 
     import io.kf.etl.transform.ScalaPB2Json4s._

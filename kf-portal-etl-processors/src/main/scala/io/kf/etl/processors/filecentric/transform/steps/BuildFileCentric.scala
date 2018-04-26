@@ -1,127 +1,76 @@
 package io.kf.etl.processors.filecentric.transform.steps
 
-import io.kf.etl.model.{FileCentric, Participant, SequencingExperiment}
+import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
+import io.kf.etl.model.utils.{BiospecimenES_GenomicFileES, BiospecimenES_ParticipantES, ParticipantES_BiospecimenES_GenomicFileES, SeqExpId_FileCentricES}
+import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
-import io.kf.etl.processors.filecentric.transform.steps.BuildFileCentric.{GenomicFileToParticipants, GenomicFileToSeqExps}
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
-class BuildFileCentric(override val ctx:StepContext) extends StepExecutable[Dataset[Participant], Dataset[FileCentric]] {
-  override def process(participants: Dataset[Participant]): Dataset[FileCentric] = {
+class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[SeqExpId_FileCentricES]] {
+  override def process(participants: Dataset[Participant_ES]): Dataset[SeqExpId_FileCentricES] = {
     import ctx.spark.implicits._
-    val file2SeqExps =
-      ctx.dbTables.genomicFile.joinWith(ctx.dbTables.sequencingExperiment, ctx.dbTables.sequencingExperiment.col("kfId") === ctx.dbTables.genomicFile.col("sequencingExperimentId"), "left").groupByKey(_._1.kfId).mapGroups((fileId, iterator) => {
 
-        GenomicFileToSeqExps(
-          fileId,
-          iterator.collect{
-            case tuple if(tuple._2 != null) => {
-              val tseq = tuple._2
-              SequencingExperiment(
-                kfId = tseq.kfId,
-                uuid = tseq.uuid,
-                createdAt = tseq.createdAt,
-                modifiedAt = tseq.modifiedAt,
-                experimentDate = tseq.experimentDate,
-                experimentStrategy = tseq.experimentStrategy,
-                center = tseq.center,
-                libraryName = tseq.libraryName,
-                libraryStrand = tseq.libraryStrand,
-                isPairedEnd = tseq.isPairedEnd,
-                platform = tseq.platform,
-                instrumentModel = tseq.instrumentModel,
-                maxInsertSize = tseq.maxInsertSize,
-                meanInsertSize = tseq.meanInsertSize,
-                minInsertSize = tseq.minInsertSize,
-                meanDepth = tseq.meanDepth,
-                meanReadLength = tseq.meanReadLength,
-                totalReads = tseq.totalReads
-              )
-            }
-          }.toSeq
+    val bio_par =
+      participants.joinWith(ctx.entityDataset.biospecimens, participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId")).map(tuple => {
+        BiospecimenES_ParticipantES(
+          bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2),
+          participant = tuple._1
         )
       })
 
-//    val file2Workflows =
-//      ctx.dbTables.workflowGenomicFile.joinWith(ctx.dbTables.workflow, ctx.dbTables.workflowGenomicFile.col("workflowId") === ctx.dbTables.workflow.col("kfId")).groupByKey(_._1.genomicFileId).mapGroups((fileId, iterator) => {
-//        GenomicFileToWorkflows(
-//          fileId,
-//          iterator.collect{
-//            case tuple if(tuple._2 != null) => {
-//              val tflow = tuple._2
-//              Workflow(
-//                kfId = tflow.kfId,
-//                uuid = tflow.uuid,
-//                createdAt = tflow.createdAt,
-//                modifiedAt = tflow.modifiedAt,
-//                taskId = tflow.taskId,
-//                name = tflow.name,
-//                version = tflow.version,
-//                githubUrl = tflow.githubUrl
-//              )
-//            }
-//          }.toSeq
-//        )
-//      })
-
-    val file2Participants =
-      ctx.dbTables.participantGenomicFile.joinWith(participants, ctx.dbTables.participantGenomicFile.col("kfId") === participants.col("kfId")).flatMap(tuple => {
-        tuple._1.fileIds.map(id => (id, tuple._2))
-      }).groupByKey(_._1).mapGroups((fileId, iterator) => {
-        val list = iterator.toList
-        GenomicFileToParticipants(
-          fileId,
-          list.map(_._2).toSeq
+    val bio_gf =
+      ctx.entityDataset.genomicFiles.joinWith(
+        ctx.entityDataset.biospecimens,
+        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId")
+      ).map(tuple => {
+        BiospecimenES_GenomicFileES(
+          bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2),
+          genomicFile = PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1)
         )
       })
 
-    val ds =
-      ctx.dbTables.genomicFile.joinWith(file2SeqExps, ctx.dbTables.genomicFile.col("kfId") === file2SeqExps.col("kfId")).groupByKey(_._1.kfId).mapGroups((fileId, iterator) => {
-        val list = iterator.toList
 
-        val tgf = list(0)._1
-        FileCentric(
-          kfId = tgf.kfId,
-          uuid = tgf.uuid,
-          createdAt = tgf.createdAt,
-          modifiedAt = tgf.modifiedAt,
-          fileName = tgf.fileName,
-          fileSize = tgf.fileSize,
-          dataType = tgf.dataType,
-          fileFormat = tgf.fileFormat,
-          fileUrl = tgf.fileUrl,
-          controlledAccess = tgf.controlledAccess,
-          md5Sum = tgf.md5Sum,
-          sequencingExperiments = list.flatMap(_._2.exps).toSeq
+    bio_gf.joinWith(
+      bio_par,
+      bio_par("bio")("kfId") === bio_gf("bio")("kfId"),
+      "left"
+    ).map(tuple => {
+      ParticipantES_BiospecimenES_GenomicFileES(
+        participant = tuple._2.participant,
+        bio = tuple._1.bio,
+        genomicFile = tuple._1.genomicFile
+      )
+    }).groupByKey(_.genomicFile.kfId).mapGroups((_, iterator) => {
+      val seq = iterator.toSeq
+
+
+      val genomicFile = seq(0).genomicFile
+      val participants_in_genomicfile =
+        seq.groupBy(_.participant.kfId.get).map(tuple => {
+          val participant = tuple._2(0).participant
+          participant.copy(
+            biospecimens = tuple._2.map(_.bio)
+          )
+        })
+
+      SeqExpId_FileCentricES(
+        seqExpId = genomicFile.sequencingExperimentId.get,
+        filecentric = FileCentric_ES(
+          controlledAccess = genomicFile.controlledAccess,
+          createdAt = genomicFile.createdAt,
+          dataType = genomicFile.dataType,
+          fileFormat = genomicFile.fileFormat,
+          fileName = genomicFile.fileName,
+          size = genomicFile.size,
+          kfId = genomicFile.kfId,
+          modifiedAt = genomicFile.modifiedAt,
+          participants = participants_in_genomicfile.toSeq,
+          referenceGenome = genomicFile.referenceGenome,
+          isHarmonized = genomicFile.isHarmonized
         )
-      })
-//      .joinWith(file2Workflows, col("kfId")).groupByKey(_._1.kfId).mapGroups((fileId, iterator) => {
-//
-//      val list = iterator.toList
-//      val fc = list(0)._1
-//
-//      fc.copy(
-//        workflow = {
-//          iterator.flatMap(tuple => {
-//            tuple._2.flows
-//          }).toSeq
-//        }
-//      )
-//    })
-      ds.joinWith(file2Participants, ds.col("kfId") === file2Participants.col("kfId")).groupByKey(_._1.kfId).mapGroups((fileId, iterator) => {
-        val list = iterator.toList
-        val fc = list(0)._1
-        fc.copy(
-          participants = {
-            list.flatMap(_._2.participants).toSeq
-          }
-        )
+      )
+
     })
   }
-}
-
-object BuildFileCentric{
-  case class GenomicFileToParticipants(kfId:String, participants:Seq[Participant])
-  case class GenomicFileToSeqExps(kfId:String, exps: Seq[SequencingExperiment])
-
 }
