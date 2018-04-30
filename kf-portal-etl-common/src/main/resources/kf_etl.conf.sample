@@ -33,7 +33,7 @@ io.kf.etl {
     }
   }
   dataservice {
-    url = ""
+    url = "http://http://kf-api-dataservice-qa.kids-first.io"
   }
 
   hdfs {
@@ -44,7 +44,6 @@ io.kf.etl {
   processors = [
     {
       name = "download"
-      postgresql = ${io.kf.etl.postgresql}
       mysql = ${io.kf.etl.mysql}
       dump_path = ${io.kf.etl.hdfs.root}/dump
       data_path = ${io.kf.etl.hdfs.root}/download

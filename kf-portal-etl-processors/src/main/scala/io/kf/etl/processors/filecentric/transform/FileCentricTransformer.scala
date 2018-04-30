@@ -4,6 +4,7 @@ import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
 import io.kf.etl.model.utils.SeqExpId_FileCentricES
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.step.Step
+import io.kf.etl.processors.common.step.impl._
 import io.kf.etl.processors.common.step.posthandler.{DefaultPostHandler, WriteKfModelToJsonFile}
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import io.kf.etl.processors.filecentric.context.FileCentricContext
@@ -15,7 +16,7 @@ class FileCentricTransformer(val context: FileCentricContext) {
 
     import context.sparkSession.implicits._
 
-    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, null, data)
+    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, data)
 
     val (posthandler1, posthandler2, posthandler3) = {
       context.config.write_intermediate_data match {

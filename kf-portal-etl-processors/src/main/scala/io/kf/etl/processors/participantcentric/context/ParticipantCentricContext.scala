@@ -5,10 +5,11 @@ import io.kf.etl.processors.common.processor.{ProcessorConfig, ProcessorContext}
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 
+
 class ParticipantCentricContext(override val sparkSession: SparkSession,
-                                override val hdfs: HDFS,
-                                override val appRootPath: String,
-                                override val config: ParticipantCentricConfig) extends ProcessorContext{
+                               override val hdfs: HDFS,
+                               override val appRootPath: String,
+                               override val config: ParticipantCentricConfig) extends ProcessorContext{
   def getProcessorDataPath():String = {
     config.dataPath match {
       case Some(cc) => cc

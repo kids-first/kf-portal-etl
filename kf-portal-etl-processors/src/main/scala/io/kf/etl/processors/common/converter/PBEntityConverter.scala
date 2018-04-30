@@ -102,6 +102,22 @@ object PBEntityConverter {
     )
   }
 
+  def EGenomicFileToFileES(gf:EGenomicFile): File_ES = {
+    File_ES(
+      controlledAccess = gf.controlledAccess,
+      createdAt = gf.createdAt,
+      dataType = gf.dataType,
+      fileFormat = gf.fileFormat,
+      fileName = gf.fileName,
+      size = gf.size,
+      kfId = gf.kfId,
+      modifiedAt = gf.modifiedAt,
+//      sequencing_experiments = ???
+      referenceGenome = gf.referenceGenome,
+      isHarmonized = gf.isHarmonized
+    )
+  }
+
   def ESequencingExperimentToSequencingExperimentES(seqExp: ESequencingExperiment): SequencingExperiment_ES = {
     SequencingExperiment_ES(
       kfId = seqExp.kfId,

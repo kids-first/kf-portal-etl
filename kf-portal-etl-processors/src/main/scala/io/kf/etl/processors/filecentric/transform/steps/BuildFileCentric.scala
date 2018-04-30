@@ -55,7 +55,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
         })
 
       SeqExpId_FileCentricES(
-        seqExpId = genomicFile.sequencingExperimentId.get,
+        seqExpId = genomicFile.sequencingExperiment.get.kfId.get,
         filecentric = FileCentric_ES(
           controlledAccess = genomicFile.controlledAccess,
           createdAt = genomicFile.createdAt,

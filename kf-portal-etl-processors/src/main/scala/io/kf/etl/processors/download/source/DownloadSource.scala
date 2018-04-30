@@ -1,12 +1,7 @@
 package io.kf.etl.processors.download.source
 
-import java.net.URL
-
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityEndpointSet
 import io.kf.etl.processors.download.context.DownloadContext
-import io.kf.etl.processors.download.dump.DataSourceDump
-import io.kf.etl.processors.repo.Repository
-
 
 class DownloadSource(val context: DownloadContext) {
 
