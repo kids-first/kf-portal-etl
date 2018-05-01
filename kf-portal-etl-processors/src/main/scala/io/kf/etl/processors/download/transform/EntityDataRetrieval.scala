@@ -25,15 +25,9 @@ case class EntityDataRetrieval(rootUrl:String) {
             case JArray(entities) => {
               entities.map(entity => {
                 extractor.extract(
-                  scalaPbJson4sParser.fromJson(entity),
+                  scalaPbJson4sParser.fromJsonString(JsonMethods.compact(entity)),
                   entity
                 )
-//                scalaPbJson4sParser.fromJson[T](
-//                  entity.removeField{
-//                    case JField("_links", _) => true
-//                    case _ => false
-//                  }
-//                )
               })
             }//end of case JArray(entities)
           }//end of responseBody \ "results" match
@@ -48,6 +42,10 @@ case class EntityDataRetrieval(rootUrl:String) {
 
   private def getAsyncClient(): AsyncHttpClient = {
     asyncHttpClient
+  }
+
+  def stop():Unit = {
+    asyncClient.close()
   }
 }
 

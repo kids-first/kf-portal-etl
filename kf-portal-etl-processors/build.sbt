@@ -5,7 +5,6 @@ name := "kf-portal-etl-processors"
 libraryDependencies ++= Seq(
   spark_sql,
   hadoop265,
-//  parquet_protobuf,
   google_guice,
   reflections,
   es_spark,
