@@ -52,12 +52,7 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
           .toMap
       )
 
-    participants.groupByKey(participant => {
-      participant.family match {
-        case Some(family) => Some(family.familyId)
-        case None => None
-      }
-    }).flatMapGroups((family_id, iterator) => {
+    participants.groupByKey(_.familyId).flatMapGroups((family_id, iterator) => {
       MergeFamily.deduceFamilyCompositions(family_id, iterator.toSeq, flattenedFamilyRelationship, availableDataTypes_broadcast)
     })
 
@@ -176,7 +171,7 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.family.get.familyId,
+                  familyId = father.familyId.get,
                   familyCompositions = Seq(trio, other),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -184,7 +179,7 @@ object MergeFamily {
               )),
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.family.get.familyId,
+                  familyId = mother.familyId.get,
                   familyCompositions = Seq(trio, other),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -192,7 +187,7 @@ object MergeFamily {
               )),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.family.get.familyId,
+                  familyId = proband.familyId.get,
                   familyCompositions = Seq(trio, other),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -201,7 +196,7 @@ object MergeFamily {
             ) ++ familyStructure.otherChildren.map(child => {
               child.copy(family = Some(
                 Family_ES(
-                  familyId = child.family.get.familyId,
+                  familyId = child.familyId.get,
                   familyCompositions = Seq(other),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -239,14 +234,14 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.family.get.familyId,
+                  familyId = father.familyId.get,
                   familyCompositions = Seq(trio, other),
                   fatherId = father.kfId
                 )
               )),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.family.get.familyId,
+                  familyId = proband.familyId.get,
                   familyCompositions = Seq(trio, other),
                   fatherId = father.kfId
                 )
@@ -254,7 +249,7 @@ object MergeFamily {
             ) ++ familyStructure.otherChildren.map(child => {
               child.copy(family = Some(
                 Family_ES(
-                  familyId = child.family.get.familyId,
+                  familyId = child.familyId.get,
                   familyCompositions = Seq(other),
                   fatherId = father.kfId
                 )
@@ -291,14 +286,14 @@ object MergeFamily {
             Seq(
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.family.get.familyId,
+                  familyId = mother.familyId.get,
                   familyCompositions = Seq(trio, other),
                   motherId = mother.kfId
                 )
               )),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.family.get.familyId,
+                  familyId = proband.familyId.get,
                   familyCompositions = Seq(trio, other),
                   motherId = mother.kfId
                 )
@@ -306,7 +301,7 @@ object MergeFamily {
             ) ++ familyStructure.otherChildren.map(child => {
               child.copy(family = Some(
                 Family_ES(
-                  familyId = child.family.get.familyId,
+                  familyId = child.familyId.get,
                   familyCompositions = Seq(other),
                   motherId = mother.kfId
                 )
@@ -325,7 +320,10 @@ object MergeFamily {
       createdAt = participant.createdAt,
       modifiedAt = participant.modifiedAt,
       isProband = participant.isProband,
-      availableDataTypes = mapOfAvailableDataTypes.get(participant.kfId.get).get,
+      availableDataTypes = mapOfAvailableDataTypes.get(participant.kfId.get) match {
+        case Some(types) => types
+        case None => Seq.empty
+      },
       phenotype = participant.phenotype,
       study = participant.study,
       race = participant.race,

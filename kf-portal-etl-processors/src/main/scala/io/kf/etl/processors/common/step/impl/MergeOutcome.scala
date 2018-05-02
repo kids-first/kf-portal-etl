@@ -12,7 +12,7 @@ class MergeOutcome(override val ctx: StepContext) extends StepExecutable[Dataset
     participants.joinWith(
       ctx.entityDataset.outcomes,
       participants.col("kfId") === ctx.entityDataset.outcomes.col("participantId"),
-      "left"
+      "left_outer"
     ).map(tuple => {
       Option(tuple._2) match {
         case Some(outcome) => {

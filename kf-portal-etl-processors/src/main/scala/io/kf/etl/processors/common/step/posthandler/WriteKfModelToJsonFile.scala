@@ -11,13 +11,13 @@ import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.Dataset
 
-class WriteKfModelToJsonFile[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](@transient override val ctx: StepContext)(implicit meta: GeneratedMessageCompanion[T]) extends StepExecutable[Dataset[T], Dataset[T]]{
+class WriteKfModelToJsonFile[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](@transient override val ctx: StepContext, val step_name:String)(implicit meta: GeneratedMessageCompanion[T]) extends StepExecutable[Dataset[T], Dataset[T]]{
 
   override def process(input: Dataset[T]): Dataset[T] = {
     import ctx.spark.implicits._
     import io.kf.etl.transform.ScalaPB2Json4s._
     val cached = input.cache()
-    val target_path = new URL(s"${ctx.processorDataPath}/steps/${ctx.processorName}")
+    val target_path = new URL(s"${ctx.processorDataPath}/steps/${ctx.processorName}/${step_name}")
     val json_path =
       target_path.getProtocol match {
         case "file" => {

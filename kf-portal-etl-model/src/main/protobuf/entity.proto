@@ -83,7 +83,7 @@ message EHash{
 }
 
 message EMetadata {
-
+    optional string placeholder = 1;
 }
 
 message EGenomicFile {

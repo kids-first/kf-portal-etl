@@ -20,19 +20,26 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
     participants.joinWith(
       ctx.entityDataset.phenotypes,
       participants.col("kfId") === ctx.entityDataset.phenotypes.col("participantId"),
-      "left"
+      "left_outer"
     ).groupByKey(tuple => {
       tuple._1.kfId.get
     }).mapGroups((_, iterator) => {
       val seq = iterator.toSeq
       val participant = seq(0)._1
 
-      participant.copy(
-        phenotype = MergePhenotype.collectPhenotype(
-          seq.map(_._2),
-          hpoRefs
-        )
-      )//end of copy
+      val filteredSeq = seq.filter(_._2 != null)
+
+      filteredSeq.size match {
+        case 0 => participant
+        case _ => {
+          participant.copy(
+            phenotype = MergePhenotype.collectPhenotype(
+              seq.map(_._2),
+              hpoRefs
+            )
+          )//end of copy
+        }
+      }
     })//end of mapGroups
   }
 

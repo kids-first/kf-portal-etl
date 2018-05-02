@@ -9,7 +9,7 @@ import org.json4s.jackson.JsonMethods
 
 case class EntityDataRetrieval(rootUrl:String) {
 
-  private lazy val asyncClient = getAsyncClient()
+  lazy val asyncClient = getAsyncClient()
 
   private lazy val scalaPbJson4sParser = new com.trueaccord.scalapb.json.Parser(preservingProtoFieldNames = true)
 
@@ -25,7 +25,7 @@ case class EntityDataRetrieval(rootUrl:String) {
             case JArray(entities) => {
               entities.map(entity => {
                 extractor.extract(
-                  scalaPbJson4sParser.fromJsonString(JsonMethods.compact(entity)),
+                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
                   entity
                 )
               })

@@ -12,7 +12,7 @@ class MergeStudy(override val ctx: StepContext) extends StepExecutable[Dataset[P
     ctx.entityDataset.participants.joinWith(
       ctx.entityDataset.studies,
       ctx.entityDataset.participants.col("studyId") === ctx.entityDataset.studies.col("kfId"),
-      "left"
+      "left_outer"
     ).map(tuple => {
       val study = PBEntityConverter.EStudyToStudyES(tuple._2)
       PBEntityConverter.EParticipantToParticipantES(tuple._1).copy(study = Some(study))

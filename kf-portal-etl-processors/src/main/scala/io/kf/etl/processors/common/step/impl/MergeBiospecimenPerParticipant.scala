@@ -16,7 +16,7 @@ class MergeBiospecimenPerParticipant(override val ctx: StepContext) extends Step
     participants.joinWith(
       ctx.entityDataset.biospecimens,
       participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
-      "left"
+      "left_outer"
     ).groupByKey(tuple => {
       tuple._1.kfId.get
     }).mapGroups((_, iterator ) => {

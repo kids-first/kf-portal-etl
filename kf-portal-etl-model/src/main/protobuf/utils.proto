@@ -15,8 +15,8 @@ message ParticipantId_BiospecimenId {
 }
 
 message BiospecimenId_GenomicFileId {
-    required string bioId = 1;
-    required string gfId = 2;
+    optional string bioId = 1;
+    optional string gfId = 2;
 }
 
 message ParticipantId_AvailableDataTypes {
@@ -40,12 +40,17 @@ message ParticipantES_BiospecimenES_GenomicFileES {
     required io.kf.etl.es.Participant_ES participant = 3;
 }
 
-message SeqExpId_FileCentricES {
-    required string seqExpId = 1;
-    required io.kf.etl.es.FileCentric_ES filecentric = 2;
-}
-
 message BiospecimenId_ParticipantES {
     required string bioId = 1;
     required io.kf.etl.es.Participant_ES participant = 2;
+}
+
+message BiospecimenES_GenomicFileId {
+    required io.kf.etl.es.Biospecimen_ES bio = 1;
+    required string gfId = 2;
+}
+
+message BiospecimenId_FileES {
+    required string bioId = 1;
+    required io.kf.etl.es.File_ES file = 2;
 }

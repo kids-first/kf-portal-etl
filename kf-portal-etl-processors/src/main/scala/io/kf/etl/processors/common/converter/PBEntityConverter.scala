@@ -86,7 +86,7 @@ object PBEntityConverter {
     )
   }
   
-  def EGenomicFileToGenomicFileES(gf: EGenomicFile): GenomicFile_ES = {
+  def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Option[SequencingExperiment_ES] = None): GenomicFile_ES = {
     GenomicFile_ES(
       controlledAccess = gf.controlledAccess,
       createdAt = gf.createdAt,
@@ -96,7 +96,7 @@ object PBEntityConverter {
       size = gf.size,
       kfId = gf.kfId,
       modifiedAt = gf.modifiedAt,
-//      repeated SequencingExperiment_ES sequencing_experiments = 9;
+      sequencingExperiment = seqExps,
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized
     )
@@ -137,6 +137,23 @@ object PBEntityConverter {
       externalId = seqExp.externalId,
       createdAt = seqExp.createdAt,
       modifiedAt = seqExp.modifiedAt
+    )
+  }
+  
+  def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): FileCentric_ES = {
+    FileCentric_ES(
+      controlledAccess = genomicFile.controlledAccess,
+      createdAt = genomicFile.createdAt,
+      dataType = genomicFile.dataType,
+      fileFormat = genomicFile.fileFormat,
+      fileName = genomicFile.fileName,
+      size = genomicFile.size,
+      kfId = genomicFile.kfId,
+      modifiedAt = genomicFile.modifiedAt,
+      sequencingExperiments = seqExps,
+//      repeated Participant_ES participants = 9;
+      referenceGenome = genomicFile.referenceGenome,
+      isHarmonized = genomicFile.isHarmonized
     )
   }
 

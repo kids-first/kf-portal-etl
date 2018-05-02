@@ -1,7 +1,9 @@
 package io.kf.etl.processors.participantcentric.inject
 
+import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
+import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
 import io.kf.etl.processors.participantcentric.context.{ParticipantCentricConfig, ParticipantCentricContext}
@@ -12,6 +14,7 @@ import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTrans
 
 import scala.util.{Failure, Success, Try}
 
+@GuiceModule(name = "participant_centric")
 class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
   override type CONTEXT = ParticipantCentricContext
   override type PROCESSOR = ParticipantCentricProcessor
@@ -37,6 +40,7 @@ class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorIn
     new ParticipantCentricContext(sparkSession, hdfs, appRootPath, cc)
   }
 
+  @Provides
   override def getProcessor(): ParticipantCentricProcessor = {
     val context = getContext()
     val source = getSource(context)

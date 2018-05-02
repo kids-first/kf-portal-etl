@@ -1,7 +1,6 @@
 package io.kf.etl.processors.filecentric.transform
 
 import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
-import io.kf.etl.model.utils.SeqExpId_FileCentricES
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.step.Step
 import io.kf.etl.processors.common.step.impl._
@@ -18,10 +17,10 @@ class FileCentricTransformer(val context: FileCentricContext) {
 
     val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, data)
 
-    val (posthandler1, posthandler2, posthandler3) = {
+    val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
-        case true => ((filename:String) => new WriteKfModelToJsonFile[Participant_ES](ctx), new WriteKfModelToJsonFile[SeqExpId_FileCentricES](ctx), new WriteKfModelToJsonFile[FileCentric_ES](ctx))
-        case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant_ES]](), new DefaultPostHandler[Dataset[SeqExpId_FileCentricES]](), new DefaultPostHandler[Dataset[FileCentric_ES]]())
+        case true => ((filename:String) => new WriteKfModelToJsonFile[Participant_ES](ctx, filename), new WriteKfModelToJsonFile[FileCentric_ES](ctx, "final"))
+        case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant_ES]](), new DefaultPostHandler[Dataset[FileCentric_ES]]())
       }
     }
 
@@ -34,9 +33,7 @@ class FileCentricTransformer(val context: FileCentricContext) {
         Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Family into Participant", new MergeFamily(ctx), posthandler1("step5"))
       )
     ).andThen(
-      Step[Dataset[Participant_ES], Dataset[SeqExpId_FileCentricES]]("06. build FileCentric ", new BuildFileCentric(ctx), posthandler2)
-    ).andThen(
-      Step[Dataset[SeqExpId_FileCentricES], Dataset[FileCentric_ES]]("07. merge SequencingExperiment into FileCentric ", new MergeSeqExp(ctx), posthandler3)
+      Step[Dataset[Participant_ES], Dataset[FileCentric_ES]]("06. build FileCentric ", new BuildFileCentric(ctx), posthandler2)
     )(context.sparkSession.emptyDataset[Participant_ES])
 
   }

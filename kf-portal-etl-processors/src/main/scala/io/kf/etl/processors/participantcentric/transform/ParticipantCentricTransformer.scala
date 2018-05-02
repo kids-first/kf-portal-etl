@@ -19,7 +19,7 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
-        case true => ((filename:String) => new WriteKfModelToJsonFile[Participant_ES](ctx), new WriteKfModelToJsonFile[ParticipantCentric_ES](ctx))
+        case true => ((filename:String) => new WriteKfModelToJsonFile[Participant_ES](ctx, filename), new WriteKfModelToJsonFile[ParticipantCentric_ES](ctx, "final"))
         case false => ((placeholder:String) => new DefaultPostHandler[Dataset[Participant_ES]](), new DefaultPostHandler[Dataset[ParticipantCentric_ES]]())
       }
     }
@@ -34,7 +34,7 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
         Step[Dataset[Participant_ES], Dataset[Participant_ES]]("06. merge Family into Participant", new MergeFamily(ctx), posthandler1("step6"))
       )
     ).andThen(
-      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("06. merge Family into Participant", new BuildParticipantCentric(ctx), posthandler2)
+      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("07. merge Family into Participant", new BuildParticipantCentric(ctx), posthandler2)
     )(context.sparkSession.emptyDataset[Participant_ES])
 
   }

@@ -1,5 +1,6 @@
 package io.kf.etl.processors.filecentric.inject
 
+import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
@@ -39,6 +40,7 @@ class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectMod
     new FileCentricContext(sparkSession, hdfs, appRootPath, cc)
   }
 
+  @Provides
   override def getProcessor(): FileCentricProcessor = {
     val context = getContext()
     new FileCentricProcessor(
