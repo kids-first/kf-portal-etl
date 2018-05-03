@@ -22,21 +22,38 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
       })
 
     val bio_par =
-      participants.joinWith(ctx.entityDataset.biospecimens, participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId")).map(tuple => {
-        BiospecimenES_ParticipantES(
-          bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2),
-          participant = tuple._1
-        )
+      ctx.entityDataset.biospecimens.joinWith(
+        participants,
+        participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
+        "left_outer"
+      ).flatMap(tuple => {
+        Option(tuple._2) match {
+          case Some(_) => {
+            Seq(
+              BiospecimenES_ParticipantES(
+                bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._1),
+                participant = tuple._2
+              )
+            )
+          }
+          case None => Seq.empty
+        }
       })
 
     val bio_gf =
       ctx.entityDataset.genomicFiles.joinWith(
         ctx.entityDataset.biospecimens,
-        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId")
+        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId"),
+        "left_outer"
       ).map(tuple => {
         BiospecimenES_GenomicFileId(
-          bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2),
-          gfId = tuple._1.kfId.get
+          gfId = tuple._1.kfId.get,
+          bio = {
+            Option(tuple._2) match {
+              case Some(_) => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2)
+              case None => null
+            }
+          }
         )
       })
 
@@ -56,31 +73,35 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
       bio_par,
       bio_par("bio")("kfId") === bio_fullGf("bio")("kfId"),
       "left_outer"
-    ).flatMap(tuple => {
-      Option(tuple._2) match {
-        case Some(_) => {
-          Seq(
-            ParticipantES_BiospecimenES_GenomicFileES(
-              participant = tuple._2.participant,
-              bio = tuple._1.bio,
-              genomicFile = tuple._1.genomicFile
-            )
-          )
-        }
-        case None => Seq.empty
-      }
+    ).map(tuple => {
+
+      ParticipantES_BiospecimenES_GenomicFileES(
+        participant = {
+          Option(tuple._2) match {
+            case Some(_) => tuple._2.participant
+            case None => null
+          }
+        },
+        bio = tuple._1.bio,
+        genomicFile = tuple._1.genomicFile
+      )
+
     }).groupByKey(_.genomicFile.kfId).mapGroups((_, iterator) => {
       val seq = iterator.toSeq
 
 
       val genomicFile = seq(0).genomicFile
+
       val participants_in_genomicfile =
-        seq.groupBy(_.participant.kfId.get).map(tuple => {
-          val participant = tuple._2(0).participant
-          participant.copy(
-            biospecimens = tuple._2.map(_.bio)
-          )
-        })
+        seq.filter(pbg => {
+          pbg.bio != null && pbg.participant != null
+        }).groupBy(_.participant.kfId.get)
+          .map(tuple => {
+            val participant = tuple._2(0).participant
+            participant.copy(
+              biospecimens = tuple._2.map(_.bio)
+            )
+          })
 
         FileCentric_ES(
           controlledAccess = genomicFile.controlledAccess,
@@ -96,7 +117,6 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           isHarmonized = genomicFile.isHarmonized,
           sequencingExperiments = Seq(genomicFile.sequencingExperiment.get)
         )
-
 
     })
   }

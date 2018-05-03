@@ -5,6 +5,8 @@ io.kf.etl {
 //    master = ""
     properties {
 //      "spark.executor.cores" = 4
+//      "spark.scheduler.mode" = "FAIR"
+//      "spark.driver.host" = "localhost" //when run ETL under wireless network, should enable it
     }
   }
 
