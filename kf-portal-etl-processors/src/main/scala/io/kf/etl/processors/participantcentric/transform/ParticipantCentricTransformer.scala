@@ -34,7 +34,7 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
         Step[Dataset[Participant_ES], Dataset[Participant_ES]]("06. merge Family into Participant", new MergeFamily(ctx), posthandler1("step6"))
       )
     ).andThen(
-      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("07. merge Family into Participant", new BuildParticipantCentric(ctx), posthandler2)
+      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("07. build ParticipantCentric", new BuildParticipantCentric(ctx), posthandler2)
     )(context.sparkSession.emptyDataset[Participant_ES])
 
   }

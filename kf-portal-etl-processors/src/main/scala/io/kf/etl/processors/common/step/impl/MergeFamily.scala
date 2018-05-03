@@ -138,13 +138,6 @@ object MergeFamily {
         val proband_compositions = new scala.collection.mutable.HashMap[String, FamilyComposition_ES]
 
         familyStructure match {
-//          case FamilyStructure(None, None, None, List()) => {
-////            Seq.empty
-//            family
-//          }
-//          case FamilyStructure(_, _, None, _) => {
-//            family
-//          }
           case FamilyStructure(Some(father), Some(mother), Some(proband), _) => {
             // complete_trio
             val sharedHpoIds = getSharedHpoIds(Seq(father, mother, proband))

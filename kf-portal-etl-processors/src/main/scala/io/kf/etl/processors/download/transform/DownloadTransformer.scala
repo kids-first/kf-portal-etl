@@ -24,7 +24,7 @@ class DownloadTransformer(val context:DownloadContext) {
         phenotypes = context.sparkSession.createDataset(retrieval.retrieve[EPhenotype](Some(endpoints.phenotypes))).cache(),
         sequencingExperiments = context.sparkSession.createDataset(retrieval.retrieve[ESequencingExperiment](Some(endpoints.sequencingExperiments))).cache(),
         studies = context.sparkSession.createDataset(retrieval.retrieve[EStudy](Some(endpoints.studies))).cache(),
-        studyFiles = context.sparkSession.createDataset(retrieval.retrieve[EStudyFile](Some(endpoints.studyFiles))).cache(),
+        studyFiles = context.sparkSession.emptyDataset[EStudyFile],//context.sparkSession.createDataset(retrieval.retrieve[EStudyFile](Some(endpoints.studyFiles))).cache(),
         graphPath = HPOGraphPath.get(context).cache()
       )
     retrieval.stop()
