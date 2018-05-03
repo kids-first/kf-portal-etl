@@ -15,7 +15,8 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
     val files =
       ctx.entityDataset.genomicFiles.joinWith(
         ctx.entityDataset.sequencingExperiments,
-        ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId")
+        ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId"),
+        "left_outer"
       ).map(tuple => {
         val file = PBEntityConverter.EGenomicFileToFileES(tuple._1)
         file.copy(
@@ -23,18 +24,29 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
             PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2)
           )
         )
-      }).cache()
+      })
 
     val bio_gf =
-      ctx.entityDataset.genomicFiles.joinWith(
-        ctx.entityDataset.biospecimens,
-        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId")
-      ).map(tuple => {
-        BiospecimenId_GenomicFileId(
-          bioId = Some(tuple._2.kfId.get),
-          gfId = Some(tuple._1.kfId.get)
-        )
-      }).cache()
+      ctx.entityDataset.biospecimens.joinWith(
+        ctx.entityDataset.genomicFiles,
+        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId"),
+        "left_outer"
+      ).flatMap(tuple => {
+        Option(tuple._2) match {
+          case Some(_) => {
+            Seq(
+              BiospecimenId_GenomicFileId(
+                bioId = Some(tuple._2.kfId.get),
+                gfId = Some(tuple._1.kfId.get)
+              )
+            )
+          }
+          case None => {
+            Seq.empty
+          }
+        }
+
+      })
 
 
     val bioId_File =
@@ -46,7 +58,7 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
           bioId = tuple._1.bioId.get,
           file = tuple._2
         )
-      }).cache()
+      })
 
 
     val participants_bioId =
@@ -54,20 +66,31 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         ctx.entityDataset.biospecimens,
         participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
         "left_outer"
-      ).map(tuple => {
-        BiospecimenId_ParticipantES(bioId = tuple._2.kfId.get, participant = tuple._1)
-      }).cache()
+      ).flatMap(tuple => {
+
+        Option(tuple._2) match {
+          case Some(_) => {
+            Seq(
+              BiospecimenId_ParticipantES(bioId = tuple._2.kfId.get, participant = tuple._1)
+            )
+          }
+          case None => Seq.empty
+        }
+
+      })
 
 
     participants_bioId.joinWith(
       bioId_File,
-      participants_bioId.col("bioId") === bioId_File.col("bioId")
+      participants_bioId.col("bioId") === bioId_File.col("bioId"),
+      "left_outer"
     ).groupByKey(tuple => {
       tuple._1.participant.kfId.get
     }).mapGroups((_, iterator) => {
       val seq = iterator.toSeq
 
       val participant = seq(0)._1.participant
+
 
       ParticipantCentric_ES(
         aliasGroup = participant.aliasGroup,
@@ -78,7 +101,9 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         ethnicity = participant.ethnicity,
         externalId = participant.externalId,
         family = participant.family,
-        files = seq.map(_._2.file),
+        files = seq.collect{
+          case tuple if(tuple._2 != null) => tuple._2.file
+        },
         gender = participant.gender,
         isProband = participant.isProband,
         kfId = participant.kfId,

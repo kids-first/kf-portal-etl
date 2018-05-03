@@ -48,8 +48,13 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
               }.toSeq
             )
           })
-          .collect().map(tuple => (tuple._1, tuple._2.toSet))
-          .toMap
+          .collect().groupBy(_._1).map(tuple => {
+            (
+              tuple._1,
+              tuple._2.flatMap(_._2)
+            )
+          })
+          .map(tuple => (tuple._1, tuple._2.toSet))
       )
 
     participants.groupByKey(_.familyId).flatMapGroups((family_id, iterator) => {
@@ -133,12 +138,13 @@ object MergeFamily {
         val proband_compositions = new scala.collection.mutable.HashMap[String, FamilyComposition_ES]
 
         familyStructure match {
-          case FamilyStructure(None, None, None, List()) => {
-            Seq.empty
-          }
-          case FamilyStructure(_, _, None, _) => {
-            family
-          }
+//          case FamilyStructure(None, None, None, List()) => {
+////            Seq.empty
+//            family
+//          }
+//          case FamilyStructure(_, _, None, _) => {
+//            family
+//          }
           case FamilyStructure(Some(father), Some(mother), Some(proband), _) => {
             // complete_trio
             val sharedHpoIds = getSharedHpoIds(Seq(father, mother, proband))
@@ -308,6 +314,7 @@ object MergeFamily {
               ))
             })
           } // end of case FamilyStructure(None, Some(mother), Some(proband), _)
+          case _ => family
         }// end familyStructure match
 
       }

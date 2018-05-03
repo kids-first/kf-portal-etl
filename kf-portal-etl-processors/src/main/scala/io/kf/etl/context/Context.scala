@@ -83,7 +83,7 @@ object Context extends ContextTrait with ClasspathURLEnabler{
         .config("es.nodes.wan.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
 //        .config("spark.scheduler.mode", "FAIR")
-//          .config("spark.driver.host", "localhost")
+          .config("spark.driver.host", "localhost")
         .getOrCreate()
 
     }).get
