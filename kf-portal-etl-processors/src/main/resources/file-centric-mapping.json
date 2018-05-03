@@ -9,7 +9,7 @@
           "type": "boolean"
         },
         "created_at": {
-          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
           "type": "date"
         },
         "data_type": {
@@ -28,7 +28,7 @@
           "type": "keyword"
         },
         "modified_at": {
-          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
           "type": "date"
         },
         "participants": {
@@ -54,7 +54,7 @@
                   "type": "float"
                 },
                 "created_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "external_aliquot_id": {
@@ -67,7 +67,7 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "sequencing_center_id": {
@@ -98,7 +98,7 @@
               "type": "keyword"
             },
             "created_at": {
-              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
               "type": "date"
             },
             "diagnoses": {
@@ -107,7 +107,7 @@
                   "type": "integer"
                 },
                 "created_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "diagnosis": {
@@ -126,7 +126,7 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "mondo_id": {
@@ -169,7 +169,7 @@
                           "type": "keyword"
                         },
                         "created_at": {
-                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                           "type": "date"
                         },
                         "diagnoses": {
@@ -178,7 +178,7 @@
                               "type": "integer"
                             },
                             "created_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "diagnosis": {
@@ -197,7 +197,7 @@
                               "type": "keyword"
                             },
                             "modified_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "mondo_id": {
@@ -231,7 +231,7 @@
                           "type": "keyword"
                         },
                         "modified_at": {
-                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                          "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                           "type": "date"
                         },
                         "outcome": {
@@ -240,7 +240,7 @@
                               "type": "integer"
                             },
                             "created_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "disease_related": {
@@ -250,7 +250,7 @@
                               "type": "keyword"
                             },
                             "modified_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "participant_id": {
@@ -272,14 +272,14 @@
                                   "type": "keyword"
                                 },
                                 "created_at": {
-                                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                                   "type": "date"
                                 },
                                 "hpo_ids": {
                                   "type": "keyword"
                                 },
                                 "modified_at": {
-                                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                                   "type": "date"
                                 },
                                 "negative_hpo_ids": {
@@ -310,7 +310,7 @@
                               "type": "text"
                             },
                             "created_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "data_access_authority": {
@@ -323,7 +323,7 @@
                               "type": "keyword"
                             },
                             "modified_at": {
-                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
                             "name": {
@@ -373,7 +373,7 @@
               "type": "keyword"
             },
             "modified_at": {
-              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
               "type": "date"
             },
             "outcome": {
@@ -382,7 +382,7 @@
                   "type": "integer"
                 },
                 "created_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "disease_related": {
@@ -392,7 +392,7 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "participant_id": {
@@ -414,14 +414,14 @@
                       "type": "keyword"
                     },
                     "created_at": {
-                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                       "type": "date"
                     },
                     "hpo_ids": {
                       "type": "keyword"
                     },
                     "modified_at": {
-                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                      "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                       "type": "date"
                     },
                     "negative_hpo_ids": {
@@ -446,7 +446,7 @@
                   "type": "text"
                 },
                 "created_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "data_access_authority": {
@@ -459,7 +459,7 @@
                   "type": "keyword"
                 },
                 "modified_at": {
-                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+                  "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
                 "name": {
@@ -485,7 +485,7 @@
         "sequencing_experiments": {
           "properties": {
             "created_at": {
-              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
               "type": "date"
             },
             "experiment_date": {
@@ -525,7 +525,7 @@
               "type": "float"
             },
             "modified_at": {
-              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss",
+              "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
               "type": "date"
             },
             "platform": {
@@ -541,7 +541,7 @@
           "type": "nested"
         },
         "size": {
-          "type": "integer"
+          "type": "long"
         }
       }
     }
