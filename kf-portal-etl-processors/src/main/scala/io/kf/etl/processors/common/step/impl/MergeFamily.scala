@@ -90,7 +90,7 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
 }
 
 object MergeFamily {
-  case class FamilyStructure(father: Option[Participant_ES] = None, mother: Option[Participant_ES] = None, probandChild: Option[Participant_ES] = None, otherChildren: Seq[Participant_ES] = Seq.empty)
+  case class FamilyStructure(father: Option[Participant_ES] = None, mother: Option[Participant_ES] = None, probandChild: Option[Participant_ES] = None, otherChildren: Seq[Participant_ES] = Seq.empty, otherMembers: Seq[Participant_ES] = Seq.empty)
   class ProbandMissingInFamilyException extends Exception("Family has no proband child!")
   /*
     familyRelationship map:
@@ -110,7 +110,10 @@ object MergeFamily {
         val familyStructure =
           family.foldLeft(FamilyStructure()){(family_structure, participant) => {
             familyRelationship.get(participant.kfId.get) match {
-              case None => family_structure
+              case None =>
+                family_structure.copy(
+                  otherMembers = (family_structure.otherMembers :+ participant)
+                )
               case Some(relationships) => {
                 if(relationships.contains("father"))
                   family_structure.copy(father = Some(participant))
@@ -123,8 +126,7 @@ object MergeFamily {
                     family_structure.copy(otherChildren = (family_structure.otherChildren :+ participant))
                 }
                 else // not check other relationship values such as "uncle", "aunt" etc
-                  family_structure
-
+                    family_structure
               }
             }
           }}
@@ -132,13 +134,8 @@ object MergeFamily {
         val family_availableDataTypes = getAvailableDataTypes(family, mapOfAvailableDataTypes)
         val family_sharedHpoIds = getSharedHpoIds(family)
 
-        val father_compositions = new ListBuffer[FamilyComposition_ES]
-        val mother_compositions = new ListBuffer[FamilyComposition_ES]
-
-        val proband_compositions = new scala.collection.mutable.HashMap[String, FamilyComposition_ES]
-
         familyStructure match {
-          case FamilyStructure(Some(father), Some(mother), Some(proband), _) => {
+          case FamilyStructure(Some(father), Some(mother), Some(proband), _, _) => {
             // complete_trio
             val sharedHpoIds = getSharedHpoIds(Seq(father, mother, proband))
             val availableDataTypes = getAvailableDataTypes(Seq(father, mother, proband), mapOfAvailableDataTypes)
@@ -164,6 +161,8 @@ object MergeFamily {
                   getFamilyMemberFromParticipant(proband, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
                 ) ++ familyStructure.otherChildren.map(child => {
                   getFamilyMemberFromParticipant(child, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
+                }) ++ familyStructure.otherMembers.map(member => {
+                  getFamilyMemberFromParticipant(member, "member", family_sharedHpoIds, mapOfAvailableDataTypes)
                 })
               )
 
@@ -201,9 +200,18 @@ object MergeFamily {
                   motherId = mother.kfId
                 )
               ))
+            }) ++ familyStructure.otherMembers.map(member => {
+              member.copy(family = Some(
+                Family_ES(
+                  familyId = member.familyId.get,
+                  familyCompositions = Seq(other),
+                  fatherId = father.kfId,
+                  motherId = mother.kfId
+                )
+              ))
             })
           } // end of FamilyStructure(Some(father), Some(mother), Some(proband), _)
-          case FamilyStructure(Some(father), None, Some(proband), _) => {
+          case FamilyStructure(Some(father), None, Some(proband), _, _) => {
             // partial_trio
             val sharedHpoIds = getSharedHpoIds(Seq(father, proband))
             val availableDataTypes = getAvailableDataTypes(Seq(father, proband), mapOfAvailableDataTypes)
@@ -227,6 +235,8 @@ object MergeFamily {
                   getFamilyMemberFromParticipant(proband, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
                 ) ++ familyStructure.otherChildren.map(child => {
                   getFamilyMemberFromParticipant(child, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
+                }) ++ familyStructure.otherMembers.map(member => {
+                  getFamilyMemberFromParticipant(member, "member", family_sharedHpoIds, mapOfAvailableDataTypes)
                 })
               )
 
@@ -253,9 +263,17 @@ object MergeFamily {
                   fatherId = father.kfId
                 )
               ))
+            })++ familyStructure.otherMembers.map(member => {
+              member.copy(family = Some(
+                Family_ES(
+                  familyId = member.familyId.get,
+                  familyCompositions = Seq(other),
+                  fatherId = father.kfId
+                )
+              ))
             })
           } // end of FamilyStructure(Some(father), None, Some(proband), _)
-          case FamilyStructure(None, Some(mother), Some(proband), _) => {
+          case FamilyStructure(None, Some(mother), Some(proband), _, _) => {
             // partial_trio
             val sharedHpoIds = getSharedHpoIds(Seq(mother, proband))
             val availableDataTypes = getAvailableDataTypes(Seq(mother, proband), mapOfAvailableDataTypes)
@@ -279,6 +297,8 @@ object MergeFamily {
                   getFamilyMemberFromParticipant(proband, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
                 ) ++ familyStructure.otherChildren.map(child => {
                   getFamilyMemberFromParticipant(child, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
+                }) ++ familyStructure.otherMembers.map(member => {
+                  getFamilyMemberFromParticipant(member, "member", family_sharedHpoIds, mapOfAvailableDataTypes)
                 })
               )
 
@@ -305,9 +325,67 @@ object MergeFamily {
                   motherId = mother.kfId
                 )
               ))
+            })++ familyStructure.otherMembers.map(member => {
+              member.copy(family = Some(
+                Family_ES(
+                  familyId = member.familyId.get,
+                  familyCompositions = Seq(other),
+                  motherId = mother.kfId
+                )
+              ))
             })
           } // end of case FamilyStructure(None, Some(mother), Some(proband), _)
-          case _ => family
+          case FamilyStructure(None, None, Some(proband), _, _) => {
+            val sharedHpoIds = getSharedHpoIds(Seq(proband))
+            val availableDataTypes = getAvailableDataTypes(Seq(proband), mapOfAvailableDataTypes)
+            val trio =
+              FamilyComposition_ES(
+                composition = Some("partial_trio"),
+                sharedHpoIds = sharedHpoIds,
+                availableDataTypes = availableDataTypes,
+                familyMembers = Seq(
+                  getFamilyMemberFromParticipant(proband, "child", sharedHpoIds, mapOfAvailableDataTypes)
+                )
+              )
+            val other =
+              FamilyComposition_ES(
+                composition = Some("other"),
+                sharedHpoIds = family_sharedHpoIds,
+                availableDataTypes = family_availableDataTypes,
+                familyMembers = Seq(
+                  getFamilyMemberFromParticipant(proband, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
+                ) ++ familyStructure.otherChildren.map(child => {
+                  getFamilyMemberFromParticipant(child, "child", family_sharedHpoIds, mapOfAvailableDataTypes)
+                }) ++ familyStructure.otherMembers.map(member => {
+                  getFamilyMemberFromParticipant(member, "member", family_sharedHpoIds, mapOfAvailableDataTypes)
+                })
+              )
+            Seq(
+              proband.copy(family = Some(
+                Family_ES(
+                  familyId = proband.familyId.get,
+                  familyCompositions = Seq(trio, other)
+                )
+              ))
+            ) ++ familyStructure.otherChildren.map(child => {
+              child.copy(family = Some(
+                Family_ES(
+                  familyId = child.familyId.get,
+                  familyCompositions = Seq(other)
+                )
+              ))
+            })++ familyStructure.otherMembers.map(member => {
+              member.copy(family = Some(
+                Family_ES(
+                  familyId = member.familyId.get,
+                  familyCompositions = Seq(other)
+                )
+              ))
+            })
+          }// case FamilyStructure(None, None, Some(proband), _)
+          case _ => {
+            family
+          }
         }// end familyStructure match
 
       }
