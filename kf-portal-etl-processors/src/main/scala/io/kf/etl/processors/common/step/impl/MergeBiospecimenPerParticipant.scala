@@ -22,8 +22,9 @@ class MergeBiospecimenPerParticipant(override val ctx: StepContext) extends Step
     }).mapGroups((_, iterator ) => {
       val seq = iterator.toSeq
       val participant = seq(0)._1
+      val filteredSeq = seq.filter(_._2 != null)
       participant.copy(
-        biospecimens = seq.map(tuple => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2))
+        biospecimens = filteredSeq.map(tuple => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2))
       )
     })
   }
