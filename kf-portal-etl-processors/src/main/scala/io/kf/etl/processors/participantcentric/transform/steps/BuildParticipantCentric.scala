@@ -36,13 +36,18 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
           case Some(_) => {
             Seq(
               BiospecimenId_GenomicFileId(
-                bioId = Some(tuple._2.kfId.get),
-                gfId = Some(tuple._1.kfId.get)
+                bioId = Some(tuple._1.kfId.get),
+                gfId = Some(tuple._2.kfId.get)
               )
             )
           }
           case None => {
-            Seq.empty
+            Seq(
+              BiospecimenId_GenomicFileId(
+                bioId = Some(tuple._1.kfId.get),
+                gfId = None
+              )
+            )
           }
         }
 
@@ -71,10 +76,14 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         Option(tuple._2) match {
           case Some(_) => {
             Seq(
-              BiospecimenId_ParticipantES(bioId = tuple._2.kfId.get, participant = tuple._1)
+              ParticipantES_BiospecimenId(bioId = tuple._2.kfId, participant = tuple._1)
             )
           }
-          case None => Seq.empty
+          case None => {
+            Seq(
+              ParticipantES_BiospecimenId(participant = tuple._1, bioId = None)
+            )
+          }
         }
 
       })

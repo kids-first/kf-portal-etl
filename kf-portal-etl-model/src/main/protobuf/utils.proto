@@ -40,9 +40,9 @@ message ParticipantES_BiospecimenES_GenomicFileES {
     required io.kf.etl.es.Participant_ES participant = 3;
 }
 
-message BiospecimenId_ParticipantES {
-    required string bioId = 1;
-    required io.kf.etl.es.Participant_ES participant = 2;
+message ParticipantES_BiospecimenId {
+    required io.kf.etl.es.Participant_ES participant = 1;
+    optional string bioId = 2;
 }
 
 message BiospecimenES_GenomicFileId {
