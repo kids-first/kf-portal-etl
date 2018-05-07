@@ -2,7 +2,7 @@ package io.kf.etl.processors.participantcentric.inject
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
-import io.kf.etl.common.Constants._
+import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
@@ -11,24 +11,21 @@ import io.kf.etl.processors.participantcentric.output.ParticipantCentricOutput
 import io.kf.etl.processors.participantcentric.sink.ParticipantCentricSink
 import io.kf.etl.processors.participantcentric.source.ParticipantCentricSource
 import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTransformer
-import org.apache.spark.sql.SparkSession
-import org.apache.hadoop.fs.{FileSystem => HDFS}
 
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "participant_centric")
 class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
-  type CONTEXT = ParticipantCentricContext
-  type PROCESSOR = ParticipantCentricProcessor
-  type OUTPUT = ParticipantCentricOutput
-  type SINK = ParticipantCentricSink
-  type SOURCE = ParticipantCentricSource
-  type TRANSFORMER = ParticipantCentricTransformer
-
-  override def configure(): Unit = {}
+  override type CONTEXT = ParticipantCentricContext
+  override type PROCESSOR = ParticipantCentricProcessor
+  override type SOURCE = ParticipantCentricSource
+  override type SINK = ParticipantCentricSink
+  override type TRANSFORMER = ParticipantCentricTransformer
+  override type OUTPUT = ParticipantCentricOutput
 
   override def getContext(): ParticipantCentricContext = {
     val cc = ParticipantCentricConfig(
+
       config.get.getString("name"),
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
@@ -51,7 +48,8 @@ class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorIn
     val transformer = getTransformer(context)
     val output = getOutput(context)
 
-    new ParticipantCentricProcessor(context, source.source, transformer.transform, sink.sink, output.output )
+    new ParticipantCentricProcessor(context, source.source, transformer.transform, sink.sink, output.output)
+
   }
 
   override def getSource(context: ParticipantCentricContext): ParticipantCentricSource = {
@@ -69,4 +67,6 @@ class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorIn
   override def getOutput(context: ParticipantCentricContext): ParticipantCentricOutput = {
     new ParticipantCentricOutput(context)
   }
+
+  override def configure(): Unit = {}
 }

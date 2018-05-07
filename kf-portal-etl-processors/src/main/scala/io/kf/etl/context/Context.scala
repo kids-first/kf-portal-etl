@@ -2,9 +2,9 @@ package io.kf.etl.context
 
 import java.net.{InetAddress, URL}
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{ESConfig, KFConfig, MysqlConfig, PostgresqlConfig}
+import io.kf.etl.common.conf._
 import io.kf.etl.common.context.ContextTrait
 import io.kf.etl.common.url.ClasspathURLEnabler
 import org.apache.hadoop.conf.Configuration
@@ -16,11 +16,13 @@ import org.elasticsearch.common.transport.TransportAddress
 import org.elasticsearch.transport.client.PreBuiltTransportClient
 
 object Context extends ContextTrait with ClasspathURLEnabler{
-  lazy val (hdfs, rootPath) = getHDFS()
+  lazy val hdfs = getHDFS()
+  lazy val rootPath = getRootPath()
   lazy val sparkSession = getSparkSession()
   lazy val postgresql = getPostgresql()
   lazy val mysql = getMysql()
   lazy val esClient = getESClient()
+  lazy val dataService = getDataService()
 
   override def loadConfig(): KFConfig = {
 
@@ -32,7 +34,13 @@ object Context extends ContextTrait with ClasspathURLEnabler{
     )
   }
 
+  private def getDataService(): DataServiceConfig = {
+    config.dataServiceConfig
+  }
+
   private def getESClient(): TransportClient = {
+
+    System.setProperty("es.set.netty.runtime.available.processors", "false")
 
     (new PreBuiltTransportClient(
       Settings.builder()
@@ -41,10 +49,14 @@ object Context extends ContextTrait with ClasspathURLEnabler{
     )).addTransportAddress(new TransportAddress(InetAddress.getByName(config.esConfig.host), config.esConfig.transport_port))
   }
 
-  private def getHDFS(): (FileSystem, String) = {
+  private def getHDFS(): FileSystem = {
     val conf = new Configuration()
     conf.set("fs.defaultFS", config.hdfsConfig.fs)
-    (FileSystem.get(conf), config.hdfsConfig.root)
+    FileSystem.get(conf)
+  }
+
+  private def getRootPath():String = {
+    config.hdfsConfig.root
   }
 
   private def getSparkSession(): SparkSession = {
@@ -72,8 +84,6 @@ object Context extends ContextTrait with ClasspathURLEnabler{
       session
         .config("es.nodes.wan.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
-        .config("spark.scheduler.mode", "FAIR")
-//          .config("spark.driver.host", "localhost")
         .getOrCreate()
 
     }).get

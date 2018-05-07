@@ -31,6 +31,7 @@ lazy val commonSettings = Seq(
     case PathList("org", "apache", "spark", "unused", xs @ _*) => MergeStrategy.last
     case PathList("javax", "annotation", xs @ _*) => MergeStrategy.first
     case "META-INF/io.netty.versions.properties" => MergeStrategy.last
+    case "META-INF/native/libnetty_transport_native_epoll_x86_64.so" => MergeStrategy.last
     case "overview.html" => MergeStrategy.last
     case "git.properties" => MergeStrategy.discard
     case x =>

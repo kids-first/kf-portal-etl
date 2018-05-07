@@ -1,0 +1,181 @@
+syntax = "proto2";
+
+package io.kf.etl.external.dataservice;
+
+message EParticipant{
+    optional string alias_group = 1;
+    repeated string biospecimens = 2;
+    optional string consent_type = 3;
+    optional string created_at = 4;
+    repeated string diagnoses = 5;
+    optional string ethnicity = 6;
+    optional string external_id = 7;
+    optional string family_id = 8;
+    optional string gender = 9;
+    optional bool is_proband = 10;
+    optional string kf_id = 11;
+    optional string modified_at = 12;
+    repeated string outcomes = 13;
+    repeated string phenotypes = 14;
+    optional string race = 15;
+    optional string study_id = 16;
+}
+
+message EFamily {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    repeated string participants = 4;
+}
+
+message EBiospecimen {
+    optional int32 age_at_event_days = 1;
+    optional string analyte_type = 2;
+    optional string anatomical_site = 3;
+    optional string composition = 4;
+    optional double concentration_mg_per_ml = 5;
+    optional string created_at = 6;
+    optional string external_aliquot_id = 7;
+    optional string external_sample_id = 8;
+    repeated string genomic_files = 9;
+    optional string kf_id = 10;
+    optional string modified_at = 11;
+    optional string participant_id = 12;
+    optional string shipment_date = 13;
+    optional string shipment_destination = 14;
+    optional string shipment_origin = 15;
+    optional string tissue_type =16;
+    optional string tumor_descriptor = 17;
+    optional string uberon_id = 18;
+    optional double volume_ml = 19;
+    optional string sequencing_center_id = 20;
+}
+
+message EDiagnosis {
+    optional int32 age_at_event_days = 1;
+    optional string created_at = 2;
+    optional string diagnosis = 3;
+    optional string diagnosis_category = 4;
+    optional string external_id = 5;
+    optional string icd_id = 6;
+    optional string kf_id = 7;
+    optional string modified_at = 8;
+    optional string mondo_id = 9;
+    optional string participant_id = 10;
+    optional string tumor_location = 11;
+    optional string uberon_id = 12;
+    optional string acd_id = 13;
+}
+
+message EFamilyRelationship {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    optional string participant_id = 4;
+    optional string relative_id = 5;
+    optional string participant_to_relative_relation = 6;
+    optional string relative_to_participant_relation = 7;
+
+}
+
+message EHash{
+    optional string md5 = 1;
+}
+
+message EMetadata {
+    optional string placeholder = 1;
+}
+
+message EGenomicFile {
+    optional string biospecimen_id = 1;
+    optional bool controlled_access = 2;
+    optional string created_at = 3;
+    optional string data_type = 4;
+    optional string file_format = 5;
+    optional string file_name = 6;
+    optional EHash hashes = 7;
+    optional bool is_harmonized = 8;
+    optional string kf_id = 9;
+    optional string latest_did = 10;
+    optional EMetadata metadata = 11;
+    optional string modified_at = 12;
+    optional string reference_genome = 13;
+    optional string sequencing_experiment_id = 14;
+    optional int64 size = 15;
+    repeated string urls = 16;
+}
+
+message EInvestigator {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    optional string institution = 4;
+    optional string name = 5;
+    repeated string studies = 6;
+}
+
+message EOutcome {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    optional int32 age_at_event_days = 4;
+    optional string disease_related = 5;
+    optional string participant_id = 6;
+    optional string vital_status = 7;
+}
+
+message EPhenotype {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    optional int32 age_at_event_days = 4;
+    optional string hpo_id = 5;
+    optional string observed = 6;
+    optional string participant_id = 7;
+    optional string phenotype = 8;
+    optional string snomed_id = 9;
+}
+
+message ESequencingExperiment {
+    optional string kf_id = 1;
+    optional string created_at = 2;
+    optional string modified_at = 3;
+    optional string experiment_date = 4;
+    optional string experiment_strategy = 5;
+    optional string center = 6;
+    optional string library_name = 7;
+    optional string library_strand = 8;
+    optional bool is_paired_end = 9;
+    optional string platform = 10;
+    optional string instrument_model = 11;
+    optional int64 max_insert_size = 12;
+    optional double mean_insert_size = 13;
+    optional double mean_depth = 14;
+    optional int64 total_reads = 15;
+    optional double mean_read_length = 16;
+    optional string external_id = 17;
+    repeated string genomic_files = 18;
+    optional string sequencing_center_id = 19;
+}
+
+message EStudy {
+    optional string attribution = 1;
+    optional string created_at =  2;
+    optional string data_access_authority = 3;
+    optional string external_id = 4;
+    optional string kf_id = 5;
+    optional string modified_at = 6;
+    optional string name = 7;
+    repeated string participants = 8;
+    optional string release_status = 9;
+    repeated string study_files = 10;
+    optional string version = 11;
+}
+
+message EStudyFile {
+    optional string kf_id = 1;
+    optional string modified_at = 2;
+    optional string created_at = 3;
+    optional string file_name = 4;
+    optional string study_id = 5;
+}

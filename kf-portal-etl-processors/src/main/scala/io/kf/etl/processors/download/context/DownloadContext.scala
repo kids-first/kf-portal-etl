@@ -1,7 +1,7 @@
 package io.kf.etl.processors.download.context
 
 import io.kf.etl.common.Constants._
-import io.kf.etl.common.conf.{MysqlConfig, PostgresqlConfig}
+import io.kf.etl.common.conf.{DataServiceConfig, MysqlConfig, PostgresqlConfig}
 import io.kf.etl.processors.common.processor.{ProcessorConfig, ProcessorContext}
 import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.SparkSession
@@ -18,4 +18,4 @@ case class DownloadContext(override val sparkSession: SparkSession,
   }
 }
 
-case class DownloadConfig(override val name:String, postgresql: PostgresqlConfig,dumpPath:String, override val dataPath:Option[String], mysql: MysqlConfig) extends ProcessorConfig
+case class DownloadConfig(override val name:String, dataService: DataServiceConfig, dumpPath:String, override val dataPath:Option[String], mysql: MysqlConfig, postgresql: PostgresqlConfig = null) extends ProcessorConfig

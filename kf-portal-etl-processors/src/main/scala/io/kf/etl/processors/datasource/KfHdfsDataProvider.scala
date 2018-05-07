@@ -5,7 +5,7 @@ import io.kf.etl.transform.ScalaPB2SparkStructType
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.sources.{BaseRelation, DataSourceRegister, RelationProvider}
 import io.kf.etl.common.Constants._
-import io.kf.etl.model.FileCentric
+import io.kf.etl.es.models.FileCentric_ES
 
 class KfHdfsDataProvider extends RelationProvider with DataSourceRegister{
 
@@ -27,10 +27,10 @@ class KfHdfsDataProvider extends RelationProvider with DataSourceRegister{
     parameters
       .get(DATASOURCE_OPTION_PROCESSOR_NAME)
       .map(_ match {
-        case PROCESSOR_DOCUMENT => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
-        case PROCESSOR_INDEX => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
+        case PROCESSOR_DOCUMENT => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric_ES.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
+        case PROCESSOR_INDEX => KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric_ES.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get)
       })
-      .getOrElse(KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
+      .getOrElse(KfHdfsParquetData(sqlContext, ScalaPB2SparkStructType.parseDescriptor(FileCentric_ES.scalaDescriptor), parameters.get(SPARK_DATASOURCE_OPTION_PATH).get))
 
   }
 

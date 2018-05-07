@@ -1,9 +1,9 @@
 package io.kf.etl.processors.filecentric.context
 
-import io.kf.etl.common.Constants._
+import io.kf.etl.common.Constants.FILECENTRIC_DEFAULT_DATA_PATH
 import io.kf.etl.processors.common.processor.{ProcessorConfig, ProcessorContext}
-import org.apache.hadoop.fs.{FileSystem => HDFS}
 import org.apache.spark.sql.SparkSession
+import org.apache.hadoop.fs.{FileSystem => HDFS}
 
 
 case class FileCentricContext(override val sparkSession: SparkSession,

@@ -6,32 +6,26 @@ import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
-class MergeDiagnosis(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
+/**
+  * merge all of the biospecimens per participant
+  * @param ctx
+  */
+class MergeBiospecimenPerParticipant(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
   override def process(participants: Dataset[Participant_ES]): Dataset[Participant_ES] = {
     import ctx.spark.implicits._
     participants.joinWith(
-      ctx.entityDataset.diagnoses,
-      participants.col("kfId") === ctx.entityDataset.diagnoses.col("participantId"),
+      ctx.entityDataset.biospecimens,
+      participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
       "left_outer"
     ).groupByKey(tuple => {
       tuple._1.kfId.get
-    }).mapGroups((_, iterator) => {
+    }).mapGroups((_, iterator ) => {
       val seq = iterator.toSeq
-
       val participant = seq(0)._1
-
       val filteredSeq = seq.filter(_._2 != null)
-
-      filteredSeq.size match {
-        case 0 => participant
-        case _ => {
-          participant.copy(
-            diagnoses = seq.map(tuple => PBEntityConverter.EDiagnosisToDiagnosisES(tuple._2))
-          )
-        }
-      }
-
+      participant.copy(
+        biospecimens = filteredSeq.map(tuple => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2))
+      )
     })
   }
-
 }

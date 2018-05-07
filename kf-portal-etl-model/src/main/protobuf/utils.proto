@@ -1,86 +1,56 @@
 syntax = "proto2";
 
-import "model.proto";
+import "models.proto";
 
 package io.kf.etl.model;
-
-message ParticipantToGenomicFiles {
-    required string kfId = 1;
-    repeated string fileIds = 2;
-    repeated string dataTypes = 3;
-}
-
-message GenomicFileToWorkflows {
-    required string kfId = 1;
-    repeated Workflow flows = 2;
-}
 
 message HPOReference {
     required string term = 1;
     repeated string ancestors = 2;
 }
 
-message TransformedGraphPath {
-    required string term1 = 1;
-    required string term2 = 2;
-    required int32 distance = 3;
+message ParticipantId_BiospecimenId {
+    required string parId = 1;
+    required string bioId = 2;
 }
 
-message GenomicFileToStudyId {
-    required string kfId = 1;
-    optional string studyId = 2;
-} //kfId is genomic_file id
-
-message GenomicFileToStudy {
-    required string kfId = 1;
-    required Study study = 2;
+message BiospecimenId_GenomicFileId {
+    optional string bioId = 1;
+    optional string gfId = 2;
 }
 
-message AliId_GfId {
-    required string aliId = 1;
+message ParticipantId_AvailableDataTypes {
+    required string parId = 1;
+    repeated string availableDataTypes = 2;
+}
+
+message BiospecimenES_ParticipantES {
+    required io.kf.etl.es.Biospecimen_ES bio = 1;
+    required io.kf.etl.es.Participant_ES participant = 2;
+}
+
+message BiospecimenES_GenomicFileES {
+    required io.kf.etl.es.Biospecimen_ES bio = 1;
+    required io.kf.etl.es.GenomicFile_ES genomic_file = 2;
+}
+
+message ParticipantES_BiospecimenES_GenomicFileES {
+    required io.kf.etl.es.Biospecimen_ES bio = 1;
+    required io.kf.etl.es.GenomicFile_ES genomic_file = 2;
+    required io.kf.etl.es.Participant_ES participant = 3;
+}
+
+message ParticipantES_BiospecimenId {
+    required io.kf.etl.es.Participant_ES participant = 1;
+    optional string bioId = 2;
+}
+
+message BiospecimenES_GenomicFileId {
+    required io.kf.etl.es.Biospecimen_ES bio = 1;
     required string gfId = 2;
 }
-message SampleId_Aliquot_GfId {
-    required string sampleId = 1;
-    required Aliquot ali= 2;
-    required string gfId = 3;
-}
-message SampleId_Aliquots_GfId{
-    required string sampleId = 1;
-    repeated Aliquot aliquots= 2;
-    required string gfId = 3;
-}
-message ParticipantId_Sample_GfId{
-    required string parId = 1;
-    required Sample sample = 2;
-    required string gfId = 3;
-}
-message ParticipantId_Samples_GfId{
-    required string parId = 1;
-    repeated Sample samples = 2;
-    required string gfId = 3;
-}
 
-message GfId_Participant{
-    required string gfId = 1;
-    required Participant participant = 2;
-}
-
-message GfId_Participants {
-     required string gfId = 1;
-     repeated Participant participants = 2;
-}
-
-message ParticipantIdToFiles{
-    required string parId = 1;
-    repeated File files = 2;
-}
-message GenomicFileId_ParticipantId {
-    required string fileId = 1;
-    required string parId = 2;
-}
-
-message ParticipantToSamples {
-    required string kfId = 1;
-    repeated Sample samples = 2;
+message BiospecimenId_FileES {
+    required string bioId = 1;
+    required io.kf.etl.es.File_ES file = 2;
 }

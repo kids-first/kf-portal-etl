@@ -3,7 +3,7 @@ package io.kf.etl.processors.participantcentric.sink
 import java.io.File
 import java.net.URL
 
-import io.kf.etl.model.ParticipantCentric
+import io.kf.etl.es.models.ParticipantCentric_ES
 import io.kf.etl.processors.common.exceptions.KfExceptions.DataSinkTargetNotSupportedException
 import io.kf.etl.processors.participantcentric.context.ParticipantCentricContext
 import org.apache.commons.io.FileUtils
@@ -13,7 +13,7 @@ import org.apache.spark.sql.Dataset
 class ParticipantCentricSink(val context: ParticipantCentricContext) {
   private lazy val sinkDataPath = context.getProcessorSinkDataPath()
 
-  def sink(data:Dataset[ParticipantCentric]):Unit = {
+  def sink(data:Dataset[ParticipantCentric_ES]):Unit = {
     checkSinkDirectory(new URL(sinkDataPath))
 
     import io.kf.etl.transform.ScalaPB2Json4s._

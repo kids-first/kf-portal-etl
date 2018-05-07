@@ -14,6 +14,7 @@ class KFConfig(private val config: Config){
   lazy val pipelineConfig = getPipeline()
   lazy val postgresqlConfig = getPostgresql()
   lazy val mysqlConfig = getMysql()
+  lazy val dataServiceConfig = getDataService()
 
   private def getSparkConfig(): SparkConfig = {
     KFConfigExtractors.parseSpark(config)
@@ -45,6 +46,10 @@ class KFConfig(private val config: Config){
     KFConfigExtractors.parseMySQL(config)
   }
 
+  private def getDataService(): DataServiceConfig = {
+    KFConfigExtractors.parseDataService(config)
+  }
+
 }
 
 object KFConfig{
@@ -62,3 +67,5 @@ case class ESConfig(cluster_name:String, host:String, http_port:Int, transport_p
 case class PostgresqlConfig(host:String, database:String, user:String, password:String)
 
 case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])
+
+case class DataServiceConfig(url:String)

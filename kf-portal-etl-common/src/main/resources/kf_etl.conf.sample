@@ -5,6 +5,8 @@ io.kf.etl {
 //    master = ""
     properties {
 //      "spark.executor.cores" = 4
+//      "spark.scheduler.mode" = "FAIR"
+//      "spark.driver.host" = "localhost" //when run ETL under wireless network, should enable it
     }
   }
 
@@ -32,6 +34,9 @@ io.kf.etl {
       "es.nodes.wan.only": true
     }
   }
+  dataservice {
+    url = "http://http://kf-api-dataservice-qa.kids-first.io"
+  }
 
   hdfs {
     defaultFS = "hdfs://"
@@ -41,10 +46,10 @@ io.kf.etl {
   processors = [
     {
       name = "download"
-      postgresql = ${io.kf.etl.postgresql}
       mysql = ${io.kf.etl.mysql}
       dump_path = ${io.kf.etl.hdfs.root}/dump
       data_path = ${io.kf.etl.hdfs.root}/download
+      dataservice = ${io.kf.etl.dataservice}
     },
     {
       name = "file_centric" //used as prefix of the index name and type name

@@ -2,34 +2,29 @@ package io.kf.etl.processors.filecentric.inject
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
+import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
+import io.kf.etl.processors.filecentric.context.FileCentricConfig
 import io.kf.etl.processors.filecentric.FileCentricProcessor
-import io.kf.etl.processors.filecentric.context.{FileCentricConfig, FileCentricContext}
+import io.kf.etl.processors.filecentric.context.FileCentricContext
 import io.kf.etl.processors.filecentric.output.FileCentricOutput
 import io.kf.etl.processors.filecentric.sink.FileCentricSink
 import io.kf.etl.processors.filecentric.source.FileCentricSource
-import org.apache.spark.sql.SparkSession
-import org.apache.hadoop.fs.{FileSystem => HDFS}
-import io.kf.etl.common.Constants._
 import io.kf.etl.processors.filecentric.transform.FileCentricTransformer
 
 import scala.util.{Failure, Success, Try}
 
-
 @GuiceModule(name = "file_centric")
-class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config){
-  type CONTEXT = FileCentricContext
-  type PROCESSOR = FileCentricProcessor
-  type SOURCE = FileCentricSource
-  type SINK = FileCentricSink
-  type TRANSFORMER = FileCentricTransformer
-  type OUTPUT = FileCentricOutput
-
-  override def configure(): Unit = {}
+class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
+  override type CONTEXT = FileCentricContext
+  override type PROCESSOR = FileCentricProcessor
+  override type SOURCE = FileCentricSource
+  override type SINK = FileCentricSink
+  override type TRANSFORMER = FileCentricTransformer
+  override type OUTPUT = FileCentricOutput
 
   override def getContext(): FileCentricContext = {
-
     val cc = FileCentricConfig(
       config.get.getString("name"),
       Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
@@ -48,19 +43,14 @@ class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectMod
   @Provides
   override def getProcessor(): FileCentricProcessor = {
     val context = getContext()
-    val source = getSource(context)
-    val sink = getSink(context)
-    val transformer = getTransformer(context)
-    val output = getOutput(context)
-
     new FileCentricProcessor(
       context,
-      source.source,
-      transformer.transform,
-      sink.sink,
-      output.output
-    )
+      getSource(context).source,
+      getTransformer(context).transform,
+      getSink(context).sink,
+      getOutput(context).output
 
+    )
   }
 
   override def getSource(context: FileCentricContext): FileCentricSource = {
@@ -78,4 +68,6 @@ class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectMod
   override def getOutput(context: FileCentricContext): FileCentricOutput = {
     new FileCentricOutput(context)
   }
+
+  override def configure(): Unit = {}
 }
