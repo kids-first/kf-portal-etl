@@ -15,7 +15,6 @@ object Dependencies {
   val asyncHttp = "org.asynchttpclient" % "async-http-client" % "2.4.5"
   val es_spark = "org.elasticsearch" %% "elasticsearch-spark-20" % "6.1.3"
   val elasticsearch = "org.elasticsearch.client" % "transport" % "6.1.3"
-  val postgres = "org.postgresql" % "postgresql" % "42.1.4"
   val hadoop265 = "org.apache.hadoop" % "hadoop-client" % "2.6.5"
   val scalatest = "org.scalatest" %% "scalatest" % "3.0.4"
   val embedded_elasticsearch = "pl.allegro.tech" % "embedded-elasticsearch" % "2.4.2"

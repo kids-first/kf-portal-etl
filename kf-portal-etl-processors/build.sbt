@@ -9,7 +9,6 @@ libraryDependencies ++= Seq(
   reflections,
   es_spark,
   elasticsearch,
-  postgres,
   mysql,
   asyncHttp,
   shaded_scalapb_json4s,

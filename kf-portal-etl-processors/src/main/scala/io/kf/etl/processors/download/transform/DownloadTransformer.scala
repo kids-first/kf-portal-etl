@@ -7,6 +7,7 @@ import io.kf.etl.external.dataservice.entity._
 class DownloadTransformer(val context:DownloadContext) {
 
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
+
     import context.sparkSession.implicits._
     import EntityParentIDExtractor._
     val retrieval = EntityDataRetrieval(context.config.dataService.url)

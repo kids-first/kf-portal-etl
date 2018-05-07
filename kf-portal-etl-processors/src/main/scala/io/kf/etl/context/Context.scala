@@ -40,6 +40,8 @@ object Context extends ContextTrait with ClasspathURLEnabler{
 
   private def getESClient(): TransportClient = {
 
+    System.setProperty("es.set.netty.runtime.available.processors", "false")
+
     (new PreBuiltTransportClient(
       Settings.builder()
         .put("cluster.name", config.esConfig.cluster_name)
