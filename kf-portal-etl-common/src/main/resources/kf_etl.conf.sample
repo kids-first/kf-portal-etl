@@ -52,6 +52,11 @@ io.kf.etl {
       dataservice = ${io.kf.etl.dataservice}
     },
     {
+          name = "participant_common"
+          data_path = ${io.kf.etl.hdfs.root}/participantcommon
+          write_intermediate_data = false
+    },
+    {
       name = "file_centric" //used as prefix of the index name and type name
       /**
        **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.

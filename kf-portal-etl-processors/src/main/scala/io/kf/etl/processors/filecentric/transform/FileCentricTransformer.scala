@@ -11,11 +11,11 @@ import io.kf.etl.processors.filecentric.transform.steps._
 import org.apache.spark.sql.Dataset
 
 class FileCentricTransformer(val context: FileCentricContext) {
-  def transform(data: EntityDataSet):Dataset[FileCentric_ES] = {
+  def transform(data: (EntityDataSet, Dataset[Participant_ES])):Dataset[FileCentric_ES] = {
 
     import context.sparkSession.implicits._
 
-    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, data)
+    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, data._1)
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
@@ -24,17 +24,7 @@ class FileCentricTransformer(val context: FileCentricContext) {
       }
     }
 
-    Function.chain(
-      Seq(
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("02. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step2")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("03. merge Outcome into Participant", new MergeOutcome(ctx), posthandler1("step3")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("04. merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Family into Participant", new MergeFamily(ctx), posthandler1("step5"))
-      )
-    ).andThen(
-      Step[Dataset[Participant_ES], Dataset[FileCentric_ES]]("06. build FileCentric ", new BuildFileCentric(ctx), posthandler2)
-    )(context.sparkSession.emptyDataset[Participant_ES])
+    Step[Dataset[Participant_ES], Dataset[FileCentric_ES]]("01. build FileCentric ", new BuildFileCentric(ctx), posthandler2)(data._2)
 
   }
 }
