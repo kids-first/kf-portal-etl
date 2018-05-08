@@ -47,6 +47,7 @@ object Constants {
   val FILECENTRIC_DEFAULT_DATA_PATH = "filecentric"
   val PARTICIPANTCENTRIC_DEFAULT_DATA_PATH = "participantcentric"
   val INDEX_DEFAULT_DATA_PATH = "index"
+  val PARTICIPANT_COMMON_DEFAULT_DATA_PATH = "participantcommon"
 
   val DATASOURCE_OPTION_PROCESSOR_NAME = "kf.etl.processor.name"
   val SPARK_DATASOURCE_OPTION_PATH = "path"

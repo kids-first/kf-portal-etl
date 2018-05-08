@@ -200,7 +200,7 @@ object MergeFamily {
 
             val members = Seq(father, mother, proband, head._2) ++ tail.map(_._2)
             val sharedHpoIds = getSharedHpoIds(members)
-            val availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
+            val availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes).toSet.toSeq
 
             val composition =
               FamilyComposition_ES(

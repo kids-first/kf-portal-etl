@@ -12,10 +12,10 @@ import org.apache.spark.sql.Dataset
 
 class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
 
-  def transform(data: EntityDataSet):Dataset[ParticipantCentric_ES] = {
+  def transform(data: (EntityDataSet, Dataset[Participant_ES])):Dataset[ParticipantCentric_ES] = {
     import context.sparkSession.implicits._
 
-    val ctx = StepContext(context.sparkSession, "participantcentric", context.getProcessorDataPath(), context.hdfs, data)
+    val ctx = StepContext(context.sparkSession, "participantcentric", context.getProcessorDataPath(), context.hdfs, data._1)
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
@@ -26,16 +26,11 @@ class ParticipantCentricTransformer(val context: ParticipantCentricContext) {
 
     Function.chain(
       Seq(
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("02. merge Biospecimen into Participant", new MergeBiospecimenPerParticipant(ctx), posthandler1("step2")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("03. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step3")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("04. merge Outcome into Participant", new MergeOutcome(ctx), posthandler1("step4")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step5")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("06. merge Family into Participant", new MergeFamily(ctx), posthandler1("step6"))
+        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("01. merge Biospecimen into Participant", new MergeBiospecimenPerParticipant(ctx), posthandler1("step2"))
       )
     ).andThen(
-      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("07. build ParticipantCentric", new BuildParticipantCentric(ctx), posthandler2)
-    )(context.sparkSession.emptyDataset[Participant_ES])
+      Step[Dataset[Participant_ES], Dataset[ParticipantCentric_ES]]("02. build ParticipantCentric", new BuildParticipantCentric(ctx), posthandler2)
+    )(data._2)
 
   }
 
