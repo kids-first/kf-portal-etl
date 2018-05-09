@@ -1,14 +1,10 @@
 package io.kf.etl.processors.download.transform
 
-import java.sql.DriverManager
 import java.util.Properties
 
 import io.kf.etl.external.hpo.GraphPath
 import io.kf.etl.processors.download.context.DownloadContext
 import org.apache.spark.sql.Dataset
-
-import scala.collection.mutable.ListBuffer
-import scala.util.{Failure, Success, Try}
 
 object HPOGraphPath {
 

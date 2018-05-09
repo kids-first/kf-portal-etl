@@ -37,7 +37,17 @@ lazy val commonSettings = Seq(
     case x =>
       val oldStrategy = (assemblyMergeStrategy in assembly).value
       oldStrategy(x)
-  }
+  },
+
+  assemblyExcludedJars in assembly := {
+    val regex = """.*spark.*2\.11\-2.3.0.*""".r
+    val cp = (fullClasspath in assembly).value
+    cp.filter(f => {
+      regex.pattern.matcher( f.data.getName ).matches()
+    })
+  },
+
+  assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 )
 
 lazy val root = (project in file(".")).aggregate(model, common, processors, pipeline)

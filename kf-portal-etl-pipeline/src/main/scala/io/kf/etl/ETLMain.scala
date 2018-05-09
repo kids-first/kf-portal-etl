@@ -6,6 +6,7 @@ import io.kf.etl.common.Constants.PROCESSOR_PACKAGE
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
 import io.kf.etl.pipeline.Pipeline
+import io.kf.etl.processors.cli.CliProcessor
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.filecentric.FileCentricProcessor
 import io.kf.etl.processors.index.IndexProcessor
@@ -40,13 +41,14 @@ object ETLMain extends App{
     )
   }
 
+  val cli = new CliProcessor
   val download = injector.getInstance(classOf[DownloadProcessor])
   val participantcommon = injector.getInstance(classOf[ParticipantCommonProcessor])
   val filecentric = injector.getInstance(classOf[FileCentricProcessor])
   val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
   val index = injector.getInstance(classOf[IndexProcessor])
 
-  Pipeline.from(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
+  Pipeline.from(args).map(cli).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
     Seq(tuples._1, tuples._2).map(tuple => {
       index.process(tuple)
     })

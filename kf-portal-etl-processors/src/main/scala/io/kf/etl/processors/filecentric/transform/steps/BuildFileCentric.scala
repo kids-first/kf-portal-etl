@@ -17,8 +17,14 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
         ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId"),
         "left_outer"
       ).map(tuple => {
-        val seqExp = PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2)
-        PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, Some(seqExp))
+
+        val seqExp =
+          Option(tuple._2) match {
+            case Some(_) => Some(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
+            case None => None
+          }
+
+        PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, seqExp)
       })
 
     val bio_par =
@@ -115,7 +121,12 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           participants = participants_in_genomicfile.toSeq,
           referenceGenome = genomicFile.referenceGenome,
           isHarmonized = genomicFile.isHarmonized,
-          sequencingExperiments = Seq(genomicFile.sequencingExperiment.get)
+          sequencingExperiments = {
+            genomicFile.sequencingExperiment match {
+              case Some(seqExp) => Seq(seqExp)
+              case None => Seq.empty
+            }
+          }
         )
 
     })
