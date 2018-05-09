@@ -530,6 +530,9 @@
               "type": "keyword"
             }
           }
+        },
+        "available_data_types": {
+          "type": "keyword"
         }
       }
     }

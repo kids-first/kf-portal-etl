@@ -35,6 +35,7 @@ message ParticipantCentric_ES {
     optional Phenotype_ES phenotype = 15;
     optional string race = 16;
     optional Study_ES study = 17;
+    repeated string available_data_types = 18;
 }
 
 message Participant_ES {
@@ -56,6 +57,7 @@ message Participant_ES {
     optional string race = 16;
     optional Study_ES study = 17;
     optional string study_id = 18;
+    repeated string available_data_types = 19;
 }
 
 message Biospecimen_ES {

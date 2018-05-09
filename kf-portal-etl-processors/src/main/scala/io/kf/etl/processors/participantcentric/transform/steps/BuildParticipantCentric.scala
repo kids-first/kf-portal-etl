@@ -124,7 +124,8 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         outcome = participant.outcome,
         phenotype = participant.phenotype,
         race = participant.race,
-        study = participant.study
+        study = participant.study,
+        availableDataTypes = participant.availableDataTypes
       )
     })
 
