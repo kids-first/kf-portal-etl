@@ -6,7 +6,6 @@ import io.kf.etl.common.Constants.PROCESSOR_PACKAGE
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.{CLIParametersHolder, Context}
 import io.kf.etl.pipeline.Pipeline
-import io.kf.etl.processors.cli.CliProcessor
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.filecentric.FileCentricProcessor
 import io.kf.etl.processors.index.IndexProcessor
