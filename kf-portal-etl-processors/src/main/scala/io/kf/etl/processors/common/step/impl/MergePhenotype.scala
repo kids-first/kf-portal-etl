@@ -105,7 +105,7 @@ object MergePhenotype {
                   case Some(value) => dh.phenotype.append(value)
                   case None =>
                 }
-                tpt.hpoId match {
+                tpt.hpoIdPhenotype match {
                   case Some(value) => {
                     tpt.observed match {
                       case Some(o) => {

@@ -129,7 +129,7 @@ message EPhenotype {
     optional string modified_at = 2;
     optional string created_at = 3;
     optional int32 age_at_event_days = 4;
-    optional string hpo_id = 5;
+    optional string hpo_id_phenotype = 5;
     optional string observed = 6;
     optional string participant_id = 7;
     optional string phenotype = 8;

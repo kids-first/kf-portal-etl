@@ -4,7 +4,7 @@ import com.google.inject.{AbstractModule, Guice, Injector}
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.PROCESSOR_PACKAGE
 import io.kf.etl.common.inject.GuiceModule
-import io.kf.etl.context.Context
+import io.kf.etl.context.{CLIParametersHolder, Context}
 import io.kf.etl.pipeline.Pipeline
 import io.kf.etl.processors.cli.CliProcessor
 import io.kf.etl.processors.download.DownloadProcessor
@@ -18,7 +18,10 @@ import scala.collection.convert.WrapAsScala
 
 object ETLMain extends App{
 
+  private lazy val cliArgs = getCLIArgs()
+
   private lazy val injector = createInjector()
+
 
   private def createInjector(): Injector = {
 
@@ -41,14 +44,17 @@ object ETLMain extends App{
     )
   }
 
-  val cli = new CliProcessor
+  private def getCLIArgs(): CLIParametersHolder = {
+    new CLIParametersHolder(args)
+  }
+
   val download = injector.getInstance(classOf[DownloadProcessor])
   val participantcommon = injector.getInstance(classOf[ParticipantCommonProcessor])
   val filecentric = injector.getInstance(classOf[FileCentricProcessor])
   val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
   val index = injector.getInstance(classOf[IndexProcessor])
 
-  Pipeline.from(args).map(cli).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
+  Pipeline.from(cliArgs.study_ids).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
     Seq(tuples._1, tuples._2).map(tuple => {
       index.process(tuple)
     })
