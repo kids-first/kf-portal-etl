@@ -129,6 +129,13 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           }
         )
 
+    }).filter(fc => {
+      fc.dataType match {
+        case Some(data_type) => {
+          !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
+        }
+        case None => true
+      }
     })
   }
 }
