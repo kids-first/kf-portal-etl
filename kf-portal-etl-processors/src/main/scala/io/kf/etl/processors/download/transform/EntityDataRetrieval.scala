@@ -57,11 +57,22 @@ object EntityParentIDExtractor {
 
   implicit val participant:EntityParentIDExtractor[EParticipant] = new EntityParentIDExtractor[EParticipant] {
     override def extract(entity: EParticipant, json: JValue): EParticipant = {
-      json \ "_links" \ "study" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+
+      val studyAttached =
+        json \ "_links" \ "study" match {
+          case JNull | JNothing => entity
+          case JString(endpoint) => {
+            entity.copy(
+              studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+            )
+          }
+        }
+
+      json \ "_links" \ "family" match {
+        case JNull | JNothing => studyAttached
+        case JString(family) => {
+          studyAttached.copy(
+            familyId = Some(family.substring(family.lastIndexOf('/') + 1))
           )
         }
       }

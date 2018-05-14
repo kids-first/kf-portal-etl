@@ -54,17 +54,18 @@ message EBiospecimen {
 message EDiagnosis {
     optional int32 age_at_event_days = 1;
     optional string created_at = 2;
-    optional string diagnosis = 3;
-    optional string diagnosis_category = 4;
-    optional string external_id = 5;
-    optional string icd_id = 6;
-    optional string kf_id = 7;
-    optional string modified_at = 8;
-    optional string mondo_id = 9;
-    optional string participant_id = 10;
-    optional string tumor_location = 11;
-    optional string uberon_id = 12;
-    optional string acd_id = 13;
+    optional string diagnosis_category = 3;
+    optional string external_id = 4;
+    optional string icd_id_diagnosis = 5;
+    optional string kf_id = 6;
+    optional string modified_at = 7;
+    optional string mondo_id_diagnosis = 8;
+    optional string participant_id = 9;
+    optional string source_text_diagnosis = 10;
+    optional string uberon_id_tumor_location = 11;
+    optional string source_text_tumor_location = 12;
+    optional string ncit_id_diagnosis = 13;
+    optional string spatial_descriptor = 14;
 }
 
 message EFamilyRelationship {

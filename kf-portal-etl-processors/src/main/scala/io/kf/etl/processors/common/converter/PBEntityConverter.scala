@@ -61,16 +61,19 @@ object PBEntityConverter {
   def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
     Diagnosis_ES(
       ageAtEventDays = diagnosis.ageAtEventDays,
-      diagnosisCategory = diagnosis.diagnosisCategory,
       createdAt = diagnosis.createdAt,
-      diagnosis = diagnosis.diagnosis,
-      modifiedAt = diagnosis.modifiedAt,
+      diagnosisCategory = diagnosis.diagnosisCategory,
       externalId = diagnosis.externalId,
+      icdIdDiagnosis = diagnosis.icdIdDiagnosis,
       kfId = diagnosis.kfId,
-      tumorLocation = diagnosis.tumorLocation,
-      acdId = diagnosis.acdId,
-      mondoId = diagnosis.mondoId,
-      uberonId = diagnosis.uberonId
+      modifiedAt = diagnosis.modifiedAt,
+      mondoIdDiagnosis = diagnosis.mondoIdDiagnosis,
+      participantId = diagnosis.participantId,
+      sourceTextDiagnosis = diagnosis.sourceTextDiagnosis,
+      uberonIdTumorLocation = diagnosis.uberonIdTumorLocation,
+      sourceTextTumorLocation = diagnosis.sourceTextTumorLocation,
+      ncitIdDiagnosis = diagnosis.ncitIdDiagnosis,
+      spatialDescriptor = diagnosis.spatialDescriptor
     )
   }
   

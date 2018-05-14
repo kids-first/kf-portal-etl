@@ -2,9 +2,12 @@
   "mappings": {
     "file_centric": {
       "_meta": {
-        "kf-dataservice-version": "0.2.0"
+        "kf-dataservice-version": "1.0.1"
       },
       "properties": {
+        "availability": {
+          "type": "keyword"
+        },
         "controlled_access": {
           "type": "boolean"
         },
@@ -13,6 +16,9 @@
           "type": "date"
         },
         "data_type": {
+          "type": "keyword"
+        },
+        "external_id": {
           "type": "keyword"
         },
         "file_format": {
@@ -36,15 +42,15 @@
             "alias_group": {
               "type": "keyword"
             },
+            "available_data_types": {
+              "type": "keyword"
+            },
             "biospecimens": {
               "properties": {
                 "age_at_event_days": {
                   "type": "integer"
                 },
                 "analyte_type": {
-                  "type": "keyword"
-                },
-                "anatomical_site": {
                   "type": "keyword"
                 },
                 "composition": {
@@ -70,6 +76,12 @@
                   "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
+                "ncit_id_anatomical_site": {
+                  "type": "keyword"
+                },
+                "ncit_id_tissue_type": {
+                  "type": "keyword"
+                },
                 "sequencing_center_id": {
                   "type": "keyword"
                 },
@@ -79,13 +91,19 @@
                 "shipment_origin": {
                   "type": "keyword"
                 },
-                "tissue_type": {
+                "source_text_anatomical_site": {
                   "type": "keyword"
                 },
-                "tumor_descriptor": {
+                "source_text_tissue_type": {
                   "type": "keyword"
                 },
-                "uberon_id": {
+                "source_text_tumor_descriptor": {
+                  "type": "keyword"
+                },
+                "spatial_descriptor": {
+                  "type": "keyword"
+                },
+                "uberon_id_anatomical_site": {
                   "type": "keyword"
                 },
                 "volume_ml": {
@@ -110,16 +128,13 @@
                   "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
-                "diagnosis": {
-                  "type": "keyword"
-                },
                 "diagnosis_category": {
                   "type": "keyword"
                 },
                 "external_id": {
                   "type": "keyword"
                 },
-                "icd_id": {
+                "icd_id_diagnosis": {
                   "type": "keyword"
                 },
                 "kf_id": {
@@ -129,13 +144,22 @@
                   "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                   "type": "date"
                 },
-                "mondo_id": {
+                "mondo_id_diagnosis": {
                   "type": "keyword"
                 },
-                "tumor_location": {
+                "ncit_id_diagnosis": {
                   "type": "keyword"
                 },
-                "uberon_id": {
+                "source_text_diagnosis": {
+                  "type": "keyword"
+                },
+                "source_text_tumor_location": {
+                  "type": "keyword"
+                },
+                "spatial_descriptor": {
+                  "type": "keyword"
+                },
+                "uberon_id_tumor_location": {
                   "type": "keyword"
                 }
               },
@@ -181,16 +205,13 @@
                               "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
-                            "diagnosis": {
-                              "type": "keyword"
-                            },
                             "diagnosis_category": {
                               "type": "keyword"
                             },
                             "external_id": {
                               "type": "keyword"
                             },
-                            "icd_id": {
+                            "icd_id_diagnosis": {
                               "type": "keyword"
                             },
                             "kf_id": {
@@ -200,13 +221,22 @@
                               "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                               "type": "date"
                             },
-                            "mondo_id": {
+                            "mondo_id_diagnosis": {
                               "type": "keyword"
                             },
-                            "tumor_location": {
+                            "ncit_id_diagnosis": {
                               "type": "keyword"
                             },
-                            "uberon_id": {
+                            "source_text_diagnosis": {
+                              "type": "keyword"
+                            },
+                            "source_text_tumor_location": {
+                              "type": "keyword"
+                            },
+                            "spatial_descriptor": {
+                              "type": "keyword"
+                            },
+                            "uberon_id_tumor_location": {
                               "type": "keyword"
                             }
                           },
@@ -246,6 +276,9 @@
                             "disease_related": {
                               "type": "keyword"
                             },
+                            "external_id": {
+                              "type": "keyword"
+                            },
                             "kf_id": {
                               "type": "keyword"
                             },
@@ -275,6 +308,12 @@
                                   "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                                   "type": "date"
                                 },
+                                "external_id": {
+                                  "type": "keyword"
+                                },
+                                "hpo_id_phenotype": {
+                                  "type": "keyword"
+                                },
                                 "hpo_ids": {
                                   "type": "keyword"
                                 },
@@ -292,6 +331,12 @@
                                   "type": "text"
                                 },
                                 "shared_hpo_ids": {
+                                  "type": "keyword"
+                                },
+                                "snomed_id_phenotype": {
+                                  "type": "keyword"
+                                },
+                                "source_text_phenotype": {
                                   "type": "keyword"
                                 }
                               }
@@ -319,6 +364,9 @@
                             "external_id": {
                               "type": "keyword"
                             },
+                            "investigator_id": {
+                              "type": "keyword"
+                            },
                             "kf_id": {
                               "type": "keyword"
                             },
@@ -330,6 +378,9 @@
                               "type": "keyword"
                             },
                             "release_status": {
+                              "type": "keyword"
+                            },
+                            "short_name": {
                               "type": "keyword"
                             },
                             "version": {
@@ -388,6 +439,9 @@
                 "disease_related": {
                   "type": "keyword"
                 },
+                "external_id": {
+                  "type": "keyword"
+                },
                 "kf_id": {
                   "type": "keyword"
                 },
@@ -417,6 +471,12 @@
                       "format": "yyyy-MM-dd HH:mm:ss.SSSSSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd'T'HH:mm:ss.SSSSSS+HH:mm",
                       "type": "date"
                     },
+                    "external_id": {
+                      "type": "keyword"
+                    },
+                    "hpo_id_phenotype": {
+                      "type": "keyword"
+                    },
                     "hpo_ids": {
                       "type": "keyword"
                     },
@@ -430,7 +490,10 @@
                     "observed": {
                       "type": "keyword"
                     },
-                    "phenotype": {
+                    "snomed_id_phenotype": {
+                      "type": "keyword"
+                    },
+                    "source_text_phenotype": {
                       "type": "keyword"
                     }
                   }
@@ -455,6 +518,9 @@
                 "external_id": {
                   "type": "keyword"
                 },
+                "investigator_id": {
+                  "type": "keyword"
+                },
                 "kf_id": {
                   "type": "keyword"
                 },
@@ -466,6 +532,9 @@
                   "type": "keyword"
                 },
                 "release_status": {
+                  "type": "keyword"
+                },
+                "short_name": {
                   "type": "keyword"
                 },
                 "version": {
