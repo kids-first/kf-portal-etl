@@ -112,10 +112,18 @@ object MergeFamily {
         val familyStructure =
           family.foldLeft(FamilyStructure()){(family_structure, participant) => {
             familyRelationship.get(participant.kfId.get) match {
-              case None =>
-                family_structure.copy(
-                  others = (family_structure.others :+ ("member", participant))
-                )
+              case None => {
+                participant.isProband match {
+                  case Some(isProband) if isProband == true => {
+                    family_structure.copy(proband = Some(participant))
+                  }
+                  case _ => {
+                    family_structure.copy(
+                      others = (family_structure.others :+ ("member", participant))
+                    )
+                  }
+                }
+              }
               case Some(relationships) => {
                 if(relationships.contains("father")) {
                   family_structure.father match {
@@ -443,8 +451,8 @@ object MergeFamily {
               )
             })
           }//end of case FamilyStructure(None, Some(mother), Some(proband), seq)
-          case FamilyStructure(None, None, Some(proband), seq) => {
-            val members = Seq(proband) ++ seq.map(_._2)
+          case FamilyStructure(None, None, Some(proband), Seq()) => {
+            val members = Seq(proband)
             val sharedHpoIds = getSharedHpoIds(members)
             val family_availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
 
@@ -455,7 +463,34 @@ object MergeFamily {
                 availableDataTypes = family_availableDataTypes,
                 familyMembers = Seq(
                   getFamilyMemberFromParticipant(proband, "child", sharedHpoIds, mapOfAvailableDataTypes)
-                ) ++ (Seq(("child",proband)) ++ seq).map(m => {
+                )
+              )
+
+            Seq(
+
+              proband.copy(family = Some(
+                Family_ES(
+                  familyId = proband.familyId.get,
+                  familyCompositions = Seq(composition)
+                )
+              ),
+                availableDataTypes = getAvailableDataTypes(Seq(proband), mapOfAvailableDataTypes)
+              )
+            )
+          }//end of FamilyStructure(None, None, Some(proband), Seq())
+          case FamilyStructure(None, None, Some(proband), Seq(head, tail @ _*)) => {
+            val members = Seq(proband, head._2) ++ tail.map(_._2)
+            val sharedHpoIds = getSharedHpoIds(members)
+            val family_availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
+
+            val composition =
+              FamilyComposition_ES(
+                composition = Some("other"),
+                sharedHpoIds = sharedHpoIds,
+                availableDataTypes = family_availableDataTypes,
+                familyMembers = Seq(
+                  getFamilyMemberFromParticipant(proband, "child", sharedHpoIds, mapOfAvailableDataTypes)
+                ) ++ (Seq(head) ++ tail).map(m => {
                   getFamilyMemberFromParticipant(m._2, m._1, sharedHpoIds, mapOfAvailableDataTypes)
                 })
               )
@@ -470,7 +505,7 @@ object MergeFamily {
               ),
                 availableDataTypes = getAvailableDataTypes(Seq(proband), mapOfAvailableDataTypes)
               )
-            ) ++ (Seq(("child",proband)) ++ seq).map(m => {
+            ) ++ (Seq(head) ++ tail).map(m => {
               m._2.copy(
                 family = Some(
                   Family_ES(
@@ -483,6 +518,31 @@ object MergeFamily {
             })
           }//end of case FamilyStructure(None, None, Some(proband), seq)
           case _ => {
+
+            val sharedHpoIds = getSharedHpoIds(family)
+            val family_availableDataTypes = getAvailableDataTypes(family, mapOfAvailableDataTypes)
+            val composition =
+              FamilyComposition_ES(
+                composition = Some("other"),
+                sharedHpoIds = sharedHpoIds,
+                availableDataTypes = family_availableDataTypes,
+                familyMembers = family.map(member => {
+                  getFamilyMemberFromParticipant(member, "member", sharedHpoIds, mapOfAvailableDataTypes)
+                })
+              )
+
+            family.map(member => {
+              member.copy(
+                family = Some(
+                  Family_ES(
+                    familyId = member.familyId.get,
+                    familyCompositions = Seq(composition)
+                  )
+                ),
+                availableDataTypes = getAvailableDataTypes(Seq(member), mapOfAvailableDataTypes)
+              )
+            })
+
             family
           }//end case _
 
@@ -499,7 +559,7 @@ object MergeFamily {
       modifiedAt = participant.modifiedAt,
       isProband = participant.isProband,
       availableDataTypes = mapOfAvailableDataTypes.get(participant.kfId.get) match {
-        case Some(types) => types
+        case Some(types) => types.toSet.toSeq
         case None => Seq.empty
       },
       phenotype = participant.phenotype,
@@ -512,16 +572,24 @@ object MergeFamily {
 
   def getAvailableDataTypes(participants: Seq[Participant_ES], mapOfAvailableDataTypes: Map[String, Seq[String]]): Seq[String] = {
 
-    participants.flatMap(participant => {
-      mapOfAvailableDataTypes.get(participant.kfId.get) match {
-        case Some(seq) => seq
-        case None => Seq.empty
-      }
-    }).toSet.toSeq
+    val seqOfDataTypes =
+      participants.map(participant => {
+        mapOfAvailableDataTypes.get(participant.kfId.get) match {
+          case Some(seq) => seq
+          case None => Seq.empty
+        }
+      })
 
-//    seqOfDataTypes.tail.foldLeft(seqOfDataTypes.head){(left, right) => {
-//      left.intersect(right)
-//    }}
+//    participants.flatMap(participant => {
+//      mapOfAvailableDataTypes.get(participant.kfId.get) match {
+//        case Some(seq) => seq
+//        case None => Seq.empty
+//      }
+//    }).toSet.toSeq
+
+    seqOfDataTypes.tail.foldLeft(seqOfDataTypes.head){(left, right) => {
+      left.intersect(right)
+    }}.toSet.toSeq
   }
 
   def getSharedHpoIds(participants: Seq[Participant_ES]): Seq[String] = {

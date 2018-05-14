@@ -17,9 +17,12 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
     import ctx.spark.implicits._
     val hpoRefs = generateHpoRefs()
 
+
+    val transformedPhenotypes = ctx.entityDataset.phenotypes.map(pt => pt.copy(observed = Some(pt.observed.get.toLowerCase)))
+
     participants.joinWith(
-      ctx.entityDataset.phenotypes,
-      participants.col("kfId") === ctx.entityDataset.phenotypes.col("participantId"),
+      transformedPhenotypes,
+      participants.col("kfId") === transformedPhenotypes.col("participantId"),
       "left_outer"
     ).groupByKey(tuple => {
       tuple._1.kfId.get
