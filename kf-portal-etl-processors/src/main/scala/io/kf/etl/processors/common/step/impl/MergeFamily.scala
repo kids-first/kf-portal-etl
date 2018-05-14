@@ -22,7 +22,12 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
       */
     val flattenedFamilyRelationship =
       ctx.spark.sparkContext.broadcast(
-        ctx.entityDataset.familyRelationships.flatMap(tf => {
+        ctx.entityDataset.familyRelationships.map(fr => {
+          fr.copy(
+            relativeToParticipantRelation = Some(fr.relativeToParticipantRelation.get.toLowerCase),
+            participantToRelativeRelation = Some(fr.participantToRelativeRelation.get.toLowerCase)
+          )
+        }).flatMap(tf => {
           Seq(
             tf,
             EFamilyRelationship(

@@ -116,14 +116,7 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         family = participant.family,
         files = seq.collect{
           case tuple if(tuple._2 != null) => tuple._2.file
-        }.filter(f => {
-          f.dataType match {
-            case Some(data_type) => {
-              !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
-            }
-            case None => true
-          }
-        }),
+        },
         gender = participant.gender,
         isProband = participant.isProband,
         kfId = participant.kfId,

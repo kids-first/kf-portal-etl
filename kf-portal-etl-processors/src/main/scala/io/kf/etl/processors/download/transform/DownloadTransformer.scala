@@ -42,7 +42,14 @@ class DownloadTransformer(val context:DownloadContext) {
         genomicFiles = {
           endpoints.map(ees => context.sparkSession.createDataset(retrieval.retrieve[EGenomicFile](Some(ees.genomicFiles)))).foldLeft(context.sparkSession.emptyDataset[EGenomicFile]){
             (left, right) => left.union(right)
-          }.cache()
+          }.filter(f => {
+            f.dataType match {
+              case Some(data_type) => {
+                !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
+              }
+              case None => true
+            }
+          }).cache()
         },
         investigators = {
           endpoints.map(ees => context.sparkSession.createDataset(retrieval.retrieve[EInvestigator](Some(ees.investigators)))).foldLeft(context.sparkSession.emptyDataset[EInvestigator]){
