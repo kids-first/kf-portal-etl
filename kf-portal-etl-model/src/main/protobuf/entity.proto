@@ -31,24 +31,26 @@ message EFamily {
 message EBiospecimen {
     optional int32 age_at_event_days = 1;
     optional string analyte_type = 2;
-    optional string anatomical_site = 3;
-    optional string composition = 4;
-    optional double concentration_mg_per_ml = 5;
-    optional string created_at = 6;
-    optional string external_aliquot_id = 7;
-    optional string external_sample_id = 8;
-    repeated string genomic_files = 9;
-    optional string kf_id = 10;
-    optional string modified_at = 11;
-    optional string participant_id = 12;
-    optional string shipment_date = 13;
-    optional string shipment_destination = 14;
-    optional string shipment_origin = 15;
-    optional string tissue_type =16;
-    optional string tumor_descriptor = 17;
-    optional string uberon_id = 18;
-    optional double volume_ml = 19;
-    optional string sequencing_center_id = 20;
+    optional string composition = 3;
+    optional double concentration_mg_per_ml = 4;
+    optional string created_at = 5;
+    optional string external_aliquot_id = 6;
+    optional string external_sample_id = 7;
+    optional string kf_id = 8;
+    optional string modified_at = 9;
+    optional string ncit_id_anatomical_site = 10;
+    optional string ncit_id_tissue_type =11;
+    optional string shipment_date = 12;
+    optional string shipment_origin = 13;
+    repeated string genomic_files = 14;
+    optional string participant_id = 15;
+    optional string source_text_tumor_descriptor = 16;
+    optional string source_text_tissue_type = 17;
+    optional string source_text_anatomical_site = 18;
+    optional string spatial_descriptor = 19;
+    optional string uberon_id_anatomical_site = 20;
+    optional double volume_ml = 21;
+    optional string sequencing_center_id = 22;
 }
 
 message EDiagnosis {
@@ -88,22 +90,25 @@ message EMetadata {
 }
 
 message EGenomicFile {
-    optional string biospecimen_id = 1;
-    optional bool controlled_access = 2;
-    optional string created_at = 3;
-    optional string data_type = 4;
-    optional string file_format = 5;
-    optional string file_name = 6;
-    optional EHash hashes = 7;
-    optional bool is_harmonized = 8;
-    optional string kf_id = 9;
-    optional string latest_did = 10;
-    optional EMetadata metadata = 11;
-    optional string modified_at = 12;
-    optional string reference_genome = 13;
-    optional string sequencing_experiment_id = 14;
-    optional int64 size = 15;
-    repeated string urls = 16;
+    repeated string acl = 1;
+    optional string availability = 2;
+    optional string biospecimen_id = 3;
+    optional bool controlled_access = 4;
+    optional string created_at = 5;
+    optional string data_type = 6;
+    optional string external_id = 7;
+    optional string file_format = 8;
+    optional string file_name = 9;
+    optional EHash hashes = 10;
+    optional bool is_harmonized = 11;
+    optional string kf_id = 12;
+    optional string latest_did = 13;
+    optional EMetadata metadata = 14;
+    optional string modified_at = 15;
+    optional string reference_genome = 16;
+    optional string sequencing_experiment_id = 17;
+    optional int64 size = 18;
+    repeated string urls = 19;
 }
 
 message EInvestigator {
@@ -133,8 +138,9 @@ message EPhenotype {
     optional string hpo_id_phenotype = 5;
     optional string observed = 6;
     optional string participant_id = 7;
-    optional string phenotype = 8;
-    optional string snomed_id = 9;
+    optional string source_text_phenotype = 8;
+    optional string snomed_id_phenotype = 9;
+    optional string external_id = 10;
 }
 
 message ESequencingExperiment {
@@ -171,6 +177,7 @@ message EStudy {
     optional string release_status = 9;
     repeated string study_files = 10;
     optional string version = 11;
+    optional string short_name = 12;
 }
 
 message EStudyFile {

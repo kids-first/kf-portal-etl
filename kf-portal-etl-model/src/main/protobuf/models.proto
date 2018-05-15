@@ -63,21 +63,26 @@ message Participant_ES {
 message Biospecimen_ES {
     optional int32 age_at_event_days = 1;
     optional string analyte_type = 2;
-    optional string anatomical_site = 3;
-    optional string composition = 4;
-    optional double concentration_mg_per_ml = 5;
-    optional string created_at = 6;
-    optional string external_aliquot_id = 7;
-    optional string external_sample_id = 8;
-    optional string kf_id = 9;
-    optional string modified_at = 10;
-    optional string sequencing_center_id = 11;
+    optional string composition = 3;
+    optional double concentration_mg_per_ml = 4;
+    optional string created_at = 5;
+    optional string external_aliquot_id = 6;
+    optional string external_sample_id = 7;
+    optional string kf_id = 8;
+    optional string modified_at = 9;
+    optional string ncit_id_anatomical_site = 10;
+    optional string ncit_id_tissue_type =11;
     optional string shipment_date = 12;
     optional string shipment_origin = 13;
-    optional string tissue_type = 14;
-    optional string tumor_descriptor = 15;
-    optional string uberon_id = 16;
-    optional double volume_ml = 17;
+    repeated string genomic_files = 14;
+    optional string participant_id = 15;
+    optional string source_text_tumor_descriptor = 16;
+    optional string source_text_tissue_type = 17;
+    optional string source_text_anatomical_site = 18;
+    optional string spatial_descriptor = 19;
+    optional string uberon_id_anatomical_site = 20;
+    optional double volume_ml = 21;
+    optional string sequencing_center_id = 22;
 }
 
 message Diagnosis_ES {
@@ -157,6 +162,10 @@ message HPO_ES {
     repeated string modified_at = 6;
     repeated string negative_hpo_ids = 7;
     repeated string hpo_ids = 8;
+    repeated string external_id = 9;
+    repeated string hpo_id_phenotype = 10;
+    repeated string source_text_phenotype = 11;
+    repeated string snomed_id_phenotype = 12;
 }
 
 message Study_ES {
@@ -169,6 +178,7 @@ message Study_ES {
     optional string modified_at = 7;
     optional string release_status = 8;
     optional string data_access_authority = 9;
+    optional string short_name = 10;
 }
 
 message SequencingExperiment_ES {
@@ -203,6 +213,7 @@ message GenomicFile_ES {
     optional SequencingExperiment_ES sequencing_experiment = 9;
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
+    optional string availability = 12;
 }
 
 message File_ES {
@@ -217,4 +228,5 @@ message File_ES {
     repeated SequencingExperiment_ES sequencing_experiments = 9;
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
+    optional string availability = 12;
 }

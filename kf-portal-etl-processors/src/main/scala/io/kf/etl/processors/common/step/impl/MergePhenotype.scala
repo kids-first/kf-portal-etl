@@ -92,9 +92,13 @@ object MergePhenotype {
                                    createdAt: ListBuffer[String] = new ListBuffer[String](),
                                    modifiedAt: ListBuffer[String] = new ListBuffer[String](),
                                    observed: ListBuffer[String] = new ListBuffer[String](),
-                                   phenotype: ListBuffer[String] = new ListBuffer[String](),
                                    negative: ListBuffer[String] = new ListBuffer[String](),
-                                   positive: ListBuffer[String] = new ListBuffer[String]())
+                                   positive: ListBuffer[String] = new ListBuffer[String](),
+                                   hpoIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
+                                   sourceTextPhenotype: ListBuffer[String] = new ListBuffer[String](),
+                                   snomedIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
+                                   externalId: ListBuffer[String] = new ListBuffer[String]()
+                                 )
 
             val data =
               seq.foldLeft(DataHolder())((dh, tpt) => {
@@ -104,10 +108,7 @@ object MergePhenotype {
                 }
                 dh.createdAt.append(tpt.createdAt.get)
                 dh.modifiedAt.append(tpt.modifiedAt.get)
-                tpt.phenotype match {
-                  case Some(value) => dh.phenotype.append(value)
-                  case None =>
-                }
+
                 tpt.hpoIdPhenotype match {
                   case Some(value) => {
                     tpt.observed match {
@@ -128,6 +129,22 @@ object MergePhenotype {
                   }
                   case None => println("no hpo_id in Phenotype!")
                 }
+
+                tpt.sourceTextPhenotype match {
+                  case Some(source_text) => dh.sourceTextPhenotype.append(source_text)
+                  case None =>
+                }
+
+                tpt.snomedIdPhenotype match {
+                  case Some(snome_id) => dh.snomedIdPhenotype.append(snome_id)
+                  case None =>
+                }
+
+                tpt.externalId match {
+                  case Some(external) => dh.externalId.append(external)
+                  case None =>
+                }
+
                 dh
               })
 
@@ -143,10 +160,13 @@ object MergePhenotype {
                   createdAt = data.createdAt,
                   modifiedAt = data.modifiedAt,
                   observed = data.observed,
-                  phenotype = data.phenotype,
                   negativeHpoIds = data.negative,
                   hpoIds = data.positive,
-                  ancestralHpoIds = ancestors
+                  ancestralHpoIds = ancestors,
+                  sourceTextPhenotype = data.sourceTextPhenotype,
+                  snomedIdPhenotype = data.snomedIdPhenotype,
+                  externalId = data.externalId
+
                 )
               )
             )
