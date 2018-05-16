@@ -1,6 +1,5 @@
 package io.kf.etl.processors.index.inject
 
-import java.net.InetAddress
 
 import com.google.inject.Provides
 import com.typesafe.config.Config
@@ -16,13 +15,6 @@ import io.kf.etl.processors.index.source.IndexSource
 import io.kf.etl.processors.index.transform.IndexTransformer
 import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 import io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag
-import org.apache.spark.sql.SparkSession
-import org.apache.hadoop.fs.{FileSystem => HDFS}
-import org.elasticsearch.client.transport.TransportClient
-import org.elasticsearch.common.settings.Settings
-import org.elasticsearch.common.transport.TransportAddress
-import org.elasticsearch.transport.client.PreBuiltTransportClient
-
 import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
@@ -81,9 +73,22 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
   override def getContext(): IndexContext = {
 
     val cc = IndexConfig(
-      config.get.getString("name"),
-      esConfig,
-      None
+      name = config.get.getString("name"),
+      esConfig = esConfig,
+      dataPath = None,
+      adviceEnabled = Try(config.get.getBoolean(CONFIG_NAME_ADVICEENABLED)) match {
+        case Success(advice) => advice
+        case _ => false
+      } ,
+      file_centric_alias = Try(config.get.getString(CONFIG_NAME_FILE_CENTRIC_ALIAS)) match {
+        case Success(filecentric) => Some(filecentric)
+        case _ => Some(DEFAULT_FILE_CENTRIC_ALIAS)
+      },
+      participant_centric_alias = Try(config.get.getString(CONFIG_NAME_PARTICIPANT_CENTRIC_ALIAS)) match {
+        case Success(participantcentric) => Some(participantcentric)
+        case _ => Some(DEFAULT_PARTICIPANT_CENTRIC_ALIAS)
+      },
+      releaseTag = getReleaseTagInstance()
     )
 
     new IndexContext(sparkSession, hdfs, appRootPath, cc)
@@ -127,8 +132,8 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
 
     new IndexSink(
       sparkSession,
-      context.config.eSConfig,
-      getReleaseTagInstance(),
+      context.config.esConfig,
+      context.config.releaseTag,
       Context.esClient
     )
   }

@@ -35,6 +35,11 @@ object Constants {
   val CONFIG_NAME_DUMP_PATH = "dump_path"
   val CONFIG_NAME_WRITE_INTERMEDIATE_DATA = "write_intermediate_data"
   val CONFIG_NAME_HPO = s"${ROOT_PACKAGE}.hpo"
+  val CONFIG_NAME_ADVICEENABLED = "adviceEnabled"
+  val CONFIG_NAME_FILE_CENTRIC_ALIAS = "file_centric_alias"
+  val CONFIG_NAME_PARTICIPANT_CENTRIC_ALIAS = "participant_centric_alias"
+  val DEFAULT_FILE_CENTRIC_ALIAS = "file_centric"
+  val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"
 

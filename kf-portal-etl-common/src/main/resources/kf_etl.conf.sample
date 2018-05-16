@@ -82,6 +82,9 @@ io.kf.etl {
       //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
       //        pattern = "sample_aliquot_fix"
       //      }
+      adviceEnabled = false
+      file_centric_alias = "file_centric"
+      participant_centric_alias = "participant_centric"
     }
   ]
 
