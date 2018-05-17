@@ -35,16 +35,16 @@ object Constants {
   val CONFIG_NAME_DUMP_PATH = "dump_path"
   val CONFIG_NAME_WRITE_INTERMEDIATE_DATA = "write_intermediate_data"
   val CONFIG_NAME_HPO = s"${ROOT_PACKAGE}.hpo"
-  val CONFIG_NAME_ADVICEENABLED = "adviceEnabled"
-  val CONFIG_NAME_FILE_CENTRIC_ALIAS = "file_centric_alias"
-  val CONFIG_NAME_PARTICIPANT_CENTRIC_ALIAS = "participant_centric_alias"
+  val CONFIG_NAME_ALIASACTIONENABLED = "aliasActionEnabled"
+  val CONFIG_NAME_ALIASHANDLERCLASS = "aliasHandlerClass"
+  val DEFAULT_ALIASHANDLERCLASS = "io.kf.etl.processors.index.posthandler.impl.ReplaceIndexInAlias"
   val DEFAULT_FILE_CENTRIC_ALIAS = "file_centric"
   val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"
 
-  val FILE_CENTRIC_PROCESSOR_NAME = "file_centric"
-  val PARTICIPANT_CENTRIC_PROCESSOR_NAME = "participant_centric"
+  val FILE_CENTRIC_PROCESSOR_NAME = DEFAULT_FILE_CENTRIC_ALIAS
+  val PARTICIPANT_CENTRIC_PROCESSOR_NAME = DEFAULT_PARTICIPANT_CENTRIC_ALIAS
   val RELEASE_TAG = "release_tag"
   val RELEASE_TAG_CLASS_NAME = "release_tag_class_name"
 

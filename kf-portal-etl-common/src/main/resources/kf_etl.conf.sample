@@ -67,7 +67,7 @@ io.kf.etl {
       write_intermediate_data = false
     },
     {
-      name = "participant_entric" // used as prefix of the index name and type name
+      name = "participant_centric" // used as prefix of the index name and type name
       data_path = ${io.kf.etl.hdfs.root}/participantcentric
       write_intermediate_data = false
     },
@@ -82,9 +82,8 @@ io.kf.etl {
       //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
       //        pattern = "sample_aliquot_fix"
       //      }
-      adviceEnabled = false
-      file_centric_alias = "file_centric"
-      participant_centric_alias = "participant_centric"
+      aliasAction = false
+      aliasHandlerClass = "io.kf.etl.processors.index.posthandler.impl.????"
     }
   ]
 

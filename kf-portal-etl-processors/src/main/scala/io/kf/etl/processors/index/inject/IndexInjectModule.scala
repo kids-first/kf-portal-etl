@@ -76,17 +76,13 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
       name = config.get.getString("name"),
       esConfig = esConfig,
       dataPath = None,
-      adviceEnabled = Try(config.get.getBoolean(CONFIG_NAME_ADVICEENABLED)) match {
+      aliasActionEnabled = Try(config.get.getBoolean(CONFIG_NAME_ALIASACTIONENABLED)) match {
         case Success(advice) => advice
         case _ => false
       } ,
-      file_centric_alias = Try(config.get.getString(CONFIG_NAME_FILE_CENTRIC_ALIAS)) match {
-        case Success(filecentric) => Some(filecentric)
-        case _ => Some(DEFAULT_FILE_CENTRIC_ALIAS)
-      },
-      participant_centric_alias = Try(config.get.getString(CONFIG_NAME_PARTICIPANT_CENTRIC_ALIAS)) match {
-        case Success(participantcentric) => Some(participantcentric)
-        case _ => Some(DEFAULT_PARTICIPANT_CENTRIC_ALIAS)
+      aliasHandlerClass = Try(config.get.getString(CONFIG_NAME_ALIASHANDLERCLASS)) match {
+        case Success(classname) => classname
+        case _ => DEFAULT_ALIASHANDLERCLASS
       },
       releaseTag = getReleaseTagInstance()
     )

@@ -2,7 +2,8 @@ package io.kf.etl.processors.index
 
 import io.kf.etl.processors.common.processor.Processor
 import io.kf.etl.processors.index.context.IndexContext
-import io.kf.etl.processors.index.es.impl.DefaultIndexProcessorAdvice
+import io.kf.etl.processors.index.posthandler.IndexProcessorPostHandler
+import io.kf.etl.processors.index.posthandler.impl.ReplaceIndexInAlias
 import io.kf.etl.processors.repo.Repository
 import org.apache.spark.sql.Dataset
 
@@ -13,19 +14,15 @@ class IndexProcessor(context: IndexContext,
 
   def process(input: (String, Repository)):Unit = {
 
-    context.config.adviceEnabled match {
+    source.andThen(transform).andThen(sink)(input)
+
+    context.config.aliasActionEnabled match {
       case true => {
-        val advice = new DefaultIndexProcessorAdvice
-        advice.preProcess(context, input._1)
-        source.andThen(transform).andThen(sink)(input)
-        advice.postProcess(context, input._1)
+        val handler = Class.forName(context.config.aliasHandlerClass).getConstructor(classOf[IndexContext], classOf[String]).newInstance(context, input._1).asInstanceOf[IndexProcessorPostHandler]
+        handler.post()
       }
-      case false => {
-        source.andThen(transform).andThen(sink)(input)
-      }
+      case false =>
     }
-
-
   }
 
 }

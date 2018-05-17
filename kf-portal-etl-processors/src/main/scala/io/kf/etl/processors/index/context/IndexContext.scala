@@ -13,4 +13,4 @@ class IndexContext(override val sparkSession: SparkSession,
                    override val config: IndexConfig) extends ProcessorContext
 
 
-case class IndexConfig(override val name:String, esConfig: ESConfig, override val dataPath:Option[String], adviceEnabled: Boolean, file_centric_alias:Option[String], participant_centric_alias:Option[String], releaseTag: ReleaseTag) extends ProcessorConfig
+case class IndexConfig(override val name:String, esConfig: ESConfig, override val dataPath:Option[String], aliasActionEnabled: Boolean, aliasHandlerClass:String, releaseTag: ReleaseTag) extends ProcessorConfig
