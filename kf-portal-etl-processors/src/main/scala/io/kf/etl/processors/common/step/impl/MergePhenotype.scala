@@ -156,16 +156,16 @@ object MergePhenotype {
             Phenotype_ES(
               Some(
                 HPO_ES(
-                  ageAtEventDays = data.ageAtEventDays,
-                  createdAt = data.createdAt,
-                  modifiedAt = data.modifiedAt,
-                  observed = data.observed,
-                  negativeHpoIds = data.negative,
-                  hpoIds = data.positive,
-                  ancestralHpoIds = ancestors,
-                  sourceTextPhenotype = data.sourceTextPhenotype,
-                  snomedIdPhenotype = data.snomedIdPhenotype,
-                  externalId = data.externalId
+                  ageAtEventDays = data.ageAtEventDays.toSet.toSeq,
+                  createdAt = data.createdAt.toSet.toSeq,
+                  modifiedAt = data.modifiedAt.toSet.toSeq,
+                  observed = data.observed.toSet.toSeq,
+                  negativeHpoIds = data.negative.toSet.toSeq,
+                  hpoIds = data.positive.toSet.toSeq,
+                  ancestralHpoIds = ancestors.toSet.toSeq,
+                  sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq,
+                  snomedIdPhenotype = data.snomedIdPhenotype.toSet.toSeq,
+                  externalId = data.externalId.toSet.toSeq
 
                 )
               )
