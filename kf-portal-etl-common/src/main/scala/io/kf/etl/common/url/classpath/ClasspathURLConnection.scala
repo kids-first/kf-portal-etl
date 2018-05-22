@@ -1,4 +1,4 @@
-package io.kf.etl.common.url
+package io.kf.etl.common.url.classpath
 
 import java.io.InputStream
 import java.net.{URL, URLConnection}

@@ -1,42 +1,17 @@
 package io.kf.etl.processors.download.sink
 
-import java.io.File
 import java.net.URL
 
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{DataServiceEntityNames, EntityDataSet}
 import io.kf.etl.processors.download.context.DownloadContext
-import org.apache.hadoop.fs.Path
 import io.kf.etl.common.Constants.HPO_GRAPH_PATH
-import io.kf.etl.processors.common.exceptions.KfExceptions.{CreateDumpDirectoryFailedException, DataSinkTargetNotSupportedException}
-import org.apache.commons.io.FileUtils
+import io.kf.etl.processors.common.ops.URLPathOps
 
 class DownloadSink(val context: DownloadContext) {
 
-  private def checkSinkDirectory(url: URL):Unit = {
-    val url = new URL(context.getJobDataPath())
-
-    url.getProtocol match {
-      case "hdfs" => {
-        val dir = new Path(url.toString)
-        context.hdfs.delete(dir, true)
-        context.hdfs.mkdirs(dir)
-      }
-      case "file" => {
-        val dir = new File(url.getFile)
-        if(dir.exists())
-          FileUtils.deleteDirectory(dir)
-        dir.mkdir() match {
-          case false => throw CreateDumpDirectoryFailedException(url)
-          case true =>
-        }
-      }
-      case value => DataSinkTargetNotSupportedException(url)
-    }
-  }
-
-
   def sink(data: EntityDataSet):EntityDataSet = {
-    checkSinkDirectory(new URL(context.getJobDataPath()))
+    implicit val hdfs = context.hdfs
+    URLPathOps.removePathIfExists(new URL(context.getJobDataPath()))
 
     data.participants.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Participant}")
     data.families.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Family}")

@@ -1,8 +1,8 @@
-package io.kf.etl.common.url
+package io.kf.etl.common.url.classpath
 
 import java.net.{URL, URLConnection, URLStreamHandler}
 
-class Handler extends URLStreamHandler{
+class ClasspathURLHandler extends URLStreamHandler{
   override def openConnection(url: URL): URLConnection = {
     new ClasspathURLConnection(url)
   }

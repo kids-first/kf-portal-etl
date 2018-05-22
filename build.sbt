@@ -34,6 +34,7 @@ lazy val commonSettings = Seq(
     case "META-INF/native/libnetty_transport_native_epoll_x86_64.so" => MergeStrategy.last
     case "overview.html" => MergeStrategy.last
     case "git.properties" => MergeStrategy.discard
+    case "mime.types" => MergeStrategy.first
     case x =>
       val oldStrategy = (assemblyMergeStrategy in assembly).value
       oldStrategy(x)
