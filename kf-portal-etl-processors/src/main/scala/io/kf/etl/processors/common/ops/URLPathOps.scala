@@ -10,7 +10,8 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import scala.util.{Failure, Success, Try}
 
 object URLPathOps {
-  def removePathIfExists(path: URL)(implicit hdfs: FileSystem):Boolean = {
+  def removePathIfExists(path: URL)(implicit hdfs: FileSystem):Unit = {
+    val s3 = "s3(.*)".r
     path.getProtocol match {
       case "file" => {
         new FileURLOps().removePathIfExists(path)
@@ -18,40 +19,36 @@ object URLPathOps {
       case "hdfs" => {
         new HDFSURLOps(hdfs).removePathIfExists(path)
       }
-      case "s3a" => {
+      case s3(c) => {
         new S3URLOps().removePathIfExists(path)
       }
+      case  _ => throw new Exception(s"${path.getProtocol} is not supported!")
     }
   }
 
   private sealed trait URLOps{
-    def removePathIfExists(path:URL):Boolean
+    def removePathIfExists(path:URL):Unit
   }
 
   private class FileURLOps extends URLOps {
-    override def removePathIfExists(path: URL): Boolean = {
+    override def removePathIfExists(path: URL): Unit = {
       val dir = new File(path.getFile)
       if(dir.exists())
         FileUtils.deleteDirectory(dir)
-      dir.mkdir()
     }
   }
 
   private class HDFSURLOps(hdfs: FileSystem) extends URLOps {
-    override def removePathIfExists(path: URL): Boolean = {
+    override def removePathIfExists(path: URL): Unit = {
       val dir = new Path(path.toString)
       hdfs.delete(dir, true)
-      hdfs.mkdirs(dir)
     }
   }
 
   private class S3URLOps extends URLOps {
-    override def removePathIfExists(path: URL): Boolean = {
+    override def removePathIfExists(path: URL): Unit = {
       val s3 = AmazonS3ClientBuilder.defaultClient()
-      Try(s3.deleteObject(path.getHost, path.getPath)) match {
-        case Success(_) => true
-        case Failure(_) => false
-      }
+      s3.deleteObject(path.getHost, path.getPath)
     }
   }
 }
