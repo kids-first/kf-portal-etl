@@ -13,6 +13,7 @@ class ParticipantCommonSink(val context: ParticipantCommonContext) {
 
   def sink(tuple: (EntityDataSet, Dataset[Participant_ES])): (EntityDataSet, Dataset[Participant_ES]) = {
     implicit val hdfs = context.hdfs
+    implicit val s3 = context.s3
     URLPathOps.removePathIfExists(new URL(sinkDataPath))
     import io.kf.etl.transform.ScalaPB2Json4s._
     import context.sparkSession.implicits._

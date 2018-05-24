@@ -37,7 +37,7 @@ class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorIn
       }
     )
 
-    new ParticipantCentricContext(sparkSession, hdfs, appRootPath, cc)
+    new ParticipantCentricContext(sparkSession, hdfs, appRootPath, cc, s3)
   }
 
   @Provides

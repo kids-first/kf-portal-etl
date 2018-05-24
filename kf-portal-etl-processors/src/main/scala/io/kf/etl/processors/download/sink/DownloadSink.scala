@@ -11,6 +11,7 @@ class DownloadSink(val context: DownloadContext) {
 
   def sink(data: EntityDataSet):EntityDataSet = {
     implicit val hdfs = context.hdfs
+    implicit val s3 = context.s3
     URLPathOps.removePathIfExists(new URL(context.getJobDataPath()))
 
     data.participants.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Participant}")

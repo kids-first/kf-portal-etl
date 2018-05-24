@@ -43,6 +43,12 @@ io.kf.etl {
     root = ""
   }
 
+  aws {
+    s3 {
+      profile = ""
+    }
+  }
+
   processors = [
     {
       name = "download"

@@ -2,6 +2,8 @@ package io.kf.etl.context
 
 import java.net.{InetAddress, URL}
 
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.typesafe.config.ConfigFactory
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.conf._
@@ -23,6 +25,7 @@ object Context extends ContextTrait with KfURLEnabler{
   lazy val mysql = getMysql()
   lazy val esClient = getESClient()
   lazy val dataService = getDataService()
+  lazy val awsS3 = getAWS()
 
   override def loadConfig(): KFConfig = {
 
@@ -96,5 +99,9 @@ object Context extends ContextTrait with KfURLEnabler{
 
   private def getMysql(): MysqlConfig = {
     config.mysqlConfig
+  }
+
+  private def getAWS(): AmazonS3 = {
+    AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider(config.awsConfig.s3.profile)).build()
   }
 }

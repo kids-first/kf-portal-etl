@@ -37,7 +37,7 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
       postgresql = Context.postgresql
 
     )
-    new DownloadContext(sparkSession, hdfs, appRootPath, cc)
+    new DownloadContext(sparkSession, hdfs, appRootPath, cc, s3)
   }
 
   private def getDumpPath():String = {

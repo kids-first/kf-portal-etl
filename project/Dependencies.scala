@@ -21,5 +21,6 @@ object Dependencies {
   val json4s = "org.json4s" %% "json4s-jackson" % "3.2.11"
   val mysql = "mysql" % "mysql-connector-java" % "5.1.46"
   val shaded_scalapb_json4s = "io.kf.etl" % "kf-scalapb-json4s-shade_2.11" % "0.0.1"
-  val s3 = "com.amazonaws" % "aws-java-sdk-s3" % "1.11.333"
+  val aws_java_sdk_s3 = "com.amazonaws" % "aws-java-sdk-s3" % "1.11.333"
+  val aws_java_sdk_sts =  "com.amazonaws" % "aws-java-sdk-sts" % "1.11.333"
 }

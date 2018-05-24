@@ -3,14 +3,12 @@ package io.kf.etl.processors.common.ops
 import java.io.File
 import java.net.URL
 
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.amazonaws.services.s3.AmazonS3
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.{FileSystem, Path}
 
-import scala.util.{Failure, Success, Try}
-
 object URLPathOps {
-  def removePathIfExists(path: URL)(implicit hdfs: FileSystem):Unit = {
+  def removePathIfExists(path: URL)(implicit hdfs: FileSystem, s3Client: AmazonS3):Unit = {
     val s3 = "s3(.*)".r
     path.getProtocol match {
       case "file" => {
@@ -20,7 +18,7 @@ object URLPathOps {
         new HDFSURLOps(hdfs).removePathIfExists(path)
       }
       case s3(c) => {
-        new S3URLOps().removePathIfExists(path)
+        new S3URLOps(s3Client).removePathIfExists(path)
       }
       case  _ => throw new Exception(s"${path.getProtocol} is not supported!")
     }
@@ -45,9 +43,8 @@ object URLPathOps {
     }
   }
 
-  private class S3URLOps extends URLOps {
+  private class S3URLOps(s3:AmazonS3) extends URLOps {
     override def removePathIfExists(path: URL): Unit = {
-      val s3 = AmazonS3ClientBuilder.defaultClient()
       s3.deleteObject(path.getHost, path.getPath)
     }
   }

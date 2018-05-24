@@ -12,6 +12,7 @@ class FileCentricSink(val context: FileCentricContext) {
 
   def sink(data:Dataset[FileCentric_ES]):Unit = {
     implicit val hdfs = context.hdfs
+    implicit val s3 = context.s3
     URLPathOps.removePathIfExists(new URL(sinkDataPath))
 
     import io.kf.etl.transform.ScalaPB2Json4s._

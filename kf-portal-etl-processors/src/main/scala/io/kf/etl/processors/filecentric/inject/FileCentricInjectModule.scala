@@ -37,7 +37,7 @@ class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectMod
       }
     )
 
-    new FileCentricContext(sparkSession, hdfs, appRootPath, cc)
+    new FileCentricContext(sparkSession, hdfs, appRootPath, cc, s3)
   }
 
   @Provides

@@ -8,6 +8,7 @@ abstract class ProcessorInjectModule(val config: Option[Config]) extends Abstrac
   lazy val sparkSession = Context.sparkSession
   lazy val hdfs = Context.hdfs
   lazy val appRootPath = Context.rootPath
+  lazy val s3 = Context.awsS3
 
   type CONTEXT
   type PROCESSOR

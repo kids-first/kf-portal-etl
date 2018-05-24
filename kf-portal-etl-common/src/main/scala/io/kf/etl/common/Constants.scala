@@ -20,6 +20,7 @@ object Constants {
   val CONFIG_NAME_DATASERVICE_URL = s"${ROOT_PACKAGE}.dataservice.url"
   val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root"
+  val CONFIG_NAME_AWS_S3_PROFILE = s"${ROOT_PACKAGE}.aws.s3.profile"
   val CONFIG_NAME_PROCESSORS = s"${ROOT_PACKAGE}.processors"
   val CONFIG_NAME_PIPELINE = s"${ROOT_PACKAGE}.pipeline"
   val CONFIG_NAME_POSTGRESQL_HOST = s"${ROOT_PACKAGE}.${POSTGRESQL}.host"

@@ -15,6 +15,7 @@ class KFConfig(private val config: Config){
   lazy val postgresqlConfig = getPostgresql()
   lazy val mysqlConfig = getMysql()
   lazy val dataServiceConfig = getDataService()
+  lazy val awsConfig = getAWSConfig()
 
   private def getSparkConfig(): SparkConfig = {
     KFConfigExtractors.parseSpark(config)
@@ -50,6 +51,14 @@ class KFConfig(private val config: Config){
     KFConfigExtractors.parseDataService(config)
   }
 
+  private def getAWSConfig(): AWSConfig = {
+    AWSConfig(
+      s3 = AWSS3Config(
+        profile = config.getString(CONFIG_NAME_AWS_S3_PROFILE)
+      )
+    )
+  }
+
 }
 
 object KFConfig{
@@ -69,3 +78,7 @@ case class PostgresqlConfig(host:String, database:String, user:String, password:
 case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])
 
 case class DataServiceConfig(url:String)
+
+case class AWSS3Config(profile:String)
+
+case class AWSConfig(s3: AWSS3Config)
