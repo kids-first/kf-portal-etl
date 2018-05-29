@@ -61,4 +61,6 @@ lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(co
 
 lazy val pipeline = (project in file("kf-portal-etl-pipeline")).dependsOn(processors).settings(commonSettings:_*)
 
+lazy val livy = (project in file("kf-portal-etl-livy")).dependsOn(pipeline).settings(commonSettings:_*)
+
 
