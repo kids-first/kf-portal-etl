@@ -2,7 +2,7 @@
   "mappings": {
     "file_centric": {
       "_meta": {
-        "kf-dataservice-version": "1.0.1"
+        "kf-dataservice-version": "1.1.2"
       },
       "properties": {
         "availability": {
@@ -31,6 +31,9 @@
           "type": "boolean"
         },
         "kf_id": {
+          "type": "keyword"
+        },
+        "latest_did": {
           "type": "keyword"
         },
         "modified_at": {

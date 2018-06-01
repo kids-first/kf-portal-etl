@@ -15,6 +15,7 @@ message FileCentric_ES {
     repeated SequencingExperiment_ES sequencing_experiments = 10;
     optional string reference_genome = 11;
     optional bool is_harmonized = 12;
+    optional string latest_did = 13;
 }
 
 message ParticipantCentric_ES {
@@ -214,6 +215,7 @@ message GenomicFile_ES {
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
     optional string availability = 12;
+    optional string latest_did = 13;
 }
 
 message File_ES {
@@ -229,4 +231,5 @@ message File_ES {
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
     optional string availability = 12;
+    optional string latest_did = 13;
 }

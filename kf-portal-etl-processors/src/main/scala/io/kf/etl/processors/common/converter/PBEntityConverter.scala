@@ -108,7 +108,8 @@ object PBEntityConverter {
       sequencingExperiment = seqExps,
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized,
-      availability = gf.availability
+      availability = gf.availability,
+      latestDid = gf.latestDid
     )
   }
 
@@ -125,7 +126,8 @@ object PBEntityConverter {
 //      sequencing_experiments = ???
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized,
-      availability = gf.availability
+      availability = gf.availability,
+      latestDid = gf.latestDid
     )
   }
 
@@ -164,7 +166,8 @@ object PBEntityConverter {
       sequencingExperiments = seqExps,
 //      repeated Participant_ES participants = 9,
       referenceGenome = genomicFile.referenceGenome,
-      isHarmonized = genomicFile.isHarmonized
+      isHarmonized = genomicFile.isHarmonized,
+      latestDid = genomicFile.latestDid
     )
   }
 
