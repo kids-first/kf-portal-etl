@@ -21,7 +21,6 @@ object Context extends ContextTrait with KfURLEnabler{
   lazy val hdfs = getHDFS()
   lazy val rootPath = getRootPath()
   lazy val sparkSession = getSparkSession()
-  lazy val postgresql = getPostgresql()
   lazy val mysql = getMysql()
   lazy val esClient = getESClient()
   lazy val dataService = getDataService()
@@ -91,10 +90,6 @@ object Context extends ContextTrait with KfURLEnabler{
 
     }).get
 
-  }
-
-  private def getPostgresql(): PostgresqlConfig = {
-    config.postgresqlConfig
   }
 
   private def getMysql(): MysqlConfig = {

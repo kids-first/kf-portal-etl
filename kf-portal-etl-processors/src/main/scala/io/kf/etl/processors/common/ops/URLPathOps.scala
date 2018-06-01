@@ -5,22 +5,25 @@ import java.net.URL
 
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.DeleteObjectsRequest
+import io.kf.etl.context.Context
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 import scala.collection.convert.WrapAsScala
 
 object URLPathOps {
-  def removePathIfExists(path: URL)(implicit hdfs: FileSystem, s3Client: AmazonS3):Unit = {
+  def removePathIfExists(path: URL):Unit = {
     val s3 = "s3(.*)".r
     path.getProtocol match {
       case "file" => {
         new FileURLOps().removePathIfExists(path)
       }
       case "hdfs" => {
+        val hdfs = Context.hdfs
         new HDFSURLOps(hdfs).removePathIfExists(path)
       }
       case s3(c) => {
+        val s3Client = Context.awsS3
         new S3URLOps(s3Client).removePathIfExists(path)
       }
       case  _ => throw new Exception(s"${path.getProtocol} is not supported!")

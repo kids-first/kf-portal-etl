@@ -37,7 +37,7 @@ class ParticipantCommonInject(config: Option[Config]) extends ProcessorInjectMod
       }
     )
 
-    new ParticipantCommonContext(sparkSession, hdfs, appRootPath, cc, s3)
+    new ParticipantCommonContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   @Provides

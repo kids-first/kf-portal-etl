@@ -33,11 +33,9 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
         case Success(path) => Some(path)
         case Failure(_) => None
       },
-      mysql = Context.mysql,
-      postgresql = Context.postgresql
-
+      mysql = Context.mysql
     )
-    new DownloadContext(sparkSession, hdfs, appRootPath, cc, s3)
+    new DownloadContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   private def getDumpPath():String = {

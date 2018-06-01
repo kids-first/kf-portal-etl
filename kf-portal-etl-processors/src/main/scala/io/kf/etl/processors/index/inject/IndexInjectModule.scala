@@ -87,7 +87,7 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
       releaseTag = getReleaseTagInstance()
     )
 
-    new IndexContext(sparkSession, hdfs, appRootPath, cc, s3)
+    new IndexContext(sparkSession, hdfs, appRootPath, cc)
   }
 
   private def getReleaseTagInstance(): ReleaseTag = {

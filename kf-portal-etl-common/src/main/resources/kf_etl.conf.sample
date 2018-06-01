@@ -10,13 +10,6 @@ io.kf.etl {
     }
   }
 
-  postgresql {
-    host = ""
-    database = ""
-    user = ""
-    password = ""
-  }
-
   mysql = {
     host = ""
     database = ""
