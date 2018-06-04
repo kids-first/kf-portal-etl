@@ -22,7 +22,7 @@ ENV JAVA_HOME /srv/java/jdk
 COPY slaves /kf-etl/spark/conf/
 COPY spark-env.sh /kf-etl/spark/conf/
 
-RUN apt-get update && apt-get install -y openssh-client openssh-server vim
+RUN apt-get update && apt-get install -y openssh-client openssh-server vim net-tools
 RUN ssh-keygen -t rsa -N "" -f id_rsa
 RUN mkdir /root/.ssh && mv id_rsa id_rsa.pub /root/.ssh/
 RUN cd /root/.ssh && cat id_rsa.pub > authorized_keys

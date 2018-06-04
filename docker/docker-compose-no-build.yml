@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  hpo:
+    image: kids-first/hpo:0.0.1
+    container_name: kf-hpo
+
+  etl:
+    image: kids-first/etl:0.0.1
+    links:
+      - hpo
+#      - hadoop
+    container_name: kf-etl
+    ports:
+      - "8080:8080"
+      - "4040:4040"
+      - "8081:8081"
+      - "7077:7077"
+      - "6066:6066"
+#  hadoop:
+#    image: sequenceiq/hadoop-docker:2.7.0
+#    container_name: kf-hadoop

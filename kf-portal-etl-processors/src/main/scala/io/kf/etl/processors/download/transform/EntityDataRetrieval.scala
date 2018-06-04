@@ -7,6 +7,8 @@ import org.asynchttpclient.Dsl._
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
 
+import scala.annotation.tailrec
+
 case class EntityDataRetrieval(rootUrl:String) {
 
   lazy val asyncClient = getAsyncClient()
@@ -39,6 +41,40 @@ case class EntityDataRetrieval(rootUrl:String) {
       }//end of case Some(entities)
     }
   }
+
+
+  @tailrec
+  final def retrieve1[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](entityEndpoint:Option[String], data: Seq[T])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
+    entityEndpoint match {
+      case None => data
+      case Some(endpoint) => {
+        val responseBody = JsonMethods.parse( asyncClient.prepareGet(s"${rootUrl}${endpoint}").execute().get().getResponseBody )
+
+        val currentDataset =
+          (
+            responseBody \ "results" match {
+            case JNull | JNothing => Seq.empty
+            case JArray(entities) => {
+              entities.map(entity => {
+                extractor.extract(
+                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
+                  entity
+                )
+              })
+            }//end of case JArray(entities)
+          }//end of responseBody \ "results" match
+          ) ++ data
+
+
+        responseBody \ "_links" \ "next" match {
+          case JNull | JNothing => retrieve1(None, currentDataset)
+          case JString(next) => retrieve1(Some(next), currentDataset)
+        }
+      }//end of case Some(entities)
+    }
+  }
+
+
 
   private def getAsyncClient(): AsyncHttpClient = {
     asyncHttpClient
