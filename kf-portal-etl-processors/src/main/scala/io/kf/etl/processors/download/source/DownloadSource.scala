@@ -8,7 +8,7 @@ class DownloadSource(val context: DownloadContext) {
   def getEntitySet(input: Option[Array[String]]): Seq[EntityEndpointSet] = {
     input match {
       case None => {
-        val query = ""
+        val query = "?limit=100"
         Seq(
           EntityEndpointSet(
             participants = s"/participants${query}",

@@ -4,6 +4,7 @@ services:
   hpo:
     image: kids-first/hpo:0.0.1
     container_name: kf-hpo
+    hostname: kf-hpo
 
   etl:
     image: kids-first/etl:0.0.1
@@ -11,6 +12,7 @@ services:
       - hpo
 #      - hadoop
     container_name: kf-etl
+    hostname: kf-etl
     ports:
       - "8080:8080"
       - "4040:4040"

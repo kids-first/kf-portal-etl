@@ -68,7 +68,7 @@ case class EntityDataRetrieval(rootUrl:String) {
 
         responseBody \ "_links" \ "next" match {
           case JNull | JNothing => retrieve1(None, currentDataset)
-          case JString(next) => retrieve1(Some(next), currentDataset)
+          case JString(next) => retrieve1(Some(s"${next}&limit=100"), currentDataset)
         }
       }//end of case Some(entities)
     }
