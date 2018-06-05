@@ -153,7 +153,7 @@ object PBEntityConverter {
     )
   }
   
-  def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): FileCentric_ES = {
+  def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
     FileCentric_ES(
       controlledAccess = genomicFile.controlledAccess,
       createdAt = genomicFile.createdAt,
@@ -164,7 +164,7 @@ object PBEntityConverter {
       kfId = genomicFile.kfId,
       modifiedAt = genomicFile.modifiedAt,
       sequencingExperiments = seqExps,
-//      repeated Participant_ES participants = 9,
+      participants = participants,
       referenceGenome = genomicFile.referenceGenome,
       isHarmonized = genomicFile.isHarmonized,
       latestDid = genomicFile.latestDid

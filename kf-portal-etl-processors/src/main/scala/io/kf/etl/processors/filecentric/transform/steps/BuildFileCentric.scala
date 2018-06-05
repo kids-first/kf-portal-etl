@@ -126,7 +126,8 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
               case Some(seqExp) => Seq(seqExp)
               case None => Seq.empty
             }
-          }
+          },
+          latestDid = genomicFile.latestDid
         )
 
     })
