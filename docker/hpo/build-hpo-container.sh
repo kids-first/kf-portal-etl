@@ -3,4 +3,4 @@
 imagename="kids-first/hpo"
 imageversion="0.0.1"
 
-docker build -t ${imagename}:${imageversion} .
+sudo docker build -t ${imagename}:${imageversion} .

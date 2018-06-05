@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 cd ..
 sbt pipeline/assembly
@@ -13,7 +13,7 @@ SPARK_VERSION=2.3.0
 cp kf_etl.conf ./etl/
 cp spark-${SPARK_VERSION}-bin-hadoop2.7.tgz ./etl/
 
-docker-compose -f docker-compose-no-build.yml up -d
+sudo docker-compose -f docker-compose-no-build.yml up -d
 
 #clean
 rm etl/kf-portal-etl.jar

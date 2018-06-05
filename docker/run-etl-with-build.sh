@@ -13,7 +13,7 @@ SPARK_VERSION=2.3.0
 cp kf_etl.conf ./etl/
 cp spark-${SPARK_VERSION}-bin-hadoop2.7.tgz ./etl/
 
-docker-compose -f docker-compose-with-build.yml up --build -d
+sudo docker-compose -f docker-compose-with-build.yml up --build -d
 
 #clean
 rm etl/kf-portal-etl.jar

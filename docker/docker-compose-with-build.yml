@@ -10,6 +10,9 @@ services:
     image: kids-first/hpo:0.0.1
     container_name: kf-hpo
     hostname: kf-hpo
+    network_mode: host
+    ports:
+      - "3306:3306"
 
   etl:
     build:
@@ -23,6 +26,7 @@ services:
 #      - hadoop
     container_name: kf-etl
     hostname: kf-etl
+    network_mode: host
     ports:
       - "8080:8080"
       - "4040:4040"
