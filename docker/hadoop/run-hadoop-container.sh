@@ -1,3 +1,3 @@
 #!/bin/bash
-
-sudo docker run --name kf-hadoop --network host -d sequenceiq/hadoop-docker:2.7.0
+name=kf-hadoop
+sudo docker run --hostname name --name $name -d sequenceiq/hadoop-docker:2.7.0

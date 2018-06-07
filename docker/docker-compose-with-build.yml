@@ -9,11 +9,11 @@ services:
         HPO_SQL_FILE_NAME: MYHPO_03_2018.sql
     image: kids-first/hpo:0.0.1
     container_name: kf-hpo
-#    hostname: kf-hpo
-    network_mode: host
-#    ports:
-#      - "3306:3306"
-
+    hostname: kf-hpo
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=HPO
   etl:
     build:
       context: ./etl
@@ -24,15 +24,17 @@ services:
     links:
       - hpo
       - hadoop
+      - elasticsearch
     container_name: kf-etl
-#    hostname: kf-etl
-    network_mode: host
-#    ports:
-#      - "8080:8080"
-#      - "4040:4040"
-#      - "8081:8081"
-#      - "7077:7077"
-#      - "6066:6066"
+    hostname: kf-etl
   hadoop:
     image: sequenceiq/hadoop-docker:2.7.0
     container_name: kf-hadoop
+    hostname: kf-hadoop
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: kf-es
+    hostname: kf-es
+    environment:
+      - discovery.type=single-node
+      - cluster.name=kf-es
