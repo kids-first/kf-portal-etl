@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# please run "sudo su" first
+
+echo vm.max_map_count=262144 >> /etc/sysctl.conf
+
 sudo apt-get update
 
 sudo apt-get install \

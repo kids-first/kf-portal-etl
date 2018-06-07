@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#service ssh start
-#sleep 5
-#. /kf-etl/spark/sbin/start-all.sh
+service ssh start
+sleep 5
+. /kf-etl/spark/sbin/start-all.sh
 
     KF_ETL_CONFIG="-Dkf.etl.config=${ETL_CONF_URL}"
 
