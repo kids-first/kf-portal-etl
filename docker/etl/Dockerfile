@@ -46,3 +46,12 @@ ENV SPARK_DEPLOY_MODE=$SPARK_DEPLOY_MODE
 ENTRYPOINT ["/kf-etl/bin/kf-etl-submit.sh"]
 
 EXPOSE 8080 4040 7077 6066 8081
+
+# install oracle java 8 with silent option
+#RUN apt-get install -y software-properties-common
+#RUN add-apt-repository ppa:webupd8team/java
+#RUN apt-get update
+#RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+#RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+#RUN apt-get install -y oracle-java8-installer
+#ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
