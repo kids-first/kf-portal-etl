@@ -12,18 +12,18 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import scala.collection.convert.WrapAsScala
 
 object URLPathOps {
-  def removePathIfExists(path: URL):Unit = {
+  def removePathIfExists(path: URL, appContext: Context):Unit = {
     val s3 = "s3(.*)".r
     path.getProtocol match {
       case "file" => {
         new FileURLOps().removePathIfExists(path)
       }
       case "hdfs" => {
-        val hdfs = Context.hdfs
+        val hdfs = appContext.hdfs
         new HDFSURLOps(hdfs).removePathIfExists(path)
       }
       case s3(c) => {
-        val s3Client = Context.awsS3
+        val s3Client = appContext.awsS3
         new S3URLOps(s3Client).removePathIfExists(path)
       }
       case  _ => throw new Exception(s"${path.getProtocol} is not supported!")

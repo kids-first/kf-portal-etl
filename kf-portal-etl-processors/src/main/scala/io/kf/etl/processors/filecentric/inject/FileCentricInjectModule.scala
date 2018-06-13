@@ -1,9 +1,9 @@
 package io.kf.etl.processors.filecentric.inject
 
 import com.google.inject.Provides
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.context.Context
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.filecentric.context.FileCentricConfig
 import io.kf.etl.processors.filecentric.FileCentricProcessor
@@ -16,7 +16,7 @@ import io.kf.etl.processors.filecentric.transform.FileCentricTransformer
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "file_centric")
-class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
+class FileCentricInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
   override type CONTEXT = FileCentricContext
   override type PROCESSOR = FileCentricProcessor
   override type SOURCE = FileCentricSource
@@ -37,36 +37,36 @@ class FileCentricInjectModule(config: Option[Config]) extends ProcessorInjectMod
       }
     )
 
-    new FileCentricContext(sparkSession, hdfs, appRootPath, cc)
+    new FileCentricContext(context, cc)
   }
 
   @Provides
   override def getProcessor(): FileCentricProcessor = {
-    val context = getContext()
+    val fContext = getContext()
     new FileCentricProcessor(
-      context,
-      getSource(context).source,
-      getTransformer(context).transform,
-      getSink(context).sink,
-      getOutput(context).output
+      fContext,
+      getSource(fContext).source,
+      getTransformer(fContext).transform,
+      getSink(fContext).sink,
+      getOutput(fContext).output
 
     )
   }
 
-  override def getSource(context: FileCentricContext): FileCentricSource = {
-    new FileCentricSource(context)
+  override def getSource(fContext: FileCentricContext): FileCentricSource = {
+    new FileCentricSource(fContext)
   }
 
-  override def getSink(context: FileCentricContext): FileCentricSink = {
-    new FileCentricSink(context)
+  override def getSink(fContext: FileCentricContext): FileCentricSink = {
+    new FileCentricSink(fContext)
   }
 
-  override def getTransformer(context: FileCentricContext): FileCentricTransformer = {
-    new FileCentricTransformer(context)
+  override def getTransformer(fContext: FileCentricContext): FileCentricTransformer = {
+    new FileCentricTransformer(fContext)
   }
 
-  override def getOutput(context: FileCentricContext): FileCentricOutput = {
-    new FileCentricOutput(context)
+  override def getOutput(fContext: FileCentricContext): FileCentricOutput = {
+    new FileCentricOutput(fContext)
   }
 
   override def configure(): Unit = {}

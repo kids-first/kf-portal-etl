@@ -1,10 +1,9 @@
 package io.kf.etl
 
 import com.google.inject.{AbstractModule, Guice, Injector}
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants.PROCESSOR_PACKAGE
 import io.kf.etl.common.inject.GuiceModule
-import io.kf.etl.context.{CLIParametersHolder, Context}
+import io.kf.etl.context.{CLIParametersHolder, Context, DefaultContext}
 import io.kf.etl.pipeline.Pipeline
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.filecentric.FileCentricProcessor
@@ -33,10 +32,12 @@ object ETLMain extends App{
         .map(clazz => {
           val guiceModuleName = clazz.getAnnotation(classOf[GuiceModule]).name()
           clazz.getConstructor(
-            classOf[Option[Config]]
+            classOf[Context],
+            classOf[String]
           )
             .newInstance(
-              Context.getProcessConfig(guiceModuleName)
+              new DefaultContext,
+              guiceModuleName
             )
             .asInstanceOf[AbstractModule]
         }).toSeq:_*
