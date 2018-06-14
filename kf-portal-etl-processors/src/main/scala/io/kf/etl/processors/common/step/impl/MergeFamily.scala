@@ -543,7 +543,6 @@ object MergeFamily {
               )
             })
 
-            family
           }//end case _
 
         }//end of familyStructure match {

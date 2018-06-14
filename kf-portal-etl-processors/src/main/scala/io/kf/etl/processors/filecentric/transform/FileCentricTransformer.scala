@@ -13,9 +13,7 @@ import org.apache.spark.sql.Dataset
 class FileCentricTransformer(val context: FileCentricContext) {
   def transform(data: (EntityDataSet, Dataset[Participant_ES])):Dataset[FileCentric_ES] = {
 
-    import context.sparkSession.implicits._
-
-    val ctx = StepContext(context.sparkSession, "filecentric", context.getProcessorDataPath(), context.hdfs, data._1)
+    val ctx = StepContext(context.appContext.sparkSession, "filecentric", context.getProcessorDataPath(), context.appContext.hdfs, data._1)
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {

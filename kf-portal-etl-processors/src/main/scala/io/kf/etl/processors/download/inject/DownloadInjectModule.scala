@@ -1,7 +1,6 @@
 package io.kf.etl.processors.download.inject
 
 import com.google.inject.Provides
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.inject.GuiceModule
 import io.kf.etl.context.Context
@@ -12,10 +11,11 @@ import io.kf.etl.processors.download.output.DownloadOutput
 import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
+
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
-class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
+class DownloadInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
   type CONTEXT = DownloadContext
   type PROCESSOR = DownloadProcessor
   type SOURCE = DownloadSource
@@ -25,17 +25,18 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
 
   override def getContext(): DownloadContext = {
 
+
     val cc = DownloadConfig(
       name = config.get.getString("name"),
-      dataService = Context.dataService,
+      dataService = context.dataService,
       dumpPath = getDumpPath(),
       dataPath = Try(config.get.getString(CONFIG_NAME_DATA_PATH)) match {
         case Success(path) => Some(path)
         case Failure(_) => None
       },
-      mysql = Context.mysql
+      mysql = context.mysql
     )
-    new DownloadContext(sparkSession, hdfs, appRootPath, cc)
+    new DownloadContext(context, cc)
   }
 
   private def getDumpPath():String = {
@@ -49,14 +50,14 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
 
   @Provides
   override def getProcessor(): DownloadProcessor = {
-    val context = getContext()
-    val source = getSource(context)
-    val sink = getSink(context)
-    val transformer = getTransformer(context)
-    val output = getOutput(context)
+    val dContext = getContext()
+    val source = getSource(dContext)
+    val sink = getSink(dContext)
+    val transformer = getTransformer(dContext)
+    val output = getOutput(dContext)
 
     new DownloadProcessor(
-      context,
+      dContext,
       source.getEntitySet,
       transformer.transform,
       sink.sink,
@@ -64,21 +65,21 @@ class DownloadInjectModule(config: Option[Config]) extends ProcessorInjectModule
     )
   }
 
-  override def getSource(context: DownloadContext): DownloadSource = {
-    new DownloadSource(context)
+  override def getSource(dContext: DownloadContext): DownloadSource = {
+    new DownloadSource(dContext)
   }
 
-  override def getSink(context: DownloadContext): DownloadSink = {
-    new DownloadSink(context)
+  override def getSink(dContext: DownloadContext): DownloadSink = {
+    new DownloadSink(dContext)
   }
 
-  override def getTransformer(context: DownloadContext): DownloadTransformer = {
-    new DownloadTransformer(context)
+  override def getTransformer(dContext: DownloadContext): DownloadTransformer = {
+    new DownloadTransformer(dContext)
   }
 
   override def configure(): Unit = {}
 
-  override def getOutput(context: DownloadContext): DownloadOutput = {
-    new DownloadOutput(context)
+  override def getOutput(dContext: DownloadContext): DownloadOutput = {
+    new DownloadOutput(dContext)
   }
 }

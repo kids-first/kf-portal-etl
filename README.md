@@ -52,3 +52,11 @@ There are some dependencies to run Kids-First ETL, refer to [submit.sh.example](
 To submit the application to Spark, run the following in the command line
 
 ``` ${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} ```
+
+## Command line arguments
+
+Kids-First ETL supports command-line argument `-study_id id1 id2`. In this case, ETL will filter the dataset retrieved from data service through `study_id`s
+
+To submit the application with `study_id`s, run the following:
+
+``` ${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} -study_id id1 id2```

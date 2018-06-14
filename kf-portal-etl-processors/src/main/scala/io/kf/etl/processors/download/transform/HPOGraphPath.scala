@@ -11,7 +11,7 @@ object HPOGraphPath {
   def get(ctx: DownloadContext): Dataset[GraphPath] = {
     val mysql = ctx.config.mysql
 
-    val spark = ctx.sparkSession
+    val spark = ctx.appContext.sparkSession
 
     import spark.implicits._
 

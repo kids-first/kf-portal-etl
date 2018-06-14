@@ -13,9 +13,9 @@ class ParticipantCommonSink(val context: ParticipantCommonContext) {
 
   def sink(tuple: (EntityDataSet, Dataset[Participant_ES])): (EntityDataSet, Dataset[Participant_ES]) = {
 
-    URLPathOps.removePathIfExists(new URL(sinkDataPath))
+    URLPathOps.removePathIfExists(new URL(sinkDataPath), context.appContext)
     import io.kf.etl.transform.ScalaPB2Json4s._
-    import context.sparkSession.implicits._
+    import context.appContext.sparkSession.implicits._
 
     tuple._2.map(_.toJsonString()).write.text(sinkDataPath)
 

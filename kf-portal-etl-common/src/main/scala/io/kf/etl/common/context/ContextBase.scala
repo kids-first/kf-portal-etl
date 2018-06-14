@@ -3,7 +3,7 @@ package io.kf.etl.common.context
 import com.typesafe.config.Config
 import io.kf.etl.common.conf.KFConfig
 
-trait ContextTrait {
+trait ContextBase {
   lazy val config:KFConfig = loadConfig()
 
   def loadConfig(): KFConfig

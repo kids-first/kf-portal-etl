@@ -12,7 +12,7 @@ import org.json4s.jackson.JsonMethods._
 class IndexSink(val spark:SparkSession, val esConfig: ESConfig, val releaseTagInstance:ReleaseTag, val client: TransportClient) {
   def sink(data:(String, Dataset[String])):Unit = {
 
-    val release_tag = releaseTagInstance.releaseTag
+    val release_tag = releaseTagInstance.releaseTag.toLowerCase
     val index_name = s"${data._1}_${release_tag}"
     val type_name = data._1
 

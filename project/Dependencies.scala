@@ -23,6 +23,8 @@ object Dependencies {
   val shaded_scalapb_json4s = "io.kf.etl" % "kf-scalapb-json4s-shade_2.11" % "0.0.1"
   val aws_java_sdk_s3 = "com.amazonaws" % "aws-java-sdk-s3" % "1.11.333"
   val aws_java_sdk_sts =  "com.amazonaws" % "aws-java-sdk-sts" % "1.11.333"
-  val livy = "org.apache.livy" %% "livy-scala-api" % "0.5.0-incubating"
+  val livy_scala = "org.apache.livy" %% "livy-scala-api" % "0.5.0-incubating"
+  val livy_java =  "org.apache.livy" % "livy-client-http" % "0.5.0-incubating"
+
 
 }

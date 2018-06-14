@@ -40,7 +40,7 @@ class DownloadSource(val context: DownloadContext) {
             outcomes = s"/outcomes${query}",
             phenotypes = s"/phenotypes${query}",
             sequencingExperiments = s"/sequencing-experiments${query}",
-            studies = s"/studies${query}",
+            studies = s"/studies/${id}",
             studyFiles = s"/study-files${query}"
           )
         })

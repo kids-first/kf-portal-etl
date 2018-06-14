@@ -4,6 +4,7 @@ import com.google.inject.Provides
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.context.Context
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
 import io.kf.etl.processors.participantcentric.context.{ParticipantCentricConfig, ParticipantCentricContext}
@@ -15,7 +16,7 @@ import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTrans
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "participant_centric")
-class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
+class ParticipantCentricInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
   override type CONTEXT = ParticipantCentricContext
   override type PROCESSOR = ParticipantCentricProcessor
   override type SOURCE = ParticipantCentricSource
@@ -37,35 +38,35 @@ class ParticipantCentricInjectModule(config: Option[Config]) extends ProcessorIn
       }
     )
 
-    new ParticipantCentricContext(sparkSession, hdfs, appRootPath, cc)
+    new ParticipantCentricContext(context, cc)
   }
 
   @Provides
   override def getProcessor(): ParticipantCentricProcessor = {
-    val context = getContext()
-    val source = getSource(context)
-    val sink = getSink(context)
-    val transformer = getTransformer(context)
-    val output = getOutput(context)
+    val pContext = getContext()
+    val source = getSource(pContext)
+    val sink = getSink(pContext)
+    val transformer = getTransformer(pContext)
+    val output = getOutput(pContext)
 
-    new ParticipantCentricProcessor(context, source.source, transformer.transform, sink.sink, output.output)
+    new ParticipantCentricProcessor(pContext, source.source, transformer.transform, sink.sink, output.output)
 
   }
 
-  override def getSource(context: ParticipantCentricContext): ParticipantCentricSource = {
-    new ParticipantCentricSource(context)
+  override def getSource(pContext: ParticipantCentricContext): ParticipantCentricSource = {
+    new ParticipantCentricSource(pContext)
   }
 
-  override def getSink(context: ParticipantCentricContext): ParticipantCentricSink = {
-    new ParticipantCentricSink(context)
+  override def getSink(pContext: ParticipantCentricContext): ParticipantCentricSink = {
+    new ParticipantCentricSink(pContext)
   }
 
-  override def getTransformer(context: ParticipantCentricContext): ParticipantCentricTransformer = {
-    new ParticipantCentricTransformer(context)
+  override def getTransformer(pContext: ParticipantCentricContext): ParticipantCentricTransformer = {
+    new ParticipantCentricTransformer(pContext)
   }
 
-  override def getOutput(context: ParticipantCentricContext): ParticipantCentricOutput = {
-    new ParticipantCentricOutput(context)
+  override def getOutput(pContext: ParticipantCentricContext): ParticipantCentricOutput = {
+    new ParticipantCentricOutput(pContext)
   }
 
   override def configure(): Unit = {}

@@ -12,10 +12,10 @@ class FileCentricSink(val context: FileCentricContext) {
 
   def sink(data:Dataset[FileCentric_ES]):Unit = {
 
-    URLPathOps.removePathIfExists(new URL(sinkDataPath))
+    URLPathOps.removePathIfExists(new URL(sinkDataPath), context.appContext)
 
     import io.kf.etl.transform.ScalaPB2Json4s._
-    import context.sparkSession.implicits._
+    import context.appContext.sparkSession.implicits._
     data.map(_.toJsonString()).write.text(sinkDataPath)
   }
 }

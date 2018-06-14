@@ -11,9 +11,10 @@ import org.apache.spark.sql.Dataset
 
 class ParticipantCommonTransformer(val context: ParticipantCommonContext) {
   def transform(data: EntityDataSet): (EntityDataSet, Dataset[Participant_ES]) = {
-    import context.sparkSession.implicits._
 
-    val ctx = StepContext(context.sparkSession, "participantcentric", context.getProcessorDataPath(), context.hdfs, data)
+    import context.appContext.sparkSession.implicits._
+
+    val ctx = StepContext(context.appContext.sparkSession, "participantcentric", context.getProcessorDataPath(), context.appContext.hdfs, data)
 
     val (posthandler1, posthandler2) = {
       context.config.write_intermediate_data match {
@@ -31,7 +32,7 @@ class ParticipantCommonTransformer(val context: ParticipantCommonContext) {
         Step[Dataset[Participant_ES], Dataset[Participant_ES]]("04. merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
         Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Family into Participant", new MergeFamily(ctx), posthandler1("step5"))
       )
-    )(context.sparkSession.emptyDataset[Participant_ES]).cache()
+    )(context.appContext.sparkSession.emptyDataset[Participant_ES]).cache()
 
     (data, ds)
 

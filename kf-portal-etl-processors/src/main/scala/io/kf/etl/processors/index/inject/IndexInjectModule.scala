@@ -2,7 +2,6 @@ package io.kf.etl.processors.index.inject
 
 
 import com.google.inject.Provides
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.conf.ESConfig
 import io.kf.etl.common.inject.GuiceModule
@@ -15,11 +14,12 @@ import io.kf.etl.processors.index.source.IndexSource
 import io.kf.etl.processors.index.transform.IndexTransformer
 import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 import io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag
+
 import scala.collection.convert.WrapAsScala
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "index")
-class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(config) {
+class IndexInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
   type CONTEXT = IndexContext
   type PROCESSOR = IndexProcessor
   type SOURCE = IndexSource
@@ -87,7 +87,7 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
       releaseTag = getReleaseTagInstance()
     )
 
-    new IndexContext(sparkSession, hdfs, appRootPath, cc)
+    new IndexContext(context, cc)
   }
 
   private def getReleaseTagInstance(): ReleaseTag = {
@@ -107,40 +107,40 @@ class IndexInjectModule(config: Option[Config]) extends ProcessorInjectModule(co
 
   @Provides
   override def getProcessor(): IndexProcessor = {
-    val context = getContext()
-    val source = getSource(context)
-    val sink = getSink(context)
-    val transformer = getTransformer(context)
+    val iContext = getContext()
+    val source = getSource(iContext)
+    val sink = getSink(iContext)
+    val transformer = getTransformer(iContext)
 
     new IndexProcessor(
-      context,
+      iContext,
       source.source,
       transformer.transform,
       sink.sink
     )
   }
 
-  override def getSource(context: IndexContext): IndexSource = {
-    new IndexSource(context)
+  override def getSource(indexContext: IndexContext): IndexSource = {
+    new IndexSource(indexContext)
   }
 
-  override def getSink(context: IndexContext): IndexSink = {
+  override def getSink(indexContext: IndexContext): IndexSink = {
 
     new IndexSink(
-      sparkSession,
-      context.config.esConfig,
-      context.config.releaseTag,
-      Context.esClient
+      context.sparkSession,
+      indexContext.config.esConfig,
+      indexContext.config.releaseTag,
+      context.esClient
     )
   }
 
-  override def getTransformer(context: IndexContext): IndexTransformer = {
-    new IndexTransformer(context)
+  override def getTransformer(indexContext: IndexContext): IndexTransformer = {
+    new IndexTransformer(indexContext)
   }
 
   override def configure(): Unit = {}
 
-  override def getOutput(context: IndexContext): Unit = {
+  override def getOutput(indexContext: IndexContext): Unit = {
     Unit
   }
 }

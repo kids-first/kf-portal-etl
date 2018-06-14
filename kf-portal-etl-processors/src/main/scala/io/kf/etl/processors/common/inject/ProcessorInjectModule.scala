@@ -4,11 +4,12 @@ import com.google.inject.AbstractModule
 import com.typesafe.config.Config
 import io.kf.etl.context.Context
 
-abstract class ProcessorInjectModule(val config: Option[Config]) extends AbstractModule{
-  lazy val sparkSession = Context.sparkSession
-  lazy val hdfs = Context.hdfs
-  lazy val appRootPath = Context.rootPath
-  lazy val s3 = Context.awsS3
+abstract class ProcessorInjectModule(val context: Context, val moduleName:String) extends AbstractModule{
+//  lazy val sparkSession = context.sparkSession
+//  lazy val hdfs = context.hdfs
+//  lazy val appRootPath = context.rootPath
+//  lazy val s3 = context.awsS3
+  lazy val config: Option[Config] = context.getProcessConfig(moduleName)
 
   type CONTEXT
   type PROCESSOR

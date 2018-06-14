@@ -1,9 +1,9 @@
 package io.kf.etl.processors.participantcommon.inject
 
 import com.google.inject.Provides
-import com.typesafe.config.Config
 import io.kf.etl.common.Constants.{CONFIG_NAME_DATA_PATH, CONFIG_NAME_WRITE_INTERMEDIATE_DATA}
 import io.kf.etl.common.inject.GuiceModule
+import io.kf.etl.context.Context
 import io.kf.etl.processors.common.inject.ProcessorInjectModule
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
 import io.kf.etl.processors.participantcommon.context.{ParticipantCommonConfig, ParticipantCommonContext}
@@ -15,7 +15,7 @@ import io.kf.etl.processors.participantcommon.transform.ParticipantCommonTransfo
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "participant_common")
-class ParticipantCommonInject(config: Option[Config]) extends ProcessorInjectModule(config){
+class ParticipantCommonInject(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName){
   override type CONTEXT = ParticipantCommonContext
   override type PROCESSOR = ParticipantCommonProcessor
   override type SOURCE = ParticipantCommonSource
@@ -37,19 +37,19 @@ class ParticipantCommonInject(config: Option[Config]) extends ProcessorInjectMod
       }
     )
 
-    new ParticipantCommonContext(sparkSession, hdfs, appRootPath, cc)
+    new ParticipantCommonContext(context, cc)
   }
 
   @Provides
   override def getProcessor(): ParticipantCommonProcessor = {
-    val context = getContext()
-    val source = getSource(context)
-    val sink = getSink(context)
-    val transformer = getTransformer(context)
-    val output = getOutput(context)
+    val pcContext = getContext()
+    val source = getSource(pcContext)
+    val sink = getSink(pcContext)
+    val transformer = getTransformer(pcContext)
+    val output = getOutput(pcContext)
 
     new ParticipantCommonProcessor(
-      context,
+      pcContext,
       source.source,
       transformer.transform,
       sink.sink,
@@ -57,20 +57,20 @@ class ParticipantCommonInject(config: Option[Config]) extends ProcessorInjectMod
     )
   }
 
-  override def getSource(context: ParticipantCommonContext): ParticipantCommonSource = {
-    new ParticipantCommonSource(context)
+  override def getSource(pcContext: ParticipantCommonContext): ParticipantCommonSource = {
+    new ParticipantCommonSource(pcContext)
   }
 
-  override def getSink(context: ParticipantCommonContext): ParticipantCommonSink = {
-    new ParticipantCommonSink(context)
+  override def getSink(pcContext: ParticipantCommonContext): ParticipantCommonSink = {
+    new ParticipantCommonSink(pcContext)
   }
 
-  override def getTransformer(context: ParticipantCommonContext): ParticipantCommonTransformer = {
-    new ParticipantCommonTransformer(context)
+  override def getTransformer(pcContext: ParticipantCommonContext): ParticipantCommonTransformer = {
+    new ParticipantCommonTransformer(pcContext)
   }
 
-  override def getOutput(context: ParticipantCommonContext): ParticipantCommonOutput = {
-    new ParticipantCommonOutput(context)
+  override def getOutput(pcContext: ParticipantCommonContext): ParticipantCommonOutput = {
+    new ParticipantCommonOutput(pcContext)
   }
 
   override def configure(): Unit = {}
