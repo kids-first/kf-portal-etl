@@ -20,6 +20,12 @@ object ETLMain extends App{
 
   private lazy val injector = createInjector()
 
+  private lazy val context = createContext()
+
+  private def createContext():Context = {
+    new DefaultContext
+  }
+
 
   private def createInjector(): Injector = {
 
@@ -36,7 +42,7 @@ object ETLMain extends App{
             classOf[String]
           )
             .newInstance(
-              new DefaultContext,
+              context,
               guiceModuleName
             )
             .asInstanceOf[AbstractModule]

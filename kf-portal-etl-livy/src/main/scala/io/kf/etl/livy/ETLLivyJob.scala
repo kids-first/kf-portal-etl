@@ -3,7 +3,7 @@ package io.kf.etl.livy
 import com.google.inject.{AbstractModule, Guice, Injector}
 import io.kf.etl.common.Constants.PROCESSOR_PACKAGE
 import io.kf.etl.common.inject.GuiceModule
-import io.kf.etl.context.{CLIParametersHolder, Context}
+import io.kf.etl.context.{CLIParametersHolder, Context, ContextForLivy}
 import io.kf.etl.pipeline.Pipeline
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.filecentric.FileCentricProcessor
@@ -27,6 +27,8 @@ class ETLLivyJob(args: Array[String]) extends Job[Unit]{
 
   override def call(jc: JobContext): Unit = {
 
+    val context = new ContextForLivy(jc.sparkSession[SparkSession]())
+
     def createInjector(): Injector = {
 
       Guice.createInjector(
@@ -42,7 +44,7 @@ class ETLLivyJob(args: Array[String]) extends Job[Unit]{
               classOf[String]
             )
               .newInstance(
-                jc.sparkSession[SparkSession](),
+                context,
                 guiceModuleName
               )
               .asInstanceOf[AbstractModule]

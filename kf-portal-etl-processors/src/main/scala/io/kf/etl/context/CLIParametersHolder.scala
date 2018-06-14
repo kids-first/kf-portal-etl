@@ -41,7 +41,7 @@ class CLIParametersHolder(val args:Array[String]) {
   private def getIndexSuffix():Option[String] = {
     cli.hasOption("index_suffix") match {
       case true => {
-        Some(cli.getOptionValue("study_id"))
+        Some(cli.getOptionValue("index_suffix"))
       }
       case false => None
     }

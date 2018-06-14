@@ -54,6 +54,14 @@ case class EntityDataRetrieval(rootUrl:String) {
           (
             responseBody \ "results" match {
             case JNull | JNothing => Seq.empty
+            case entity: JObject => {
+              Seq(
+                extractor.extract(
+                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
+                  entity
+                )
+              )
+            }
             case JArray(entities) => {
               entities.map(entity => {
                 extractor.extract(
