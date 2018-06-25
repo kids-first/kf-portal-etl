@@ -25,4 +25,18 @@ class CLIParametersHolderTest extends KfEtlUnitTestSpec{
       case None => assert(false)
     }
   }
+
+  "CLIParameterHolder" should "parse -study_id_file" in {
+    val args = Array("-study_id_file", "classpath:/study_ids.txt", "-study_id", "123", "456")
+
+    val holder = new CLIParametersHolder(args)
+    holder.study_ids match {
+      case Some(ids) => {
+        assert(ids.contains("123"))
+        assert(ids.contains("hilkjlaksjdl"))
+      }
+      case None => assert(false)
+    }
+  }
+
 }

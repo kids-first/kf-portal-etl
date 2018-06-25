@@ -1,5 +1,7 @@
 package io.kf.etl.context
 
+import java.net.URL
+
 import org.apache.commons.cli.{BasicParser, CommandLine, OptionBuilder, Options}
 
 class CLIParametersHolder(val args:Array[String]) {
@@ -23,6 +25,10 @@ class CLIParametersHolder(val args:Array[String]) {
     OptionBuilder.withDescription("suffix string for index name")
     options.addOption(OptionBuilder.create("index_suffix"))
 
+    OptionBuilder.hasArg
+    OptionBuilder.isRequired(false)
+    OptionBuilder.withDescription("a file which contains the study ids and is represented by a URL")
+    options.addOption(OptionBuilder.create("study_id_file"))
 
     val parser = new BasicParser
     parser.parse(options, args)
@@ -30,11 +36,22 @@ class CLIParametersHolder(val args:Array[String]) {
   }
 
   private def getStudyIds(): Option[Array[String]] = {
-    cli.hasOption("study_id") match {
-      case true => {
-        Some(cli.getOptionValues("study_id"))
-      }
-      case false => None
+    val arr =
+      (cli.hasOption("study_id") match {
+        case true => {
+          cli.getOptionValues("study_id")
+        }
+        case false => Array.empty[String]
+      }) ++
+      (cli.hasOption("study_id_file") match {
+        case true => {
+          StudyIdFileParser.getStudyIDs(new URL(cli.getOptionValue("study_id_file") ))
+        }
+        case false => Array.empty[String]
+      })
+    arr.isEmpty match {
+      case true => None
+      case false => Some(arr)
     }
   }
 
