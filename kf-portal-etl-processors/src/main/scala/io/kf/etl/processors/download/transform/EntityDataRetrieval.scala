@@ -15,36 +15,9 @@ case class EntityDataRetrieval(rootUrl:String) {
 
   private lazy val scalaPbJson4sParser = new com.trueaccord.scalapb.json.Parser(preservingProtoFieldNames = true)
 
-  def retrieve[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](entityEndpoint:Option[String])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
-    entityEndpoint match {
-      case None => Seq.empty
-      case Some(endpoint) => {
-        val responseBody = JsonMethods.parse( asyncClient.prepareGet(s"${rootUrl}${endpoint}").execute().get().getResponseBody )
-
-        val currentDataset =
-          responseBody \ "results" match {
-            case JNull | JNothing => Seq.empty
-            case JArray(entities) => {
-              entities.map(entity => {
-                extractor.extract(
-                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
-                  entity
-                )
-              })
-            }//end of case JArray(entities)
-          }//end of responseBody \ "results" match
-
-        responseBody \ "_links" \ "next" match {
-          case JNull | JNothing => currentDataset
-          case JString(next) => currentDataset ++ retrieve(Some(next))
-        }
-      }//end of case Some(entities)
-    }
-  }
-
 
   @tailrec
-  final def retrieve1[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](entityEndpoint:Option[String], data: Seq[T])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
+  final def retrieve[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](entityEndpoint:Option[String], data: Seq[T])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
     entityEndpoint match {
       case None => data
       case Some(endpoint) => {
@@ -75,8 +48,8 @@ case class EntityDataRetrieval(rootUrl:String) {
 
 
         responseBody \ "_links" \ "next" match {
-          case JNull | JNothing => retrieve1(None, currentDataset)
-          case JString(next) => retrieve1(Some(s"${next}&limit=100"), currentDataset)
+          case JNull | JNothing => retrieve(None, currentDataset)
+          case JString(next) => retrieve(Some(s"${next}&limit=100"), currentDataset)
         }
       }//end of case Some(entities)
     }
