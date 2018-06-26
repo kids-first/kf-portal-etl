@@ -10,4 +10,5 @@ trait ContextBase {
 
   def getProcessConfig(name: String): Option[Config] = {
     config.processorsConfig.get(name)
-  }}
+  }
+}
