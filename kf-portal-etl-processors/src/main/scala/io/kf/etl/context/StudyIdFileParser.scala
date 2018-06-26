@@ -8,6 +8,6 @@ object StudyIdFileParser {
   def getStudyIDs(url: URL): Array[String] = {
 
     Source.fromURL(url).getLines().map(_.trim).toArray
-    
+
   }
 }
