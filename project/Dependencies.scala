@@ -25,6 +25,7 @@ object Dependencies {
   val aws_java_sdk_sts =  "com.amazonaws" % "aws-java-sdk-sts" % "1.11.333"
   val livy_scala = "org.apache.livy" %% "livy-scala-api" % "0.5.0-incubating"
   val livy_java =  "org.apache.livy" % "livy-client-http" % "0.5.0-incubating"
+  val kf_es_model = "io.kf" % "model.elasticsearch" % "1.0-SNAPSHOT"
 
 
 }

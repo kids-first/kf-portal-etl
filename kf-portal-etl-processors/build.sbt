@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   mysql,
   asyncHttp,
   shaded_scalapb_json4s,
+  kf_es_model,
   embedded_elasticsearch % "test",
   scalatest % "test"
 )
