@@ -43,6 +43,8 @@ object Constants {
   val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"
+  val FILE_CENTRIC_MAPPING_FILE_NAME = "file_centric.mapping.json"
+  val PARTICIPANT_CENTRIC_MAPPING_FILE_NAME = "participant_centric.mapping.json"
 
   val FILE_CENTRIC_PROCESSOR_NAME = DEFAULT_FILE_CENTRIC_ALIAS
   val PARTICIPANT_CENTRIC_PROCESSOR_NAME = DEFAULT_PARTICIPANT_CENTRIC_ALIAS
