@@ -33,4 +33,12 @@ object Pipeline {
   def from[T1, T2, T3](s1:T1, s2:T2, merge_func: (T1, T2) => T3): Pipeline[T3] = {
     new PipelineFromTupleWithMergeFunc[T1, T2, T3](s1, s2, merge_func)
   }
+
+  def from[T](s: Seq[T]): Pipeline[Seq[T]] = {
+    new PipelineFromSeq[T](s)
+  }
+
+  def foreach[T](seq: Seq[T], f: T => Unit): Pipeline[Unit] = {
+    new PipelineForeach[T](seq, f)
+  }
 }

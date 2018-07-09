@@ -60,10 +60,25 @@ object ETLMain extends App{
   val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
   val index = injector.getInstance(classOf[IndexProcessor])
 
-  Pipeline.from(cliArgs.study_ids).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
-    Seq(tuples._1, tuples._2).map(tuple => {
-      index.process(tuple)
-    })
-  }).run()
+  cliArgs.study_ids match {
+    case Some(study_ids) => {
+      Pipeline.foreach[String](study_ids.toSeq, study => {
+        Pipeline.from(Some(Array(study))).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
+          Seq(tuples._1, tuples._2).map(tuple => {
+            index.process(
+              (s"${tuple._1}_${study}".toLowerCase, tuple._2)
+            )
+          })
+        }).run()
+      }).run()
+    }
+    case None => {
+      Pipeline.from(None).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
+        Seq(tuples._1, tuples._2).map(tuple => {
+          index.process(tuple)
+        })
+      }).run()
+    }
+  }
 
 }
