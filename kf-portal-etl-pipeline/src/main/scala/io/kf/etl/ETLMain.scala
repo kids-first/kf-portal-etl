@@ -66,7 +66,7 @@ object ETLMain extends App{
         Pipeline.from(Some(Array(study))).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
           Seq(tuples._1, tuples._2).map(tuple => {
             index.process(
-              (s"${tuple._1}_${study}".toLowerCase, tuple._2)
+              (s"${tuple._1}_${study}_${cliArgs.release_id.get}".toLowerCase, tuple._2)
             )
           })
         }).run()

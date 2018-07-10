@@ -16,13 +16,13 @@ class IndexProcessor(context: IndexContext,
 
     source.andThen(transform).andThen(sink)(input)
 
-    context.config.aliasActionEnabled match {
-      case true => {
-        val handler = Class.forName(context.config.aliasHandlerClass).getConstructor(classOf[IndexContext], classOf[String]).newInstance(context, input._1).asInstanceOf[IndexProcessorPostHandler]
-        handler.post()
-      }
-      case false =>
-    }
+//    context.config.aliasActionEnabled match {
+//      case true => {
+//        val handler = Class.forName(context.config.aliasHandlerClass).getConstructor(classOf[IndexContext], classOf[String]).newInstance(context, input._1).asInstanceOf[IndexProcessorPostHandler]
+//        handler.post()
+//      }
+//      case false =>
+//    }
   }
 
 }

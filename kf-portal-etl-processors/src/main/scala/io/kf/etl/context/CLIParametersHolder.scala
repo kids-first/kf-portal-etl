@@ -7,7 +7,7 @@ import org.apache.commons.cli.{BasicParser, CommandLine, OptionBuilder, Options}
 class CLIParametersHolder(val args:Array[String]) {
 
   lazy val study_ids = getStudyIds()
-  lazy val index_suffix = getIndexSuffix()
+  lazy val release_id = getReleaseId()
 
   private lazy val cli = parse()
 
@@ -22,8 +22,8 @@ class CLIParametersHolder(val args:Array[String]) {
 
     OptionBuilder.hasArg
     OptionBuilder.isRequired(false)
-    OptionBuilder.withDescription("suffix string for index name")
-    options.addOption(OptionBuilder.create("index_suffix"))
+    OptionBuilder.withDescription("release id appended to index name")
+    options.addOption(OptionBuilder.create("release_id"))
 
     OptionBuilder.hasArg
     OptionBuilder.isRequired(false)
@@ -55,10 +55,10 @@ class CLIParametersHolder(val args:Array[String]) {
     }
   }
 
-  private def getIndexSuffix():Option[String] = {
-    cli.hasOption("index_suffix") match {
+  private def getReleaseId():Option[String] = {
+    cli.hasOption("release_id") match {
       case true => {
-        Some(cli.getOptionValue("index_suffix"))
+        Some(cli.getOptionValue("release_id"))
       }
       case false => None
     }

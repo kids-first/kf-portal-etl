@@ -13,13 +13,15 @@ import io.kf.etl.processors.index.transform.releasetag.ReleaseTag
 class DateTimeReleaseTag(val properties: Map[String, String]) extends ReleaseTag {
   lazy override val releaseTag = getTag()
 
-  private def getTag():String = {
+  private def getTag():Option[String] = {
 
-    LocalDateTime.now().format(DateTimeFormatter.ofPattern(
-      properties.get("pattern") match {
-        case Some(p) => p
-        case None => "yyyy_MM_dd"
-      }
-    ))
+    Some(
+      LocalDateTime.now().format(DateTimeFormatter.ofPattern(
+        properties.get("pattern") match {
+          case Some(p) => p
+          case None => "yyyy_MM_dd"
+        }
+      ))
+    )
   }
 }

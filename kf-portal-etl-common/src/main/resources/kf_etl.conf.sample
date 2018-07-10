@@ -74,9 +74,12 @@ io.kf.etl {
       name = "index"
       elasticsearch = ${io.kf.etl.elasticsearch}
       release_tag {
-        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag"
-        pattern = "yyyy_MM_dd_HH_mm_ss"
+        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.EmptyReleaseTag"
       }
+//      release_tag {
+//        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag"
+//        pattern = "yyyy_MM_dd_HH_mm_ss"
+//     }
       //      release_tag {
       //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
       //        pattern = "sample_aliquot_fix"

@@ -6,10 +6,12 @@ class AnyStringSuffixReleaseTag(val properties: Map[String, String]) extends Rel
 
   lazy override val releaseTag = getTag()
 
-  private def getTag():String = {
-    properties.get("pattern") match {
-      case Some(p) => p
-      case None => "test"
-    }
+  private def getTag():Option[String] = {
+    Some(
+      properties.get("pattern") match {
+        case Some(p) => p
+        case None => "test"
+      }
+    )
   }
 }

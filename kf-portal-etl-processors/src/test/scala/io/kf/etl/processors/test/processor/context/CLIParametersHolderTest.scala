@@ -7,7 +7,7 @@ import io.kf.etl.test.common.KfEtlUnitTestSpec
 
 class CLIParametersHolderTest extends KfEtlUnitTestSpec{
   "A CLIParametersHolder" should "" in {
-    val args = Array("-study_id", "sample_id1", "sample_id2", "-index_suffix", "sample_index")
+    val args = Array("-study_id", "sample_id1", "sample_id2", "-release_id", "sample_index")
 
     val holder = new CLIParametersHolder(args)
 
@@ -19,7 +19,7 @@ class CLIParametersHolderTest extends KfEtlUnitTestSpec{
       case None => assert(false)
     }
 
-    holder.index_suffix match {
+    holder.release_id match {
       case Some(index) => {
         println(index)
         assert(index.equals("sample_index"))
