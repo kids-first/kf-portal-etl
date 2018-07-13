@@ -74,10 +74,10 @@ message EFamilyRelationship {
     optional string kf_id = 1;
     optional string modified_at = 2;
     optional string created_at = 3;
-    optional string participant_id = 4;
-    optional string relative_id = 5;
-    optional string participant_to_relative_relation = 6;
-    optional string relative_to_participant_relation = 7;
+    optional string participant1 = 4;
+    optional string participant2 = 5;
+    optional string participant1_to_participant2_relation = 6;
+    optional string participant2_to_participant1_relation = 7;
 
 }
 

@@ -129,20 +129,20 @@ object EntityParentIDExtractor {
   implicit val familyRelationship:EntityParentIDExtractor[EFamilyRelationship] = new EntityParentIDExtractor[EFamilyRelationship] {
     override def extract(entity: EFamilyRelationship, json: JValue): EFamilyRelationship = {
       val entity1 =
-        json \ "_links" \ "participant" match {
+        json \ "_links" \ "participant1" match {
           case JNull | JNothing => entity
           case JString(endpoint) => {
             entity.copy(
-              participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+              participant1 = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
             )
           }
         }
 
-      json \ "_links" \ "relative" match {
+      json \ "_links" \ "participant2" match {
         case JNull | JNothing => entity1
         case JString(endpoint) => {
           entity1.copy(
-            relativeId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
+            participant2 = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
           )
         }
       }

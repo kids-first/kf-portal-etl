@@ -24,8 +24,8 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
       ctx.spark.sparkContext.broadcast(
         ctx.entityDataset.familyRelationships.map(fr => {
           fr.copy(
-            relativeToParticipantRelation = Some(fr.relativeToParticipantRelation.get.toLowerCase),
-            participantToRelativeRelation = Some(fr.participantToRelativeRelation.get.toLowerCase)
+            participant1ToParticipant2Relation = Some(fr.participant2ToParticipant1Relation.get.toLowerCase),
+            participant2ToParticipant1Relation = Some(fr.participant1ToParticipant2Relation.get.toLowerCase)
           )
         }).flatMap(tf => {
           Seq(
@@ -34,19 +34,19 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
               kfId = tf.kfId,
               createdAt = tf.createdAt,
               modifiedAt = tf.modifiedAt,
-              participantId = tf.relativeId,
-              relativeId = tf.participantId,
-              relativeToParticipantRelation = tf.participantToRelativeRelation,
-              participantToRelativeRelation = tf.relativeToParticipantRelation
+              participant1 = tf.participant2,
+              participant2 = tf.participant1,
+              participant2ToParticipant1Relation = tf.participant1ToParticipant2Relation,
+              participant1ToParticipant2Relation = tf.participant2ToParticipant1Relation
             )
           )
-        }).groupByKey(tf => tf.participantId.get)
+        }).groupByKey(tf => tf.participant1.get)
           .mapGroups((participant_id, iterator) => {
             (
               participant_id,
               iterator.collect{
-                case tf: EFamilyRelationship if(tf.participantToRelativeRelation.isDefined) => {
-                  tf.participantToRelativeRelation.get
+                case tf: EFamilyRelationship if(tf.participant1ToParticipant2Relation.isDefined) => {
+                  tf.participant1ToParticipant2Relation.get
                 }
               }.toSeq
             )
