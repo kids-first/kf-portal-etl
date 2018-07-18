@@ -55,9 +55,12 @@ To submit the application to Spark, run the following in the command line
 
 ## Command line arguments
 
-Kids-First ETL supports command-line argument `-study_id id1 id2`. In this case, ETL will filter the dataset retrieved from data service through `study_id`s
-There is another command-line argument `-study_id_file ${url of file}`, for exmaple: `-study_id_file file://${path}` or `-study_id_file s3://${bucket}/${key}`, etc
+Kids-First ETL supports command-line argument `-study_id id1 id2`. In this case, ETL will filter the dataset retrieved from data service through `study_id`s.
+
+The second command-line argument is `-study_id_file ${url of file}`, for exmaple: `-study_id_file file://${path}` or `-study_id_file s3://${bucket}/${key}`, etc
+
+The third command-line argument is `-release_id rid`
 
 To submit the application with `study_id`s, run the following:
 
-``` ${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} -study_id id1 id2```
+``` ${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} -study_id id1 id2 -release_id rid```
