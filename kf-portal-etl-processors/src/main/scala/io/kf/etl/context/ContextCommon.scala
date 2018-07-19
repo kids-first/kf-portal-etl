@@ -55,7 +55,14 @@ trait ContextCommon extends Context{
     config.mysqlConfig
   }
 
-  override def getAWS(): AmazonS3 = {
-    AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider(config.awsConfig.s3.profile)).build()
+  override def getAWS(): Option[AmazonS3] = {
+
+    config.awsConfig match {
+      case Some(aws) => Some(
+        AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider(aws.s3.profile)).build()
+      )
+      case None => None
+    }
+
   }
 }

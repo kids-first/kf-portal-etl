@@ -16,11 +16,14 @@ trait Context extends ContextBase{
   lazy val mysql: MysqlConfig = getMysql()
   lazy val esClient: TransportClient = getESClient()
   lazy val dataService: DataServiceConfig = getDataService()
-  lazy val awsS3: AmazonS3 = getAWS()
+  lazy val awsS3: Option[AmazonS3] = getAWS()
   lazy val sparkSession: SparkSession = getSparkSession()
 
+  awsS3 match {
+    case Some(aws) => URL.setURLStreamHandlerFactory(new KfURLStreamHandlerFactory(aws))
+    case None =>
+  }
 
-  URL.setURLStreamHandlerFactory(new KfURLStreamHandlerFactory(awsS3))
 
 
   def getDataService(): DataServiceConfig
@@ -28,6 +31,6 @@ trait Context extends ContextBase{
   def getHDFS(): FileSystem
   def getRootPath():String
   def getMysql(): MysqlConfig
-  def getAWS(): AmazonS3
+  def getAWS(): Option[AmazonS3]
   def getSparkSession(): SparkSession
 }

@@ -3,7 +3,9 @@ package io.kf.etl.common.conf
 
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
+
 import scala.collection.convert.WrapAsScala
+import scala.util.{Failure, Success, Try}
 
 class KFConfig(private val config: Config){
 
@@ -51,12 +53,23 @@ class KFConfig(private val config: Config){
     KFConfigExtractors.parseDataService(config)
   }
 
-  private def getAWSConfig(): AWSConfig = {
-    AWSConfig(
-      s3 = AWSS3Config(
-        profile = config.getString(CONFIG_NAME_AWS_S3_PROFILE)
-      )
-    )
+  private def getAWSConfig(): Option[AWSConfig] = {
+
+    Try{
+      config.getString(CONFIG_NAME_AWS_S3_PROFILE)
+    } match {
+      case Success(aws_profile) => {
+        Some(
+          AWSConfig(
+            s3 = AWSS3Config(
+              profile = aws_profile
+            )
+          )
+        )
+      }
+      case Failure(_) => None
+    }
+
   }
 
 }

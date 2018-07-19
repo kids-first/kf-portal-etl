@@ -24,7 +24,7 @@ object URLPathOps {
       }
       case s3(c) => {
         val s3Client = appContext.awsS3
-        new S3URLOps(s3Client).removePathIfExists(path)
+        new S3URLOps(s3Client.get).removePathIfExists(path)
       }
       case  _ => throw new Exception(s"${path.getProtocol} is not supported!")
     }
