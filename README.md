@@ -8,43 +8,47 @@ Before [building](#build) this application, the following dependencies must be b
 
 ### Shaded json4s and jackson
 
-    1. Clone from [repository](https://github.com/kids-first/scalapb-json4s-shade)
+1.  Clone from [repository](https://github.com/kids-first/scalapb-json4s-shade)
 
-        ```
-        git clone git@github.com:kids-first/scalapb-json4s-shade.git
-        ```
+    ```
+    git clone git@github.com:kids-first/scalapb-json4s-shade.git
+    ```
 
-    1. Publish Locally with sbt
+1.  Publish Locally with sbt
 
-        ```
-        cd scalapb-json4s-shade
-        sbt ";clean;assembly;publishLocal"
-        ```
+    ```
+    cd scalapb-json4s-shade
+    sbt ";clean;assembly;publishLocal"
+    ```
 
 ### ES Model
 
-    1. Clone from [repository](https://github.com/kids-first/kf-es-model)
+1.  Clone from [repository](https://github.com/kids-first/kf-es-model)
 
-        ```
-        git clone git@github.com:kids-first/kf-es-model.git
-        ```
+    ```
+    git clone git@github.com:kids-first/kf-es-model.git
+    ```
 
-    1. Maven install
+1.  Maven install
 
-        ```
-        cd kf-es-model
-        mvn install
-        ```
+    ```
+    cd kf-es-model
+    mvn install
+    ```
 
 ## Build
 
 To build the application, run the following from the command line in the root directory of the project
 
-`sbt ";clean;assembly"`
+```
+sbt ";clean;assembly"
+```
 
 Then get the application jar file from
 
-`${root of the project}/kf-portal-etl-processors/target/scala-2.11/kf-portal-etl.jar`
+```
+${root of the project}/kf-portal-etl-processors/target/scala-2.11/kf-portal-etl.jar
+```
 
 ## Configuration
 
@@ -98,4 +102,6 @@ The third command-line argument is `-release_id rid`
 
 To submit the application with `study_id`s, run the following:
 
-`${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} -study_id id1 id2 -release_id rid`
+```
+${SPARK_HOME}/bin/spark-submit --master spark://${Spark master node name or IP}:7077 --deploy-mode cluster --class io.kf.etl.ETLMain --driver-java-options "-Dkf.etl.config=${URL string for configuration file}" --conf "spark.executor.extraJavaOptions=-Dkf.etl.config=${URL string for configuration file}" ${path to kf-portal-etl.jar} -study_id id1 id2 -release_id rid
+```
