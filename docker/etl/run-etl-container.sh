@@ -1,7 +1,7 @@
 #!/bin/bash
 
-host_jar_location="../../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar"
-host_conf_location="../kf_etl.conf"
+host_jar_location=`readlink -f ../../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar`
+host_conf_location=`readlink -f ../kf_etl.conf`
 containername="kf-etl"
 imagename="kids-first/etl"
 imageversion="0.0.1"
