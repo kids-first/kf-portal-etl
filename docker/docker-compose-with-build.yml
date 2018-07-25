@@ -27,6 +27,18 @@ services:
       - elasticsearch
     container_name: kf-etl
     hostname: kf-etl
+    environment:
+        - KF_STUDY_ID=SD_9PYZAHHE
+        - KF_RELEASE_ID=RE_1J6FQHFM
+    volumes:
+      - "../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/mnt/lib/kf-portal-etl.jar"
+      - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
+    ports:
+        - "9040:4040"
+        - "6066:6066"
+        - "7077:7077"
+        - "8080:8080"
+        - "8081:8081"
   hadoop:
     image: sequenceiq/hadoop-docker:2.7.0
     container_name: kf-hadoop
