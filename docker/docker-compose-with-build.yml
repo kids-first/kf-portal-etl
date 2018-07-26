@@ -31,7 +31,7 @@ services:
         - KF_STUDY_ID=SD_9PYZAHHE
         - KF_RELEASE_ID=RE_1J6FQHFM
     volumes:
-      - "../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/mnt/lib/kf-portal-etl.jar"
+      - "./kf-portal-etl.jar:/kf-etl/mnt/lib/kf-portal-etl.jar"
       - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
     ports:
         - "4040:4040"
