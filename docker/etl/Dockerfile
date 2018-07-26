@@ -13,8 +13,6 @@ ARG SPARK_VERSION=2.3.1
 ARG SPARK_MASTER="spark://localhost:7077"
 ARG SPARK_DEPLOY_MODE=client
 
-ENV KF_STUDY_ID myStudyId
-ENV KF_RELEASE_ID myReleaseId
 
 
 RUN apt-get update && apt-get install -y openssh-client openssh-server vim net-tools wget unzip iputils-ping telnet
