@@ -28,8 +28,8 @@ services:
     container_name: kf-etl
     hostname: kf-etl
     environment:
-        - KF_STUDY_ID=SD_9PYZAHHE
-        - KF_RELEASE_ID=RE_1J6FQHFM
+        - KF_STUDY_ID="SD_9PYZAHHE SD_YGVA0E1C"
+        - KF_RELEASE_ID=RE_CEG0C8WK
     volumes:
       - "./kf-portal-etl.jar:/kf-etl/mnt/lib/kf-portal-etl.jar"
       - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
