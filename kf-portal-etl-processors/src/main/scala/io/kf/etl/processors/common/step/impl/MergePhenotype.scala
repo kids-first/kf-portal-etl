@@ -78,9 +78,9 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 }
 
 object MergePhenotype {
-  def collectPhenotype(pheotypes: Seq[EPhenotype], hpoRefs:Broadcast[Map[String, Seq[String]]]): Option[Phenotype_ES] = {
+  def collectPhenotype(phenotypes: Seq[EPhenotype], hpoRefs:Broadcast[Map[String, Seq[String]]]): Option[Phenotype_ES] = {
 
-    val seq = pheotypes.toSeq
+    val seq = phenotypes.toSeq
 
     seq.size match {
       case 0 => None
@@ -92,11 +92,12 @@ object MergePhenotype {
                                    createdAt: ListBuffer[String] = new ListBuffer[String](),
                                    modifiedAt: ListBuffer[String] = new ListBuffer[String](),
                                    observed: ListBuffer[String] = new ListBuffer[String](),
-                                   negative: ListBuffer[String] = new ListBuffer[String](),
-                                   positive: ListBuffer[String] = new ListBuffer[String](),
+                                   hpoIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
+                                   hpoIdsObserved: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    sourceTextPhenotype: ListBuffer[String] = new ListBuffer[String](),
-                                   snomedIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
+                                   snomedIdsObserved: ListBuffer[String] = new ListBuffer[String](),
+                                   snomedIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
                                    externalId: ListBuffer[String] = new ListBuffer[String]()
                                  )
 
@@ -110,15 +111,15 @@ object MergePhenotype {
                 dh.modifiedAt.append(tpt.modifiedAt.get)
 
                 tpt.hpoIdPhenotype match {
-                  case Some(value) => {
+                  case Some(hpo_id) => {
                     tpt.observed match {
                       case Some(o) => {
                         if(o.equals("positive")) {
-                          dh.positive.append(value)
+                          dh.hpoIdsObserved.append(hpo_id)
                           dh.observed.append(o)
                         }
                         else if(o.equals("negative")) {
-                          dh.negative.append(value)
+                          dh.hpoIdsNotObserved.append(hpo_id)
                           dh.observed.append(o)
                         }
                         else
@@ -136,7 +137,23 @@ object MergePhenotype {
                 }
 
                 tpt.snomedIdPhenotype match {
-                  case Some(snome_id) => dh.snomedIdPhenotype.append(snome_id)
+                  case Some(snome_id) => {
+                    tpt.observed match {
+                      case Some(o) => {
+                        if(o.equals("positive")) {
+                          dh.snomedIdsObserved.append(snome_id)
+                          dh.observed.append(o)
+                        }
+                        else if(o.equals("negative")) {
+                          dh.snomedIdsNotObserved.append(snome_id)
+                          dh.observed.append(o)
+                        }
+                        else
+                          println(s"the value -${o}- in observed is not supported")
+                      }
+                      case None => println("snomedIdPhenotype exists, but observed is missing!")
+                    }
+                  }
                   case None =>
                 }
 
@@ -149,7 +166,7 @@ object MergePhenotype {
               })
 
             val ancestors =
-              data.positive.flatMap(id => {
+              data.hpoIdsObserved.flatMap(id => {
                 hpoRefs.value.get(id).toList.flatten
               }).toSet.toSeq
 
@@ -157,16 +174,13 @@ object MergePhenotype {
               Some(
                 HPO_ES(
                   ageAtEventDays = data.ageAtEventDays.toSet.toSeq,
-                  createdAt = data.createdAt.toSet.toSeq,
-                  modifiedAt = data.modifiedAt.toSet.toSeq,
-                  observed = data.observed.toSet.toSeq,
-                  negativeHpoIds = data.negative.toSet.toSeq,
-                  hpoIds = data.positive.toSet.toSeq,
                   ancestralHpoIds = ancestors.toSet.toSeq,
-                  sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq,
-                  snomedIdPhenotype = data.snomedIdPhenotype.toSet.toSeq,
-                  externalId = data.externalId.toSet.toSeq
-
+                  externalId = data.externalId.toSet.toSeq,
+                  hpoPhenotypeNotObserved = data.hpoIdsNotObserved.toSet.toSeq,
+                  hpoPhenotypeObserved = data.hpoIdsObserved.toSet.toSeq,
+                  snomedPhenotypeNotObserved = data.snomedIdsNotObserved.toSet.toSeq,
+                  snomedPhenotypeObserved = data.snomedIdsObserved.toSet.toSeq,
+                  sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq
                 )
               )
             )

@@ -28,8 +28,8 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
             participant2ToParticipant1Relation = Some(fr.participant1ToParticipant2Relation.get.toLowerCase)
           )
         }).flatMap(tf => {
+          tf,
           Seq(
-            tf,
             EFamilyRelationship(
               kfId = tf.kfId,
               createdAt = tf.createdAt,
@@ -554,15 +554,12 @@ object MergeFamily {
   def getFamilyMemberFromParticipant(participant: Participant_ES, relationship:String, familySharedHpoIds:Seq[String], mapOfAvailableDataTypes: Map[String, Seq[String]]): FamilyMember_ES = {
     FamilyMember_ES(
       kfId = participant.kfId,
-      createdAt = participant.createdAt,
-      modifiedAt = participant.modifiedAt,
       isProband = participant.isProband,
       availableDataTypes = mapOfAvailableDataTypes.get(participant.kfId.get) match {
         case Some(types) => types.toSet.toSeq
         case None => Seq.empty
       },
       phenotype = participant.phenotype,
-      study = participant.study,
       race = participant.race,
       ethnicity = participant.ethnicity,
       relationship = Some(relationship)
@@ -597,7 +594,7 @@ object MergeFamily {
         pt.hpo match {
           case None => None
           case Some(hpo) => {
-            Some(hpo.hpoIds)
+            Some(hpo.hpoPhenotypeObserved)
           }
         }
       }).toList.flatten
@@ -606,7 +603,7 @@ object MergeFamily {
         pt.hpo match {
           case None => None
           case (Some(hpo)) => {
-            Some(hpo.hpoIds)
+            Some(hpo.hpoPhenotypeObserved)
           }
         }
       }).toList.flatten
