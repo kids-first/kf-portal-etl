@@ -3,7 +3,7 @@ import Resolvers._
 import sbt.Keys.version
 
 name := "kf-portal-etl"
-
+scalaVersion := "2.11.12"
 
 lazy val commonSettings = Seq(
   organization := "io.kf.etl",
