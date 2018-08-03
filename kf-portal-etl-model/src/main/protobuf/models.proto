@@ -4,61 +4,54 @@ package io.kf.etl.es;
 
 message FileCentric_ES {
     optional bool controlled_access = 1;
-    optional string created_at = 2;
-    optional string data_type = 3;
-    optional string file_format = 4;
-    optional string file_name = 5;
-    optional int64 size = 6;
-    optional string kf_id = 7;
-    optional string modified_at = 8;
-    repeated Participant_ES participants = 9;
-    repeated SequencingExperiment_ES sequencing_experiments = 10;
-    optional string reference_genome = 11;
-    optional bool is_harmonized = 12;
-    optional string latest_did = 13;
+    optional string data_type = 2;
+    optional string file_format = 3;
+    optional string file_name = 4;
+    optional int64 size = 5;
+    optional string kf_id = 6;
+    repeated Participant_ES participants = 7;
+    repeated SequencingExperiment_ES sequencing_experiments = 8;
+    optional string reference_genome = 9;
+    optional bool is_harmonized = 10;
+    optional string latest_did = 11;
 }
 
 message ParticipantCentric_ES {
     optional string alias_group = 1;
     repeated Biospecimen_ES biospecimens = 2;
     optional string consent_type = 3;
-    optional string created_at = 4;
-    repeated Diagnosis_ES diagnoses = 5;
-    optional string ethnicity = 6;
-    optional string external_id = 7;
-    optional Family_ES family = 8;
-    repeated File_ES files = 9;
-    optional string gender = 10;
-    optional bool is_proband = 11;
-    optional string kf_id = 12;
-    optional string modified_at = 13;
-    optional Outcome_ES outcome = 14;
-    optional Phenotype_ES phenotype = 15;
-    optional string race = 16;
-    optional Study_ES study = 17;
-    repeated string available_data_types = 18;
+    repeated Diagnosis_ES diagnoses = 4;
+    optional string ethnicity = 5;
+    optional string external_id = 6;
+    optional Family_ES family = 7;
+    repeated File_ES files = 8;
+    optional string gender = 9;
+    optional bool is_proband = 10;
+    optional string kf_id = 11;
+    optional Outcome_ES outcome = 12;
+    optional Phenotype_ES phenotype = 13;
+    optional string race = 14;
+    optional Study_ES study = 15;
+    repeated string available_data_types = 16;
 }
 
 message Participant_ES {
     optional string alias_group = 1;
     repeated Biospecimen_ES biospecimens = 2;
     optional string consent_type = 3;
-    optional string created_at = 4;
-    repeated Diagnosis_ES diagnoses = 5;
-    optional string ethnicity = 6;
-    optional string external_id = 7;
-    optional Family_ES family = 8;
-    optional string family_id = 9;
-    optional string gender = 10;
-    optional bool is_proband = 11;
-    optional string kf_id = 12;
-    optional string modified_at = 13;
-    optional Outcome_ES outcome = 14;
-    optional Phenotype_ES phenotype = 15;
-    optional string race = 16;
-    optional Study_ES study = 17;
-    optional string study_id = 18;
-    repeated string available_data_types = 19;
+    repeated Diagnosis_ES diagnoses = 4;
+    optional string ethnicity = 5;
+    optional string external_id = 6;
+    optional Family_ES family = 7;
+    optional string family_id = 8;
+    optional string gender = 9;
+    optional bool is_proband = 10;
+    optional string kf_id = 11;
+    optional Outcome_ES outcome = 12;
+    optional Phenotype_ES phenotype = 13;
+    optional string race = 14;
+    optional Study_ES study = 15;
+    repeated string available_data_types = 16;
 }
 
 message Biospecimen_ES {
@@ -66,41 +59,38 @@ message Biospecimen_ES {
     optional string analyte_type = 2;
     optional string composition = 3;
     optional double concentration_mg_per_ml = 4;
-    optional string created_at = 5;
+    optional string dbgap_consent_code =  5;
     optional string external_aliquot_id = 6;
     optional string external_sample_id = 7;
     optional string kf_id = 8;
-    optional string modified_at = 9;
-    optional string ncit_id_anatomical_site = 10;
-    optional string ncit_id_tissue_type =11;
-    optional string shipment_date = 12;
-    optional string shipment_origin = 13;
-    repeated string genomic_files = 14;
-    optional string participant_id = 15;
-    optional string source_text_tumor_descriptor = 16;
-    optional string source_text_tissue_type = 17;
-    optional string source_text_anatomical_site = 18;
-    optional string spatial_descriptor = 19;
-    optional string uberon_id_anatomical_site = 20;
-    optional double volume_ml = 21;
-    optional string sequencing_center_id = 22;
+    optional string ncit_id_anatomical_site = 9;
+    optional string ncit_id_tissue_type = 10;
+    optional string shipment_date = 11;
+    optional string shipment_origin = 12;
+    repeated string genomic_files = 13;
+    optional string participant_id = 14;
+    optional string source_text_tumor_descriptor = 15;
+    optional string source_text_tissue_type = 16;
+    optional string source_text_anatomical_site = 17;
+    optional string spatial_descriptor = 18;
+    optional string uberon_id_anatomical_site = 19;
+    optional double volume_ml = 20;
+    optional string sequencing_center_id = 21;
 }
 
 message Diagnosis_ES {
     optional int32 age_at_event_days = 1;
-    optional string created_at = 2;
-    optional string diagnosis_category = 3;
-    optional string external_id = 4;
-    optional string icd_id_diagnosis = 5;
-    optional string kf_id = 6;
-    optional string modified_at = 7;
-    optional string mondo_id_diagnosis = 8;
-    optional string participant_id = 9;
-    optional string source_text_diagnosis = 10;
-    optional string uberon_id_tumor_location = 11;
-    optional string source_text_tumor_location = 12;
-    optional string ncit_id_diagnosis = 13;
-    optional string spatial_descriptor = 14;
+    optional string diagnosis_category = 2;
+    optional string external_id = 3;
+    optional string icd_id_diagnosis = 4;
+    optional string kf_id = 5;
+    optional string mondo_id_diagnosis = 6;
+    optional string participant_id = 7;
+    optional string source_text_diagnosis = 8;
+    optional string uberon_id_tumor_location = 9;
+    optional string source_text_tumor_location = 10;
+    optional string ncit_id_diagnosis = 11;
+    optional string spatial_descriptor = 12;
 }
 
 message Family_ES {
@@ -121,32 +111,24 @@ message FamilyMember_ES {
     optional string alias_group = 1;
     optional string relationship = 2;
     optional string consent_type = 3;
-    optional string created_at = 4;
-    repeated Diagnosis_ES diagnoses = 5;
-    optional string ethnicity = 6;
-    optional string external_id = 7;
-    optional string family_id = 8;
-    optional string gender = 9;
-    optional bool is_proband = 10;
-    optional string kf_id = 11;
-    optional string modified_at = 12;
-    optional Outcome_ES outcome = 13;
-    optional Phenotype_ES phenotype = 14;
-    optional string race = 15;
-    optional Study_ES study = 16;
-    optional string study_id = 17;
-    repeated string available_data_types = 18;
+    repeated Diagnosis_ES diagnoses = 4;
+    optional string ethnicity = 5;
+    optional string external_id = 6;
+    optional string gender = 7;
+    optional bool is_proband = 8;
+    optional string kf_id = 9;
+    optional Outcome_ES outcome = 10;
+    optional Phenotype_ES phenotype = 11;
+    optional string race = 12;
+    repeated string available_data_types = 13;
 
 }
 
 message Outcome_ES {
     optional int32 age_at_event_days = 1;
-    optional string created_at = 2;
-    optional string disease_related = 3;
-    optional string kf_id = 4;
-    optional string modified_at = 5;
-    optional string participant_id = 6;
-    optional string vital_status = 7;
+    optional string disease_related = 2;
+    optional string kf_id = 3;
+    optional string vital_status = 4;
 
 }
 
@@ -156,17 +138,14 @@ message Phenotype_ES {
 
 message HPO_ES {
     repeated int32 age_at_event_days = 1;
-    repeated string ancestral_hpo_ids= 2;
-    repeated string observed= 3;
-    repeated string phenotype = 4;
-    repeated string created_at = 5;
-    repeated string modified_at = 6;
-    repeated string negative_hpo_ids = 7;
-    repeated string hpo_ids = 8;
-    repeated string external_id = 9;
-    repeated string hpo_id_phenotype = 10;
-    repeated string source_text_phenotype = 11;
-    repeated string snomed_id_phenotype = 12;
+    repeated string ancestral_hpo_ids = 2;
+    repeated string external_id = 3;
+    repeated string hpo_phenotype_not_observed = 4;
+    repeated string hpo_phenotype_observed = 5;
+    repeated string shared_hpo_ids = 6;
+    repeated string snomed_phenotype_not_observed = 7;
+    repeated string snomed_phenotype_observed = 8;
+    repeated string source_text_phenotype = 9;
 }
 
 message Study_ES {
@@ -175,11 +154,9 @@ message Study_ES {
     optional string name = 3;
     optional string version = 4;
     optional string external_id = 5;
-    optional string created_at = 6;
-    optional string modified_at = 7;
-    optional string release_status = 8;
-    optional string data_access_authority = 9;
-    optional string short_name = 10;
+    optional string release_status = 6;
+    optional string data_access_authority = 7;
+    optional string short_name = 8;
 }
 
 message SequencingExperiment_ES {
@@ -198,38 +175,32 @@ message SequencingExperiment_ES {
     optional int64 total_reads = 13;
     optional double mean_read_length = 14;
     optional string external_id = 15;
-    optional string created_at = 16;
-    optional string modified_at = 17;
 }
 
 message GenomicFile_ES {
     optional bool controlled_access = 1;
-    optional string created_at = 2;
-    optional string data_type = 3;
-    optional string file_format = 4;
-    optional string file_name = 5;
-    optional int64 size = 6;
-    optional string kf_id = 7;
-    optional string modified_at = 8;
-    optional SequencingExperiment_ES sequencing_experiment = 9;
-    optional string reference_genome = 10;
-    optional bool is_harmonized = 11;
-    optional string availability = 12;
-    optional string latest_did = 13;
+    optional string data_type = 2;
+    optional string file_format = 3;
+    optional string file_name = 4;
+    optional int64 size = 5;
+    optional string kf_id = 6;
+    optional SequencingExperiment_ES sequencing_experiment = 7;
+    optional string reference_genome = 8;
+    optional bool is_harmonized = 9;
+    optional string availability = 10;
+    optional string latest_did = 11;
 }
 
 message File_ES {
     optional bool controlled_access = 1;
-    optional string created_at = 2;
-    optional string data_type = 3;
-    optional string file_format = 4;
-    optional string file_name = 5;
-    optional int64 size = 6;
-    optional string kf_id = 7;
-    optional string modified_at = 8;
-    repeated SequencingExperiment_ES sequencing_experiments = 9;
-    optional string reference_genome = 10;
-    optional bool is_harmonized = 11;
-    optional string availability = 12;
-    optional string latest_did = 13;
+    optional string data_type = 2;
+    optional string file_format = 3;
+    optional string file_name = 4;
+    optional int64 size = 5;
+    optional string kf_id = 6;
+    repeated SequencingExperiment_ES sequencing_experiments = 8;
+    optional string reference_genome = 9;
+    optional bool is_harmonized = 10;
+    optional string availability = 11;
+    optional string latest_did = 12;
 }

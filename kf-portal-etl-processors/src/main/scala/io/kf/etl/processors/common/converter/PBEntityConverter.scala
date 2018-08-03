@@ -8,8 +8,6 @@ object PBEntityConverter {
   def EStudyToStudyES(study: EStudy): Study_ES = {
     Study_ES(
       kfId = study.kfId,
-      createdAt = study.createdAt,
-      modifiedAt = study.modifiedAt,
       attribution = study.attribution,
       name = study.name,
       version = study.version,
@@ -24,16 +22,13 @@ object PBEntityConverter {
     Participant_ES(
       aliasGroup = participant.aliasGroup,
       consentType = participant.consentType,
-      createdAt = participant.createdAt,
       ethnicity = participant.ethnicity,
       externalId = participant.externalId,
       familyId = participant.familyId,
       gender = participant.gender,
       isProband = participant.isProband,
       kfId = participant.kfId,
-      modifiedAt = participant.modifiedAt,
-      race = participant.race,
-      studyId = participant.studyId
+      race = participant.race
     )
   }
   
@@ -43,11 +38,10 @@ object PBEntityConverter {
       analyteType = bio.analyteType,
       composition = bio.composition,
       concentrationMgPerMl = bio.concentrationMgPerMl,
-      createdAt = bio.createdAt,
+      dbgapConsentCode = bio.dbgapConsentCode,
       externalAliquotId = bio.externalAliquotId,
       externalSampleId = bio.externalSampleId,
       kfId = bio.kfId,
-      modifiedAt = bio.modifiedAt,
       ncitIdAnatomicalSite = bio.ncitIdAnatomicalSite,
       ncitIdTissueType = bio.ncitIdTissueType,
       shipmentDate = bio.shipmentDate,
@@ -67,12 +61,10 @@ object PBEntityConverter {
   def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
     Diagnosis_ES(
       ageAtEventDays = diagnosis.ageAtEventDays,
-      createdAt = diagnosis.createdAt,
       diagnosisCategory = diagnosis.diagnosisCategory,
       externalId = diagnosis.externalId,
       icdIdDiagnosis = diagnosis.icdIdDiagnosis,
       kfId = diagnosis.kfId,
-      modifiedAt = diagnosis.modifiedAt,
       mondoIdDiagnosis = diagnosis.mondoIdDiagnosis,
       participantId = diagnosis.participantId,
       sourceTextDiagnosis = diagnosis.sourceTextDiagnosis,
@@ -86,11 +78,8 @@ object PBEntityConverter {
   def EOutcomeToOutcomeES(outcome: EOutcome): Outcome_ES = {
     Outcome_ES(
       ageAtEventDays = outcome.ageAtEventDays,
-      createdAt = outcome.createdAt,
       diseaseRelated = outcome.diseaseRelated,
       kfId = outcome.kfId,
-      modifiedAt = outcome.modifiedAt,
-      participantId = outcome.participantId,
       vitalStatus = outcome.vitalStatus
     )
   }
@@ -98,13 +87,11 @@ object PBEntityConverter {
   def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Option[SequencingExperiment_ES] = None): GenomicFile_ES = {
     GenomicFile_ES(
       controlledAccess = gf.controlledAccess,
-      createdAt = gf.createdAt,
       dataType = gf.dataType,
       fileFormat = gf.fileFormat,
       fileName = gf.fileName,
       size = gf.size,
       kfId = gf.kfId,
-      modifiedAt = gf.modifiedAt,
       sequencingExperiment = seqExps,
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized,
@@ -116,13 +103,11 @@ object PBEntityConverter {
   def EGenomicFileToFileES(gf:EGenomicFile): File_ES = {
     File_ES(
       controlledAccess = gf.controlledAccess,
-      createdAt = gf.createdAt,
       dataType = gf.dataType,
       fileFormat = gf.fileFormat,
       fileName = gf.fileName,
       size = gf.size,
       kfId = gf.kfId,
-      modifiedAt = gf.modifiedAt,
 //      sequencing_experiments = ???
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized,
@@ -147,22 +132,18 @@ object PBEntityConverter {
       meanDepth = seqExp.meanDepth,
       totalReads = seqExp.totalReads,
       meanReadLength = seqExp.meanReadLength,
-      externalId = seqExp.externalId,
-      createdAt = seqExp.createdAt,
-      modifiedAt = seqExp.modifiedAt
+      externalId = seqExp.externalId
     )
   }
   
   def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
     FileCentric_ES(
       controlledAccess = genomicFile.controlledAccess,
-      createdAt = genomicFile.createdAt,
       dataType = genomicFile.dataType,
       fileFormat = genomicFile.fileFormat,
       fileName = genomicFile.fileName,
       size = genomicFile.size,
       kfId = genomicFile.kfId,
-      modifiedAt = genomicFile.modifiedAt,
       sequencingExperiments = seqExps,
       participants = participants,
       referenceGenome = genomicFile.referenceGenome,
