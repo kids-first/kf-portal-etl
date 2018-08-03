@@ -28,8 +28,8 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
             participant2ToParticipant1Relation = Some(fr.participant1ToParticipant2Relation.get.toLowerCase)
           )
         }).flatMap(tf => {
-          tf,
           Seq(
+            tf,
             EFamilyRelationship(
               kfId = tf.kfId,
               createdAt = tf.createdAt,
