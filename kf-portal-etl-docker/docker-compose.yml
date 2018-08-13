@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  hpo:
+    build:
+      context: ./external/hpo
+      dockerfile: Dockerfile
+      args:
+        HPO_SQL_FILE_NAME: MYHPO_03_2018.sql
+    image: kids-first/hpo:0.0.1
+    container_name: kf-hpo
+    hostname: kf-hpo
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=HPO
+  etl:
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+      args:
+        SPARK_MASTER: "spark://localhost:7077"
+    image: kids-first/etl:0.0.1
+    links:
+      - hpo
+      - hadoop
+      - elasticsearch
+    container_name: kf-etl
+    hostname: kf-etl
+    environment:
+        - KF_STUDY_ID="SD_9PYZAHHE SD_YGVA0E1C"
+        - KF_RELEASE_ID=RE_CEG0C8WK
+    volumes:
+      - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
+  hadoop:
+    image: sequenceiq/hadoop-docker:2.7.0
+    container_name: kf-hadoop
+    hostname: kf-hadoop
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: kf-es
+    hostname: kf-es
+    ports:
+        - "9299:9200"
+        - "9399:9300"
+    environment:
+      - discovery.type=single-node
+      - cluster.name=kf-es

@@ -24,43 +24,44 @@ RUN apt-get update && \
     apt-get install -y openssh-client openssh-server vim net-tools wget unzip iputils-ping telnet
 
 ###########################
-# Install SBT
+# Install kf-portal-etl and its dependencies
 ###########################
+
+# SBT Config
 ENV SBT_DOWNLOAD_PATH https://piccolo.link/sbt-${SBT_VERSION}.zip
 ENV SBT_HOME ${ROOT_DIR}/sbt
 ENV SBT_ZIP sbt-${SBT_VERSION}.zip
-RUN echo "Installing SBT..." && \
-    wget ${SBT_DOWNLOAD_PATH} && \
-    unzip ${SBT_ZIP} && \
-    rm -f ${SBT_ZIP} && \
-    ls -l ${SBT_HOME}
 ENV SBT_EXE ${SBT_HOME}/bin/sbt
 
-###########################
-# Build scalapb-json4s-shade library
-###########################
+# Shade Config
 ENV SHADE_GIT_TAG ${SHADE_VERSION}
 ENV SHADE_REPO_NAME scalapb-json4s-shade
-RUN ./build_github_repo.sh ${ROOT_DIR} kids-first ${SHADE_REPO_NAME} ${SHADE_GIT_TAG} "${SBT_EXE} ;clean;assembly;publishLocal"
 
-###########################
-# Build kf-es-model library
-###########################
+# kf-es-model config
 ENV ES_MODEL_GIT_TAG ${ES_MODEL_VERSION}
 ENV ES_MODEL_REPO_NAME kf-es-model
-RUN ./build_github_repo.sh ${ROOT_DIR} kids-first ${ES_MODEL_REPO_NAME} ${ES_MODEL_GIT_TAG} "mvn install"
 
-###########################
-# Build kf-portal-etl 
-###########################
+# kf-portal-etl config
 ENV ETL_GIT_TAG ${ETL_VERSION}
 ENV ETL_REPO_NAME kf-portal-etl
 ENV KF_PORTAL_ETL_JAR ${ROOT_DIR}/data/kf-portal-etl.jar
 
-# One build step becuase the build is 1.7GB, so remove it to minimize cache size
-RUN ./build_github_repo.sh ${ROOT_DIR} kids-first ${ETL_REPO_NAME} ${ETL_GIT_TAG} "${SBT_EXE} ;clean;assembly" && \
-        cp -f ${ROOT_DIR}/${ETL_REPO_NAME}/kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR} && \
-        rm -rf ${ROOT_DIR}/${ETL_REPO_NAME}
+# NOTE: This is all one big build step becuase all the files resulting from the build process take up >2GB collectively. By removing these extra files, the image is greatly reduced.
+RUN echo "Installing SBT..." && \
+    wget ${SBT_DOWNLOAD_PATH} && \
+    unzip ${SBT_ZIP} && \
+    rm -f ${SBT_ZIP} && \
+    ls -l ${SBT_HOME} && \
+    echo "Installing scalapb-json4s-shade library..." && \
+    ./build_github_repo.sh ${ROOT_DIR} kids-first ${SHADE_REPO_NAME} ${SHADE_GIT_TAG} "${SBT_EXE} ;clean;assembly;publishLocal" && \
+    echo "Installing kf-es-model library..." && \
+    ./build_github_repo.sh ${ROOT_DIR} kids-first ${ES_MODEL_REPO_NAME} ${ES_MODEL_GIT_TAG} "mvn install" && \
+    echo "Building  kf-portal-etl.jar file..." && \
+    ./build_github_repo.sh ${ROOT_DIR} kids-first ${ETL_REPO_NAME} ${ETL_GIT_TAG} "${SBT_EXE} ;clean;assembly" && \
+    cp -f ${ROOT_DIR}/${ETL_REPO_NAME}/kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR} && \
+    echo "Cleaning up all libraries used to build the kf-portal-etl.jar file..." && \
+    rm -rf ${ROOT_DIR}/${ETL_REPO_NAME} ${ROOT_DIR}/${SBT_HOME} ${ROOT_DIR}/${SHADE_REPO_NAME} ${ROOT_DIR}/${ES_MODEL_REPO_NAME} && \
+    rm -rf ~/.m2  ~/.sbt  ~/.ivy2
 
 ###########################
 # Configure SSH
