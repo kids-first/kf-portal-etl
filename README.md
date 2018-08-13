@@ -47,7 +47,7 @@ sbt ";clean;assembly"
 Then get the application jar file from
 
 ```
-${root of the project}/kf-portal-etl-processors/target/scala-2.11/kf-portal-etl.jar
+${root of the project}/kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar
 ```
 
 ## Configuration
@@ -85,7 +85,7 @@ There are some dependencies to run Kids-First ETL, refer to [submit.sh.example](
 
 - PostgreSQL: primary storage for Kids-First data models
 - MySQL: contains HPO reference data. The reference DB dump file is found [here](http://human-phenotype-ontology.github.io/downloads.html)
-- Spark 2.2.1
+- Spark 2.3.0
 - Configuration file: refer to [Configuration](#Configuration) for the format and contents of the file
 
 To submit the application to Spark, run the following in the command line
