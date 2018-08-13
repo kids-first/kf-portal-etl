@@ -60,8 +60,8 @@ RUN echo "Installing SBT..." && \
     ./build_github_repo.sh ${ROOT_DIR} kids-first ${ETL_REPO_NAME} ${ETL_GIT_TAG} "${SBT_EXE} ;clean;assembly" && \
     cp -f ${ROOT_DIR}/${ETL_REPO_NAME}/kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR} && \
     echo "Cleaning up all libraries used to build the kf-portal-etl.jar file..." && \
-    rm -rf ${ROOT_DIR}/${ETL_REPO_NAME} ${ROOT_DIR}/${SBT_HOME} ${ROOT_DIR}/${SHADE_REPO_NAME} ${ROOT_DIR}/${ES_MODEL_REPO_NAME} && \
-    rm -rf ~/.m2  ~/.sbt  ~/.ivy2
+    rm -rf ${ROOT_DIR}/${ETL_REPO_NAME} ${ROOT_DIR}/${SBT_HOME} ${ROOT_DIR}/${SHADE_REPO_NAME} ${ROOT_DIR}/${ES_MODEL_REPO_NAME}
+    #rm -rf ~/.m2  ~/.sbt  ~/.ivy2   #remove these directories if can...takes up 300MB
 
 ###########################
 # Configure SSH
