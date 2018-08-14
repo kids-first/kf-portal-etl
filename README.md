@@ -2,6 +2,7 @@
 
 The Kids-First ETL is built on Scala, Spark, Elasticsearch, HDFS, Postgresql, MySQL etc.
 
+
 ## Dependencies
 
 Before [building](#build) this application, the following dependencies must be built and added to your local maven (.m2) directory.
