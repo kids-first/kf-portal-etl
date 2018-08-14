@@ -10,7 +10,7 @@ port_cmd=""
 kf_study_id="SD_9PYZAHHE SD_YGVA0E1C"
 kf_release_id="RE_ACE14FCS"
 #network="default"
-network="48b29718a739"
+network="docker_default"
 for port in ${ports[*]}; do
     port_cmd+=" -p ${port}:${port} "
 done
