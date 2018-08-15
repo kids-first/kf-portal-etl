@@ -89,7 +89,11 @@ object KFConfigExtractors {
 
   def parseDataService(config:Config): DataServiceConfig = {
     DataServiceConfig(
-      url = config.getString(CONFIG_NAME_DATASERVICE_URL)
+      url = config.getString(CONFIG_NAME_DATASERVICE_URL),
+      limit = Try(config.getInt(CONFIG_NAME_DATASERVICE_LIMIT)) match {
+        case Success(value) => value
+        case Failure(_) => 100
+      }
     )
   }
 }

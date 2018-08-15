@@ -1,6 +1,7 @@
 package io.kf.etl.processors.download.transform
 
 import com.trueaccord.scalapb.GeneratedMessageCompanion
+import io.kf.etl.common.conf.DataServiceConfig
 import io.kf.etl.external.dataservice.entity._
 import org.asynchttpclient.AsyncHttpClient
 import org.asynchttpclient.Dsl._
@@ -9,7 +10,7 @@ import org.json4s.jackson.JsonMethods
 
 import scala.annotation.tailrec
 
-case class EntityDataRetrieval(rootUrl:String) {
+case class EntityDataRetrieval(config:DataServiceConfig) {
 
   lazy val asyncClient = getAsyncClient()
 
@@ -21,7 +22,7 @@ case class EntityDataRetrieval(rootUrl:String) {
     entityEndpoint match {
       case None => data
       case Some(endpoint) => {
-        val responseBody = JsonMethods.parse( asyncClient.prepareGet(s"${rootUrl}${endpoint}").execute().get().getResponseBody )
+        val responseBody = JsonMethods.parse( asyncClient.prepareGet(s"${config.url}${endpoint}").execute().get().getResponseBody )
 
         val currentDataset =
           (
@@ -49,7 +50,7 @@ case class EntityDataRetrieval(rootUrl:String) {
 
         responseBody \ "_links" \ "next" match {
           case JNull | JNothing => retrieve(None, currentDataset)
-          case JString(next) => retrieve(Some(s"${next}&limit=100"), currentDataset)
+          case JString(next) => retrieve(Some(s"${next}&limit=${config.limit}"), currentDataset)
         }
       }//end of case Some(entities)
     }

@@ -55,7 +55,7 @@ class KFConfig(private val config: Config){
 
   private def getAWSConfig(): Option[AWSConfig] = {
 
-    Try{
+    Try {
       config.getString(CONFIG_NAME_AWS_S3_PROFILE)
     } match {
       case Success(aws_profile) => {
@@ -90,7 +90,7 @@ case class PostgresqlConfig(host:String, database:String, user:String, password:
 
 case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])
 
-case class DataServiceConfig(url:String)
+case class DataServiceConfig(url:String, limit:Int)
 
 case class AWSS3Config(profile:String)
 
