@@ -94,7 +94,7 @@ message Diagnosis_ES {
 }
 
 message Family_ES {
-    required string family_id = 1;
+    optional string family_id = 1;
     repeated FamilyComposition_ES family_compositions = 2;
     optional string father_id = 3;
     optional string mother_id = 4;

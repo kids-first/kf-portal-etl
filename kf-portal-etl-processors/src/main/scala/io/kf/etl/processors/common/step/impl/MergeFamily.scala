@@ -134,7 +134,41 @@ object MergeFamily {
     val mapOfAvailableDataTypes = availableDataTypes_broadcast.value
 
     familyId match {
-      case None => family
+
+      case None => family.map(participant => {
+
+        val members = Seq(participant)
+        val sharedHpoIds = getSharedHpoIds(members)
+        val family_availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
+
+        val composition = participant.isProband match {
+          case Some(true) => "proband-only"
+          case _ => "other"
+        }
+
+        val familyMembers = Seq(
+          getFamilyMemberFromParticipant(participant, "", sharedHpoIds, mapOfAvailableDataTypes)
+        )
+
+        val familyComposition =
+          FamilyComposition_ES(
+            composition = Some(composition),
+            sharedHpoIds = sharedHpoIds,
+            availableDataTypes = family_availableDataTypes,
+            familyMembers = familyMembers
+          )
+
+        val family =
+            Family_ES(
+              familyCompositions = Seq(familyComposition)
+            )
+
+        participant.copy(
+          family = Some(family),
+          availableDataTypes = getAvailableDataTypes(Seq(participant), mapOfAvailableDataTypes)
+        )
+
+      })
 
       case Some(id) => {
         val familyStructure =
@@ -142,6 +176,8 @@ object MergeFamily {
             .foldLeft(FamilyStructure()) { (family_structure, participant) => {
 
             familyRelationship.get(participant.kfId.get) match {
+
+              // None case means no family
               case None => {
                 participant.isProband match {
                   case Some(isProband) if isProband => {
@@ -186,6 +222,7 @@ object MergeFamily {
                   else
                     family_structure.copy(others = family_structure.others :+ ("child", participant))
                 }
+
                 else {
                   family_structure.copy(
                     others = family_structure.others :+ (relationships.toString(), participant)
@@ -216,7 +253,7 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.familyId.get,
+                  familyId = Some(father.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -226,7 +263,7 @@ object MergeFamily {
               ),
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.familyId.get,
+                  familyId = Some(mother.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -236,7 +273,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -272,7 +309,7 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.familyId.get,
+                  familyId = Some(father.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -282,7 +319,7 @@ object MergeFamily {
               ),
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.familyId.get,
+                  familyId = Some(mother.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -292,7 +329,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId,
                   motherId = mother.kfId
@@ -304,7 +341,7 @@ object MergeFamily {
               m._2.copy(
                 family = Some(
                   Family_ES(
-                    familyId = m._2.familyId.get,
+                    familyId = Some(m._2.familyId.get),
                     familyCompositions = Seq(composition),
                     fatherId = father.kfId,
                     motherId = mother.kfId
@@ -334,7 +371,7 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.familyId.get,
+                  familyId = Some(father.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId
                 )
@@ -343,7 +380,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId
                 )
@@ -376,7 +413,7 @@ object MergeFamily {
             Seq(
               father.copy(family = Some(
                 Family_ES(
-                  familyId = father.familyId.get,
+                  familyId = Some(father.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId
                 )
@@ -385,7 +422,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   fatherId = father.kfId
                 )
@@ -396,7 +433,7 @@ object MergeFamily {
               m._2.copy(
                 family = Some(
                   Family_ES(
-                    familyId = m._2.familyId.get,
+                    familyId = Some(m._2.familyId.get),
                     familyCompositions = Seq(composition),
                     fatherId = father.kfId
                   )
@@ -425,7 +462,7 @@ object MergeFamily {
             Seq(
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.familyId.get,
+                  familyId = Some(mother.familyId.get),
                   familyCompositions = Seq(composition),
                   motherId = mother.kfId
                 )
@@ -434,7 +471,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   motherId = mother.kfId
                 )
@@ -467,7 +504,7 @@ object MergeFamily {
             Seq(
               mother.copy(family = Some(
                 Family_ES(
-                  familyId = mother.familyId.get,
+                  familyId = Some(mother.familyId.get),
                   familyCompositions = Seq(composition),
                   motherId = mother.kfId
                 )
@@ -476,7 +513,7 @@ object MergeFamily {
               ),
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition),
                   motherId = mother.kfId
                 )
@@ -487,7 +524,7 @@ object MergeFamily {
               m._2.copy(
                 family = Some(
                   Family_ES(
-                    familyId = m._2.familyId.get,
+                    familyId = Some(m._2.familyId.get),
                     familyCompositions = Seq(composition),
                     motherId = mother.kfId
                   )
@@ -499,8 +536,6 @@ object MergeFamily {
 
           // proband-only = proband
           case FamilyStructure(None, None, Some(proband), Seq()) => {
-            println(s"PROBAND-ONLY familyStructure: ${familyStructure}")
-
             val members = Seq(proband)
             val sharedHpoIds = getSharedHpoIds(members)
             val family_availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
@@ -519,7 +554,7 @@ object MergeFamily {
 
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition)
                 )
               ),
@@ -530,7 +565,6 @@ object MergeFamily {
 
           // other = proband, other
           case FamilyStructure(None, None, Some(proband), Seq(head, tail @ _*)) => {
-            println(s"OTHER familyStructure: ${familyStructure}")
 
             val members = Seq(proband, head._2) ++ tail.map(_._2)
             val sharedHpoIds = getSharedHpoIds(members)
@@ -552,7 +586,7 @@ object MergeFamily {
 
               proband.copy(family = Some(
                 Family_ES(
-                  familyId = proband.familyId.get,
+                  familyId = Some(proband.familyId.get),
                   familyCompositions = Seq(composition)
                 )
               ),
@@ -562,7 +596,7 @@ object MergeFamily {
               m._2.copy(
                 family = Some(
                   Family_ES(
-                    familyId = m._2.familyId.get,
+                    familyId = Some(m._2.familyId.get),
                     familyCompositions = Seq(composition)
                   )
                 ),
@@ -591,7 +625,7 @@ object MergeFamily {
               member.copy(
                 family = Some(
                   Family_ES(
-                    familyId = member.familyId.get,
+                    familyId = Some(member.familyId.get),
                     familyCompositions = Seq(composition)
                   )
                 ),
@@ -618,6 +652,7 @@ object MergeFamily {
       case None => Seq.empty
     }
 
+
     FamilyMember_ES(
       kfId = participant.kfId,
       isProband = participant.isProband,
@@ -625,7 +660,7 @@ object MergeFamily {
       phenotype = participant.phenotype,
       race = participant.race,
       ethnicity = participant.ethnicity,
-      relationship = Some(relationship)
+      relationship = if ( relationship.isEmpty() ) None else Some(relationship)
     )
   }
 
