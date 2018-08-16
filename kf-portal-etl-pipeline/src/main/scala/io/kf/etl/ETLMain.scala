@@ -14,7 +14,7 @@ import org.reflections.Reflections
 
 import scala.collection.convert.WrapAsScala
 
-object ETLMain extends App{
+object ETLMain extends App {
 
   private lazy val cliArgs = getCLIArgs()
 
@@ -25,7 +25,6 @@ object ETLMain extends App{
   private def createContext():Context = {
     new DefaultContext
   }
-
 
   private def createInjector(): Injector = {
 
@@ -54,31 +53,61 @@ object ETLMain extends App{
     new CLIParametersHolder(args)
   }
 
-  val download = injector.getInstance(classOf[DownloadProcessor])
-  val participantcommon = injector.getInstance(classOf[ParticipantCommonProcessor])
-  val filecentric = injector.getInstance(classOf[FileCentricProcessor])
-  val participantcentric = injector.getInstance(classOf[ParticipantCentricProcessor])
-  val index = injector.getInstance(classOf[IndexProcessor])
-
-  cliArgs.study_ids match {
-    case Some(study_ids) => {
-      Pipeline.foreach[String](study_ids.toSeq, study => {
-        Pipeline.from(Some(Array(study))).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
-          Seq(tuples._1, tuples._2).map(tuple => {
-            index.process(
-              (s"${tuple._1}_${study}_${cliArgs.release_id.get}".toLowerCase, tuple._2)
-            )
-          })
-        }).run()
-      }).run()
-    }
-    case None => {
-      Pipeline.from(None).map(download).map(participantcommon).combine(filecentric, participantcentric).map(tuples => {
-        Seq(tuples._1, tuples._2).map(tuple => {
-          index.process(tuple)
-        })
-      }).run()
-    }
+  private def createIndexName(indexType: String, studyId: String, releaseId: String): String = {
+    s"${indexType}_${studyId}_${releaseId}".toLowerCase
   }
 
+  /**
+    *  *** INJECT DEPENDENCIES ***
+    */
+  val downloadProcessor = injector.getInstance(classOf[DownloadProcessor])
+  val participantCommonProcessor = injector.getInstance(classOf[ParticipantCommonProcessor])
+  val fileCentricProcessor = injector.getInstance(classOf[FileCentricProcessor])
+  val participantCentricProcessor = injector.getInstance(classOf[ParticipantCentricProcessor])
+  val indexProcessor = injector.getInstance(classOf[IndexProcessor])
+
+
+  /**
+    *  *** RUN PIPELINE ***
+    */
+  cliArgs.study_ids match {
+
+    // Requires study_ids to run
+    case Some(study_ids) => {
+      println(s"Running Pipeline with study IDS {${study_ids.mkString(", ")}}")
+
+      /* REJOICE! THE PIPELINE BEGINS!!! */
+      Pipeline.foreach[String](study_ids.toSeq, study => {
+
+        println(s"Beginning pipeline for study: ${study}")
+
+        Pipeline.from(Some(Array(study)))
+          .map(downloadProcessor)
+          .map(participantCommonProcessor)
+          .combine(fileCentricProcessor, participantCentricProcessor)
+          .map(tuples => {
+            // run the index processor for each completed index.
+            // TODO: Rebuild this into the pipeline syntax, should not require logic inside the pipeline
+
+            Seq(tuples._1, tuples._2).map(tuple => {
+              val indexType = tuple._1
+              val releaseId = cliArgs.release_id.get
+
+              val indexName = createIndexName(indexType, study, releaseId)
+
+              indexProcessor.process( (indexName, tuple._2) )
+            })
+          })
+          .run()
+
+      }).run()
+    }
+
+    // No Study IDs:
+    case None => {
+      println(s"No Study IDs provided - Nothing to run.")
+      // TODO: Throw exception
+    }
+
+  }
 }

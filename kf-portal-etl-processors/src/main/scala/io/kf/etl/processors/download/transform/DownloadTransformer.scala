@@ -10,7 +10,7 @@ class DownloadTransformer(val context:DownloadContext) {
 
     import context.appContext.sparkSession.implicits._
     import EntityParentIDExtractor._
-    val retrieval = EntityDataRetrieval(context.config.dataService.url)
+    val retrieval = EntityDataRetrieval(context.config.dataService)
 
     val dataset =
       EntityDataSet(

@@ -6,7 +6,7 @@ class DefaultContext extends ContextCommon {
 
   override def getSparkSession(): SparkSession = {
 
-    esClient // elasticsearch transport client should be created before SparkSesion
+    esClient // elasticsearch transport client should be created before SparkSession
 
     Some(SparkSession.builder()).map(session => {
       config.sparkConfig.master match {
