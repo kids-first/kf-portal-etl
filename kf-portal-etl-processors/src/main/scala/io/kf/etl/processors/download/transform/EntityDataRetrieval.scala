@@ -18,38 +18,34 @@ case class EntityDataRetrieval(config:DataServiceConfig) {
 
 
   @tailrec
-  final def retrieve[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]](entityEndpoint:Option[String], data: Seq[T])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
+  final def retrieve[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
+    (entityEndpoint:Option[String], data: Seq[T])(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Seq[T] = {
+
+    def extractEntity(entityJson: JValue): T = {
+      extractor.extract(
+        scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entityJson)),
+        entityJson
+      )
+    }
+
     entityEndpoint match {
-      case None => data
+      case None => data // No endpoint means do nothing, return the dataset provided
       case Some(endpoint) => {
         val responseBody = JsonMethods.parse( asyncClient.prepareGet(s"${config.url}${endpoint}").execute().get().getResponseBody )
 
         val currentDataset =
           (
             responseBody \ "results" match {
-            case JNull | JNothing => Seq.empty
-            case entity: JObject => {
-              Seq(
-                extractor.extract(
-                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
-                  entity
-                )
-              )
+              case JNull | JNothing => Seq.empty
+              case entity: JObject => Seq(extractEntity(entity))
+              case JArray(entities) => entities.map(extractEntity)
             }
-            case JArray(entities) => {
-              entities.map(entity => {
-                extractor.extract(
-                  scalaPbJson4sParser.fromJsonString[T](JsonMethods.compact(entity)),
-                  entity
-                )
-              })
-            }//end of case JArray(entities)
-          }//end of responseBody \ "results" match
           ) ++ data
 
 
+        // Retrieve content from "next" URL in links, or return our dataset
         responseBody \ "_links" \ "next" match {
-          case JNull | JNothing => retrieve(None, currentDataset)
+          case JNull | JNothing => currentDataset
           case JString(next) => retrieve(Some(s"${next}&limit=${config.limit}"), currentDataset)
         }
       }//end of case Some(entities)
@@ -73,27 +69,19 @@ trait EntityParentIDExtractor[T <: com.trueaccord.scalapb.GeneratedMessage with 
 
 object EntityParentIDExtractor {
 
+  def getIdFromLink(linkName: String, json: JValue): Option[String] = {
+    json \ "_links" \ linkName match {
+      case JNull | JNothing => None
+      case JString(endpoint) => Some(endpoint.substring(endpoint.lastIndexOf('/') + 1) )
+    }
+  }
+
   implicit val participant:EntityParentIDExtractor[EParticipant] = new EntityParentIDExtractor[EParticipant] {
     override def extract(entity: EParticipant, json: JValue): EParticipant = {
-
-      val studyAttached =
-        json \ "_links" \ "study" match {
-          case JNull | JNothing => entity
-          case JString(endpoint) => {
-            entity.copy(
-              studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-            )
-          }
-        }
-
-      json \ "_links" \ "family" match {
-        case JNull | JNothing => studyAttached
-        case JString(family) => {
-          studyAttached.copy(
-            familyId = Some(family.substring(family.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        studyId = getIdFromLink("study", json),
+        familyId = getIdFromLink("family", json)
+      )
     }
   }
 
@@ -103,74 +91,35 @@ object EntityParentIDExtractor {
 
   implicit val biospecimen:EntityParentIDExtractor[EBiospecimen] = new EntityParentIDExtractor[EBiospecimen] {
     override def extract(entity: EBiospecimen, json: JValue): EBiospecimen = {
-      json \ "_links" \ "participant" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        participantId = getIdFromLink("participant", json)
+      )
     }
   }
 
   implicit val diagnosis:EntityParentIDExtractor[EDiagnosis] = new EntityParentIDExtractor[EDiagnosis] {
     override def extract(entity: EDiagnosis, json: JValue): EDiagnosis = {
-      json \ "_links" \ "participant" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        participantId = getIdFromLink("participant", json)
+      )
     }
   }
 
   implicit val familyRelationship:EntityParentIDExtractor[EFamilyRelationship] = new EntityParentIDExtractor[EFamilyRelationship] {
     override def extract(entity: EFamilyRelationship, json: JValue): EFamilyRelationship = {
-      val entity1 =
-        json \ "_links" \ "participant1" match {
-          case JNull | JNothing => entity
-          case JString(endpoint) => {
-            entity.copy(
-              participant1 = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-            )
-          }
-        }
-
-      json \ "_links" \ "participant2" match {
-        case JNull | JNothing => entity1
-        case JString(endpoint) => {
-          entity1.copy(
-            participant2 = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        participant1 = getIdFromLink("participant1", json),
+        participant2 = getIdFromLink("participant2", json)
+      )
     }
   }
 
   implicit val genomicFile: EntityParentIDExtractor[EGenomicFile] = new EntityParentIDExtractor[EGenomicFile] {
     override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = {
-
-      val entityWithBio =
-        json \ "_links" \ "biospecimen" match {
-          case JNull | JNothing => entity
-          case JString(endpoint) => {
-            entity.copy(
-              biospecimenId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-            )
-          }
-        }
-
-      json \ "_links" \ "sequencing_experiment" match {
-        case JNull | JNothing => entityWithBio
-        case JString(endpoint) => {
-          entityWithBio.copy(
-            sequencingExperimentId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        biospecimenId = getIdFromLink("biospecimen", json),
+        sequencingExperimentId = getIdFromLink("sequencing_experiment", json)
+      )
     }
   }
 
@@ -180,27 +129,17 @@ object EntityParentIDExtractor {
 
   implicit val outcome: EntityParentIDExtractor[EOutcome] = new EntityParentIDExtractor[EOutcome] {
     override def extract(entity: EOutcome, json: JValue): EOutcome = {
-      json \ "_links" \ "participant" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        participantId = getIdFromLink("participant", json)
+      )
     }
   }
 
   implicit val phenotype: EntityParentIDExtractor[EPhenotype] = new EntityParentIDExtractor[EPhenotype] {
     override def extract(entity: EPhenotype, json: JValue): EPhenotype = {
-      json \ "_links" \ "participant" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            participantId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        participantId = getIdFromLink("participant", json)
+      )
     }
   }
 
@@ -214,14 +153,9 @@ object EntityParentIDExtractor {
 
   implicit val studyFile: EntityParentIDExtractor[EStudyFile] = new EntityParentIDExtractor[EStudyFile] {
     override def extract(entity: EStudyFile, json: JValue): EStudyFile = {
-      json \ "_links" \ "study" match {
-        case JNull | JNothing => entity
-        case JString(endpoint) => {
-          entity.copy(
-            studyId = Some(endpoint.substring(endpoint.lastIndexOf('/') + 1))
-          )
-        }
-      }
+      entity.copy(
+        studyId = getIdFromLink("study", json)
+      )
     }
   }
 
