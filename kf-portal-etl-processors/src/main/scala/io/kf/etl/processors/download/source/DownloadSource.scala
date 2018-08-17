@@ -5,45 +5,44 @@ import io.kf.etl.processors.download.context.DownloadContext
 
 class DownloadSource(val context: DownloadContext) {
 
-  def getEntitySet(input: Option[Array[String]]): Seq[EntityEndpointSet] = {
+  def makeEndpointSeq(path: String, ids: Seq[String]): Seq[String] = {
+    ids.map(id => s"${path}?study_id=${id}")
+  }
+
+  def getEntitySet(input: Option[Array[String]]): EntityEndpointSet = {
     input match {
       case None => {
         val query = "?limit=100"
-        Seq(
-          EntityEndpointSet(
-            participants = s"/participants${query}",
-            families = s"/families${query}",
-            biospecimens = s"/biospecimens${query}",
-            diagnoses = s"/diagnoses${query}",
-            familyRelationships = s"/family-relationships${query}",
-            genomicFiles = s"/genomic-files${query}",
-            investigators = s"/investigators${query}",
-            outcomes = s"/outcomes${query}",
-            phenotypes = s"/phenotypes${query}",
-            sequencingExperiments = s"/sequencing-experiments${query}",
-            studies = s"/studies${query}",
-            studyFiles = s"/study-files${query}"
-          )
+        EntityEndpointSet(
+          participants          = Seq(s"/participants${query}"),
+          families              = Seq(s"/families${query}"),
+          biospecimens          = Seq(s"/biospecimens${query}"),
+          diagnoses             = Seq(s"/diagnoses${query}"),
+          familyRelationships   = Seq(s"/family-relationships${query}"),
+          genomicFiles          = Seq(s"/genomic-files${query}"),
+          investigators         = Seq(s"/investigators${query}"),
+          outcomes              = Seq(s"/outcomes${query}"),
+          phenotypes            = Seq(s"/phenotypes${query}"),
+          sequencingExperiments = Seq(s"/sequencing-experiments${query}"),
+          studies               = Seq(s"/studies${query}"),
+          studyFiles            = Seq(s"/study-files${query}")
         )
       }
       case Some(ids) => {
-        ids.map(id => {
-          val query = s"?study_id=${id}"
-          EntityEndpointSet(
-            participants = s"/participants${query}",
-            families = s"/families${query}",
-            biospecimens = s"/biospecimens${query}",
-            diagnoses = s"/diagnoses${query}",
-            familyRelationships = s"/family-relationships${query}",
-            genomicFiles = s"/genomic-files${query}",
-            investigators = s"/investigators${query}",
-            outcomes = s"/outcomes${query}",
-            phenotypes = s"/phenotypes${query}",
-            sequencingExperiments = s"/sequencing-experiments${query}",
-            studies = s"/studies/${id}",
-            studyFiles = s"/study-files${query}"
-          )
-        })
+        EntityEndpointSet(
+          participants          = makeEndpointSeq("/participants",ids),
+          families              = makeEndpointSeq("/families",ids),
+          biospecimens          = makeEndpointSeq("/biospecimens",ids),
+          diagnoses             = makeEndpointSeq("/diagnoses",ids),
+          familyRelationships   = makeEndpointSeq("/family-relationships",ids),
+          genomicFiles          = makeEndpointSeq("/genomic-files",ids),
+          investigators         = makeEndpointSeq("/investigators",ids),
+          outcomes              = makeEndpointSeq("/outcomes",ids),
+          phenotypes            = makeEndpointSeq("/phenotypes",ids),
+          sequencingExperiments = makeEndpointSeq("/sequencing-experiments",ids),
+          studies               = makeEndpointSeq("/studies",ids),
+          studyFiles            = makeEndpointSeq("/study-files",ids)
+        )
       }
     }
   }
