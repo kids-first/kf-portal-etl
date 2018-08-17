@@ -19,6 +19,7 @@ message EParticipant{
     repeated string phenotypes = 14;
     optional string race = 15;
     optional string study_id = 16;
+    optional bool visible = 1000;
 }
 
 message EFamily {
@@ -26,6 +27,7 @@ message EFamily {
     optional string modified_at = 2;
     optional string created_at = 3;
     repeated string participants = 4;
+    optional bool visible = 1000;
 }
 
 message EBiospecimen {
@@ -52,6 +54,7 @@ message EBiospecimen {
     optional string uberon_id_anatomical_site = 21;
     optional double volume_ml = 22;
     optional string sequencing_center_id = 23;
+    optional bool visible = 1000;
 }
 
 message EDiagnosis {
@@ -69,6 +72,7 @@ message EDiagnosis {
     optional string source_text_tumor_location = 12;
     optional string ncit_id_diagnosis = 13;
     optional string spatial_descriptor = 14;
+    optional bool visible = 1000;
 }
 
 message EFamilyRelationship {
@@ -79,6 +83,7 @@ message EFamilyRelationship {
     optional string participant2 = 5;
     optional string participant1_to_participant2_relation = 6;
     optional string participant2_to_participant1_relation = 7;
+    optional bool visible = 1000;
 
 }
 
@@ -110,6 +115,7 @@ message EGenomicFile {
     optional string sequencing_experiment_id = 17;
     optional int64 size = 18;
     repeated string urls = 19;
+    optional bool visible = 1000;
 }
 
 message EInvestigator {
@@ -119,6 +125,7 @@ message EInvestigator {
     optional string institution = 4;
     optional string name = 5;
     repeated string studies = 6;
+    optional bool visible = 1000;
 }
 
 message EOutcome {
@@ -129,6 +136,7 @@ message EOutcome {
     optional string disease_related = 5;
     optional string participant_id = 6;
     optional string vital_status = 7;
+    optional bool visible = 1000;
 }
 
 message EPhenotype {
@@ -142,6 +150,7 @@ message EPhenotype {
     optional string source_text_phenotype = 8;
     optional string snomed_id_phenotype = 9;
     optional string external_id = 10;
+    optional bool visible = 1000;
 }
 
 message ESequencingExperiment {
@@ -164,6 +173,7 @@ message ESequencingExperiment {
     optional string external_id = 17;
     repeated string genomic_files = 18;
     optional string sequencing_center_id = 19;
+    optional bool visible = 1000;
 }
 
 message EStudy {
@@ -179,6 +189,7 @@ message EStudy {
     repeated string study_files = 10;
     optional string version = 11;
     optional string short_name = 12;
+    optional bool visible = 1000;
 }
 
 message EStudyFile {
@@ -187,4 +198,5 @@ message EStudyFile {
     optional string created_at = 3;
     optional string file_name = 4;
     optional string study_id = 5;
+    optional bool visible = 1000;
 }
