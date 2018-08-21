@@ -607,8 +607,6 @@ object MergeFamily {
 
           // other = default (fall through)
           case _ => {
-            println(s"DEFAULT familyStructure: ${familyStructure}")
-
             val sharedHpoIds = getSharedHpoIds(family)
             val family_availableDataTypes = getAvailableDataTypes(family, mapOfAvailableDataTypes)
             val composition =
