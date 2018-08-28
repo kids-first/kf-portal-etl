@@ -110,6 +110,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           })
 
         FileCentric_ES(
+          acl = genomicFile.acl,
           controlledAccess = genomicFile.controlledAccess,
           dataType = genomicFile.dataType,
           fileFormat = genomicFile.fileFormat,
