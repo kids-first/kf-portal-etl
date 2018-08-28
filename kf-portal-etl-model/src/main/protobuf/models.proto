@@ -3,17 +3,18 @@ syntax = "proto2";
 package io.kf.etl.es;
 
 message FileCentric_ES {
-    optional bool controlled_access = 1;
-    optional string data_type = 2;
-    optional string file_format = 3;
-    optional string file_name = 4;
-    optional int64 size = 5;
-    optional string kf_id = 6;
-    repeated Participant_ES participants = 7;
-    repeated SequencingExperiment_ES sequencing_experiments = 8;
-    optional string reference_genome = 9;
-    optional bool is_harmonized = 10;
-    optional string latest_did = 11;
+    repeated string acl = 1;
+    optional bool controlled_access = 2;
+    optional string data_type = 3;
+    optional string file_format = 4;
+    optional string file_name = 5;
+    optional int64 size = 6;
+    optional string kf_id = 7;
+    repeated Participant_ES participants = 8;
+    repeated SequencingExperiment_ES sequencing_experiments = 9;
+    optional string reference_genome = 10;
+    optional bool is_harmonized = 11;
+    optional string latest_did = 12;
 }
 
 message ParticipantCentric_ES {
@@ -178,26 +179,28 @@ message SequencingExperiment_ES {
 }
 
 message GenomicFile_ES {
-    optional bool controlled_access = 1;
-    optional string data_type = 2;
-    optional string file_format = 3;
-    optional string file_name = 4;
-    optional int64 size = 5;
-    optional string kf_id = 6;
-    optional SequencingExperiment_ES sequencing_experiment = 7;
-    optional string reference_genome = 8;
-    optional bool is_harmonized = 9;
-    optional string availability = 10;
-    optional string latest_did = 11;
+    repeated string acl = 1;
+    optional bool controlled_access = 2;
+    optional string data_type = 3;
+    optional string file_format = 4;
+    optional string file_name = 5;
+    optional int64 size = 6;
+    optional string kf_id = 7;
+    optional SequencingExperiment_ES sequencing_experiment = 8;
+    optional string reference_genome = 9;
+    optional bool is_harmonized = 10;
+    optional string availability = 11;
+    optional string latest_did = 12;
 }
 
 message File_ES {
-    optional bool controlled_access = 1;
-    optional string data_type = 2;
-    optional string file_format = 3;
-    optional string file_name = 4;
-    optional int64 size = 5;
-    optional string kf_id = 6;
+    repeated string acl = 1;
+    optional bool controlled_access = 2;
+    optional string data_type = 3;
+    optional string file_format = 4;
+    optional string file_name = 5;
+    optional int64 size = 6;
+    optional string kf_id = 7;
     repeated SequencingExperiment_ES sequencing_experiments = 8;
     optional string reference_genome = 9;
     optional bool is_harmonized = 10;
