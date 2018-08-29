@@ -71,7 +71,7 @@ RUN mkdir /root/.ssh && mv id_rsa id_rsa.pub /root/.ssh/
 RUN cd /root/.ssh && cat id_rsa.pub > authorized_keys
 RUN update-rc.d ssh defaults
 RUN echo PermitRootLogin yes >> /etc/ssh/sshd_config
-RUN echo export JAVA_HOME=/srv/java/jdk >> /root/.bashrc
+RUN echo export JAVA_HOME=/docker-java-home/bin/java >> /root/.bashrc
 
 ###########################
 # Install Spark
