@@ -28,71 +28,101 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
       })
 
     val bio_par =
-      ctx.entityDataset.biospecimens.joinWith(
-        participants,
-        participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
-        "left_outer"
-      ).flatMap(tuple => {
-        Option(tuple._2) match {
-          case Some(_) => {
-            Seq(
-              BiospecimenES_ParticipantES(
-                bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._1),
-                participant = tuple._2
-              )
-            )
-          }
-          case None => Seq.empty
-        }
-      })
-
-    val bio_gf =
-      ctx.entityDataset.genomicFiles.joinWith(
-        ctx.entityDataset.biospecimens,
-        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId"),
-        "left_outer"
-      ).map(tuple => {
-        BiospecimenES_GenomicFileId(
-          gfId = tuple._1.kfId.get,
-          bio = {
-            Option(tuple._2) match {
-              case Some(_) => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2)
-              case None => null
-            }
-          }
+      ctx.entityDataset.biospecimens
+        .joinWith(
+          participants,
+          participants.col("kfId") === ctx.entityDataset.biospecimens.col("participantId"),
+          "left_outer"
         )
-      })
+        .flatMap(tuple => {
+          Option(tuple._2) match {
+            case Some(_) => {
+              Seq(
+                BiospecimenES_ParticipantES(
+                  bio = PBEntityConverter.EBiospecimenToBiospecimenES(tuple._1),
+                  participant = tuple._2
+                )
+              )
+            }
+            case None => Seq.empty
+          }
+        })
+
+    val bioId_gfId =
+      ctx.entityDataset.genomicFiles
+        .joinWith(
+          ctx.entityDataset.biospecimenGenomicFiles,
+          ctx.entityDataset.genomicFiles.col("kfId") === ctx.entityDataset.biospecimenGenomicFiles.col("genomicFileId"),
+          "left_outer"
+        )
+        .map(tuple => {
+          BiospecimenId_GenomicFileId(
+            gfId = tuple._1.kfId,
+            bioId = {
+              Option(tuple._2) match {
+                case Some(_) => tuple._2.biospecimenId
+                case None => null
+              }
+            }
+          )
+        })
+
+    val bio_gfId =
+      bioId_gfId
+        .joinWith(
+          ctx.entityDataset.biospecimens,
+          bioId_gfId.col("bioId") === ctx.entityDataset.biospecimens.col("kfId"),
+          "left_outer"
+        )
+        .map(tuple => {
+          BiospecimenES_GenomicFileId(
+            gfId = tuple._1.gfId.get,
+            bio = {
+              Option(tuple._2) match {
+                case Some(_) => PBEntityConverter.EBiospecimenToBiospecimenES(tuple._2)
+                case None => null
+              }
+            }
+          )
+        })
 
     val bio_fullGf =
-      files.joinWith(
-        bio_gf,
-        files.col("kfId") === bio_gf.col("gfId")
-      ).map(tuple => {
+      files
+        .joinWith(
+          bio_gfId,
+          files.col("kfId") === bio_gfId.col("gfId")
+        )
+        .map(tuple => {
           BiospecimenES_GenomicFileES(
             bio = tuple._2.bio,
             genomicFile = tuple._1
           )
-      })
+        })
 
 
-    bio_fullGf.joinWith(
-      bio_par,
-      bio_par("bio")("kfId") === bio_fullGf("bio")("kfId"),
-      "left_outer"
-    ).map(tuple => {
-
-      ParticipantES_BiospecimenES_GenomicFileES(
-        participant = {
-          Option(tuple._2) match {
-            case Some(_) => tuple._2.participant
-            case None => null
-          }
-        },
-        bio = tuple._1.bio,
-        genomicFile = tuple._1.genomicFile
+    bio_fullGf
+      .joinWith(
+        bio_par,
+        bio_par("bio")("kfId") === bio_fullGf("bio")("kfId"),
+        "left_outer"
       )
+      .map(tuple => {
 
-    }).groupByKey(_.genomicFile.kfId).mapGroups((_, iterator) => {
+        ParticipantES_BiospecimenES_GenomicFileES(
+          participant = {
+            Option(tuple._2) match {
+              case Some(_) => tuple._2.participant
+              case None => null
+            }
+          },
+          bio = tuple._1.bio,
+          genomicFile = tuple._1.genomicFile
+        )
+
+      })
+      .groupByKey(_.genomicFile.kfId)
+      .mapGroups((_, iterator) => {
+
       val seq = iterator.toSeq
 
 

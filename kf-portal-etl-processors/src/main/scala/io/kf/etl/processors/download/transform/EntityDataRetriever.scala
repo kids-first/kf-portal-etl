@@ -36,7 +36,7 @@ case class EntityDataRetriever(config:DataServiceConfig, filters: Seq[String] = 
       case None => data // No endpoint means do nothing, return the dataset provided
       case Some(endpoint) => {
 
-        val url = s"${config.url}${endpoint}&${filterQueryString}"
+        val url = s"${config.url}${endpoint}&limit=100&${filterQueryString}"
         println(s"Retrieving: ${url}")
 
         val request = asyncClient.prepareGet(url)

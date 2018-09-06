@@ -2,8 +2,9 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
 import io.kf.etl.external.dataservice.entity.EFamilyRelationship
-import io.kf.etl.model.utils.{ParticipantId_AvailableDataTypes, ParticipantId_BiospecimenId}
+import io.kf.etl.model.utils.{BiospecimenId_FileES, BiospecimenId_GenomicFileId, ParticipantId_AvailableDataTypes, ParticipantId_BiospecimenId}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
+import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.broadcast.Broadcast
@@ -27,24 +28,76 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
     import ctx.spark.implicits._
 
     val par_bio =
-      entityDataset.participants.joinWith(entityDataset.biospecimens, entityDataset.participants.col("kfId") === entityDataset.biospecimens.col("participantId")).map(tuple => {
-        ParticipantId_BiospecimenId(parId = tuple._1.kfId.get, bioId = tuple._2.kfId.get)
-      })
+      entityDataset.participants
+        .joinWith(
+          entityDataset.biospecimens,
+          entityDataset.participants.col("kfId") === entityDataset.biospecimens.col("participantId")
+        )
+        .map(tuple => {
+          ParticipantId_BiospecimenId(
+            parId = tuple._1.kfId.get,
+            bioId = tuple._2.kfId.get
+          )
+        })
+
+    val bioId_gfId =
+      ctx.entityDataset.genomicFiles
+        .joinWith(
+          ctx.entityDataset.biospecimenGenomicFiles,
+          ctx.entityDataset.genomicFiles.col("kfId") === ctx.entityDataset.biospecimenGenomicFiles.col("genomicFileId"),
+          "left_outer"
+        )
+        .map(tuple => {
+          BiospecimenId_GenomicFileId(
+            gfId = tuple._1.kfId,
+            bioId = {
+              Option(tuple._2) match {
+                case Some(_) => tuple._2.biospecimenId
+                case None => null
+              }
+            }
+          )
+        })
+
+    val bioId_gf =
+      bioId_gfId
+        .joinWith(
+          ctx.entityDataset.genomicFiles,
+          bioId_gfId.col("gfId") === ctx.entityDataset.genomicFiles.col("kfId")
+        )
+        .map(tuple => {
+          BiospecimenId_FileES(
+            bioId = tuple._1.bioId match {
+              case None => null
+              case Some(_) => tuple._1.bioId.get
+            },
+            file = PBEntityConverter.EGenomicFileToFileES(tuple._2)
+          )
+        })
 
     ctx.spark.sparkContext.broadcast[Map[String, Seq[String]]](
-      par_bio.joinWith(entityDataset.genomicFiles, par_bio.col("bioId") ===  entityDataset.genomicFiles.col("biospecimenId")).groupByKey(tuple => {
-        tuple._1.parId
-      }).mapGroups((parId, iterator) => {
-        val seq = iterator.toSeq
-        ParticipantId_AvailableDataTypes(
-          parId,
-          iterator.map(_._2.dataType).collect{
-            case Some(datatype) => datatype
-          }.toSeq
+      par_bio
+        .joinWith(
+          bioId_gf,
+          par_bio.col("bioId") ===  bioId_gf.col("bioId")
         )
-      }).collect().map(item => {
-        (item.parId, item.availableDataTypes)
-      }).toMap
+        .groupByKey(tuple => {
+          tuple._1.parId
+        })
+        .mapGroups((parId, iterator) => {
+          val seq = iterator.toSeq
+          ParticipantId_AvailableDataTypes(
+            parId,
+            iterator.map(_._2.file.dataType).collect{
+              case Some(datatype) => datatype
+            }.toSeq
+          )
+        })
+        .collect()
+        .map(item => {
+          (item.parId, item.availableDataTypes)
+        })
+        .toMap
     )
   }
 

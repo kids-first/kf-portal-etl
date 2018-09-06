@@ -10,6 +10,7 @@ object ProcessorCommonDefinitions {
     val Participant = Value("participant")
     val Family = Value("family")
     val Biospecimen = Value("biospecimen")
+    val Biospecimen_Genomic_File = Value("biospecimen_genomic_file")
     val Investigator = Value("investigator")
     val Study = Value("study")
     val Sequencing_Experiment = Value("sequencing_experiment")
@@ -28,6 +29,7 @@ object ProcessorCommonDefinitions {
     diagnoses: Dataset[EDiagnosis],
     familyRelationships: Dataset[EFamilyRelationship],
     genomicFiles: Dataset[EGenomicFile],
+    biospecimenGenomicFiles: Dataset[EBiospecimenGenomicFile],
     investigators: Dataset[EInvestigator],
     outcomes: Dataset[EOutcome],
     phenotypes: Dataset[EPhenotype],
@@ -44,6 +46,7 @@ object ProcessorCommonDefinitions {
     diagnoses: Seq[String],
     familyRelationships: Seq[String],
     genomicFiles: Seq[String],
+    biospecimenGenomicFiles: Seq[String],
     investigators: Seq[String],
     outcomes: Seq[String],
     phenotypes: Seq[String],
