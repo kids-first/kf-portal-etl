@@ -28,33 +28,35 @@ class DownloadTransformer(val context: DownloadContext) {
       }
     }
 
-    val participants          = downloadEntities[EParticipant]           (endpoints.participants)
-    val families              = downloadEntities[EFamily]                (endpoints.families)
-    val biospecimens          = downloadEntities[EBiospecimen]           (endpoints.biospecimens)
-    val diagnoses             = downloadEntities[EDiagnosis]             (endpoints.diagnoses)
-    val familyRelationships   = downloadEntities[EFamilyRelationship]    (endpoints.familyRelationships)
-    val investigators         = downloadEntities[EInvestigator]          (endpoints.investigators)
-    val outcomes              = downloadEntities[EOutcome]               (endpoints.outcomes)
-    val phenotypes            = downloadEntities[EPhenotype]             (endpoints.phenotypes)
-    val sequencingExperiments = downloadEntities[ESequencingExperiment]  (endpoints.sequencingExperiments)
-    val studies               = downloadEntities[EStudy]                 (endpoints.studies)
-    val genomicFiles          = downloadEntities[EGenomicFile]           (endpoints.genomicFiles)
+    val participants            = downloadEntities[EParticipant]            (endpoints.participants)
+    val families                = downloadEntities[EFamily]                 (endpoints.families)
+    val biospecimens            = downloadEntities[EBiospecimen]            (endpoints.biospecimens)
+    val diagnoses               = downloadEntities[EDiagnosis]              (endpoints.diagnoses)
+    val familyRelationships     = downloadEntities[EFamilyRelationship]     (endpoints.familyRelationships)
+    val investigators           = downloadEntities[EInvestigator]           (endpoints.investigators)
+    val outcomes                = downloadEntities[EOutcome]                (endpoints.outcomes)
+    val phenotypes              = downloadEntities[EPhenotype]              (endpoints.phenotypes)
+    val sequencingExperiments   = downloadEntities[ESequencingExperiment]   (endpoints.sequencingExperiments)
+    val studies                 = downloadEntities[EStudy]                  (endpoints.studies)
+    val genomicFiles            = downloadEntities[EGenomicFile]            (endpoints.genomicFiles)
+    val biospecimenGenomicFiles = downloadEntities[EBiospecimenGenomicFile] (endpoints.biospecimenGenomicFiles)
 
 
     val spark =context.appContext.sparkSession
     val dataset =
       EntityDataSet(
-        participants          = spark.createDataset(participants)          .cache(),
-        families              = spark.createDataset(families)              .cache(),
-        biospecimens          = spark.createDataset(biospecimens)          .cache(),
-        diagnoses             = spark.createDataset(diagnoses)             .cache(),
-        familyRelationships   = spark.createDataset(familyRelationships)   .cache(),
-        investigators         = spark.createDataset(investigators)         .cache(),
-        outcomes              = spark.createDataset(outcomes)              .cache(),
-        phenotypes            = spark.createDataset(phenotypes)            .cache(),
-        sequencingExperiments = spark.createDataset(sequencingExperiments) .cache(),
-        studies               = spark.createDataset(studies)               .cache(),
-        genomicFiles          = spark.createDataset(genomicFiles)
+        participants            = spark.createDataset(participants)           .cache,
+        families                = spark.createDataset(families)               .cache,
+        biospecimens            = spark.createDataset(biospecimens)           .cache,
+        diagnoses               = spark.createDataset(diagnoses)              .cache,
+        familyRelationships     = spark.createDataset(familyRelationships)    .cache,
+        investigators           = spark.createDataset(investigators)          .cache,
+        outcomes                = spark.createDataset(outcomes)               .cache,
+        phenotypes              = spark.createDataset(phenotypes)             .cache,
+        sequencingExperiments   = spark.createDataset(sequencingExperiments)  .cache,
+        studies                 = spark.createDataset(studies)                .cache,
+        biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
+        genomicFiles            = spark.createDataset(genomicFiles)
                                   .filter(_.dataType match {
                                       case Some(data_type) => {
                                         !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
@@ -63,11 +65,13 @@ class DownloadTransformer(val context: DownloadContext) {
                                     }
                                   )
                                   .cache(),
-        studyFiles            = context.appContext.sparkSession.emptyDataset[EStudyFile],
-        graphPath             = HPOGraphPath.get(context).cache()
+        studyFiles              = context.appContext.sparkSession.emptyDataset[EStudyFile],
+        graphPath               = HPOGraphPath.get(context).cache
       )
 
     retriever.stop()
+
+    //return:
     dataset
   }
 

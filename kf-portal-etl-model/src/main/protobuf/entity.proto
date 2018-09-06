@@ -98,7 +98,6 @@ message EMetadata {
 message EGenomicFile {
     repeated string acl = 1;
     optional string availability = 2;
-    optional string biospecimen_id = 3;
     optional bool controlled_access = 4;
     optional string created_at = 5;
     optional string data_type = 6;
@@ -198,5 +197,12 @@ message EStudyFile {
     optional string created_at = 3;
     optional string file_name = 4;
     optional string study_id = 5;
+    optional bool visible = 1000;
+}
+
+message EBiospecimenGenomicFile {
+    optional string kf_id = 1;
+    optional string biospecimen_id = 2;
+    optional string genomic_file_id = 3;
     optional bool visible = 1000;
 }
