@@ -31,31 +31,23 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
       })
 
     val bio_gf =
-      ctx.entityDataset.biospecimens.joinWith(
-        ctx.entityDataset.genomicFiles,
-        ctx.entityDataset.genomicFiles.col("biospecimenId") === ctx.entityDataset.biospecimens.col("kfId"),
-        "left_outer"
-      ).flatMap(tuple => {
-        Option(tuple._2) match {
-          case Some(_) => {
-            Seq(
-              BiospecimenId_GenomicFileId(
-                bioId = Some(tuple._1.kfId.get),
-                gfId = Some(tuple._2.kfId.get)
-              )
-            )
-          }
-          case None => {
-            Seq(
-              BiospecimenId_GenomicFileId(
-                bioId = Some(tuple._1.kfId.get),
-                gfId = None
-              )
-            )
-          }
-        }
-
-      })
+      ctx.entityDataset.biospecimens
+        .joinWith(
+          ctx.entityDataset.biospecimenGenomicFiles,
+          ctx.entityDataset.biospecimens.col("kfId") === ctx.entityDataset.biospecimenGenomicFiles.col("biospecimenId"),
+          "left_outer"
+        )
+        .map(tuple => {
+          BiospecimenId_GenomicFileId(
+            bioId = tuple._1.kfId,
+            gfId = {
+              Option(tuple._2) match {
+                case Some(_) => tuple._2.genomicFileId
+                case None => null
+              }
+            }
+          )
+        })
 
 
     val bioId_File =
