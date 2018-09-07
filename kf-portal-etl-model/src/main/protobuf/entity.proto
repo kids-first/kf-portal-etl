@@ -3,22 +3,24 @@ syntax = "proto2";
 package io.kf.etl.external.dataservice;
 
 message EParticipant{
-    optional string alias_group = 1;
-    repeated string biospecimens = 2;
-    optional string consent_type = 3;
-    optional string created_at = 4;
-    repeated string diagnoses = 5;
-    optional string ethnicity = 6;
-    optional string external_id = 7;
-    optional string family_id = 8;
-    optional string gender = 9;
-    optional bool is_proband = 10;
-    optional string kf_id = 11;
-    optional string modified_at = 12;
-    repeated string outcomes = 13;
-    repeated string phenotypes = 14;
-    optional string race = 15;
-    optional string study_id = 16;
+    optional bool affected_status = 1;
+    optional string alias_group = 2;
+    repeated string biospecimens = 3;
+    optional string consent_type = 4;
+    optional string created_at = 5;
+    repeated string diagnoses = 6;
+    optional string diagnosis_category = 7;
+    optional string ethnicity = 8;
+    optional string external_id = 9;
+    optional string family_id = 10;
+    optional string gender = 11;
+    optional bool is_proband = 12;
+    optional string kf_id = 13;
+    optional string modified_at = 14;
+    repeated string outcomes = 15;
+    repeated string phenotypes = 16;
+    optional string race = 17;
+    optional string study_id = 18;
     optional bool visible = 1000;
 }
 

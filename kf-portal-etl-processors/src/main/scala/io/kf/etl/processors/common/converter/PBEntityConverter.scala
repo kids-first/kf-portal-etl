@@ -20,8 +20,10 @@ object PBEntityConverter {
   
   def EParticipantToParticipantES(participant: EParticipant): Participant_ES = {
     Participant_ES(
+      affectedStatus = participant.affectedStatus,
       aliasGroup = participant.aliasGroup,
       consentType = participant.consentType,
+      diagnosisCategory = participant.diagnosisCategory,
       ethnicity = participant.ethnicity,
       externalId = participant.externalId,
       familyId = participant.familyId,
