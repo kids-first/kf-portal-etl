@@ -18,41 +18,45 @@ message FileCentric_ES {
 }
 
 message ParticipantCentric_ES {
-    optional string alias_group = 1;
-    repeated Biospecimen_ES biospecimens = 2;
-    optional string consent_type = 3;
-    repeated Diagnosis_ES diagnoses = 4;
-    optional string ethnicity = 5;
-    optional string external_id = 6;
-    optional Family_ES family = 7;
-    repeated File_ES files = 8;
-    optional string gender = 9;
-    optional bool is_proband = 10;
-    optional string kf_id = 11;
-    optional Outcome_ES outcome = 12;
-    optional Phenotype_ES phenotype = 13;
-    optional string race = 14;
-    optional Study_ES study = 15;
-    repeated string available_data_types = 16;
+    optional bool affected_status = 1;
+    optional string alias_group = 2;
+    repeated Biospecimen_ES biospecimens = 3;
+    optional string consent_type = 4;
+    repeated Diagnosis_ES diagnoses = 5;
+    optional string diagnosis_category = 6;
+    optional string ethnicity = 7;
+    optional string external_id = 8;
+    optional Family_ES family = 9;
+    repeated File_ES files = 10;
+    optional string gender = 11;
+    optional bool is_proband = 12;
+    optional string kf_id = 13;
+    optional Outcome_ES outcome = 14;
+    optional Phenotype_ES phenotype = 15;
+    optional string race = 16;
+    optional Study_ES study = 17;
+    repeated string available_data_types = 18;
 }
 
 message Participant_ES {
-    optional string alias_group = 1;
-    repeated Biospecimen_ES biospecimens = 2;
-    optional string consent_type = 3;
-    repeated Diagnosis_ES diagnoses = 4;
-    optional string ethnicity = 5;
-    optional string external_id = 6;
-    optional Family_ES family = 7;
-    optional string family_id = 8;
-    optional string gender = 9;
-    optional bool is_proband = 10;
-    optional string kf_id = 11;
-    optional Outcome_ES outcome = 12;
-    optional Phenotype_ES phenotype = 13;
-    optional string race = 14;
-    optional Study_ES study = 15;
-    repeated string available_data_types = 16;
+    optional bool affected_status = 1;
+    optional string alias_group = 2;
+    repeated Biospecimen_ES biospecimens = 3;
+    optional string consent_type = 4;
+    repeated Diagnosis_ES diagnoses = 5;
+    optional string diagnosis_category = 6;
+    optional string ethnicity = 7;
+    optional string external_id = 8;
+    optional Family_ES family = 9;
+    optional string family_id = 10;
+    optional string gender = 11;
+    optional bool is_proband = 12;
+    optional string kf_id = 13;
+    optional Outcome_ES outcome = 14;
+    optional Phenotype_ES phenotype = 15;
+    optional string race = 16;
+    optional Study_ES study = 17;
+    repeated string available_data_types = 18;
 }
 
 message Biospecimen_ES {
