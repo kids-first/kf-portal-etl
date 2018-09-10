@@ -110,6 +110,7 @@ object MergePhenotype {
                 dh.createdAt.append(tpt.createdAt.get)
                 dh.modifiedAt.append(tpt.modifiedAt.get)
 
+                var hpoObserved: Boolean = false
                 tpt.hpoIdPhenotype match {
                   case Some(hpo_id) => {
                     tpt.observed match {
@@ -117,6 +118,7 @@ object MergePhenotype {
                         if(o.equals("positive")) {
                           dh.hpoIdsObserved.append(hpo_id)
                           dh.observed.append(o)
+                          hpoObserved = true
                         }
                         else if(o.equals("negative")) {
                           dh.hpoIdsNotObserved.append(hpo_id)
@@ -131,11 +133,8 @@ object MergePhenotype {
                   case None => println("no hpo_id in Phenotype!")
                 }
 
-                tpt.sourceTextPhenotype match {
-                  case Some(source_text) => dh.sourceTextPhenotype.append(source_text)
-                  case None =>
-                }
 
+                var snomedObserved: Boolean = false
                 tpt.snomedIdPhenotype match {
                   case Some(snome_id) => {
                     tpt.observed match {
@@ -143,6 +142,7 @@ object MergePhenotype {
                         if(o.equals("positive")) {
                           dh.snomedIdsObserved.append(snome_id)
                           dh.observed.append(o)
+                          snomedObserved = true
                         }
                         else if(o.equals("negative")) {
                           dh.snomedIdsNotObserved.append(snome_id)
@@ -155,6 +155,14 @@ object MergePhenotype {
                     }
                   }
                   case None =>
+                }
+
+                // Only append to source text in the positive case for observed
+                if (hpoObserved || snomedObserved ) {
+                  tpt.sourceTextPhenotype match {
+                    case Some(source_text) => dh.sourceTextPhenotype.append(source_text)
+                    case None =>  
+                  }
                 }
 
                 tpt.externalId match {
