@@ -73,7 +73,6 @@ message Biospecimen_ES {
     optional string shipment_date = 11;
     optional string shipment_origin = 12;
     repeated string genomic_files = 13;
-    optional string participant_id = 14;
     optional string source_text_tumor_descriptor = 15;
     optional string source_text_tissue_type = 16;
     optional string source_text_anatomical_site = 17;
@@ -90,7 +89,6 @@ message Diagnosis_ES {
     optional string icd_id_diagnosis = 4;
     optional string kf_id = 5;
     optional string mondo_id_diagnosis = 6;
-    optional string participant_id = 7;
     optional string source_text_diagnosis = 8;
     optional string uberon_id_tumor_location = 9;
     optional string source_text_tumor_location = 10;
