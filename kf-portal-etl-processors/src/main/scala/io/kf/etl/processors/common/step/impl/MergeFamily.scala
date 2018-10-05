@@ -739,23 +739,15 @@ object MergeFamily {
 
   def getSharedHpoIds(participants: Seq[Participant_ES]): Seq[String] = {
     participants.tail.foldLeft(
-      participants.head.phenotype.flatMap(pt => {
-        pt.hpo match {
-          case None => None
-          case Some(hpo) => {
-            Some(hpo.hpoPhenotypeObserved)
-          }
-        }
-      }).toList.flatten
-    ){(hpos, participant) => {
-      participant.phenotype.flatMap(pt => {
-        pt.hpo match {
-          case None => None
-          case Some(hpo) => {
-            Some(hpo.hpoPhenotypeObserved)
-          }
-        }
-      }).toList.flatten
+      participants.head.phenotype match {
+        case Some(pt) => pt.hpoPhenotypeObserved
+        case None => Seq.empty[String]
+      }
+    ){(pts, participant) => {
+      participant.phenotype match {
+        case Some(pt) => pt.hpoPhenotypeObserved
+        case None => Seq.empty[String]
+      }
     }}
   }
 

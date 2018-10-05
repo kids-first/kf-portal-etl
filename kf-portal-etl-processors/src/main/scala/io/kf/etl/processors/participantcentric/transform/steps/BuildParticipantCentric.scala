@@ -96,11 +96,9 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
 
       val participant = seq(0)._1.participant
 
-
       ParticipantCentric_ES(
         aliasGroup = participant.aliasGroup,
         biospecimens = participant.biospecimens,
-        consentType = participant.consentType,
         diagnoses = participant.diagnoses,
         ethnicity = participant.ethnicity,
         externalId = participant.externalId,

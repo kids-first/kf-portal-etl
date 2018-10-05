@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.es.models.{HPO_ES, Participant_ES, Phenotype_ES}
+import io.kf.etl.es.models.{Participant_ES, Phenotype_ES}
 import io.kf.etl.external.dataservice.entity.EPhenotype
 import io.kf.etl.external.hpo.GraphPath
 import io.kf.etl.model.utils.HPOReference
@@ -179,18 +179,14 @@ object MergePhenotype {
               }).toSet.toSeq
 
             Phenotype_ES(
-              Some(
-                HPO_ES(
-                  ageAtEventDays = data.ageAtEventDays.toSet.toSeq,
-                  ancestralHpoIds = ancestors.toSet.toSeq,
-                  externalId = data.externalId.toSet.toSeq,
-                  hpoPhenotypeNotObserved = data.hpoIdsNotObserved.toSet.toSeq,
-                  hpoPhenotypeObserved = data.hpoIdsObserved.toSet.toSeq,
-                  snomedPhenotypeNotObserved = data.snomedIdsNotObserved.toSet.toSeq,
-                  snomedPhenotypeObserved = data.snomedIdsObserved.toSet.toSeq,
-                  sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq
-                )
-              )
+              ageAtEventDays = data.ageAtEventDays.toSet.toSeq,
+              ancestralHpoIds = ancestors.toSet.toSeq,
+              externalId = data.externalId.toSet.toSeq,
+              hpoPhenotypeNotObserved = data.hpoIdsNotObserved.toSet.toSeq,
+              hpoPhenotypeObserved = data.hpoIdsObserved.toSet.toSeq,
+              snomedPhenotypeNotObserved = data.snomedIdsNotObserved.toSet.toSeq,
+              snomedPhenotypeObserved = data.snomedIdsObserved.toSet.toSeq,
+              sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq
             )
           }
         )
