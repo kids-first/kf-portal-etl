@@ -1,4 +1,4 @@
-package io.kf.etl.processors.download.transform
+package io.kf.etl.processors.download.transform.utils
 
 import io.kf.etl.external.dataservice.entity._
 import org.json4s.JsonAST.{JNothing, JNull, JString, JValue}
