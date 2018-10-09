@@ -2,7 +2,7 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{Participant_ES, Phenotype_ES}
 import io.kf.etl.external.dataservice.entity.EPhenotype
-import io.kf.etl.external.hpo.GraphPath
+import io.kf.etl.external.hpo.{GraphPath, OntologyTerm}
 import io.kf.etl.model.utils.HPOReference
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
@@ -16,6 +16,7 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 
     import ctx.spark.implicits._
     val hpoRefs = generateHpoRefs()
+    val hpoTerms = generateHpoTerms()
 
 
     val transformedPhenotypes = ctx.entityDataset.phenotypes
@@ -42,7 +43,8 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
           participant.copy(
             phenotype = MergePhenotype.collectPhenotype(
               seq.map(_._2),
-              hpoRefs
+              hpoRefs,
+              hpoTerms
             )
           )//end of copy
         }
@@ -78,11 +80,20 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
     )
   }// end of generateHpoRefs
 
+  def generateHpoTerms(): Broadcast[Map[String, String]] = {
+    ctx.spark.sparkContext.broadcast(
+      ctx.entityDataset.hpoTerms.collect.map(term=>(term.id, term.name)).toMap
+    )
+  }
 
 }
 
 object MergePhenotype {
-  def collectPhenotype(phenotypes: Seq[EPhenotype], hpoRefs:Broadcast[Map[String, Seq[String]]]): Option[Phenotype_ES] = {
+
+  def collectPhenotype(phenotypes: Seq[EPhenotype],
+                       hpoRefs:Broadcast[Map[String, Seq[String]]],
+                       hpoTerms:Broadcast[Map[String, String]]
+                      ): Option[Phenotype_ES] = {
 
     val seq = phenotypes.toSeq
 
@@ -98,6 +109,7 @@ object MergePhenotype {
                                    observed: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsObserved: ListBuffer[String] = new ListBuffer[String](),
+                                   hpoObservedText: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    sourceTextPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    snomedIdsObserved: ListBuffer[String] = new ListBuffer[String](),
@@ -122,6 +134,13 @@ object MergePhenotype {
                         if(o.equals("positive")) {
                           dh.hpoIdsObserved.append(hpo_id)
                           dh.observed.append(o)
+
+                          // Lookup hpoText and append if found
+                          hpoTerms.value.get(hpo_id) match {
+                            case Some(text) => dh.hpoObservedText.append(text)
+                            case _ =>
+                          }
+
                           hpoObserved = true
                         }
                         else if(o.equals("negative")) {
@@ -188,6 +207,7 @@ object MergePhenotype {
               externalId = data.externalId.toSet.toSeq,
               hpoPhenotypeNotObserved = data.hpoIdsNotObserved.toSet.toSeq,
               hpoPhenotypeObserved = data.hpoIdsObserved.toSet.toSeq,
+              hpoPhenotypeObservedText = data.hpoObservedText.toSet.toSeq,
               snomedPhenotypeNotObserved = data.snomedIdsNotObserved.toSet.toSeq,
               snomedPhenotypeObserved = data.snomedIdsObserved.toSet.toSeq,
               sourceTextPhenotype = data.sourceTextPhenotype.toSet.toSeq
