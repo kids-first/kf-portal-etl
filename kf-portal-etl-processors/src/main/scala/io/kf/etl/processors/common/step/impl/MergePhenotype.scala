@@ -18,7 +18,11 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
     val hpoRefs = generateHpoRefs()
 
 
-    val transformedPhenotypes = ctx.entityDataset.phenotypes.map(pt => pt.copy(observed = Some(pt.observed.get.toLowerCase)))
+    val transformedPhenotypes = ctx.entityDataset.phenotypes
+        .filter(pt => pt.observed.isDefined)
+        .map(pt => pt.copy(
+          observed = Some(pt.observed.get.toLowerCase)
+        ))
 
     participants.joinWith(
       transformedPhenotypes,
