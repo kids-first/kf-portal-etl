@@ -4,6 +4,7 @@ import com.trueaccord.scalapb.GeneratedMessageCompanion
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet}
 import io.kf.etl.processors.download.context.DownloadContext
+import io.kf.etl.processors.download.transform.hpo.{HPOGraphPath, HPOTerm}
 import org.apache.spark.sql.Dataset
 
 class DownloadTransformer(val context: DownloadContext) {
@@ -66,7 +67,10 @@ class DownloadTransformer(val context: DownloadContext) {
                                   )
                                   .cache(),
         studyFiles              = context.appContext.sparkSession.emptyDataset[EStudyFile],
-        graphPath               = HPOGraphPath.get(context).cache
+
+        // following two (graphPath, hpoTerms) are read from HPO mysql db:
+        graphPath               = HPOGraphPath.get(context).cache,
+        hpoTerms                = HPOTerm.get(context).cache
       )
 
     retriever.stop()

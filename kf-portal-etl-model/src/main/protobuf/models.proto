@@ -20,8 +20,8 @@ message FileCentric_ES {
 message ParticipantCentric_ES {
     optional bool affected_status = 1;
     optional string alias_group = 2;
-    repeated Biospecimen_ES biospecimens = 3;
-    optional string consent_type = 4;
+    repeated string available_data_types = 3;
+    repeated Biospecimen_ES biospecimens = 4;
     repeated Diagnosis_ES diagnoses = 5;
     optional string diagnosis_category = 6;
     optional string ethnicity = 7;
@@ -35,14 +35,13 @@ message ParticipantCentric_ES {
     optional Phenotype_ES phenotype = 15;
     optional string race = 16;
     optional Study_ES study = 17;
-    repeated string available_data_types = 18;
 }
 
 message Participant_ES {
     optional bool affected_status = 1;
     optional string alias_group = 2;
-    repeated Biospecimen_ES biospecimens = 3;
-    optional string consent_type = 4;
+    repeated string available_data_types = 3;
+    repeated Biospecimen_ES biospecimens = 4;
     repeated Diagnosis_ES diagnoses = 5;
     optional string diagnosis_category = 6;
     optional string ethnicity = 7;
@@ -56,7 +55,6 @@ message Participant_ES {
     optional Phenotype_ES phenotype = 15;
     optional string race = 16;
     optional Study_ES study = 17;
-    repeated string available_data_types = 18;
 }
 
 message Biospecimen_ES {
@@ -64,15 +62,16 @@ message Biospecimen_ES {
     optional string analyte_type = 2;
     optional string composition = 3;
     optional double concentration_mg_per_ml = 4;
-    optional string dbgap_consent_code =  5;
-    optional string external_aliquot_id = 6;
-    optional string external_sample_id = 7;
-    optional string kf_id = 8;
-    optional string ncit_id_anatomical_site = 9;
-    optional string ncit_id_tissue_type = 10;
-    optional string shipment_date = 11;
-    optional string shipment_origin = 12;
-    repeated string genomic_files = 13;
+    optional string consent_type = 5;
+    optional string dbgap_consent_code =  6;
+    optional string external_aliquot_id = 7;
+    optional string external_sample_id = 8;
+    optional string kf_id = 9;
+    optional string ncit_id_anatomical_site = 10;
+    optional string ncit_id_tissue_type = 11;
+    optional string shipment_date = 12;
+    optional string shipment_origin = 13;
+    repeated string genomic_files = 14;
     optional string source_text_tumor_descriptor = 15;
     optional string source_text_tissue_type = 16;
     optional string source_text_anatomical_site = 17;
@@ -136,19 +135,16 @@ message Outcome_ES {
 }
 
 message Phenotype_ES {
-    optional HPO_ES hpo = 1;
-}
-
-message HPO_ES {
     repeated int32 age_at_event_days = 1;
     repeated string ancestral_hpo_ids = 2;
     repeated string external_id = 3;
     repeated string hpo_phenotype_not_observed = 4;
     repeated string hpo_phenotype_observed = 5;
-    repeated string shared_hpo_ids = 6;
-    repeated string snomed_phenotype_not_observed = 7;
-    repeated string snomed_phenotype_observed = 8;
-    repeated string source_text_phenotype = 9;
+    repeated string hpo_phenotype_observed_text = 6;
+    repeated string shared_hpo_ids = 7;
+    repeated string snomed_phenotype_not_observed = 8;
+    repeated string snomed_phenotype_observed = 9;
+    repeated string source_text_phenotype = 10;
 }
 
 message Study_ES {

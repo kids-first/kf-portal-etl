@@ -8,8 +8,8 @@ trait EntityParentIDExtractor[T <: com.trueaccord.scalapb.GeneratedMessage with 
 
   def getIdFromLink(linkName: String, json: JValue): Option[String] = {
     json \ "_links" \ linkName match {
-      case JNull | JNothing => None
       case JString(endpoint) => Some(endpoint.substring(endpoint.lastIndexOf('/') + 1) )
+      case _ => None
     }
   }
 }

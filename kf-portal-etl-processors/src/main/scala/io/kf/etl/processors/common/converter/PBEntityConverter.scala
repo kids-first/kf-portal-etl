@@ -22,7 +22,6 @@ object PBEntityConverter {
     Participant_ES(
       affectedStatus = participant.affectedStatus,
       aliasGroup = participant.aliasGroup,
-      consentType = participant.consentType,
       diagnosisCategory = participant.diagnosisCategory,
       ethnicity = participant.ethnicity,
       externalId = participant.externalId,
@@ -40,6 +39,7 @@ object PBEntityConverter {
       analyteType = bio.analyteType,
       composition = bio.composition,
       concentrationMgPerMl = bio.concentrationMgPerMl,
+      consentType = bio.consentType,
       dbgapConsentCode = bio.dbgapConsentCode,
       externalAliquotId = bio.externalAliquotId,
       externalSampleId = bio.externalSampleId,
