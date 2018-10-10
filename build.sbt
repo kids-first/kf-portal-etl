@@ -12,7 +12,6 @@ lazy val commonSettings = Seq(
   resolvers ++= Seq(
     clojars,
     maven_local,
-    novus,
     twitter,
     spark_packages,
     artima

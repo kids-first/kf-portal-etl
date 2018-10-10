@@ -26,6 +26,4 @@ object Dependencies {
   val livy_scala = "org.apache.livy" %% "livy-scala-api" % "0.5.0-incubating"
   val livy_java =  "org.apache.livy" % "livy-client-http" % "0.5.0-incubating"
   val kf_es_model = "io.kf" % "model.elasticsearch" % "1.0-SNAPSHOT"
-
-
 }
