@@ -106,6 +106,7 @@ object MergePhenotype {
                                    ageAtEventDays: ListBuffer[Int] = new ListBuffer[Int](),
                                    createdAt: ListBuffer[String] = new ListBuffer[String](),
                                    modifiedAt: ListBuffer[String] = new ListBuffer[String](),
+                                   externalId: ListBuffer[String] = new ListBuffer[String](),
                                    observed: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsObserved: ListBuffer[String] = new ListBuffer[String](),
@@ -113,8 +114,7 @@ object MergePhenotype {
                                    hpoIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    sourceTextPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    snomedIdsObserved: ListBuffer[String] = new ListBuffer[String](),
-                                   snomedIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
-                                   externalId: ListBuffer[String] = new ListBuffer[String]()
+                                   snomedIdsNotObserved: ListBuffer[String] = new ListBuffer[String]()
                                  )
 
             val data =

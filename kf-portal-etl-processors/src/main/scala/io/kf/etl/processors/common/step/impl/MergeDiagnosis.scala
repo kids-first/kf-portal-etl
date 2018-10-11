@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.es.models.Participant_ES
+import io.kf.etl.es.models.{Diagnosis_ES, Participant_ES}
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
@@ -22,14 +22,14 @@ class MergeDiagnosis(override val ctx: StepContext) extends StepExecutable[Datas
 
       val filteredSeq = seq.filter(_._2 != null)
 
-      filteredSeq.size match {
-        case 0 => participant
-        case _ => {
-          participant.copy(
-            diagnoses = seq.map(tuple => PBEntityConverter.EDiagnosisToDiagnosisES(tuple._2))
-          )
-        }
+      val diagnosesList:Seq[Diagnosis_ES] = filteredSeq.size match {
+        case 0 => Seq(Diagnosis_ES())
+        case _ => seq.map(tuple => PBEntityConverter.EDiagnosisToDiagnosisES(tuple._2))
       }
+
+      participant.copy(
+        diagnoses = diagnosesList
+      )
 
     })
   }
