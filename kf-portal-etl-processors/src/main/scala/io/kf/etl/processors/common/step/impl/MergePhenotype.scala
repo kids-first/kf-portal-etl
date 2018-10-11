@@ -137,7 +137,7 @@ object MergePhenotype {
 
                           // Lookup hpoText and append if found
                           hpoTerms.value.get(hpo_id) match {
-                            case Some(text) => dh.hpoObservedText.append(text)
+                            case Some(text) => dh.hpoObservedText.append(s"${text} (${hpo_id})")
                             case _ =>
                           }
 
