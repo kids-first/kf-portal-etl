@@ -20,7 +20,7 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
       ).map(tuple => {
         val file = PBEntityConverter.EGenomicFileToFileES(tuple._1)
         file.copy(
-          sequencingExperiments ={
+          sequencingExperiment = {
 
             Option(tuple._2) match {
               case Some(_) => Seq(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))

@@ -90,6 +90,20 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 
 object MergePhenotype {
 
+  def emptyPhenotypeES(): Phenotype_ES = {
+    Phenotype_ES(
+      ageAtEventDays = Seq[Int](),
+      ancestralHpoIds = Seq[String](),
+      externalId = Seq[String](),
+      hpoPhenotypeNotObserved = Seq[String](),
+      hpoPhenotypeObserved = Seq[String](),
+      hpoPhenotypeObservedText = Seq[String](),
+      snomedPhenotypeNotObserved = Seq[String](),
+      snomedPhenotypeObserved = Seq[String](),
+      sourceTextPhenotype = Seq[String]()
+    )
+  }
+
   def collectPhenotype(phenotypes: Seq[EPhenotype],
                        hpoRefs:Broadcast[Map[String, Seq[String]]],
                        hpoTerms:Broadcast[Map[String, String]]
@@ -98,7 +112,7 @@ object MergePhenotype {
     val seq = phenotypes.toSeq
 
     seq.size match {
-      case 0 => None
+      case 0 => Some(emptyPhenotypeES)
       case _ => {
         Some(
           {
@@ -106,6 +120,7 @@ object MergePhenotype {
                                    ageAtEventDays: ListBuffer[Int] = new ListBuffer[Int](),
                                    createdAt: ListBuffer[String] = new ListBuffer[String](),
                                    modifiedAt: ListBuffer[String] = new ListBuffer[String](),
+                                   externalId: ListBuffer[String] = new ListBuffer[String](),
                                    observed: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
                                    hpoIdsObserved: ListBuffer[String] = new ListBuffer[String](),
@@ -113,8 +128,7 @@ object MergePhenotype {
                                    hpoIdPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    sourceTextPhenotype: ListBuffer[String] = new ListBuffer[String](),
                                    snomedIdsObserved: ListBuffer[String] = new ListBuffer[String](),
-                                   snomedIdsNotObserved: ListBuffer[String] = new ListBuffer[String](),
-                                   externalId: ListBuffer[String] = new ListBuffer[String]()
+                                   snomedIdsNotObserved: ListBuffer[String] = new ListBuffer[String]()
                                  )
 
             val data =
