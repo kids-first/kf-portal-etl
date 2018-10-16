@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.es.models.Participant_ES
+import io.kf.etl.es.models.{Outcome_ES, Participant_ES}
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
@@ -14,14 +14,14 @@ class MergeOutcome(override val ctx: StepContext) extends StepExecutable[Dataset
       participants.col("kfId") === ctx.entityDataset.outcomes.col("participantId"),
       "left_outer"
     ).map(tuple => {
-      Option(tuple._2) match {
+      val outcome = Option(tuple._2) match {
         case Some(outcome) => {
-          tuple._1.copy(
-            outcome = Some(PBEntityConverter.EOutcomeToOutcomeES(outcome))
-          )
+          Some(PBEntityConverter.EOutcomeToOutcomeES(outcome))
         }
-        case None => tuple._1
+        case None => Some(Outcome_ES())
       }
+
+      tuple._1.copy(outcome = outcome)
 
     })
   }

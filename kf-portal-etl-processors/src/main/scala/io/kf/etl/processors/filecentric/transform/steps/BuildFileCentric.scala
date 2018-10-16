@@ -1,6 +1,6 @@
 package io.kf.etl.processors.filecentric.transform.steps
 
-import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
+import io.kf.etl.es.models.{FileCentric_ES, Participant_ES, SequencingExperiment_ES}
 import io.kf.etl.model.utils._
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -21,7 +21,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
         val seqExp =
           Option(tuple._2) match {
             case Some(_) => Some(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
-            case None => None
+            case None => Some(SequencingExperiment_ES())
           }
 
         PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, seqExp)
@@ -143,6 +143,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           acl = genomicFile.acl,
           controlledAccess = genomicFile.controlledAccess,
           dataType = genomicFile.dataType,
+          externalId = genomicFile.externalId,
           fileFormat = genomicFile.fileFormat,
           fileName = genomicFile.fileName,
           size = genomicFile.size,
@@ -153,7 +154,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           sequencingExperiments = {
             genomicFile.sequencingExperiment match {
               case Some(seqExp) => Seq(seqExp)
-              case None => Seq.empty
+              case None => Seq(SequencingExperiment_ES())
             }
           },
           latestDid = genomicFile.latestDid
