@@ -10,7 +10,7 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
 import org.elasticsearch.client.transport.TransportClient
 
-trait Context extends ContextBase{
+trait Context extends ContextBase {
   lazy val hdfs: FileSystem = getHDFS()
   lazy val rootPath: String = getRootPath()
   lazy val mysql: MysqlConfig = getMysql()

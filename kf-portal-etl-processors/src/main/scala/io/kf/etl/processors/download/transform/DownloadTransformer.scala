@@ -1,33 +1,55 @@
 package io.kf.etl.processors.download.transform
 
+import java.net.URL
+
 import com.trueaccord.scalapb.GeneratedMessageCompanion
 import io.kf.etl.external.dataservice.entity._
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
+import io.kf.etl.processors.common.ontology.OwlManager
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.hpo.{HPOGraphPath, HPOTerm}
-import org.apache.spark.sql.Dataset
+import io.kf.etl.processors.download.transform.utils.{EntityDataRetriever, EntityParentIDExtractor}
 
 class DownloadTransformer(val context: DownloadContext) {
 
-  def transform(endpoints: EntityEndpointSet): EntityDataSet = {
-    import context.appContext.sparkSession.implicits._
+  val filters = Seq("visible=true")
+  val retriever = EntityDataRetriever(context.config.dataService, filters)
 
-    val filters = Seq("visible=true")
-    val retriever = EntityDataRetriever(context.config.dataService, filters)
-
-    def downloadEntities[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
-      (endpoints: Seq[String])
-      (implicit
-        cmp: GeneratedMessageCompanion[T],
-        extractor: EntityParentIDExtractor[T]
-      ): Seq[T] =
-    {
-      endpoints.map(endpoint => {
-          retriever.retrieve[T](Some(endpoint))
-      }).foldLeft(Seq.empty[T]) {
+  def downloadEntities[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
+  (endpoints: Seq[String])
+  (implicit
+   cmp: GeneratedMessageCompanion[T],
+   extractor: EntityParentIDExtractor[T]
+  ): Seq[T] = {
+    endpoints
+      .map( endpoint => {
+        retriever.retrieve[T](Some(endpoint))
+      })
+      .foldLeft(Seq.empty[T]) {
         (left, right) => left.union(right)
       }
-    }
+  }
+
+  def downloadOntologyData(): OntologiesDataSet = {
+    import context.appContext.sparkSession.implicits._
+    val spark = context.appContext.sparkSession
+
+    val mondoTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/mondo/mondo.owl"))
+    val ncitTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/ncit/ncit.owl"))
+
+    OntologiesDataSet(
+      hpoGraphPath = HPOGraphPath.get(context).cache,
+      hpoTerms   = HPOTerm.get(context).cache,
+      mondoTerms = spark.createDataset(mondoTerms),
+      ncitTerms  = spark.createDataset(ncitTerms)
+    )
+  }
+
+  def transform(endpoints: EntityEndpointSet): EntityDataSet = {
+    import context.appContext.sparkSession.implicits._
+    val spark = context.appContext.sparkSession
+
+    val ontologyData = downloadOntologyData();
 
     val participants            = downloadEntities[EParticipant]            (endpoints.participants)
     val families                = downloadEntities[EFamily]                 (endpoints.families)
@@ -42,14 +64,11 @@ class DownloadTransformer(val context: DownloadContext) {
     val genomicFiles            = downloadEntities[EGenomicFile]            (endpoints.genomicFiles)
     val biospecimenGenomicFiles = downloadEntities[EBiospecimenGenomicFile] (endpoints.biospecimenGenomicFiles)
 
-
-    val spark =context.appContext.sparkSession
     val dataset =
       EntityDataSet(
         participants            = spark.createDataset(participants)           .cache,
         families                = spark.createDataset(families)               .cache,
         biospecimens            = spark.createDataset(biospecimens)           .cache,
-        diagnoses               = spark.createDataset(diagnoses)              .cache,
         familyRelationships     = spark.createDataset(familyRelationships)    .cache,
         investigators           = spark.createDataset(investigators)          .cache,
         outcomes                = spark.createDataset(outcomes)               .cache,
@@ -57,20 +76,20 @@ class DownloadTransformer(val context: DownloadContext) {
         sequencingExperiments   = spark.createDataset(sequencingExperiments)  .cache,
         studies                 = spark.createDataset(studies)                .cache,
         biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
+        diagnoses               = spark.createDataset(diagnoses)              .cache,
         genomicFiles            = spark.createDataset(genomicFiles)
-                                  .filter(_.dataType match {
-                                      case Some(data_type) => {
-                                        !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
+                                    .filter(_.dataType match {
+                                        case Some(data_type) => {
+                                          !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
+                                        }
+                                        case None => true
                                       }
-                                      case None => true
-                                    }
-                                  )
-                                  .cache(),
+                                    )
+                                    .cache(),
         studyFiles              = context.appContext.sparkSession.emptyDataset[EStudyFile],
 
         // following two (graphPath, hpoTerms) are read from HPO mysql db:
-        graphPath               = HPOGraphPath.get(context).cache,
-        hpoTerms                = HPOTerm.get(context).cache
+        ontologyData            = ontologyData
       )
 
     retriever.stop()

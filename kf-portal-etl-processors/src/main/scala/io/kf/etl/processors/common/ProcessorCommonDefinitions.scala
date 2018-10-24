@@ -36,8 +36,7 @@ object ProcessorCommonDefinitions {
     sequencingExperiments: Dataset[ESequencingExperiment],
     studies: Dataset[EStudy],
     studyFiles: Dataset[EStudyFile],
-    graphPath: Dataset[GraphPath],
-    hpoTerms: Dataset[OntologyTerm]
+    ontologyData: OntologiesDataSet
   )
 
   case class EntityEndpointSet(
@@ -56,4 +55,10 @@ object ProcessorCommonDefinitions {
     studyFiles: Seq[String]
   )
 
+  case class OntologiesDataSet(
+    hpoGraphPath: Dataset[GraphPath],
+    hpoTerms: Dataset[OntologyTerm],
+    mondoTerms: Dataset[OntologyTerm],
+    ncitTerms: Dataset[OntologyTerm]
+  )
 }

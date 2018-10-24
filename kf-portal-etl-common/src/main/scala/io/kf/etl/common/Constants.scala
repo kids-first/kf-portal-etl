@@ -44,6 +44,9 @@ object Constants {
   val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val HPO_REF_DATA = "hpo_ref"
   val HPO_GRAPH_PATH = "graph_path"
+  val HPO_TERMS = "hpo_terms"
+  val MONDO_TERMS = "mondo_terms"
+  val NCIT_TERMS = "ncit_terms"
   val FILE_CENTRIC_MAPPING_FILE_NAME = "file_centric.mapping.json"
   val PARTICIPANT_CENTRIC_MAPPING_FILE_NAME = "participant_centric.mapping.json"
 

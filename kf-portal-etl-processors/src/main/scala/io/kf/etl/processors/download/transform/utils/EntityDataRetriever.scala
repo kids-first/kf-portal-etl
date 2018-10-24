@@ -1,9 +1,9 @@
-package io.kf.etl.processors.download.transform
+package io.kf.etl.processors.download.transform.utils
 
 import com.trueaccord.scalapb.GeneratedMessageCompanion
 import io.kf.etl.common.conf.DataServiceConfig
 import org.asynchttpclient.AsyncHttpClient
-import org.asynchttpclient.Dsl._
+import org.asynchttpclient.Dsl.asyncHttpClient
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
 

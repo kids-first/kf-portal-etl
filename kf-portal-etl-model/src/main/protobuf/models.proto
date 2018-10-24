@@ -94,6 +94,7 @@ message Diagnosis_ES {
     optional string source_text_tumor_location = 10;
     optional string ncit_id_diagnosis = 11;
     optional string spatial_descriptor = 12;
+    optional string diagnosis = 13;
 }
 
 message Family_ES {

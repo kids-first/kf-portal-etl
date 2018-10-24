@@ -61,6 +61,7 @@ object PBEntityConverter {
   
   def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
     Diagnosis_ES(
+
       ageAtEventDays = diagnosis.ageAtEventDays,
       diagnosisCategory = diagnosis.diagnosisCategory,
       externalId = diagnosis.externalId,
@@ -71,7 +72,8 @@ object PBEntityConverter {
       uberonIdTumorLocation = diagnosis.uberonIdTumorLocation,
       sourceTextTumorLocation = diagnosis.sourceTextTumorLocation,
       ncitIdDiagnosis = diagnosis.ncitIdDiagnosis,
-      spatialDescriptor = diagnosis.spatialDescriptor
+      spatialDescriptor = diagnosis.spatialDescriptor,
+      diagnosis = diagnosis.diagnosisText
     )
   }
   

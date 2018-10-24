@@ -56,7 +56,7 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
     import ctx.spark.implicits._
     ctx.spark.sparkContext.broadcast(
 
-      ctx.entityDataset.graphPath.groupByKey(_.term1).mapGroups((term, iterator) => {
+      ctx.entityDataset.ontologyData.hpoGraphPath.groupByKey(_.term1).mapGroups((term, iterator) => {
         val list = iterator.toList
 
         HPOReference(
@@ -82,7 +82,7 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 
   def generateHpoTerms(): Broadcast[Map[String, String]] = {
     ctx.spark.sparkContext.broadcast(
-      ctx.entityDataset.hpoTerms.collect.map(term=>(term.id, term.name)).toMap
+      ctx.entityDataset.ontologyData.hpoTerms.collect.map(term=>(term.id, term.name)).toMap
     )
   }
 
