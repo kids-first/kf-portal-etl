@@ -1,12 +1,14 @@
 package io.kf.etl.processors.download.transform
 
+import java.net.URL
+
 import com.trueaccord.scalapb.GeneratedMessageCompanion
 import io.kf.etl.external.dataservice.entity._
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
+import io.kf.etl.processors.common.ontology.OwlManager
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.hpo.{HPOGraphPath, HPOTerm}
-import io.kf.etl.processors.download.transform.utils.{DiagnosisOntologyMapper, EntityDataRetriever, EntityParentIDExtractor}
-import org.apache.spark.sql.Dataset
+import io.kf.etl.processors.download.transform.utils.{EntityDataRetriever, EntityParentIDExtractor}
 
 class DownloadTransformer(val context: DownloadContext) {
 
@@ -28,10 +30,26 @@ class DownloadTransformer(val context: DownloadContext) {
       }
   }
 
+  def downloadOntologyData(): OntologiesDataSet = {
+    import context.appContext.sparkSession.implicits._
+    val spark = context.appContext.sparkSession
+
+    val mondoTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/mondo/mondo.owl"))
+    val ncitTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/ncit/ncit.owl"))
+
+    OntologiesDataSet(
+      hpoGraphPath = HPOGraphPath.get(context).cache,
+      hpoTerms   = HPOTerm.get(context).cache,
+      mondoTerms = spark.createDataset(mondoTerms),
+      ncitTerms  = spark.createDataset(ncitTerms)
+    )
+  }
+
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
     import context.appContext.sparkSession.implicits._
+    val spark = context.appContext.sparkSession
 
-    val ontologyMapper = DiagnosisOntologyMapper()
+    val ontologyData = downloadOntologyData();
 
     val participants            = downloadEntities[EParticipant]            (endpoints.participants)
     val families                = downloadEntities[EFamily]                 (endpoints.families)
@@ -46,8 +64,6 @@ class DownloadTransformer(val context: DownloadContext) {
     val genomicFiles            = downloadEntities[EGenomicFile]            (endpoints.genomicFiles)
     val biospecimenGenomicFiles = downloadEntities[EBiospecimenGenomicFile] (endpoints.biospecimenGenomicFiles)
 
-
-    val spark = context.appContext.sparkSession
     val dataset =
       EntityDataSet(
         participants            = spark.createDataset(participants)           .cache,
@@ -60,9 +76,7 @@ class DownloadTransformer(val context: DownloadContext) {
         sequencingExperiments   = spark.createDataset(sequencingExperiments)  .cache,
         studies                 = spark.createDataset(studies)                .cache,
         biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
-        diagnoses               = spark.createDataset(diagnoses)
-                                    .map(ontologyMapper.findDiagnosisText(_))
-                                    .cache,
+        diagnoses               = spark.createDataset(diagnoses)              .cache,
         genomicFiles            = spark.createDataset(genomicFiles)
                                     .filter(_.dataType match {
                                         case Some(data_type) => {
@@ -75,8 +89,7 @@ class DownloadTransformer(val context: DownloadContext) {
         studyFiles              = context.appContext.sparkSession.emptyDataset[EStudyFile],
 
         // following two (graphPath, hpoTerms) are read from HPO mysql db:
-        graphPath               = HPOGraphPath.get(context).cache,
-        hpoTerms                = HPOTerm.get(context).cache
+        ontologyData            = ontologyData
       )
 
     retriever.stop()
