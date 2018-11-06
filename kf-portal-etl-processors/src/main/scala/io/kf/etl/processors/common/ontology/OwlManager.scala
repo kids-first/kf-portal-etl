@@ -38,7 +38,7 @@ class OwlTermHandler extends DefaultHandler {
   private val terms = ArrayBuffer.empty[OntologyTerm]
   private var count: Int = 0
 
-  private var inClass:Boolean = false
+  private var classDepth: Integer = 0
   private var id: Option[String] = None
   private var name: Option[String] = None
 
@@ -54,21 +54,22 @@ class OwlTermHandler extends DefaultHandler {
   }
 
   override def startElement(uri: String, localName: String, qName: String, attributes: Attributes): Unit = {
-    if (inClass && valueTags.contains(qName)) {
+    if (classDepth == 1 && valueTags.contains(qName)) {
       sb = Some(new StringBuilder)
     }
 
     qName match {
-      case `classTag` => inClass = true
+      case `classTag` => classDepth += 1
       case _ =>
     }
   }
 
   override def endElement(uri: String, localName: String, qName: String): Unit = {
-    if (inClass && sb.isDefined && valueTags.contains(qName)) {
+    if (classDepth == 1 && sb.isDefined && valueTags.contains(qName)) {
       qName match {
         case `idTag` => id = Some(sb.get.toString)
         case `nameTag` => name = Some(sb.get.toString)
+        case _ =>
       }
 
       sb = None
@@ -76,7 +77,7 @@ class OwlTermHandler extends DefaultHandler {
 
     qName match {
       case `classTag` => {
-        inClass = false
+        classDepth -= 1
         if (id.isDefined && name.isDefined) {
           terms += OntologyTerm(
             id = id.get,
