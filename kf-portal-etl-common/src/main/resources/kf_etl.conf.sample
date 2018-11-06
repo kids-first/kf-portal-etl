@@ -1,39 +1,56 @@
 io.kf.etl {
 
   spark {
-    app.name = ""
-//    master = ""
+    app.name = "pipeline-test"
+    master = "local[4]"
+
     properties {
 //      "spark.executor.cores" = 4
-//      "spark.scheduler.mode" = "FAIR"
-//      "spark.driver.host" = "localhost" //when run ETL under wireless network, should enable it
+//      "spark.driver.host" = "localhost"
+    "spark.scheduler.mode" = "FAIR"
     }
   }
 
-  mysql = {
-    host = ""
-    database = ""
-    user = ""
+  postgresql {
+    host = "localhost:5432"
+    database = "kfpostgresqa"
+    user = "postgres"
     password = ""
+  }
+
+  mysql = {
+    host = "localhost"
+    database = "etl"
+    user = "user"
+    password = "pass"
     properties = ["useSSL=false"]
   }
 
+  dataservice {
+    url = "http://kf-api-dataservice-qa.kids-first.io"
+    queryLimit = 100
+  }
+
+
   elasticsearch {
-    cluster_name = ""
-    host = ""
+    cluster_name = "elasticsearch"
+    host = "localhost"
+
     http_port = 9200
     transport_port = 9300
     configs {
       "es.nodes.wan.only": true
     }
   }
-  dataservice {
-    url = "http://http://kf-api-dataservice-qa.kids-first.io"
-  }
 
   hdfs {
-    defaultFS = "hdfs://"
-    root = ""
+    defaultFS = "hdfs://some.path.to.hdfs"
+    root = "file:///some/path/to/store/data"
+  }
+
+  s3 {
+    mondo_url = "https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/mondo/mondo.owl"
+    ncit_url = "https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/ncit/ncit.owl"
   }
 
   aws {
@@ -42,50 +59,47 @@ io.kf.etl {
     }
   }
 
+  // each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
+  // this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
+  //  A user could use this field to control where the data would be written
+
   processors = [
     {
       name = "download"
+      data_path = "file://some/path/to/save/data"
       mysql = ${io.kf.etl.mysql}
-      dump_path = ${io.kf.etl.hdfs.root}/dump
-      data_path = ${io.kf.etl.hdfs.root}/download
-      dataservice = ${io.kf.etl.dataservice}
     },
     {
-          name = "participant_common"
-          data_path = ${io.kf.etl.hdfs.root}/participantcommon
-          write_intermediate_data = false
-    },
-    {
-      name = "file_centric" //used as prefix of the index name and type name
-      /**
-       **  each processor has a "data_path" field which defines a full URL path for the current processor to store its data.
-       **  this field is optional, if not present, the default value will be ${io.kf.etl.hdfs.root}/${processor.name}
-       **  A user could use this field to control where the data would be written
-       **/
-      data_path = ${io.kf.etl.hdfs.root}/filecentric
+      name = "participant_common"
+      data_path = "file://some/path/to/save/moredata"
       write_intermediate_data = false
     },
     {
-      name = "participant_centric" // used as prefix of the index name and type name
-      data_path = ${io.kf.etl.hdfs.root}/participantcentric
+      name = "file_centric"
+      data_path = "file://some/path/to/save/evenmoredata"
+      write_intermediate_data = false
+    },
+    {
+      name = "participant_centric"
+      data_path = "file://some/path/to/save/likeallofthedata"
       write_intermediate_data = false
     },
     {
       name = "index"
       elasticsearch = ${io.kf.etl.elasticsearch}
       release_tag {
-        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.EmptyReleaseTag"
+         release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.EmptyReleaseTag"
       }
 //      release_tag {
 //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.DateTimeReleaseTag"
 //        pattern = "yyyy_MM_dd_HH_mm_ss"
-//     }
-      //      release_tag {
-      //        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
-      //        pattern = "sample_aliquot_fix"
-      //      }
-      aliasAction = false
-      aliasHandlerClass = "io.kf.etl.processors.index.posthandler.impl.????"
+//      }
+
+//      release_tag {
+//        release_tag_class_name = "io.kf.etl.processors.index.transform.releasetag.impl.AnyStringSuffixReleaseTag"
+//        pattern = "study_id_SD_BHJXBDQK"
+//      }
+      aliasActionEnabled = false
     }
   ]
 
