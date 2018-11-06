@@ -13,10 +13,10 @@ import io.kf.etl.processors.download.transform.utils.{EntityDataRetriever, Entit
 class DownloadTransformer(val context: DownloadContext) {
 
   val filters = Seq("visible=true")
-  val retriever = EntityDataRetriever(context.config.dataService, filters)
+
 
   def downloadEntities[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
-  (endpoints: Seq[String])
+  (endpoints: Seq[String], retriever: EntityDataRetriever)
   (implicit
    cmp: GeneratedMessageCompanion[T],
    extractor: EntityParentIDExtractor[T]
@@ -31,6 +31,8 @@ class DownloadTransformer(val context: DownloadContext) {
   }
 
   def downloadOntologyData(): OntologiesDataSet = {
+
+
     import context.appContext.sparkSession.implicits._
     val spark = context.appContext.sparkSession
 
@@ -51,18 +53,20 @@ class DownloadTransformer(val context: DownloadContext) {
 
     val ontologyData = downloadOntologyData();
 
-    val participants            = downloadEntities[EParticipant]            (endpoints.participants)
-    val families                = downloadEntities[EFamily]                 (endpoints.families)
-    val biospecimens            = downloadEntities[EBiospecimen]            (endpoints.biospecimens)
-    val diagnoses               = downloadEntities[EDiagnosis]              (endpoints.diagnoses)
-    val familyRelationships     = downloadEntities[EFamilyRelationship]     (endpoints.familyRelationships)
-    val investigators           = downloadEntities[EInvestigator]           (endpoints.investigators)
-    val outcomes                = downloadEntities[EOutcome]                (endpoints.outcomes)
-    val phenotypes              = downloadEntities[EPhenotype]              (endpoints.phenotypes)
-    val sequencingExperiments   = downloadEntities[ESequencingExperiment]   (endpoints.sequencingExperiments)
-    val studies                 = downloadEntities[EStudy]                  (endpoints.studies)
-    val genomicFiles            = downloadEntities[EGenomicFile]            (endpoints.genomicFiles)
-    val biospecimenGenomicFiles = downloadEntities[EBiospecimenGenomicFile] (endpoints.biospecimenGenomicFiles)
+    val retriever = EntityDataRetriever(context.config.dataService, filters)
+
+    val participants            = downloadEntities[EParticipant]            (endpoints.participants, retriever)
+    val families                = downloadEntities[EFamily]                 (endpoints.families, retriever)
+    val biospecimens            = downloadEntities[EBiospecimen]            (endpoints.biospecimens, retriever)
+    val diagnoses               = downloadEntities[EDiagnosis]              (endpoints.diagnoses, retriever)
+    val familyRelationships     = downloadEntities[EFamilyRelationship]     (endpoints.familyRelationships, retriever)
+    val investigators           = downloadEntities[EInvestigator]           (endpoints.investigators, retriever)
+    val outcomes                = downloadEntities[EOutcome]                (endpoints.outcomes, retriever)
+    val phenotypes              = downloadEntities[EPhenotype]              (endpoints.phenotypes, retriever)
+    val sequencingExperiments   = downloadEntities[ESequencingExperiment]   (endpoints.sequencingExperiments, retriever)
+    val studies                 = downloadEntities[EStudy]                  (endpoints.studies, retriever)
+    val genomicFiles            = downloadEntities[EGenomicFile]            (endpoints.genomicFiles, retriever)
+    val biospecimenGenomicFiles = downloadEntities[EBiospecimenGenomicFile] (endpoints.biospecimenGenomicFiles, retriever)
 
     val dataset =
       EntityDataSet(
