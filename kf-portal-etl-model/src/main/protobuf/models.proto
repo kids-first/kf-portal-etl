@@ -187,7 +187,7 @@ message GenomicFile_ES {
     optional string file_name = 6;
     optional int64 size = 7;
     optional string kf_id = 8;
-    optional SequencingExperiment_ES sequencing_experiment = 9;
+    repeated SequencingExperiment_ES sequencing_experiments = 9;
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
     optional string availability = 12;
@@ -203,7 +203,7 @@ message File_ES {
     optional string file_name = 6;
     optional int64 size = 7;
     optional string kf_id = 8;
-    repeated SequencingExperiment_ES sequencing_experiment = 9;
+    repeated SequencingExperiment_ES sequencing_experiments = 9;
     optional string reference_genome = 10;
     optional bool is_harmonized = 11;
     optional string availability = 12;

@@ -86,7 +86,7 @@ object PBEntityConverter {
     )
   }
   
-  def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Option[SequencingExperiment_ES] = None): GenomicFile_ES = {
+  def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): GenomicFile_ES = {
     GenomicFile_ES(
       acl = gf.acl,
       controlledAccess = gf.controlledAccess,
@@ -96,7 +96,7 @@ object PBEntityConverter {
       fileName = gf.fileName,
       size = gf.size,
       kfId = gf.kfId,
-      sequencingExperiment = seqExps,
+      sequencingExperiments = seqExps,
       referenceGenome = gf.referenceGenome,
       isHarmonized = gf.isHarmonized,
       availability = gf.availability,
