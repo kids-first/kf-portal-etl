@@ -20,8 +20,8 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
 
         val seqExp =
           Option(tuple._2) match {
-            case Some(_) => Some(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
-            case None => Some(SequencingExperiment_ES())
+            case Some(_) => Seq(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
+            case None => Seq(SequencingExperiment_ES())
           }
 
         PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, seqExp)
@@ -151,12 +151,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
           participants = participants_in_genomicfile.toSeq,
           referenceGenome = genomicFile.referenceGenome,
           isHarmonized = genomicFile.isHarmonized,
-          sequencingExperiments = {
-            genomicFile.sequencingExperiment match {
-              case Some(seqExp) => Seq(seqExp)
-              case None => Seq(SequencingExperiment_ES())
-            }
-          },
+          sequencingExperiments = genomicFile.sequencingExperiments,
           latestDid = genomicFile.latestDid
         )
 
