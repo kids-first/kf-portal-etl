@@ -42,20 +42,21 @@ message EBiospecimen {
     optional string external_aliquot_id = 8;
     optional string external_sample_id = 9;
     optional string kf_id = 10;
-    optional string modified_at = 11;
-    optional string ncit_id_anatomical_site = 12;
-    optional string ncit_id_tissue_type =13;
-    optional string shipment_date = 14;
-    optional string shipment_origin = 15;
-    repeated string genomic_files = 16;
-    optional string participant_id = 17;
-    optional string source_text_tumor_descriptor = 18;
-    optional string source_text_tissue_type = 19;
-    optional string source_text_anatomical_site = 20;
-    optional string spatial_descriptor = 21;
-    optional string uberon_id_anatomical_site = 22;
-    optional double volume_ml = 23;
-    optional string sequencing_center_id = 24;
+    optional string method_of_sample_procurement = 11;
+    optional string modified_at = 12;
+    optional string ncit_id_anatomical_site = 13;
+    optional string ncit_id_tissue_type =14;
+    optional string shipment_date = 15;
+    optional string shipment_origin = 16;
+    repeated string genomic_files = 17;
+    optional string participant_id = 18;
+    optional string source_text_tumor_descriptor = 19;
+    optional string source_text_tissue_type = 20;
+    optional string source_text_anatomical_site = 21;
+    optional string spatial_descriptor = 22;
+    optional string uberon_id_anatomical_site = 23;
+    optional double volume_ml = 24;
+    optional string sequencing_center_id = 25;
     optional bool visible = 1000;
 }
 
@@ -101,22 +102,26 @@ message EMetadata {
 message EGenomicFile {
     repeated string acl = 1;
     optional string availability = 2;
-    optional bool controlled_access = 4;
-    optional string created_at = 5;
-    optional string data_type = 6;
+    optional bool controlled_access = 3;
+    optional string created_at = 4;
+    optional string data_type = 5;
+    repeated string experiment_strategies = 6;
     optional string external_id = 7;
     optional string file_format = 8;
     optional string file_name = 9;
     optional EHash hashes = 10;
-    optional bool is_harmonized = 11;
-    optional string kf_id = 12;
-    optional string latest_did = 13;
-    optional EMetadata metadata = 14;
-    optional string modified_at = 15;
-    optional string reference_genome = 16;
-    optional string sequencing_experiment_id = 17;
-    optional int64 size = 18;
-    repeated string urls = 19;
+    repeated string instrument_models = 11;
+    optional bool is_harmonized = 12;
+    optional bool is_paired_end = 13;
+    optional string kf_id = 14;
+    optional string latest_did = 15;
+    optional EMetadata metadata = 16;
+    optional string modified_at = 17;
+    repeated string platforms = 18;
+    optional string reference_genome = 19;
+    optional string sequencing_experiment_id = 20;
+    optional int64 size = 21;
+    repeated string urls = 22;
     optional bool visible = 1000;
 }
 
