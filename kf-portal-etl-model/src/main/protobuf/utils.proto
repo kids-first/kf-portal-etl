@@ -50,7 +50,7 @@ message BiospecimenES_GenomicFileId {
     required string gfId = 2;
 }
 
-message BiospecimenId_FileES {
+message BiospecimenId_GenomicFileES {
     required string bioId = 1;
-    required io.kf.etl.es.File_ES file = 2;
+    required io.kf.etl.es.GenomicFile_ES file = 2;
 }

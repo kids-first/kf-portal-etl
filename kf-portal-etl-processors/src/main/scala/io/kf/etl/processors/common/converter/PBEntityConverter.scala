@@ -85,40 +85,30 @@ object PBEntityConverter {
       vitalStatus = outcome.vitalStatus
     )
   }
-  
+
+  def EGenomicFileToGenomicFileES(gf: EGenomicFile): GenomicFile_ES = {
+    EGenomicFileToGenomicFileES(gf, Seq(SequencingExperiment_ES()))
+  }
+
   def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): GenomicFile_ES = {
     GenomicFile_ES(
       acl = gf.acl,
+      availability = gf.availability,
       controlledAccess = gf.controlledAccess,
       dataType = gf.dataType,
+      experimentStrategies = gf.experimentStrategies,
       externalId = gf.externalId,
       fileFormat = gf.fileFormat,
       fileName = gf.fileName,
-      size = gf.size,
+      instrumentModels = gf.instrumentModels,
+      isHarmonized = gf.isHarmonized,
+      isPairedEnd = gf.isPairedEnd,
       kfId = gf.kfId,
+      latestDid = gf.latestDid,
+      platforms = gf.platforms,
+      referenceGenome = gf.referenceGenome,
       sequencingExperiments = seqExps,
-      referenceGenome = gf.referenceGenome,
-      isHarmonized = gf.isHarmonized,
-      availability = gf.availability,
-      latestDid = gf.latestDid
-    )
-  }
-
-  def EGenomicFileToFileES(gf:EGenomicFile): File_ES = {
-    File_ES(
-      acl = gf.acl,
-      controlledAccess = gf.controlledAccess,
-      dataType = gf.dataType,
-      externalId = gf.externalId,
-      fileFormat = gf.fileFormat,
-      fileName = gf.fileName,
-      size = gf.size,
-      kfId = gf.kfId,
-//      sequencing_experiments = ???
-      referenceGenome = gf.referenceGenome,
-      isHarmonized = gf.isHarmonized,
-      availability = gf.availability,
-      latestDid = gf.latestDid
+      size = gf.size
     )
   }
 
@@ -144,17 +134,24 @@ object PBEntityConverter {
   
   def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
     FileCentric_ES(
+      acl = genomicFile.acl,
+      availability = genomicFile.availability,
       controlledAccess = genomicFile.controlledAccess,
       dataType = genomicFile.dataType,
+      experimentStrategies = genomicFile.experimentStrategies,
+      externalId = genomicFile.externalId,
       fileFormat = genomicFile.fileFormat,
       fileName = genomicFile.fileName,
-      size = genomicFile.size,
-      kfId = genomicFile.kfId,
-      sequencingExperiments = seqExps,
-      participants = participants,
-      referenceGenome = genomicFile.referenceGenome,
+      instrumentModels = genomicFile.instrumentModels,
       isHarmonized = genomicFile.isHarmonized,
-      latestDid = genomicFile.latestDid
+      isPairedEnd = genomicFile.isPairedEnd,
+      kfId = genomicFile.kfId,
+      latestDid = genomicFile.latestDid,
+      participants = participants,
+      platforms = genomicFile.platforms,
+      referenceGenome = genomicFile.referenceGenome,
+      sequencingExperiments = seqExps,
+      size = genomicFile.size
     )
   }
 

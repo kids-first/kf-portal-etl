@@ -2,7 +2,7 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
 import io.kf.etl.external.dataservice.entity.EFamilyRelationship
-import io.kf.etl.model.utils.{BiospecimenId_FileES, BiospecimenId_GenomicFileId, ParticipantId_AvailableDataTypes, ParticipantId_BiospecimenId}
+import io.kf.etl.model.utils.{BiospecimenId_GenomicFileES, BiospecimenId_GenomicFileId, ParticipantId_AvailableDataTypes, ParticipantId_BiospecimenId}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -66,12 +66,12 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
           bioId_gfId.col("gfId") === ctx.entityDataset.genomicFiles.col("kfId")
         )
         .map(tuple => {
-          BiospecimenId_FileES(
+          BiospecimenId_GenomicFileES(
             bioId = tuple._1.bioId match {
               case None => null
               case Some(_) => tuple._1.bioId.get
             },
-            file = PBEntityConverter.EGenomicFileToFileES(tuple._2)
+            file = PBEntityConverter.EGenomicFileToGenomicFileES(tuple._2)
           )
         })
 

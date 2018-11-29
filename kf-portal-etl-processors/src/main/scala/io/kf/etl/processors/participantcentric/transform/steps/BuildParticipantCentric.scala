@@ -1,6 +1,6 @@
 package io.kf.etl.processors.participantcentric.transform.steps
 
-import io.kf.etl.es.models.{ParticipantCentric_ES, Participant_ES}
+import io.kf.etl.es.models.{ParticipantCentric_ES, Participant_ES, SequencingExperiment_ES}
 import io.kf.etl.model.utils._
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -18,13 +18,13 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId"),
         "left_outer"
       ).map(tuple => {
-        val file = PBEntityConverter.EGenomicFileToFileES(tuple._1)
+        val file = PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1)
         file.copy(
-          sequencingExperiment = {
+          sequencingExperiments = {
 
             Option(tuple._2) match {
               case Some(_) => Seq(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
-              case None => Seq.empty
+              case None => Seq(SequencingExperiment_ES())
             }
           }
         )
@@ -55,7 +55,7 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         files,
         bio_gf.col("gfId") === files.col("kfId")
       ).map(tuple => {
-        BiospecimenId_FileES(
+        BiospecimenId_GenomicFileES(
           bioId = tuple._1.bioId.get,
           file = tuple._2
         )
