@@ -105,24 +105,33 @@ message EGenomicFile {
     optional bool controlled_access = 3;
     optional string created_at = 4;
     optional string data_type = 5;
-    repeated string experiment_strategies = 6;
-    optional string external_id = 7;
-    optional string file_format = 8;
-    optional string file_name = 9;
-    optional EHash hashes = 10;
-    repeated string instrument_models = 11;
-    optional bool is_harmonized = 12;
-    optional bool is_paired_end = 13;
-    optional string kf_id = 14;
-    optional string latest_did = 15;
-    optional EMetadata metadata = 16;
-    optional string modified_at = 17;
-    repeated string platforms = 18;
-    optional string reference_genome = 19;
-    optional string sequencing_experiment_id = 20;
-    optional int64 size = 21;
-    repeated string urls = 22;
+    optional string external_id = 6;
+    optional string file_format = 7;
+    optional string file_name = 8;
+    optional EHash hashes = 9;
+    repeated string instrument_models = 10;
+    optional bool is_harmonized = 11;
+    optional bool is_paired_end = 12;
+    optional string kf_id = 13;
+    optional string latest_did = 14;
+    optional EMetadata metadata = 15;
+    optional string modified_at = 16;
+    repeated string platforms = 17;
+    optional string reference_genome = 18;
+    optional int64 size = 19;
+    repeated string urls = 20;
     optional bool visible = 1000;
+}
+
+message ESequencingExperimentGenomicFile {
+    optional string created_at = 1;
+    optional string modified_at = 2;
+    optional bool visible = 3;
+
+    optional string external_id = 4;
+    optional string genomic_file = 5;
+    optional string kf_id = 6;
+    optional string sequencing_experiment = 7;
 }
 
 message EInvestigator {
