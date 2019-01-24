@@ -1,6 +1,6 @@
 package io.kf.etl.processors.filecentric.transform.steps
 
-import io.kf.etl.es.models.{FileCentric_ES, Participant_ES, SequencingExperiment_ES}
+import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
 import io.kf.etl.model.utils._
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -11,20 +11,46 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
   override def process(participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
     import ctx.spark.implicits._
 
+    val fileId_experiments = ctx.entityDataset.sequencingExperiments
+      .joinWith(
+        ctx.entityDataset.sequencingExperimentGenomicFiles,
+        ctx.entityDataset.sequencingExperiments.col("kfId") === ctx.entityDataset.sequencingExperimentGenomicFiles.col("sequencingExperiment"),
+        "left_outer"
+      )
+      .map(tuple => {
+        SequencingExperimentES_GenomicFileId(
+          sequencingExperiment = PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
+          genomicFile = tuple._2.genomicFile
+        )
+      })
+      .groupByKey(_.genomicFile)
+      .mapGroups((fileId, iterator) => {
+        fileId match {
+          case Some(id) => {
+
+            val experiments = iterator.map(_.sequencingExperiment).toSeq
+            SequencingExperimentsES_GenomicFileId(
+              sequencingExperiments = experiments,
+              genomicFile = id
+            )
+          }
+          case None => null
+        }
+      })
+      .filter(_!=null)
+
     val files =
       ctx.entityDataset.genomicFiles.joinWith(
-        ctx.entityDataset.sequencingExperiments,
-        ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId"),
+        fileId_experiments,
+        ctx.entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFile"),
         "left_outer"
       ).map(tuple => {
-
-        val seqExp =
-          Option(tuple._2) match {
-            case Some(_) => Seq(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
-            case None => Seq(SequencingExperiment_ES())
+        Option(tuple._2) match {
+          case Some(_) => {
+            PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, tuple._2.sequencingExperiments)
           }
-
-        PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, seqExp)
+          case None => PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, Seq.empty)
+        }
       })
 
     val bio_par =
@@ -139,26 +165,25 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
             )
           })
 
-        FileCentric_ES(
-          acl = genomicFile.acl,
-          availability = genomicFile.availability,
-          controlledAccess = genomicFile.controlledAccess,
-          dataType = genomicFile.dataType,
-          externalId = genomicFile.externalId,
-          fileFormat = genomicFile.fileFormat,
-          fileName = genomicFile.fileName,
-          experimentStrategies = genomicFile.experimentStrategies,
-          instrumentModels = genomicFile.instrumentModels,
-          isHarmonized = genomicFile.isHarmonized,
-          isPairedEnd = genomicFile.isPairedEnd,
-          kfId = genomicFile.kfId,
-          latestDid = genomicFile.latestDid,
-          participants = participants_in_genomicfile.toSeq,
-          platforms = genomicFile.platforms,
-          referenceGenome = genomicFile.referenceGenome,
-          sequencingExperiments = genomicFile.sequencingExperiments,
-          size = genomicFile.size
-        )
+      FileCentric_ES(
+        acl = genomicFile.acl,
+        availability = genomicFile.availability,
+        controlledAccess = genomicFile.controlledAccess,
+        dataType = genomicFile.dataType,
+        externalId = genomicFile.externalId,
+        fileFormat = genomicFile.fileFormat,
+        fileName = genomicFile.fileName,
+        instrumentModels = genomicFile.instrumentModels,
+        isHarmonized = genomicFile.isHarmonized,
+        isPairedEnd = genomicFile.isPairedEnd,
+        kfId = genomicFile.kfId,
+        latestDid = genomicFile.latestDid,
+        participants = participants_in_genomicfile.toSeq,
+        platforms = genomicFile.platforms,
+        referenceGenome = genomicFile.referenceGenome,
+        sequencingExperiments = genomicFile.sequencingExperiments,
+        size = genomicFile.size
+      )
 
     })
   }

@@ -34,6 +34,7 @@ object ProcessorCommonDefinitions {
     outcomes: Dataset[EOutcome],
     phenotypes: Dataset[EPhenotype],
     sequencingExperiments: Dataset[ESequencingExperiment],
+    sequencingExperimentGenomicFiles: Dataset[ESequencingExperimentGenomicFile],
     studies: Dataset[EStudy],
     studyFiles: Dataset[EStudyFile],
     ontologyData: OntologiesDataSet
@@ -51,6 +52,7 @@ object ProcessorCommonDefinitions {
     outcomes: Seq[String],
     phenotypes: Seq[String],
     sequencingExperiments: Seq[String],
+    sequencingExperimentGenomicFiles: Seq[String],
     studies: Seq[String],
     studyFiles: Seq[String]
   )

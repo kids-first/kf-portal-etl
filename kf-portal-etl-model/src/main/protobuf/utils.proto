@@ -34,6 +34,7 @@ message BiospecimenES_GenomicFileES {
     required io.kf.etl.es.GenomicFile_ES genomic_file = 2;
 }
 
+
 message ParticipantES_BiospecimenES_GenomicFileES {
     required io.kf.etl.es.Biospecimen_ES bio = 1;
     required io.kf.etl.es.GenomicFile_ES genomic_file = 2;
@@ -53,4 +54,14 @@ message BiospecimenES_GenomicFileId {
 message BiospecimenId_GenomicFileES {
     required string bioId = 1;
     required io.kf.etl.es.GenomicFile_ES file = 2;
+}
+
+message SequencingExperimentES_GenomicFileId {
+    required io.kf.etl.es.SequencingExperiment_ES sequencing_experiment = 1;
+    optional string genomic_file = 2;
+}
+
+message SequencingExperimentsES_GenomicFileId {
+    repeated io.kf.etl.es.SequencingExperiment_ES sequencing_experiments = 1;
+    required string genomic_file = 2;
 }

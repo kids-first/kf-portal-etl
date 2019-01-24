@@ -12,7 +12,7 @@ class ParticipantCommonProcessor(
                                 transformer: EntityDataSet => (EntityDataSet, Dataset[Participant_ES]),
                                 sink: ((EntityDataSet, Dataset[Participant_ES])) => (EntityDataSet, Dataset[Participant_ES]),
                                 output: ((EntityDataSet, Dataset[Participant_ES])) => (EntityDataSet, Dataset[Participant_ES])
-                                ) extends Processor[EntityDataSet, (EntityDataSet,Dataset[Participant_ES])]{
+                                ) extends Processor[EntityDataSet, (EntityDataSet, Dataset[Participant_ES])]{
   override def process(input: EntityDataSet): (EntityDataSet, Dataset[Participant_ES]) = {
     source.andThen(transformer).andThen(sink).andThen(output)(input)
   }

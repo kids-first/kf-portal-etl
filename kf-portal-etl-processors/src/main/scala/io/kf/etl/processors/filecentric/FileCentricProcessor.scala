@@ -15,6 +15,9 @@ class FileCentricProcessor(
                             output: Unit => (String, Repository)
                               ) extends Processor[(EntityDataSet, Dataset[Participant_ES]), (String,Repository)]{
   override def process(input: (EntityDataSet, Dataset[Participant_ES])): (String, Repository) = {
-    source.andThen(transformer).andThen(sink).andThen(output)(input)
+    source
+      .andThen(transformer)
+      .andThen(sink)
+      .andThen(output)(input)
   }
 }

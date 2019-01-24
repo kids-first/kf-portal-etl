@@ -1,6 +1,6 @@
 package io.kf.etl.processors.participantcentric.transform.steps
 
-import io.kf.etl.es.models.{ParticipantCentric_ES, Participant_ES, SequencingExperiment_ES}
+import io.kf.etl.es.models.{ParticipantCentric_ES, Participant_ES}
 import io.kf.etl.model.utils._
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -12,22 +12,46 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
 
     import ctx.spark.implicits._
 
+    val fileId_experiments = ctx.entityDataset.sequencingExperiments
+      .joinWith(
+        ctx.entityDataset.sequencingExperimentGenomicFiles,
+        ctx.entityDataset.sequencingExperiments.col("kfId") === ctx.entityDataset.sequencingExperimentGenomicFiles.col("sequencingExperiment"),
+        "left_outer"
+      )
+      .map(tuple => {
+        SequencingExperimentES_GenomicFileId(
+          sequencingExperiment = PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
+          genomicFile = tuple._2.genomicFile
+        )
+      })
+      .groupByKey(_.genomicFile)
+      .mapGroups((fileId, iterator) => {
+        fileId match {
+          case Some(id) => {
+
+            val experiments = iterator.map(_.sequencingExperiment).toSeq
+            SequencingExperimentsES_GenomicFileId(
+              sequencingExperiments = experiments,
+              genomicFile = id
+            )
+          }
+          case None => null
+        }
+      })
+      .filter(_!=null)
+
     val files =
       ctx.entityDataset.genomicFiles.joinWith(
-        ctx.entityDataset.sequencingExperiments,
-        ctx.entityDataset.genomicFiles.col("sequencingExperimentId") === ctx.entityDataset.sequencingExperiments.col("kfId"),
+        fileId_experiments,
+        ctx.entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFile"),
         "left_outer"
       ).map(tuple => {
-        val file = PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1)
-        file.copy(
-          sequencingExperiments = {
-
-            Option(tuple._2) match {
-              case Some(_) => Seq(PBEntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._2))
-              case None => Seq(SequencingExperiment_ES())
-            }
+        Option(tuple._2) match {
+          case Some(_) => {
+            PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, tuple._2.sequencingExperiments)
           }
-        )
+          case None => PBEntityConverter.EGenomicFileToGenomicFileES(tuple._1, Seq.empty)
+        }
       })
 
     val bio_gf =

@@ -55,11 +55,7 @@ object EntityParentIDExtractor {
   }
 
   implicit val genomicFile: EntityParentIDExtractor[EGenomicFile] = new EntityParentIDExtractor[EGenomicFile] {
-    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = {
-      entity.copy(
-        sequencingExperimentId = getIdFromLink("sequencing_experiment", json)
-      )
-    }
+    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = entity
   }
 
   implicit val biospecimenGenomicFile: EntityParentIDExtractor[EBiospecimenGenomicFile] = new EntityParentIDExtractor[EBiospecimenGenomicFile] {
@@ -93,6 +89,15 @@ object EntityParentIDExtractor {
 
   implicit val seqExp: EntityParentIDExtractor[ESequencingExperiment] = new EntityParentIDExtractor[ESequencingExperiment] {
     override def extract(entity: ESequencingExperiment, json: JValue): ESequencingExperiment = entity
+  }
+
+  implicit val seqExpGenomicFile: EntityParentIDExtractor[ESequencingExperimentGenomicFile] = new EntityParentIDExtractor[ESequencingExperimentGenomicFile] {
+    override def extract(entity: ESequencingExperimentGenomicFile, json: JValue): ESequencingExperimentGenomicFile = {
+      entity.copy(
+        sequencingExperiment = getIdFromLink("sequencing_experiment", json),
+        genomicFile = getIdFromLink("genomic_file", json)
+      )
+    }
   }
 
   implicit val study: EntityParentIDExtractor[EStudy] = new EntityParentIDExtractor[EStudy] {
