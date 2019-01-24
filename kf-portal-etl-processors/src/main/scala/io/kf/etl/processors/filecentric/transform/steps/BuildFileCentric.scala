@@ -1,6 +1,6 @@
 package io.kf.etl.processors.filecentric.transform.steps
 
-import io.kf.etl.es.models.{FileCentric_ES, Participant_ES, SequencingExperiment_ES}
+import io.kf.etl.es.models.{FileCentric_ES, Participant_ES}
 import io.kf.etl.model.utils._
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
