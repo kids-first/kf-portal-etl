@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/portal_etl.svg" alt="Kids First Portal ETL" width="660px">
+</p>
+
 # kf-portal-etl
 
 The Kids-First ETL is built on Scala, Spark, Elasticsearch, HDFS, Postgresql, MySQL etc.
