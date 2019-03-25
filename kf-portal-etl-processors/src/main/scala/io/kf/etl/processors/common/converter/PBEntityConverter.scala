@@ -93,6 +93,7 @@ object PBEntityConverter {
   def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): GenomicFile_ES = {
     GenomicFile_ES(
       acl = gf.acl,
+      accessUrls = gf.accessUrls,
       availability = gf.availability,
       controlledAccess = gf.controlledAccess,
       dataType = gf.dataType,
@@ -106,6 +107,7 @@ object PBEntityConverter {
       latestDid = gf.latestDid,
       platforms = gf.platforms,
       referenceGenome = gf.referenceGenome,
+      repository = gf.repository,
       sequencingExperiments = seqExps,
       size = gf.size
     )
@@ -134,6 +136,7 @@ object PBEntityConverter {
   def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
     FileCentric_ES(
       acl = genomicFile.acl,
+      accessUrls = genomicFile.accessUrls,
       availability = genomicFile.availability,
       controlledAccess = genomicFile.controlledAccess,
       dataType = genomicFile.dataType,
@@ -148,6 +151,7 @@ object PBEntityConverter {
       participants = participants,
       platforms = genomicFile.platforms,
       referenceGenome = genomicFile.referenceGenome,
+      repository = genomicFile.repository,
       sequencingExperiments = seqExps,
       size = genomicFile.size
     )

@@ -4,23 +4,25 @@ package io.kf.etl.es;
 
 message FileCentric_ES {
     repeated string acl = 1;
-    optional string availability = 2;
-    optional bool controlled_access = 3;
-    optional string data_type = 4;
-    repeated string experiment_strategies = 5;
-    optional string external_id = 6;
-    optional string file_format = 7;
-    optional string file_name = 8;
-    repeated string instrument_models = 9;
-    optional bool is_paired_end = 10;
-    optional int64 size = 11;
-    optional string kf_id = 12;
-    repeated Participant_ES participants = 13;
-    repeated string platforms = 14;
-    repeated SequencingExperiment_ES sequencing_experiments = 15;
+    repeated string access_urls = 2;
+    optional string availability = 3;
+    optional bool controlled_access = 4;
+    optional string data_type = 5;
+    repeated string experiment_strategies = 6;
+    optional string external_id = 7;
+    optional string file_format = 8;
+    optional string file_name = 9;
+    repeated string instrument_models = 10;
+    optional bool is_paired_end = 11;
+    optional int64 size = 12;
+    optional string kf_id = 13;
+    repeated Participant_ES participants = 14;
+    repeated string platforms = 15;
     optional string reference_genome = 16;
-    optional bool is_harmonized = 17;
-    optional string latest_did = 18;
+    optional string repository = 17;
+    repeated SequencingExperiment_ES sequencing_experiments = 18;
+    optional bool is_harmonized = 19;
+    optional string latest_did = 20;
 }
 
 message ParticipantCentric_ES {
@@ -186,19 +188,21 @@ message SequencingExperiment_ES {
 
 message GenomicFile_ES {
     repeated string acl = 1;
-    optional string availability = 2;
-    optional bool controlled_access = 3;
-    optional string data_type = 4;
-    optional string external_id = 5;
-    optional string file_format = 6;
-    optional string file_name = 7;
-    repeated string instrument_models = 8;
-    optional bool is_harmonized = 9;
-    optional bool is_paired_end = 10;
-    optional string kf_id = 11;
-    optional string latest_did = 12;
-    repeated string platforms = 13;
-    optional string reference_genome = 14;
-    repeated SequencingExperiment_ES sequencing_experiments = 15;
-    optional int64 size = 16;
+    repeated string access_urls = 2;
+    optional string availability = 3;
+    optional bool controlled_access = 4;
+    optional string data_type = 5;
+    optional string external_id = 6;
+    optional string file_format = 7;
+    optional string file_name = 8;
+    repeated string instrument_models = 9;
+    optional bool is_harmonized = 10;
+    optional bool is_paired_end = 11;
+    optional string kf_id = 12;
+    optional string latest_did = 13;
+    repeated string platforms = 14;
+    optional string reference_genome = 15;
+    optional string repository = 16;
+    repeated SequencingExperiment_ES sequencing_experiments = 17;
+    optional int64 size = 18;
 }
