@@ -19,6 +19,8 @@ object Constants {
   val CONFIG_NAME_ES_CONFIGS = s"${ROOT_PACKAGE}.elasticsearch.configs"
   val CONFIG_NAME_DATASERVICE_URL = s"${ROOT_PACKAGE}.dataservice.url"
   val CONFIG_NAME_DATASERVICE_LIMIT = s"${ROOT_PACKAGE}.dataservice.limit"
+  val CONFIG_NAME_DATASERVICE_DOMAIN_DCF = s"${ROOT_PACKAGE}.dataservice.dcf_host"
+  val CONFIG_NAME_DATASERVICE_DOMAIN_GEN3 = s"${ROOT_PACKAGE}.dataservice.gen3_host"
   val CONFIG_NAME_HDFS_FS = s"${ROOT_PACKAGE}.hdfs.defaultFS"
   val CONFIG_NAME_HDFS_PATH = s"${ROOT_PACKAGE}.hdfs.root"
   val CONFIG_NAME_AWS_S3_PROFILE = s"${ROOT_PACKAGE}.aws.s3.profile"

@@ -56,33 +56,7 @@ object EntityParentIDExtractor {
   }
 
   implicit val genomicFile: EntityParentIDExtractor[EGenomicFile] = new EntityParentIDExtractor[EGenomicFile] {
-
-    def getRepo(accessUrl: Option[String]): Option[String] = {
-      // Repository values are derived from the accessUrl
-      // The host of the URL will match to "dcf" or "gen3", which are the repository values
-      val dcfHost = "api.gdc.cancer.gov"
-      val gen3Host = "data.kidsfirstdrc.org"
-
-      var repo: Option[String] = None
-      accessUrl match {
-        case Some(url) => {
-          if (url.contains(dcfHost)) {
-            repo = Some("dcf")
-          } else if (url.contains(gen3Host)) {
-            repo = Some("gen3")
-          }
-        }
-        case None =>
-      }
-
-      repo
-    }
-
-    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = {
-      entity.copy(
-        repository = getRepo(entity.accessUrls.headOption)
-      )
-    }
+    override def extract(entity: EGenomicFile, json: JValue): EGenomicFile = entity
   }
 
   implicit val biospecimenGenomicFile: EntityParentIDExtractor[EBiospecimenGenomicFile] = new EntityParentIDExtractor[EBiospecimenGenomicFile] {

@@ -90,7 +90,7 @@ case class PostgresqlConfig(host:String, database:String, user:String, password:
 
 case class MysqlConfig(host:String, database:String, user:String, password:String, properties: Seq[String])
 
-case class DataServiceConfig(url:String, limit:Int)
+case class DataServiceConfig(url:String, limit:Int, gen3Host:String, dcfHost:String)
 
 case class AWSS3Config(profile:String)
 

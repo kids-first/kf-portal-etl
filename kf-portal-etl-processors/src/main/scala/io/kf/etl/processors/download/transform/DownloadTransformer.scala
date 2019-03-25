@@ -3,6 +3,7 @@ package io.kf.etl.processors.download.transform
 import java.net.URL
 
 import com.trueaccord.scalapb.GeneratedMessageCompanion
+import io.kf.etl.common.conf.DataServiceConfig
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.common.ontology.OwlManager
@@ -47,11 +48,34 @@ class DownloadTransformer(val context: DownloadContext) {
     )
   }
 
+  def setFileRepo(file: EGenomicFile): EGenomicFile = {
+
+    import context.appContext.dataService
+
+    // Repository values are derived from the accessUrl
+    // The host of the URL will match to "dcf" or "gen3", which are the repository values
+    var repo: Option[String] = None
+    file.accessUrls.headOption match {
+      case Some(url) => {
+        if (url.contains(dataService.dcfHost)) {
+          repo = Some("dcf")
+        } else if (url.contains(dataService.gen3Host)) {
+          repo = Some("gen3")
+        }
+      }
+      case None =>
+    }
+
+    file.copy(
+      repository = repo
+    )
+  }
+
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
     import context.appContext.sparkSession.implicits._
     val spark = context.appContext.sparkSession
 
-    val ontologyData = downloadOntologyData();
+    val ontologyData = downloadOntologyData()
 
     val retriever = EntityDataRetriever(context.config.dataService, filters)
 
@@ -66,8 +90,9 @@ class DownloadTransformer(val context: DownloadContext) {
     val sequencingExperiments            = downloadEntities[ESequencingExperiment]            (endpoints.sequencingExperiments, retriever)
     val sequencingExperimentGenomicFiles = downloadEntities[ESequencingExperimentGenomicFile] (endpoints.sequencingExperimentGenomicFiles, retriever)
     val studies                          = downloadEntities[EStudy]                           (endpoints.studies, retriever)
-    val genomicFiles                     = downloadEntities[EGenomicFile]                     (endpoints.genomicFiles, retriever)
     val biospecimenGenomicFiles          = downloadEntities[EBiospecimenGenomicFile]          (endpoints.biospecimenGenomicFiles, retriever)
+
+    val genomicFiles                     = downloadEntities[EGenomicFile](endpoints.genomicFiles, retriever).map(setFileRepo)
 
     val dataset =
       EntityDataSet(
