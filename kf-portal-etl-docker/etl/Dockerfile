@@ -3,7 +3,7 @@ FROM maven:3.5.4-jdk-8
 ###########################
 # Docker Build config
 ###########################
-ARG SPARK_VERSION=2.3.2
+ARG SPARK_VERSION=2.3.3
 ARG SBT_VERSION=1.1.6
 ARG ETL_VERSION=develop
 ARG ES_MODEL_VERSION=master
