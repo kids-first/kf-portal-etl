@@ -128,6 +128,7 @@ class BuildParticipantCentric(override val ctx: StepContext) extends StepExecuta
         ethnicity = participant.ethnicity,
         externalId = participant.externalId,
         family = participant.family,
+        familyId = participant.familyId,
         files = seq.collect{
           case tuple if(tuple._2 != null) => tuple._2.file
         },

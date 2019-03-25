@@ -34,15 +34,16 @@ message ParticipantCentric_ES {
     optional string diagnosis_category = 6;
     optional string ethnicity = 7;
     optional string external_id = 8;
-    optional Family_ES family = 9;
-    repeated GenomicFile_ES files = 10;
-    optional string gender = 11;
-    optional bool is_proband = 12;
-    optional string kf_id = 13;
-    optional Outcome_ES outcome = 14;
-    optional Phenotype_ES phenotype = 15;
-    optional string race = 16;
-    optional Study_ES study = 17;
+    optional string family_id = 9;
+    optional Family_ES family = 10;
+    repeated GenomicFile_ES files = 11;
+    optional string gender = 12;
+    optional bool is_proband = 13;
+    optional string kf_id = 14;
+    optional Outcome_ES outcome = 15;
+    optional Phenotype_ES phenotype = 16;
+    optional string race = 17;
+    optional Study_ES study = 18;
 }
 
 message Participant_ES {
