@@ -95,7 +95,7 @@ object KFConfigExtractors {
         case Failure(_) => 100
       },
       dcfHost = config.getString(CONFIG_NAME_DATASERVICE_DOMAIN_DCF),
-      gen3Host = config.getString(CONFIG_NAME_DATASERVICE_DOMAIN_DCF)
+      gen3Host = config.getString(CONFIG_NAME_DATASERVICE_DOMAIN_GEN3)
     )
   }
 }
