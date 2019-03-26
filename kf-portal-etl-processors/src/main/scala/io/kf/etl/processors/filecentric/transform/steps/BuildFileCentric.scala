@@ -168,6 +168,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
       FileCentric_ES(
         acl = genomicFile.acl,
         availability = genomicFile.availability,
+        accessUrls = genomicFile.accessUrls,
         controlledAccess = genomicFile.controlledAccess,
         dataType = genomicFile.dataType,
         externalId = genomicFile.externalId,
@@ -181,6 +182,7 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
         participants = participants_in_genomicfile.toSeq,
         platforms = genomicFile.platforms,
         referenceGenome = genomicFile.referenceGenome,
+        repository = genomicFile.repository,
         sequencingExperiments = genomicFile.sequencingExperiments,
         size = genomicFile.size
       )
