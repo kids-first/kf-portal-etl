@@ -48,16 +48,38 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
         } else if (url.contains(dataService.gen3Host)) {
           repo = Some("gen3")
         }
+
       case None =>
     }
+
 
     file.copy(
       repository = repo
     )
   }
 
+  def setCavaticaIdForRepo(file: EGenomicFile): EGenomicFile = {
+
+    file.repository match {
+      case Some(repo) => repo match {
+        case "dcf" => file.copy(latestDid = file.externalId)
+        case "gen3" => file
+        case _ => file
+      }
+      case None => file
+    }
+  }
+
+  def updateFileRepositoryData(file: EGenomicFile): EGenomicFile = Function.chain(Seq(
+    setFileRepo(_),
+    setCavaticaIdForRepo(_)
+  ))(file)
+
+
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
+
     import context.appContext.sparkSession.implicits._
+
     val spark = context.appContext.sparkSession
 
     val ontologyData = downloadOntologyData()
