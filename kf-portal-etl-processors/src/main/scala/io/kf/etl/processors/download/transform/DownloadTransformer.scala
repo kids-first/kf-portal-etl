@@ -7,6 +7,7 @@ import io.kf.etl.common.conf.DataServiceConfig
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.common.ontology.OwlManager
+
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.hpo.{HPOGraphPath, HPOTerm}
 import io.kf.etl.processors.download.transform.utils.{EntityDataRetriever, EntityParentIDExtractor}
@@ -71,6 +72,24 @@ class DownloadTransformer(val context: DownloadContext) {
     )
   }
 
+  def setCavaticaIdForRepo(file: EGenomicFile): EGenomicFile = {
+
+    file.repository match {
+      case Some(repo) => repo match {
+        case "dcf" => file.copy(latestDid = file.externalId)
+        case "gen3" => file
+        case _ => file
+      }
+      case None => file
+    }
+  }
+
+  def updateFileRepositoryData(file: EGenomicFile): EGenomicFile = Function.chain(Seq(
+    setFileRepo(_),
+    setCavaticaIdForRepo(_)
+    ))(file)
+
+
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
     import context.appContext.sparkSession.implicits._
     val spark = context.appContext.sparkSession
@@ -92,7 +111,7 @@ class DownloadTransformer(val context: DownloadContext) {
     val studies                          = downloadEntities[EStudy]                           (endpoints.studies, retriever)
     val biospecimenGenomicFiles          = downloadEntities[EBiospecimenGenomicFile]          (endpoints.biospecimenGenomicFiles, retriever)
 
-    val genomicFiles                     = downloadEntities[EGenomicFile](endpoints.genomicFiles, retriever).map(setFileRepo)
+    val genomicFiles                     = downloadEntities[EGenomicFile](endpoints.genomicFiles, retriever).map(updateFileRepositoryData)
 
     val dataset =
       EntityDataSet(
