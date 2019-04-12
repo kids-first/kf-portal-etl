@@ -1,9 +1,9 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.external.dataservice.entity.{EBiospecimen, EBiospecimenGenomicFile, EDiagnosis, EFamily, EFamilyRelationship, EGenomicFile, EInvestigator, EOutcome, EParticipant, EPhenotype, ESequencingExperiment, ESequencingExperimentGenomicFile, EStudy, EStudyFile}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
+import io.kf.etl.external.dataservice.entity._
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
-import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.SparkSession
 import org.scalatest.{FlatSpec, Matchers}
 
 class MergeFamilyTest extends FlatSpec with Matchers {
@@ -14,16 +14,29 @@ class MergeFamilyTest extends FlatSpec with Matchers {
     import spark.implicits._
     val p1 = EParticipant(kfId = Some("participant_id_1"))
     val bioSpecimen1 = EBiospecimen(kfId=Some("biospecimen_id_1"), participantId = Some("participant_id_1"))
-    val biospecimenGeniomicFile1 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_1"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomic_file_id_1"))
-    val genomicFile1 = EGenomicFile(kfId=Some("genomic_file_id_1"), dataType = Some("datatype_1"))
+    val biospecimenGeniomicFile11 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_11"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomic_file_id_11"))
+    val biospecimenGeniomicFile12 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_12"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomic_file_id_12"))
+    val genomicFile11 = EGenomicFile(kfId=Some("genomic_file_id_11"), dataType = Some("datatype_11"))
+    val genomicFile12 = EGenomicFile(kfId=Some("genomic_file_id_12"), dataType = Some("datatype_12"))
+
+    val p2 = EParticipant(kfId = Some("participant_id_2"))
+    val bioSpecimen2 = EBiospecimen(kfId=Some("biospecimen_id_2"), participantId = Some("participant_id_2"))
+    val biospecimenGeniomicFile2 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_2"), biospecimenId = Some("biospecimen_id_2"), genomicFileId = Some("genomic_file_id_2"))
+    val genomicFile2 = EGenomicFile(kfId=Some("genomic_file_id_2"), dataType = Some("datatype_2"))
+
+    //These below should be ignore
+    val p3 = EParticipant(kfId = Some("participant_id__without_file"))
+    val biospecimen3 = EBiospecimen(kfId=Some("biospecimen_id__without_specimen_file"), participantId = Some("participant_id_2"))
+    val biospecimenGeniomicFile3 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_without_genomic_file"), biospecimenId = Some("biospecimen_id_2"), genomicFileId = None)
+
     val entityDataset = EntityDataSet(
-      participants = Seq(p1).toDS(),
+      participants = Seq(p1, p2, p3).toDS(),
       families = spark.emptyDataset[EFamily],
-      biospecimens = Seq(bioSpecimen1).toDS(),
+      biospecimens = Seq(bioSpecimen1, bioSpecimen2, biospecimen3).toDS(),
       diagnoses = spark.emptyDataset[EDiagnosis],
       familyRelationships = spark.emptyDataset[EFamilyRelationship],
-      genomicFiles = Seq(genomicFile1).toDS(),
-      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile1).toDS(),
+      genomicFiles = Seq(genomicFile11, genomicFile12, genomicFile2).toDS(),
+      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11, biospecimenGeniomicFile12, biospecimenGeniomicFile2, biospecimenGeniomicFile3).toDS(),
       investigators = spark.emptyDataset[EInvestigator],
       outcomes = spark.emptyDataset[EOutcome],
       phenotypes = spark.emptyDataset[EPhenotype],
@@ -44,7 +57,10 @@ class MergeFamilyTest extends FlatSpec with Matchers {
       )
     )
 
-    mergeFamily.calculateAvailableDataTypes(entityDataset).value shouldBe Map("participant_id_1" -> Seq("datatype_1"))
+    mergeFamily.calculateAvailableDataTypes(entityDataset).value shouldBe Map(
+      "participant_id_1" -> Seq("datatype_11", "datatype_12"),
+      "participant_id_2" -> Seq("datatype_2")
+    )
 
   }
 }
