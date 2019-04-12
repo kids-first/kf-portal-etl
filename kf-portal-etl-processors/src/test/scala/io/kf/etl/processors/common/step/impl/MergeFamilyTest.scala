@@ -24,10 +24,13 @@ class MergeFamilyTest extends FlatSpec with Matchers {
     val biospecimenGeniomicFile2 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_2"), biospecimenId = Some("biospecimen_id_2"), genomicFileId = Some("genomic_file_id_2"))
     val genomicFile2 = EGenomicFile(kfId=Some("genomic_file_id_2"), dataType = Some("datatype_2"))
 
+
     //These below should be ignore
     val p3 = EParticipant(kfId = Some("participant_id__without_file"))
     val biospecimen3 = EBiospecimen(kfId=Some("biospecimen_id__without_specimen_file"), participantId = Some("participant_id_2"))
     val biospecimenGeniomicFile3 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_without_genomic_file"), biospecimenId = Some("biospecimen_id_2"), genomicFileId = None)
+    val biospecimenGeniomicFile4 = EBiospecimenGenomicFile(kfId = Some("biospeciment_genomic_file_id_duplicate"), biospecimenId = Some("biospecimen_id_2"), genomicFileId = Some("genomic_file_id_duplicate"))
+    val genomicFile4 = EGenomicFile(kfId=Some("genomic_file_id_duplicate"), dataType = Some("datatype_2"))
 
     val entityDataset = EntityDataSet(
       participants = Seq(p1, p2, p3).toDS(),
@@ -35,8 +38,8 @@ class MergeFamilyTest extends FlatSpec with Matchers {
       biospecimens = Seq(bioSpecimen1, bioSpecimen2, biospecimen3).toDS(),
       diagnoses = spark.emptyDataset[EDiagnosis],
       familyRelationships = spark.emptyDataset[EFamilyRelationship],
-      genomicFiles = Seq(genomicFile11, genomicFile12, genomicFile2).toDS(),
-      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11, biospecimenGeniomicFile12, biospecimenGeniomicFile2, biospecimenGeniomicFile3).toDS(),
+      genomicFiles = Seq(genomicFile11, genomicFile12, genomicFile2, genomicFile4).toDS(),
+      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11, biospecimenGeniomicFile12, biospecimenGeniomicFile2, biospecimenGeniomicFile3, biospecimenGeniomicFile4).toDS(),
       investigators = spark.emptyDataset[EInvestigator],
       outcomes = spark.emptyDataset[EOutcome],
       phenotypes = spark.emptyDataset[EPhenotype],
@@ -57,7 +60,7 @@ class MergeFamilyTest extends FlatSpec with Matchers {
       )
     )
 
-    mergeFamily.calculateAvailableDataTypes(entityDataset).value shouldBe Map(
+    mergeFamily.calculateAvailableDataTypes(entityDataset).value.mapValues(_.sorted) should contain theSameElementsAs Map(
       "participant_id_1" -> Seq("datatype_11", "datatype_12"),
       "participant_id_2" -> Seq("datatype_2")
     )

@@ -1,14 +1,13 @@
 package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
-import io.kf.etl.external.dataservice.entity.{EBiospecimenGenomicFile, EFamilyRelationship, EGenomicFile}
-import io.kf.etl.model.utils.{BiospecimenId_GenomicFileES, BiospecimenId_GenomicFileId, ParticipantId_AvailableDataTypes, ParticipantId_BiospecimenId}
+import io.kf.etl.external.dataservice.entity.EFamilyRelationship
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
-import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.Dataset
+import org.apache.spark.sql.functions._
 
 class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
   override def process(participants: Dataset[Participant_ES]): Dataset[Participant_ES] = {
@@ -26,68 +25,21 @@ class MergeFamily(override val ctx: StepContext) extends StepExecutable[Dataset[
 
   def calculateAvailableDataTypes(entityDataset: EntityDataSet): Broadcast[Map[String, Seq[String]]] = {
     import ctx.spark.implicits._
+    import entityDataset._
+    val datatypeByParticipant = participants
+      .join(biospecimens, participants("kfId") === biospecimens("participantId"))
+      .join(biospecimenGenomicFiles, biospecimens("kfId") === biospecimenGenomicFiles("biospecimenId"))
+      .join(genomicFiles, biospecimenGenomicFiles("genomicFileId") === genomicFiles("kfId"))
+      .select(participants("kfId") as "participantId", genomicFiles("dataType") as "dataType")
+      .groupBy($"participantId").agg(collect_list("dataType") as "dataTypes")
+      .as[(String, Seq[String])]
+      .collect()
+      .toMap
 
-    val par_bio =
-      entityDataset.participants
-        .joinWith(
-          entityDataset.biospecimens,
-          entityDataset.participants.col("kfId") === entityDataset.biospecimens.col("participantId")
-        )
-        .map(tuple => {
-          ParticipantId_BiospecimenId(
-            parId = tuple._1.kfId.get,
-            bioId = tuple._2.kfId.get
-          )
-        })
+    val distinctDatatypeByParticipant = datatypeByParticipant.map { case (k, v) => k -> v.distinct }
 
-    val bioId_gfId =
-      ctx.entityDataset.genomicFiles
-        .joinWith(
-          ctx.entityDataset.biospecimenGenomicFiles,
-          ctx.entityDataset.genomicFiles.col("kfId") === ctx.entityDataset.biospecimenGenomicFiles.col("genomicFileId"),
-          "left_outer"
-        )
-        .map { case (genomicFile, biospecimenGenomicFile) =>
-          BiospecimenId_GenomicFileId(
-            gfId = genomicFile.kfId,
-            bioId = biospecimenGenomicFile.biospecimenId
-          )
-        }
-    val bioId_gf =
-      bioId_gfId
-        .joinWith(
-          ctx.entityDataset.genomicFiles,
-          bioId_gfId.col("gfId") === ctx.entityDataset.genomicFiles.col("kfId")
-        )
-        .map { case (bioId_gFId, file) =>
-          BiospecimenId_GenomicFileES(
-            bioId = bioId_gFId.bioId.orNull,
-            file = PBEntityConverter.EGenomicFileToGenomicFileES(file)
-          )
-        }
+    ctx.spark.sparkContext.broadcast[Map[String, Seq[String]]](distinctDatatypeByParticipant)
 
-    ctx.spark.sparkContext.broadcast[Map[String, Seq[String]]](
-      par_bio
-        .joinWith(
-          bioId_gf,
-          par_bio.col("bioId") === bioId_gf.col("bioId")
-        )
-        .groupByKey(tuple => {
-          tuple._1.parId
-        })
-        .mapGroups((parId, iterator) => {
-          val seq = iterator.toSeq
-          ParticipantId_AvailableDataTypes(
-            parId,
-            seq.flatMap(_._2.file.dataType)
-          )
-        })
-        .collect()
-        .map(item => {
-          (item.parId, item.availableDataTypes)
-        })
-        .toMap
-    )
   }
 
   private def getFlattenedFamilyRelationship(entityDataset: EntityDataSet): Broadcast[Map[String, Set[String]]] = {
