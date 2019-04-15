@@ -1,5 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
+import io.kf.etl.es.models.Participant_ES
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
@@ -64,6 +65,31 @@ class MergeFamilyTest extends FlatSpec with Matchers {
       "participant_id_1" -> Seq("datatype_11", "datatype_12"),
       "participant_id_2" -> Seq("datatype_2")
     )
+
+  }
+
+  "getAvailableDataTypes" should "return one available datatype of one participant" in {
+    val p1 = Participant_ES(kfId = Some("participant_id_1"))
+    MergeFamily.getAvailableDataTypes(Seq(p1), Map("participant_id_1" -> Seq("datatype_1"))) shouldBe Seq("datatype_1")
+
+  }
+
+  it should "return many available datatypes of one participant" in {
+    val p1 = Participant_ES(kfId = Some("participant_id_1"))
+    MergeFamily.getAvailableDataTypes(Seq(p1), Map("participant_id_1" -> Seq("datatype_1", "datatype_2"))) shouldBe Seq("datatype_1", "datatype_2")
+
+  }
+
+  it should "return available datatypes of many participants" in {
+    val p1 = Participant_ES(kfId = Some("participant_id_1"))
+    val p2 = Participant_ES(kfId = Some("participant_id_2"))
+    val p3 = Participant_ES(kfId = Some("participant_id_3"))
+    MergeFamily.getAvailableDataTypes(Seq(p1, p2, p3),
+      Map(
+        "participant_id_1" -> Seq("datatype_11", "datatype_12"),
+        "participant_id_2" -> Seq("datatype_2")
+      )
+    ) shouldBe Seq("datatype_11", "datatype_12", "datatype_2")
 
   }
 }

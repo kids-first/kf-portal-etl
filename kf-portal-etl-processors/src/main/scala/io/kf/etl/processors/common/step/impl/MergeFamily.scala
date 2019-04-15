@@ -658,25 +658,9 @@ object MergeFamily {
 
   def getAvailableDataTypes(participants: Seq[Participant_ES], mapOfAvailableDataTypes: Map[String, Seq[String]]): Seq[String] = {
 
-    val seqOfDataTypes =
-      participants.map(participant => {
-        mapOfAvailableDataTypes.get(participant.kfId.get) match {
-          case Some(seq) => seq
-          case None => Seq.empty
-        }
-      })
+    val participantKeys: Seq[String] = participants.flatMap(_.kfId)
+    mapOfAvailableDataTypes.filterKeys(participantKeys.contains).values.flatten.toSet.toSeq
 
-    //    participants.flatMap(participant => {
-    //      mapOfAvailableDataTypes.get(participant.kfId.get) match {
-    //        case Some(seq) => seq
-    //        case None => Seq.empty
-    //      }
-    //    }).toSet.toSeq
-
-    seqOfDataTypes.tail.foldLeft(seqOfDataTypes.head) { (left, right) => {
-      left.intersect(right)
-    }
-    }.distinct
   }
 
   def getSharedHpoIds(participants: Seq[Participant_ES]): Seq[String] = {
