@@ -13,11 +13,10 @@ import scala.xml.SAXException
 
 object OwlManager {
 
-  val factory = SAXParserFactory.newInstance
+  private val factory = SAXParserFactory.newInstance
 
   def getOntologyTermsFromURL(source: URL): Seq[OntologyTerm] = {
-
-    val handler = new OwlTermHandler()
+    val handler = new OwlTermHandler(source.toString.contains("ncit"))
 
     try {
       val parser = factory.newSAXParser
@@ -33,25 +32,23 @@ object OwlManager {
 
 }
 
-class OwlTermHandler extends DefaultHandler {
+class OwlTermHandler(isNCIT: Boolean) extends DefaultHandler {
 
-  private val terms = ArrayBuffer.empty[OntologyTerm]
-  private var count: Int = 0
+  private val terms: ArrayBuffer[OntologyTerm] = ArrayBuffer.empty[OntologyTerm]
+
+  def getTerms:Seq[OntologyTerm] = terms.to[collection.immutable.Seq]
 
   private var classDepth: Integer = 0
   private var id: Option[String] = None
   private var name: Option[String] = None
 
-  private var sb:Option[StringBuilder] = None
+  private var sb: Option[StringBuilder] = None
 
   private val classTag = "owl:Class"
-  private val idTag = "oboInOwl:id"
   private val nameTag = "rdfs:label"
+  private val idTag = if (isNCIT) "obo:NCIT_NHC0" else "oboInOwl:id"
   private val valueTags = Seq(idTag, nameTag)
 
-  def getTerms(): Seq[OntologyTerm] = {
-    terms
-  }
 
   override def startElement(uri: String, localName: String, qName: String, attributes: Attributes): Unit = {
     if (classDepth == 1 && valueTags.contains(qName)) {
@@ -67,8 +64,8 @@ class OwlTermHandler extends DefaultHandler {
   override def endElement(uri: String, localName: String, qName: String): Unit = {
     if (classDepth == 1 && sb.isDefined && valueTags.contains(qName)) {
       qName match {
-        case `idTag` => id = Some(sb.get.toString)
-        case `nameTag` => name = Some(sb.get.toString)
+        case `idTag` => id = if (isNCIT) Some(s"NCIT:${sb.get}") else sb.map(_.toString())
+        case `nameTag` => name = sb.map(_.toString())
         case _ =>
       }
 
@@ -76,9 +73,10 @@ class OwlTermHandler extends DefaultHandler {
     }
 
     qName match {
-      case `classTag` => {
+      case `classTag` =>
         classDepth -= 1
         if (id.isDefined && name.isDefined) {
+
           terms += OntologyTerm(
             id = id.get,
             name = name.get
@@ -86,7 +84,6 @@ class OwlTermHandler extends DefaultHandler {
           id = None
           name = None
         }
-      }
       case _ =>
     }
   }
@@ -95,7 +92,7 @@ class OwlTermHandler extends DefaultHandler {
   override def characters(ch: Array[Char], start: Int, length: Int): Unit = {
     sb match {
       case Some(builder) => {
-        val value = ch.slice(start, start+length).mkString
+        val value = ch.slice(start, start + length).mkString
         builder.append(value)
       }
       case _ =>
