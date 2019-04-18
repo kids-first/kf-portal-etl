@@ -7,6 +7,7 @@ import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
+import MergeDiagnosis._
 
 class MergeDiagnosis(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
 
@@ -51,6 +52,10 @@ class MergeDiagnosis(override val ctx: StepContext) extends StepExecutable[Datas
     t
   }
 
+
+}
+
+object MergeDiagnosis{
   def formatTerm(term: Option[OntologyTerm]): Option[String] = term.map(t => s"${t.name} (${t.id})")
 
 }
