@@ -4,6 +4,7 @@ import io.kf.etl.es.models.{Biospecimen_ES, Participant_ES}
 import io.kf.etl.external.dataservice.entity.EBiospecimen
 import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.test.util.EntityUtil._
+import io.kf.etl.processors.test.util.StepContextUtil.buildContext
 import io.kf.etl.processors.test.util.{StepContextUtil, WithSparkSession}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -38,7 +39,7 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
       ontologyData = ontologiesDataset
     )
 
-    val mergeBiospecimen = new MergeBiospecimenPerParticipant(ctx = StepContextUtil.buildContext(entityDataset))
+    val mergeBiospecimen = new MergeBiospecimenPerParticipant(ctx = buildContext(entityDataset))
 
 
     val result = mergeBiospecimen.process(participantsDataset).collect()
