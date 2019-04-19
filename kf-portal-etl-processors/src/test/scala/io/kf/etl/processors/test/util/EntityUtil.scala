@@ -23,7 +23,7 @@ object EntityUtil {
                           sequencingExperimentGenomicFiles: Seq[ESequencingExperimentGenomicFile] = Nil,
                           studies: Seq[EStudy] = Nil,
                           studyFiles: Seq[EStudyFile] = Nil,
-                          ontologyData: OntologiesDataSet = null
+                          ontologyData: Option[OntologiesDataSet] = None
                         )(implicit spark: SparkSession) = {
     import spark.implicits._
     EntityDataSet(
@@ -42,7 +42,7 @@ object EntityUtil {
       sequencingExperimentGenomicFiles = sequencingExperimentGenomicFiles.toDS(),
       studies = studies.toDS(),
       studyFiles = studyFiles.toDS(),
-      ontologyData = ontologyData
+      ontologyData = ontologyData.getOrElse(buildOntologiesDataSet())
     )
   }
 

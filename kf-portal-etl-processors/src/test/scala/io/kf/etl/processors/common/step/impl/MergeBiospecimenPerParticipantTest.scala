@@ -36,7 +36,7 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
     )
     val entityDataset = buildEntityDataSet(
       biospecimens = Seq(bioSpecimen1, bioSpecimen21, bioSpecimen22, bioSpecimen3),
-      ontologyData = ontologiesDataset
+      ontologyData = Some(ontologiesDataset)
     )
 
     val mergeBiospecimen = new MergeBiospecimenPerParticipant(ctx = buildContext(entityDataset))

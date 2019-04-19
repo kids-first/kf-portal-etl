@@ -41,7 +41,7 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
     val entityDataset = buildEntityDataSet(
       diagnoses = Seq(diagnoses11, diagnoses12, diagnoses13, diagnoses21, diagnoses22, diagnoses3),
-      ontologyData = ontologiesDataset
+      ontologyData = Some(ontologiesDataset)
     )
 
     val merge = new MergeDiagnosis(ctx = buildContext(entityDataset))
