@@ -1,7 +1,7 @@
 package io.kf.etl.processors.common
 
 import io.kf.etl.external.dataservice.entity._
-import io.kf.etl.external.hpo.{GraphPath, OntologyTerm}
+import io.kf.etl.external.hpo.OntologyTerm
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -58,7 +58,6 @@ object ProcessorCommonDefinitions {
   )
 
   case class OntologiesDataSet(
-    hpoGraphPath: Dataset[GraphPath],
     hpoTerms: Dataset[OntologyTerm],
     mondoTerms: Dataset[OntologyTerm],
     ncitTerms: Dataset[OntologyTerm]

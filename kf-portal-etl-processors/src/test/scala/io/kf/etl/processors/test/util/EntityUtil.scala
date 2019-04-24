@@ -1,7 +1,7 @@
 package io.kf.etl.processors.test.util
 
-import io.kf.etl.external.dataservice.entity.{EBiospecimen, EBiospecimenGenomicFile, EDiagnosis, EFamily, EFamilyRelationship, EGenomicFile, EInvestigator, EOutcome, EParticipant, EPhenotype, ESequencingExperiment, ESequencingExperimentGenomicFile, EStudy, EStudyFile}
-import io.kf.etl.external.hpo.{GraphPath, OntologyTerm}
+import io.kf.etl.external.dataservice.entity._
+import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
 import org.apache.spark.sql.SparkSession
 
@@ -24,7 +24,7 @@ object EntityUtil {
                           studies: Seq[EStudy] = Nil,
                           studyFiles: Seq[EStudyFile] = Nil,
                           ontologyData: Option[OntologiesDataSet] = None
-                        )(implicit spark: SparkSession) = {
+                        )(implicit spark: SparkSession): EntityDataSet = {
     import spark.implicits._
     EntityDataSet(
 
@@ -46,12 +46,11 @@ object EntityUtil {
     )
   }
 
-  def buildOntologiesDataSet(hpoGraphPath: Seq[GraphPath] = Nil,
-                             hpoTerms: Seq[OntologyTerm] = Nil,
+  def buildOntologiesDataSet(hpoTerms: Seq[OntologyTerm] = Nil,
                              mondoTerms: Seq[OntologyTerm] = Nil,
-                             ncitTerms: Seq[OntologyTerm] = Nil)(implicit spark: SparkSession) = {
+                             ncitTerms: Seq[OntologyTerm] = Nil)(implicit spark: SparkSession): OntologiesDataSet = {
     import spark.implicits._
-    OntologiesDataSet(hpoGraphPath.toDS(), hpoTerms.toDS(), mondoTerms.toDS(), ncitTerms.toDS())
+    OntologiesDataSet(hpoTerms.toDS(), mondoTerms.toDS(), ncitTerms.toDS())
   }
 
 

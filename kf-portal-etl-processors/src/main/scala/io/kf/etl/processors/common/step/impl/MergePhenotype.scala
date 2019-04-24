@@ -2,23 +2,18 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{Participant_ES, Phenotype_ES}
 import io.kf.etl.external.dataservice.entity.EPhenotype
-import io.kf.etl.external.hpo.{GraphPath, OntologyTerm}
-import io.kf.etl.model.utils.HPOReference
+import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.common.step.StepExecutable
+import io.kf.etl.processors.common.step.impl.MergePhenotype._
 import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.Dataset
-
-import scala.collection.immutable
-import scala.collection.mutable.ListBuffer
-import MergePhenotype._
 
 class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
 
   def transformPhenotypes(): Dataset[(String, Phenotype_ES)] = {
-    import ctx.spark.implicits._
     import ctx.entityDataset.ontologyData.hpoTerms
     import ctx.entityDataset.phenotypes
+    import ctx.spark.implicits._
 
     phenotypes
       .joinWith(hpoTerms, phenotypes("hpoIdPhenotype") === hpoTerms("id"), "left_outer")
@@ -80,36 +75,6 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 
       })
   }
-
-  def generateHpoRefs(): Broadcast[Map[String, Seq[String]]] = {
-    import ctx.spark.implicits._
-    ctx.spark.sparkContext.broadcast(
-
-      ctx.entityDataset.ontologyData.hpoGraphPath.groupByKey(_.term1).mapGroups((term, iterator) => {
-        val list: immutable.Seq[GraphPath] = iterator.toList
-
-        HPOReference(
-          term = term.toString,
-          ancestors = {
-            val v: Seq[String] = list.tail.foldLeft((list(0), new ListBuffer[GraphPath])) { (tuple: (GraphPath, ListBuffer[GraphPath]), curr: GraphPath) => {
-              if (curr.distance < tuple._1.distance) {
-                tuple._2.append(curr)
-                (tuple._1, tuple._2)
-              }
-              else {
-                tuple._2.append(tuple._1)
-                (curr, tuple._2)
-              }
-            }
-            }._2.map(_.term2.toString)
-            v
-          }
-        )
-      }).collect().map(hporef => {
-        (hporef.term, hporef.ancestors)
-      }).toMap
-    )
-  } // end of generateHpoRefs
 
 
 }

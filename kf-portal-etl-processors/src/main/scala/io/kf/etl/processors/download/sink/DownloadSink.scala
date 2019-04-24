@@ -25,10 +25,9 @@ class DownloadSink(val context: DownloadContext) {
     data.investigators.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Investigator}")
     data.outcomes.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Outcome}")
     data.phenotypes.write.parquet(s"${context.getJobDataPath()}/${DataServiceEntityNames.Phenotype}")
-    data.ontologyData.hpoGraphPath.write.parquet(s"${context.getJobDataPath()}/${HPO_GRAPH_PATH}")
     data.ontologyData.hpoTerms.write.parquet(s"${context.getJobDataPath()}/${HPO_TERMS}")
-    data.ontologyData.hpoGraphPath.write.parquet(s"${context.getJobDataPath()}/${MONDO_TERMS}")
-    data.ontologyData.hpoGraphPath.write.parquet(s"${context.getJobDataPath()}/${NCIT_TERMS}")
+    data.ontologyData.mondoTerms.write.parquet(s"${context.getJobDataPath()}/${MONDO_TERMS}")
+    data.ontologyData.ncitTerms.write.parquet(s"${context.getJobDataPath()}/${NCIT_TERMS}")
 
     data
   }
