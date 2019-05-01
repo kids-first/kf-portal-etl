@@ -50,7 +50,7 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
     }
 
     val url = s"${config.url}$endpoint&limit=100&$filterQueryString"
-    println(s"Retrieving: $url")
+    println(s"Retrieving (remain try = $retries): $url")
 
     wsClient.url(url).get().flatMap { response =>
       if (response.status != 200) {
