@@ -81,7 +81,7 @@ object ETLMain extends App {
 
         println(s"Beginning pipeline for study: ${study}")
 
-        Pipeline.from(Some(Array(study)))
+        Pipeline.from(study)
           .map(downloadProcessor)
           .map(participantCommonProcessor)
           .combine(fileCentricProcessor, participantCentricProcessor)

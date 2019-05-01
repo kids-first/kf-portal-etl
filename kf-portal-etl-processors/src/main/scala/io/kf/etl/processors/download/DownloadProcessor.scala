@@ -5,12 +5,12 @@ import io.kf.etl.processors.common.processor.Processor
 import io.kf.etl.processors.download.context.DownloadContext
 
 class DownloadProcessor(context: DownloadContext,
-                        source: Option[Array[String]] => EntityEndpointSet,
+                        source: String => EntityEndpointSet,
                         transform: EntityEndpointSet => EntityDataSet,
                         sink: EntityDataSet => EntityDataSet,
-                        output: EntityDataSet => EntityDataSet) extends Processor[Option[Array[String]], EntityDataSet]{
+                        output: EntityDataSet => EntityDataSet) extends Processor[String, EntityDataSet]{
 
-  def process(input:Option[Array[String]]):EntityDataSet = {
+  def process(input:String):EntityDataSet = {
     source.andThen(transform).andThen(sink).andThen(output)(input)
   }
 

@@ -1,5 +1,7 @@
 package io.kf.etl.processors.download.inject
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 import com.google.inject.Provides
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.inject.GuiceModule
@@ -11,11 +13,12 @@ import io.kf.etl.processors.download.output.DownloadOutput
 import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
+import play.api.libs.ws.ahc.StandaloneAhcWSClient
 
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
-class DownloadInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
+class DownloadInjectModule(context: Context, moduleName: String) extends ProcessorInjectModule(context, moduleName) {
   type CONTEXT = DownloadContext
   type PROCESSOR = DownloadProcessor
   type SOURCE = DownloadSource
@@ -39,7 +42,7 @@ class DownloadInjectModule(context: Context, moduleName:String) extends Processo
     new DownloadContext(context, cc)
   }
 
-  private def getDumpPath():String = {
+  private def getDumpPath(): String = {
     // if dump_path is not available, get the local java temporary directory instead
 
     Try(config.get.getString(CONFIG_NAME_DUMP_PATH)) match {
@@ -74,6 +77,15 @@ class DownloadInjectModule(context: Context, moduleName:String) extends Processo
   }
 
   override def getTransformer(dContext: DownloadContext): DownloadTransformer = {
+    //This should be instantiate in a more global place
+    import scala.concurrent.ExecutionContext.Implicits._
+    implicit val system: ActorSystem = ActorSystem()
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    implicit val wsClient: StandaloneAhcWSClient = StandaloneAhcWSClient()
+    sys.addShutdownHook {
+      wsClient.close()
+      system.terminate()
+    }
     new DownloadTransformer(dContext)
   }
 
