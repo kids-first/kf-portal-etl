@@ -50,7 +50,6 @@ class DefaultContext extends ContextCommon {
   def close(): Unit = {
     wsClient.close()
     system.terminate()
-    getSparkSession().close()
   }
 
   sys.addShutdownHook(close())
