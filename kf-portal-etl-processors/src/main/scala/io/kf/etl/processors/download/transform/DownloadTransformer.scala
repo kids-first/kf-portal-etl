@@ -98,7 +98,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
     val sequencingExperimentGenomicFilesF = retriever.retrieve[ESequencingExperimentGenomicFile](endpoints.sequencingExperimentGenomicFiles)
     val studiesF = retriever.retrieve[EStudy](endpoints.studies)
     val biospecimenGenomicFilesF = retriever.retrieve[EBiospecimenGenomicFile](endpoints.biospecimenGenomicFiles)
-    val genomicFilesF = retriever.retrieve[EGenomicFile](endpoints.genomicFiles).map(_.map(setFileRepo))
+    val genomicFilesF = retriever.retrieve[EGenomicFile](endpoints.genomicFiles).map(_.map(updateFileRepositoryData))
 
     val dataset = for {
       participants <- participantsF
