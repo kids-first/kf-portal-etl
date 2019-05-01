@@ -5,6 +5,7 @@ import java.net.URL
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.common.ontology.OwlManager
+
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.hpo.HPOTerm
@@ -84,7 +85,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
 
     val ontologyData = downloadOntologyData()
     val retriever = EntityDataRetriever(context.config.dataService, filters)
-
+    
     val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
     val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
