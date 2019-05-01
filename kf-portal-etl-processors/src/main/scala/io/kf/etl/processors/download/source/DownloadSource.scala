@@ -5,29 +5,24 @@ import io.kf.etl.processors.download.context.DownloadContext
 
 class DownloadSource(val context: DownloadContext) {
 
-  def makeEndpointSeq(studyIds: Option[Array[String]], path: String): Seq[String] = {
-    studyIds match {
-      case None       => Seq(s"${path}?limit=100")
-      case Some(ids)  => ids.map(id => s"${path}?study_id=${id}")
-    }
-  }
+  def makeEndpointSeq(studyId: String, path: String): String = s"$path?study_id=$studyId"
 
-  def getEntitySet(studyIds: Option[Array[String]]): EntityEndpointSet = {
+  def getEntitySet(studyId: String): EntityEndpointSet = {
     EntityEndpointSet(
-      participants                      = makeEndpointSeq(studyIds, "/participants"),
-      families                          = makeEndpointSeq(studyIds, "/families"),
-      biospecimens                      = makeEndpointSeq(studyIds, "/biospecimens"),
-      biospecimenGenomicFiles           = makeEndpointSeq(studyIds, "/biospecimen-genomic-files"),
-      diagnoses                         = makeEndpointSeq(studyIds, "/diagnoses"),
-      familyRelationships               = makeEndpointSeq(studyIds, "/family-relationships"),
-      genomicFiles                      = makeEndpointSeq(studyIds, "/genomic-files"),
-      investigators                     = makeEndpointSeq(studyIds, "/investigators"),
-      outcomes                          = makeEndpointSeq(studyIds, "/outcomes"),
-      phenotypes                        = makeEndpointSeq(studyIds, "/phenotypes"),
-      sequencingExperiments             = makeEndpointSeq(studyIds, "/sequencing-experiments"),
-      sequencingExperimentGenomicFiles  = makeEndpointSeq(studyIds, "/sequencing-experiment-genomic-files"),
-      studies                           = makeEndpointSeq(studyIds, "/studies"),
-      studyFiles                        = makeEndpointSeq(studyIds, "/study-files")
+      participants = makeEndpointSeq(studyId, "/participants"),
+      families = makeEndpointSeq(studyId, "/families"),
+      biospecimens = makeEndpointSeq(studyId, "/biospecimens"),
+      biospecimenGenomicFiles = makeEndpointSeq(studyId, "/biospecimen-genomic-files"),
+      diagnoses = makeEndpointSeq(studyId, "/diagnoses"),
+      familyRelationships = makeEndpointSeq(studyId, "/family-relationships"),
+      genomicFiles = makeEndpointSeq(studyId, "/genomic-files"),
+      investigators = makeEndpointSeq(studyId, "/investigators"),
+      outcomes = makeEndpointSeq(studyId, "/outcomes"),
+      phenotypes = makeEndpointSeq(studyId, "/phenotypes"),
+      sequencingExperiments = makeEndpointSeq(studyId, "/sequencing-experiments"),
+      sequencingExperimentGenomicFiles = makeEndpointSeq(studyId, "/sequencing-experiment-genomic-files"),
+      studies = makeEndpointSeq(studyId, "/studies"),
+      studyFiles = makeEndpointSeq(studyId, "/study-files")
     )
   }
 }

@@ -2,35 +2,22 @@ package io.kf.etl.processors.download.transform
 
 import java.net.URL
 
-import com.trueaccord.scalapb.GeneratedMessageCompanion
-import io.kf.etl.common.conf.DataServiceConfig
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.common.ontology.OwlManager
 
 import io.kf.etl.processors.download.context.DownloadContext
-import io.kf.etl.processors.download.transform.hpo.{HPOGraphPath, HPOTerm}
-import io.kf.etl.processors.download.transform.utils.{EntityDataRetriever, EntityParentIDExtractor}
+import io.kf.etl.processors.download.transform.DownloadTransformer._
+import io.kf.etl.processors.download.transform.hpo.HPOTerm
+import io.kf.etl.processors.download.transform.utils.EntityDataRetriever
+import play.api.libs.ws.StandaloneWSClient
 
-class DownloadTransformer(val context: DownloadContext) {
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext}
 
-  val filters = Seq("visible=true")
+class DownloadTransformer(val context: DownloadContext)(implicit WSClient: StandaloneWSClient, ec: ExecutionContext) {
 
-
-  def downloadEntities[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
-  (endpoints: Seq[String], retriever: EntityDataRetriever)
-  (implicit
-   cmp: GeneratedMessageCompanion[T],
-   extractor: EntityParentIDExtractor[T]
-  ): Seq[T] = {
-    endpoints
-      .map( endpoint => {
-        retriever.retrieve[T](Some(endpoint))
-      })
-      .foldLeft(Seq.empty[T]) {
-        (left, right) => left.union(right)
-      }
-  }
+  val filters: Seq[String] = Seq("visible=true")
 
   def downloadOntologyData(): OntologiesDataSet = {
 
@@ -42,10 +29,9 @@ class DownloadTransformer(val context: DownloadContext) {
     val ncitTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/ncit/ncit.owl"))
 
     OntologiesDataSet(
-      hpoGraphPath = HPOGraphPath.get(context).cache,
-      hpoTerms   = HPOTerm.get(context).cache,
+      hpoTerms = HPOTerm.get(context).cache,
       mondoTerms = spark.createDataset(mondoTerms),
-      ncitTerms  = spark.createDataset(ncitTerms)
+      ncitTerms = spark.createDataset(ncitTerms)
     )
   }
 
@@ -57,15 +43,16 @@ class DownloadTransformer(val context: DownloadContext) {
     // The host of the URL will match to "dcf" or "gen3", which are the repository values
     var repo: Option[String] = None
     file.accessUrls.headOption match {
-      case Some(url) => {
+      case Some(url) =>
         if (url.contains(dataService.dcfHost)) {
           repo = Some("dcf")
         } else if (url.contains(dataService.gen3Host)) {
           repo = Some("gen3")
         }
-      }
+
       case None =>
     }
+
 
     file.copy(
       repository = repo
@@ -87,64 +74,82 @@ class DownloadTransformer(val context: DownloadContext) {
   def updateFileRepositoryData(file: EGenomicFile): EGenomicFile = Function.chain(Seq(
     setFileRepo(_),
     setCavaticaIdForRepo(_)
-    ))(file)
+  ))(file)
 
 
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
+
     import context.appContext.sparkSession.implicits._
+
     val spark = context.appContext.sparkSession
 
     val ontologyData = downloadOntologyData()
-
     val retriever = EntityDataRetriever(context.config.dataService, filters)
+    
+    val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
+    val familiesF = retriever.retrieve[EFamily](endpoints.families)
+    val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
+    val diagnosesF = retriever.retrieve[EDiagnosis](endpoints.diagnoses)
+    val familyRelationshipsF = retriever.retrieve[EFamilyRelationship](endpoints.familyRelationships)
+    val investigatorsF = retriever.retrieve[EInvestigator](endpoints.investigators)
+    val outcomesF = retriever.retrieve[EOutcome](endpoints.outcomes)
+    val phenotypesF = retriever.retrieve[EPhenotype](endpoints.phenotypes)
+    val sequencingExperimentsF = retriever.retrieve[ESequencingExperiment](endpoints.sequencingExperiments)
+    val sequencingExperimentGenomicFilesF = retriever.retrieve[ESequencingExperimentGenomicFile](endpoints.sequencingExperimentGenomicFiles)
+    val studiesF = retriever.retrieve[EStudy](endpoints.studies)
+    val biospecimenGenomicFilesF = retriever.retrieve[EBiospecimenGenomicFile](endpoints.biospecimenGenomicFiles)
+    val genomicFilesF = retriever.retrieve[EGenomicFile](endpoints.genomicFiles).map(_.map(setFileRepo))
 
-    val participants                     = downloadEntities[EParticipant]                     (endpoints.participants, retriever)
-    val families                         = downloadEntities[EFamily]                          (endpoints.families, retriever)
-    val biospecimens                     = downloadEntities[EBiospecimen]                     (endpoints.biospecimens, retriever)
-    val diagnoses                        = downloadEntities[EDiagnosis]                       (endpoints.diagnoses, retriever)
-    val familyRelationships              = downloadEntities[EFamilyRelationship]              (endpoints.familyRelationships, retriever)
-    val investigators                    = downloadEntities[EInvestigator]                    (endpoints.investigators, retriever)
-    val outcomes                         = downloadEntities[EOutcome]                         (endpoints.outcomes, retriever)
-    val phenotypes                       = downloadEntities[EPhenotype]                       (endpoints.phenotypes, retriever)
-    val sequencingExperiments            = downloadEntities[ESequencingExperiment]            (endpoints.sequencingExperiments, retriever)
-    val sequencingExperimentGenomicFiles = downloadEntities[ESequencingExperimentGenomicFile] (endpoints.sequencingExperimentGenomicFiles, retriever)
-    val studies                          = downloadEntities[EStudy]                           (endpoints.studies, retriever)
-    val biospecimenGenomicFiles          = downloadEntities[EBiospecimenGenomicFile]          (endpoints.biospecimenGenomicFiles, retriever)
-
-    val genomicFiles                     = downloadEntities[EGenomicFile](endpoints.genomicFiles, retriever).map(updateFileRepositoryData)
-
-    val dataset =
+    val dataset = for {
+      participants <- participantsF
+      families <- familiesF
+      biospecimens <- biospecimensF
+      familyRelationships <- familyRelationshipsF
+      investigators <- investigatorsF
+      outcomes <- outcomesF
+      phenotypes <- phenotypesF
+      sequencingExperiments <- sequencingExperimentsF
+      sequencingExperimentGenomicFiles <- sequencingExperimentGenomicFilesF
+      studies <- studiesF
+      biospecimenGenomicFiles <- biospecimenGenomicFilesF
+      diagnoses <- diagnosesF
+      genomicFiles <- genomicFilesF
+    } yield
       EntityDataSet(
-        participants                      = spark.createDataset(participants)                     .cache,
-        families                          = spark.createDataset(families)                         .cache,
-        biospecimens                      = spark.createDataset(biospecimens)                     .cache,
-        familyRelationships               = spark.createDataset(familyRelationships)              .cache,
-        investigators                     = spark.createDataset(investigators)                    .cache,
-        outcomes                          = spark.createDataset(outcomes)                         .cache,
-        phenotypes                        = spark.createDataset(phenotypes)                       .cache,
-        sequencingExperiments             = spark.createDataset(sequencingExperiments)            .cache,
-        sequencingExperimentGenomicFiles  = spark.createDataset(sequencingExperimentGenomicFiles) .cache,
-        studies                           = spark.createDataset(studies)                          .cache,
-        biospecimenGenomicFiles           = spark.createDataset(biospecimenGenomicFiles)          .cache,
-        diagnoses                         = spark.createDataset(diagnoses)                        .cache,
-        genomicFiles                      = spark.createDataset(genomicFiles)
-          .filter(_.dataType match {
-            case Some(data_type) => {
-              !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
-            }
-            case None => true
-          })
+        participants = spark.createDataset(participants).cache,
+        families = spark.createDataset(families).cache,
+        biospecimens = spark.createDataset(biospecimens).cache,
+        familyRelationships = spark.createDataset(familyRelationships).cache,
+        investigators = spark.createDataset(investigators).cache,
+        outcomes = spark.createDataset(outcomes).cache,
+        phenotypes = spark.createDataset(phenotypes).cache,
+        sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
+        sequencingExperimentGenomicFiles = spark.createDataset(sequencingExperimentGenomicFiles).cache,
+        studies = spark.createDataset(studies).cache,
+        biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
+        diagnoses = spark.createDataset(diagnoses).cache,
+        genomicFiles = spark.createDataset(genomicFiles)
+          .filter(filterGenomicFile _)
           .cache(),
-        studyFiles                        = context.appContext.sparkSession.emptyDataset[EStudyFile],
+        studyFiles = context.appContext.sparkSession.emptyDataset[EStudyFile],
 
         // following two (graphPath, hpoTerms) are read from HPO mysql db:
-        ontologyData            = ontologyData
+        ontologyData = ontologyData
       )
 
-    retriever.stop()
 
-    //return:
-    dataset
+    Await.result(dataset, Duration.Inf)
+  }
+
+}
+
+object DownloadTransformer {
+  def filterGenomicFile(f: EGenomicFile): Boolean = {
+    f.dataType match {
+      case Some(data_type) =>
+        !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
+      case None => true
+    }
   }
 
 }

@@ -11,11 +11,12 @@ import io.kf.etl.processors.download.output.DownloadOutput
 import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
+import play.api.libs.ws.StandaloneWSClient
 
 import scala.util.{Failure, Success, Try}
 
 @GuiceModule(name = "download")
-class DownloadInjectModule(context: Context, moduleName:String) extends ProcessorInjectModule(context, moduleName) {
+class DownloadInjectModule(context: Context, moduleName: String) extends ProcessorInjectModule(context, moduleName) {
   type CONTEXT = DownloadContext
   type PROCESSOR = DownloadProcessor
   type SOURCE = DownloadSource
@@ -39,7 +40,7 @@ class DownloadInjectModule(context: Context, moduleName:String) extends Processo
     new DownloadContext(context, cc)
   }
 
-  private def getDumpPath():String = {
+  private def getDumpPath(): String = {
     // if dump_path is not available, get the local java temporary directory instead
 
     Try(config.get.getString(CONFIG_NAME_DUMP_PATH)) match {
@@ -74,6 +75,9 @@ class DownloadInjectModule(context: Context, moduleName:String) extends Processo
   }
 
   override def getTransformer(dContext: DownloadContext): DownloadTransformer = {
+    //This should be instantiate in a more global place
+    import scala.concurrent.ExecutionContext.Implicits._
+    implicit val wsClient: StandaloneWSClient = context.getWsClient()
     new DownloadTransformer(dContext)
   }
 

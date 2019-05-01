@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://purl.obolibrary.org/obo/ncit.owl#"
+         xml:base="http://purl.obolibrary.org/obo/ncit.owl"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:obo="http://purl.obolibrary.org/obo/"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xml="http://www.w3.org/XML/1998/namespace"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:ncit="http://purl.obolibrary.org/obo/ncit#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:terms="http://purl.org/dc/terms/"
+         xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#"
+         xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#">
+    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/ncit.owl">
+        <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/ncit/releases/2019-03-02/ncit.owl"/>
+        <protege:defaultLanguage>en</protege:defaultLanguage>
+        <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The NCIt OBO Edition project aims to
+            increase integration of the NCIt with OBO Library ontologies. NCIt is a reference terminology that includes
+            broad coverage of the cancer domain, including cancer related diseases, findings and abnormalities. NCIt OBO
+            Edition releases should be considered experimental.
+        </dc:description>
+        <dc:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI Thesaurus OBO Edition</dc:title>
+        <terms:isVersionOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl"/>
+        <rdfs:comment>NCI Thesaurus, a controlled vocabulary in support of NCI administrative and scientific activities.
+            Produced by the Enterprise Vocabulary System (EVS), a project by the NCI Center for Biomedical Informatics
+            and Information Technology. National Cancer Institute, National Institutes of Health, Bethesda, MD 20892,
+            U.S.A.
+        </rdfs:comment>
+        <owl:versionInfo>19.02d</owl:versionInfo>
+    </owl:Ontology>
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C18009">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/NCIT_C19697"/>
+        <obo:IAO_0000115>A tumor sample, or entire tumor that is removed for microscopic examination.</obo:IAO_0000115>
+        <obo:NCIT_NHC0>C18009</obo:NCIT_NHC0>
+        <obo:NCIT_P106>Tissue</obo:NCIT_P106>
+        <obo:NCIT_P108>Tumor Tissue</obo:NCIT_P108>
+        <obo:NCIT_P207>C0475358</obo:NCIT_P207>
+        <obo:NCIT_P322>CDISC</obo:NCIT_P322>
+        <obo:NCIT_P325>A tumor sample, or entire tumor that is removed for examination.</obo:NCIT_P325>
+        <obo:NCIT_P366>Tumor_Tissue</obo:NCIT_P366>
+        <oboInOwl:hasExactSynonym>TUMOR TISSUE</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Tumor Sample</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Tumor Tissue</oboInOwl:hasExactSynonym>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C61410"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C66830"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C78734"/>
+        <rdfs:label>Tumor Tissue</rdfs:label>
+    </owl:Class>
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/NCIT_C43234">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/NCIT_C27993"/>
+        <obo:IAO_0000115>Not provided or available.</obo:IAO_0000115>
+        <obo:NCIT_NHC0>C43234</obo:NCIT_NHC0>
+        <obo:NCIT_P106>Qualitative Concept</obo:NCIT_P106>
+        <obo:NCIT_P108>Not Reported</obo:NCIT_P108>
+        <obo:NCIT_P207>C1706613</obo:NCIT_P207>
+        <obo:NCIT_P322>CDISC</obo:NCIT_P322>
+        <obo:NCIT_P325>Not provided or available.</obo:NCIT_P325>
+        <obo:NCIT_P366>Not_Stated</obo:NCIT_P366>
+        <oboInOwl:hasExactSynonym>NOT REPORTED</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Not Reported</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Not Stated</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym>Not reported</oboInOwl:hasExactSynonym>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C61410"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C66790"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/NCIT_C66830"/>
+        <rdfs:label>Not Reported</rdfs:label>
+    </owl:Class>
+</rdf:RDF>

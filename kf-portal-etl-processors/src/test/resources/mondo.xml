@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://purl.obolibrary.org/obo/mondo.owl#"
+         xml:base="http://purl.obolibrary.org/obo/mondo.owl"
+         xmlns:mondo="http://purl.obolibrary.org/obo/mondo#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:ncbitaxon="http://purl.obolibrary.org/obo/ncbitaxon#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:terms="http://purl.org/dc/terms/"
+         xmlns:xml="http://www.w3.org/XML/1998/namespace"
+         xmlns:ace_lexicon="http://attempto.ifi.uzh.ch/ace_lexicon#"
+         xmlns:obo="http://purl.obolibrary.org/obo/"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/mondo.owl">
+        <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/mondo/releases/2018-09-26/mondo.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/ecto_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/ncbitaxon_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/cl_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/go_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/uberon_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/foodon_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/mf_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/ro_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/pato_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/axioms.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/chebi_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/envo_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/hgnc_import.owl"/>
+        <owl:imports rdf:resource="http://purl.obolibrary.org/obo/mondo/imports/hp_import.owl"/>
+        <terms:source rdf:resource="http://www.orpha.net/ontology/orphanet.owl"/>
+        <terms:license rdf:resource="http://creativecommons.org/licenses/by/4.0/"/>
+        <terms:source rdf:resource="https://id.nlm.nih.gov/mesh/"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Includes Ontology(OntologyID(Anonymous-31)) [Axioms: 85678 Logical Axioms: 0]</rdfs:comment>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/mf.owl"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/chebi.owl"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Includes Ontology(OntologyID(OntologyIRI(&lt;http://purl.obolibrary.org/obo/mondo/imports/equivalencies.owl&gt;) VersionIRI(&lt;null&gt;))) [Axioms: 182994 Logical Axioms: 80672]</rdfs:comment>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/ncbitaxon.owl"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/uberon.owl"/>
+        <dc:title rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONDO: Monarch Disease Ontology</dc:title>
+        <terms:source rdf:resource="https://rarediseases.info.nih.gov/"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/envo.owl"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/go.owl"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/hp.owl"/>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/ncit.owl"/>
+        <oboInOwl:hasOBOFormatVersion rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.2</oboInOwl:hasOBOFormatVersion>
+        <foaf:homepage rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://obofoundry.org/ontology/mondo.html</foaf:homepage>
+        <terms:source rdf:resource="http://purl.obolibrary.org/obo/doid.owl"/>
+        <terms:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A semi-automatically constructed ontology that merges in multiple disease resources to yield a coherent merged ontology.</terms:description>
+    </owl:Ontology>
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/MONDO_0005072">
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/NCIT_C3270"/>
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/ONCOTREE_NBL"/>
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/SCTID_432328008"/>
+        <owl:equivalentClass rdf:resource="http://www.ebi.ac.uk/efo/EFO_0000621"/>
+        <owl:equivalentClass rdf:resource="http://www.orpha.net/ORDO/Orphanet_635"/>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0006316"/>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0021635"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0004030"/>
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000031"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A neuroblastic tumor characterized by the presence of neuroblastic cells, the absence of ganglion cells, and the absence of a prominent Schwannian stroma formation.</obo:IAO_0000115>
+        <mondo:excluded_subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0002366"/>
+        <mondo:excluded_subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0016713"/>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOID:769</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EFO:0000621</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GARD:0007185</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICD10:C74.9</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICDO:9500/3</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MESH:D009447</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MedDRA:10029260</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCIT:C3270</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NIFSTD:birnlex_12631</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ONCOTREE:NBL</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Orphanet:635</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SCTID:432328008</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UMLS:C0027819</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UMLS:CN205405</oboInOwl:hasDbXref>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">neural Crest tumor, malignant</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">neuroblastoma</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">neuroblastoma (Schwannian Stroma-poor)</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">neuroblastoma, malignant</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasRelatedSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NB</oboInOwl:hasRelatedSynonym>
+        <oboInOwl:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONDO:0005072</oboInOwl:id>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/mondo#gard_rare"/>
+        <oboInOwl:inSubset rdf:resource="http://purl.obolibrary.org/obo/mondo#ordo_disease"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alt def: Neuroblastoma is a malignant tumor of neural crest cells, the cells that give rise to the sympathetic nervous system, which is observed in children. [Orphanet:635]. Note DOID has this as in the ANS, EFO in the SNS, we make this neutral</rdfs:comment>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">neuroblastoma</rdfs:label>
+        <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://rarediseases.info.nih.gov/diseases/7185/neuroblastoma</rdfs:seeAlso>
+        <skos:closeMatch rdf:resource="http://identifiers.org/snomedct/189931003"/>
+        <skos:closeMatch rdf:resource="http://identifiers.org/snomedct/269507008"/>
+        <skos:closeMatch rdf:resource="http://identifiers.org/snomedct/87364003"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/meddra/10029260"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/mesh/C536408"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/mesh/D009447"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/snomedct/432328008"/>
+        <skos:exactMatch rdf:resource="http://linkedlifedata.com/resource/umls/id/C0027819"/>
+        <skos:exactMatch rdf:resource="http://linkedlifedata.com/resource/umls/id/C2931189"/>
+        <skos:exactMatch rdf:resource="http://linkedlifedata.com/resource/umls/id/CN205405"/>
+        <skos:exactMatch rdf:resource="http://purl.obolibrary.org/obo/DOID_769"/>
+        <skos:exactMatch rdf:resource="http://purl.obolibrary.org/obo/NCIT_C3270"/>
+        <skos:exactMatch rdf:resource="http://www.orpha.net/ORDO/Orphanet_635"/>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/MONDO_0005072"/>
+        <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/MONDO_0006316"/>
+        <oboInOwl:source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCIT:C3270</oboInOwl:source>
+    </owl:Axiom>
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/MONDO_0005073">
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/NCIT_C7570"/>
+        <owl:equivalentClass rdf:resource="http://purl.obolibrary.org/obo/SCTID_400096001"/>
+        <owl:equivalentClass rdf:resource="http://www.ebi.ac.uk/efo/EFO_0000625"/>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://purl.obolibrary.org/obo/MONDO_0005165"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0004026"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/UBERON_0000014"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0004030"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0021440"/>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/MONDO_0021583"/>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A neoplasm composed of melanocytes that usually appears as a dark spot on the skin.</obo:IAO_0000115>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">COHD:4271013</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EFO:0000625</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MESH:D009506</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCIT:C7570</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SCTID:400096001</oboInOwl:hasDbXref>
+        <oboInOwl:hasDbXref rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Wikipedia:Nevus</oboInOwl:hasDbXref>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mole</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mole of skin</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nevus</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">melanocytic Nevus</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">melanotic Nevus</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mole</oboInOwl:hasExactSynonym>
+        <oboInOwl:hasExactSynonym rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nevus</oboInOwl:hasExactSynonym>
+        <oboInOwl:id rdf:datatype="http://www.w3.org/2001/XMLSchema#string">MONDO:0005073</oboInOwl:id>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">melanocytic nevus</rdfs:label>
+        <skos:closeMatch rdf:resource="http://linkedlifedata.com/resource/umls/id/C0027960"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/mesh/D009506"/>
+        <skos:exactMatch rdf:resource="http://identifiers.org/snomedct/400096001"/>
+        <skos:exactMatch rdf:resource="http://purl.obolibrary.org/obo/NCIT_C7570"/>
+    </owl:Class>
+</rdf:RDF>

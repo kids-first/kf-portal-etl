@@ -1,32 +1,35 @@
 package io.kf.etl.processors.download.transform.utils
 
-import com.trueaccord.scalapb.GeneratedMessageCompanion
 import com.trueaccord.scalapb.json.JsonFormatException
+import com.trueaccord.scalapb.{GeneratedMessage, GeneratedMessageCompanion, Message}
 import io.kf.etl.common.conf.DataServiceConfig
-import io.kf.etl.transform.Json4s2ScalaPB
-import org.asynchttpclient.AsyncHttpClient
-import org.asynchttpclient.Dsl.asyncHttpClient
+import org.json4s
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
+import play.api.libs.ws.StandaloneWSClient
 
-import scala.annotation.tailrec
+import scala.concurrent.{ExecutionContext, Future}
 
-case class EntityDataRetriever(config:DataServiceConfig, filters: Seq[String] = Seq.empty[String]) {
+case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] = Seq.empty[String])(implicit wsClient: StandaloneWSClient, ec: ExecutionContext) {
 
-  lazy val asyncClient = getAsyncClient()
-
-  lazy val filterQueryString = filters.mkString("&")
+  private lazy val filterQueryString = filters.mkString("&")
 
   private lazy val scalaPbJson4sParser = new com.trueaccord.scalapb.json.Parser(preservingProtoFieldNames = true)
 
-
-  @tailrec
-  final def retrieve[T <: com.trueaccord.scalapb.GeneratedMessage with com.trueaccord.scalapb.Message[T]]
-    ( entityEndpoint:Option[String], data: Seq[T] = Seq.empty[T])
-    ( implicit
-        cmp: GeneratedMessageCompanion[T],
-        extractor: EntityParentIDExtractor[T]
-    ): Seq[T] = {
+  final def retrieve[T <: GeneratedMessage with Message[T]](endpoint: String, data: Seq[T] = Seq.empty[T], retries: Int = 10)(implicit cmp: GeneratedMessageCompanion[T], extractor: EntityParentIDExtractor[T]): Future[Seq[T]] = {
+    def extractDataset(responseBody: json4s.JValue) = {
+      responseBody \ "results" match {
+        case JNull | JNothing => Seq.empty
+        case obj: JObject =>
+          val entity = extractEntity(obj)
+          entity match {
+            case Some(e) => Seq(e)
+            case None => Seq.empty
+          }
+        case JArray(entities) => extractEntityArray(entities)
+        case _ => Seq.empty
+      }
+    }
 
     def extractEntityArray(entities: List[JValue]): Seq[T] = {
       entities.map(extractEntity).filter(_.isDefined).map(_.get)
@@ -42,52 +45,34 @@ case class EntityDataRetriever(config:DataServiceConfig, filters: Seq[String] = 
         Some(entity)
       } catch {
         case _: JsonFormatException => None
-        case e: Exception => throw(e)
+        case e: Exception => throw e
       }
     }
 
-    entityEndpoint match {
-      case None => data // No endpoint means do nothing, return the dataset provided
-      case Some(endpoint) => {
+    val url = s"${config.url}$endpoint&limit=100&$filterQueryString"
+    println(s"Retrieving (remain try = $retries): $url")
 
-        val url = s"${config.url}${endpoint}&limit=100&${filterQueryString}"
-        println(s"Retrieving: ${url}")
-
-        val request = asyncClient.prepareGet(url)
-        val responseBody = JsonMethods.parse( request.execute.get.getResponseBody )
-
-        val currentDataset =
-          (
-            responseBody \ "results" match {
-              case JNull | JNothing => Seq.empty
-              case obj: JObject => {
-                val entity = extractEntity(obj)
-                entity match {
-                  case Some(e) => Seq(e)
-                  case None => Seq.empty
-                }
-              }
-              case JArray(entities) => extractEntityArray(entities)
-              case _ => Seq.empty
-            }
-          ) ++ data
-
+    wsClient.url(url).get().flatMap { response =>
+      if (response.status != 200) {
+        if (retries > 0)
+          retrieve(endpoint, data, retries - 1)
+        else
+          Future.failed(new IllegalStateException(s"Impossible to fetch data from $url, got statusCode = ${response.status} and body = ${response.body}"))
+      } else {
+        import play.api.libs.ws.DefaultBodyReadables.readableAsString
+        val responseBody = JsonMethods.parse(response.body)
+        val currentDataset = data ++ extractDataset(responseBody)
         // Retrieve content from "next" URL in links, or return our dataset
         responseBody \ "_links" \ "next" match {
-          case JNull | JNothing => currentDataset
-          case JString(next) => retrieve(Some(s"${next}"), currentDataset)
-          case _ => currentDataset
+          case JString(next) => retrieve(next, currentDataset)
+          case _ => Future.successful(currentDataset)
         }
 
-      }//end of case Some(entities)
+      }
     }
+
+
   }
 
-  private def getAsyncClient(): AsyncHttpClient = {
-    asyncHttpClient
-  }
 
-  def stop():Unit = {
-    asyncClient.close()
-  }
 }

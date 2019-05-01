@@ -1,7 +1,7 @@
 package io.kf.etl.processors.common
 
 import io.kf.etl.external.dataservice.entity._
-import io.kf.etl.external.hpo.{GraphPath, OntologyTerm}
+import io.kf.etl.external.hpo.OntologyTerm
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -41,24 +41,23 @@ object ProcessorCommonDefinitions {
   )
 
   case class EntityEndpointSet(
-    participants: Seq[String],
-    families: Seq[String],
-    biospecimens: Seq[String],
-    diagnoses: Seq[String],
-    familyRelationships: Seq[String],
-    genomicFiles: Seq[String],
-    biospecimenGenomicFiles: Seq[String],
-    investigators: Seq[String],
-    outcomes: Seq[String],
-    phenotypes: Seq[String],
-    sequencingExperiments: Seq[String],
-    sequencingExperimentGenomicFiles: Seq[String],
-    studies: Seq[String],
-    studyFiles: Seq[String]
+    participants: String,
+    families: String,
+    biospecimens: String,
+    diagnoses: String,
+    familyRelationships: String,
+    genomicFiles: String,
+    biospecimenGenomicFiles: String,
+    investigators: String,
+    outcomes: String,
+    phenotypes: String,
+    sequencingExperiments: String,
+    sequencingExperimentGenomicFiles: String,
+    studies: String,
+    studyFiles: String
   )
 
   case class OntologiesDataSet(
-    hpoGraphPath: Dataset[GraphPath],
     hpoTerms: Dataset[OntologyTerm],
     mondoTerms: Dataset[OntologyTerm],
     ncitTerms: Dataset[OntologyTerm]

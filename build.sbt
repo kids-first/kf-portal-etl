@@ -23,7 +23,9 @@ lazy val commonSettings = Seq(
     case PathList("javax", "servlet", xs @ _*) => MergeStrategy.last
     case PathList("javax", "ws", xs @ _*) => MergeStrategy.last
     case PathList("javax", "inject", xs @ _*) => MergeStrategy.last
+    case PathList("javax", "activation", xs @ _*) => MergeStrategy.last
     case PathList("com", "sun", "research", xs @ _*) => MergeStrategy.last
+    case PathList("com", "sun", "activation", xs @ _*) => MergeStrategy.last
     case PathList("org", "apache", "commons", xs @ _*) => MergeStrategy.last
     case PathList("org", "apache", "hadoop", xs @ _*) => MergeStrategy.last
     case PathList("org", "aopalliance", xs @ _*) => MergeStrategy.last
@@ -62,6 +64,5 @@ lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(co
 
 lazy val pipeline = (project in file("kf-portal-etl-pipeline")).dependsOn(processors).settings(commonSettings:_*)
 
-lazy val livy = (project in file("kf-portal-etl-livy")).dependsOn(pipeline).settings(commonSettings:_*)
 
 

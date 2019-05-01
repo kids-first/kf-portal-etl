@@ -9,6 +9,7 @@ import io.kf.etl.common.url.KfURLStreamHandlerFactory
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.sql.SparkSession
 import org.elasticsearch.client.transport.TransportClient
+import play.api.libs.ws.StandaloneWSClient
 
 trait Context extends ContextBase {
   lazy val hdfs: FileSystem = getHDFS()
@@ -25,12 +26,20 @@ trait Context extends ContextBase {
   }
 
 
-
   def getDataService(): DataServiceConfig
+
   def getESClient(): TransportClient
+
   def getHDFS(): FileSystem
-  def getRootPath():String
+
+  def getRootPath(): String
+
   def getMysql(): MysqlConfig
+
   def getAWS(): Option[AmazonS3]
+
   def getSparkSession(): SparkSession
+
+  def getWsClient(): StandaloneWSClient
+
 }
