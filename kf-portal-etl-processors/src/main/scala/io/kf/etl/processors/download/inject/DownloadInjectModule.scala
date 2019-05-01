@@ -1,7 +1,5 @@
 package io.kf.etl.processors.download.inject
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import com.google.inject.Provides
 import io.kf.etl.common.Constants._
 import io.kf.etl.common.inject.GuiceModule
@@ -13,7 +11,7 @@ import io.kf.etl.processors.download.output.DownloadOutput
 import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
-import play.api.libs.ws.ahc.StandaloneAhcWSClient
+import play.api.libs.ws.StandaloneWSClient
 
 import scala.util.{Failure, Success, Try}
 
@@ -79,13 +77,7 @@ class DownloadInjectModule(context: Context, moduleName: String) extends Process
   override def getTransformer(dContext: DownloadContext): DownloadTransformer = {
     //This should be instantiate in a more global place
     import scala.concurrent.ExecutionContext.Implicits._
-    implicit val system: ActorSystem = ActorSystem()
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
-    implicit val wsClient: StandaloneAhcWSClient = StandaloneAhcWSClient()
-    sys.addShutdownHook {
-      wsClient.close()
-      system.terminate()
-    }
+    implicit val wsClient: StandaloneWSClient = context.getWsClient()
     new DownloadTransformer(dContext)
   }
 

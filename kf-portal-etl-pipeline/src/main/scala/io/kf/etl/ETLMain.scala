@@ -22,7 +22,7 @@ object ETLMain extends App {
 
   private lazy val context = createContext()
 
-  private def createContext():Context = {
+  private def createContext(): DefaultContext = {
     new DefaultContext
   }
 
@@ -45,7 +45,7 @@ object ETLMain extends App {
               guiceModuleName
             )
             .asInstanceOf[AbstractModule]
-        }).toSeq:_*
+        }).toSeq: _*
     )
   }
 
@@ -58,7 +58,7 @@ object ETLMain extends App {
   }
 
   /**
-    *  *** INJECT DEPENDENCIES ***
+    * *** INJECT DEPENDENCIES ***
     */
   val downloadProcessor = injector.getInstance(classOf[DownloadProcessor])
   val participantCommonProcessor = injector.getInstance(classOf[ParticipantCommonProcessor])
@@ -68,18 +68,18 @@ object ETLMain extends App {
 
 
   /**
-    *  *** RUN PIPELINE ***
+    * *** RUN PIPELINE ***
     */
   cliArgs.study_ids match {
 
     // Requires study_ids to run
-    case Some(study_ids) => {
+    case Some(study_ids) =>
       println(s"Running Pipeline with study IDS {${study_ids.mkString(", ")}}")
 
       /* REJOICE! THE PIPELINE BEGINS!!! */
       Pipeline.foreach[String](study_ids.toSeq, study => {
 
-        println(s"Beginning pipeline for study: ${study}")
+        println(s"Beginning pipeline for study: $study")
 
         Pipeline.from(study)
           .map(downloadProcessor)
@@ -89,19 +89,19 @@ object ETLMain extends App {
             // run the index processor for each completed index.
             // TODO: Rebuild this into the pipeline syntax, should not require logic inside the pipeline
 
-            Seq(tuples._1, tuples._2).map(tuple => {
+            Seq(tuples._1, tuples._2).foreach(tuple => {
               val indexType = tuple._1
               val releaseId = cliArgs.release_id.get
 
               val indexName = createIndexName(indexType, study, releaseId)
 
-              indexProcessor.process( (indexName, tuple._2) )
+              indexProcessor.process((indexName, tuple._2))
             })
           })
           .run()
+        context.sparkSession.sqlContext.clearCache()
 
       }).run()
-    }
 
     // No Study IDs:
     case None => {
@@ -110,4 +110,5 @@ object ETLMain extends App {
     }
 
   }
+  context.close()
 }

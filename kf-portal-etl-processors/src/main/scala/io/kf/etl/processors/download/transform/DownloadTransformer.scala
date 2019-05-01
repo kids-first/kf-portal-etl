@@ -9,12 +9,12 @@ import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.hpo.HPOTerm
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever
-import play.api.libs.ws.ahc.StandaloneAhcWSClient
+import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 
-class DownloadTransformer(val context: DownloadContext)(implicit WSClient: StandaloneAhcWSClient, ec: ExecutionContext) {
+class DownloadTransformer(val context: DownloadContext)(implicit WSClient: StandaloneWSClient, ec: ExecutionContext) {
 
   val filters: Seq[String] = Seq("visible=true")
 
