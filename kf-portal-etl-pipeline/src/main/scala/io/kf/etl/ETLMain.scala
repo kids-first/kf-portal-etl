@@ -75,7 +75,7 @@ object ETLMain extends App {
       // TODO: Throw exception
 
     }
-
+    context.close()
   } catch {
     case e: Exception =>
       println(s"Error occurs : ")
