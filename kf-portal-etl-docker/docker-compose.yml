@@ -26,7 +26,7 @@ services:
     container_name: kf-etl
     hostname: kf-etl
     environment:
-        - KF_STUDY_ID="SD_9PYZAHHE"
+        - KF_STUDY_ID="SD_YNSSAPHE"
         #- KF_STUDY_ID="UNKNOWN_STUDY"
         - KF_RELEASE_ID=RE_CEG0C8WK
     volumes:
