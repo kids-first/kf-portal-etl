@@ -18,8 +18,6 @@ services:
     build:
       context: ./etl
       dockerfile: Dockerfile
-      args:
-        SPARK_MASTER: "spark://localhost:7077"
     image: kids-first/etl:0.0.1
     links:
       - hpo
@@ -29,6 +27,7 @@ services:
     hostname: kf-etl
     environment:
         - KF_STUDY_ID="SD_9PYZAHHE"
+        #- KF_STUDY_ID="UNKNOWN_STUDY"
         - KF_RELEASE_ID=RE_CEG0C8WK
     volumes:
       - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
