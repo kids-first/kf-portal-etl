@@ -6,7 +6,7 @@ import org.apache.spark.sql.SparkSession
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 
-class DefaultContext extends ContextCommon {
+class DefaultContext extends ContextCommon with AutoCloseable {
 
   implicit val system: ActorSystem = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -48,6 +48,7 @@ class DefaultContext extends ContextCommon {
   }
 
   def close(): Unit = {
+    println("Close default context")
     wsClient.close()
     system.terminate()
   }
