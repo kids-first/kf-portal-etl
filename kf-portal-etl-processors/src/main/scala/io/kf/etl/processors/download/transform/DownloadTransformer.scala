@@ -1,15 +1,14 @@
 package io.kf.etl.processors.download.transform
 
-import java.net.URL
-
 import io.kf.etl.external.dataservice.entity._
+import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
-import io.kf.etl.processors.common.ontology.OwlManager
-
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.hpo.HPOTerm
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration.Duration
@@ -20,19 +19,26 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
   val filters: Seq[String] = Seq("visible=true")
 
   def downloadOntologyData(): OntologiesDataSet = {
-
-
-    import context.appContext.sparkSession.implicits._
     val spark = context.appContext.sparkSession
 
-    val mondoTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/mondo/mondo.owl"))
-    val ncitTerms = OwlManager.getOntologyTermsFromURL(new URL("https://s3.amazonaws.com/kf-qa-etl-bucket/ontologies/ncit/ncit.owl"))
+    val mondoTerms = loadTerms(context.config.mondoPath, spark)
+    val ncitTerms = loadTerms(context.config.ncitPath, spark)
 
     OntologiesDataSet(
       hpoTerms = HPOTerm.get(context).cache,
-      mondoTerms = spark.createDataset(mondoTerms),
-      ncitTerms = spark.createDataset(ncitTerms)
+      mondoTerms = mondoTerms.cache(),
+      ncitTerms = ncitTerms.cache()
     )
+  }
+
+  def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
+    import spark.implicits._
+    val schema = StructType(Seq(
+      StructField("id", StringType, nullable = true),
+      StructField("name", StringType, nullable = true)
+    )
+    )
+    spark.read.option("sep", "\t").schema(schema).csv(path).as[OntologyTerm]
   }
 
   def setFileRepo(file: EGenomicFile): EGenomicFile = {
@@ -85,7 +91,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
 
     val ontologyData = downloadOntologyData()
     val retriever = EntityDataRetriever(context.config.dataService, filters)
-    
+
     val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
     val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
