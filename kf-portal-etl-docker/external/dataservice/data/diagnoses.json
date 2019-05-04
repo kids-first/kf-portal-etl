@@ -1,0 +1,21 @@
+{
+  "_links": {
+    "self": "/diagnoses"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "participant_id": "1",
+      "genomic_file_id": "1",
+      "visible": true,
+      "source_text_diagnosis": "Cancer"
+
+    }
+  ],
+  "total": 2
+}

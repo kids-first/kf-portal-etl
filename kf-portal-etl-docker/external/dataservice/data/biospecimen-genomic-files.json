@@ -1,0 +1,19 @@
+{
+  "_links": {
+    "self": "/biospecimen-genomic-files"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "biospecimen_id": "1",
+      "genomic_file_id": "1",
+      "visible": true
+    }
+  ],
+  "total": 2
+}

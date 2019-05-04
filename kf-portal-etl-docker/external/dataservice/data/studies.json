@@ -1,0 +1,21 @@
+{
+  "_links": {
+    "self": "/studies"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "name": "Study 1",
+      "participants": [
+        "1"
+      ],
+      "visible": true
+    }
+  ],
+  "total": 2
+}

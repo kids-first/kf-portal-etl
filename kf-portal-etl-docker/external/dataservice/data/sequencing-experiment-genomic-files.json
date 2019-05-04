@@ -1,0 +1,20 @@
+{
+  "_links": {
+    "self": "/sequencing-experiment-genomic-files"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "visible": true,
+      "external_id": "SEG1",
+      "genomic_file": "1",
+      "kf_id": "1",
+      "sequencing_experiment": "1"
+    }
+  ],
+  "total": 2
+}
