@@ -4,7 +4,7 @@ import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Pa
 import io.kf.etl.external.dataservice.entity.EFamilyRelationship
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.step.StepExecutable
-import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
+import io.kf.etl.processors.common.step.context.StepContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._

@@ -4,8 +4,8 @@ import io.kf.etl.es.models.{Participant_ES, Phenotype_ES}
 import io.kf.etl.external.dataservice.entity.EPhenotype
 import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.common.step.StepExecutable
+import io.kf.etl.processors.common.step.context.StepContext
 import io.kf.etl.processors.common.step.impl.MergePhenotype._
-import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
 import org.apache.spark.sql.Dataset
 
 class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Dataset[Participant_ES], Dataset[Participant_ES]] {
