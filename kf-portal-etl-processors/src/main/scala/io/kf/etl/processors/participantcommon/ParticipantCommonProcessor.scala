@@ -14,6 +14,6 @@ class ParticipantCommonProcessor(
                                 output: ((EntityDataSet, Dataset[Participant_ES])) => (EntityDataSet, Dataset[Participant_ES])
                                 ) extends Processor[EntityDataSet, (EntityDataSet, Dataset[Participant_ES])]{
   override def process(input: EntityDataSet): (EntityDataSet, Dataset[Participant_ES]) = {
-    source.andThen(transformer).andThen(sink).andThen(output)(input)
+    source.andThen(transformer).andThen(output)(input)
   }
 }

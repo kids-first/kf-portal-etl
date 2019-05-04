@@ -4,7 +4,6 @@ name := "kf-portal-etl-pipeline"
 
 libraryDependencies ++= Seq(
   spark_sql,
-  hadoop265,
   google_guice,
   reflections,
   es_spark,

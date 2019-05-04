@@ -11,7 +11,7 @@ class DownloadProcessor(context: DownloadContext,
                         output: EntityDataSet => EntityDataSet) extends Processor[String, EntityDataSet]{
 
   def process(input:String):EntityDataSet = {
-    source.andThen(transform).andThen(sink).andThen(output)(input)
+    source.andThen(transform).andThen(output)(input)
   }
 
 }

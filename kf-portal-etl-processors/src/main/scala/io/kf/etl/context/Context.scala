@@ -12,7 +12,6 @@ import org.elasticsearch.client.transport.TransportClient
 import play.api.libs.ws.StandaloneWSClient
 
 trait Context extends ContextBase {
-  lazy val hdfs: FileSystem = getHDFS()
   lazy val rootPath: String = getRootPath()
   lazy val mysql: MysqlConfig = getMysql()
   lazy val esClient: TransportClient = getESClient()
@@ -29,8 +28,6 @@ trait Context extends ContextBase {
   def getDataService(): DataServiceConfig
 
   def getESClient(): TransportClient
-
-  def getHDFS(): FileSystem
 
   def getRootPath(): String
 

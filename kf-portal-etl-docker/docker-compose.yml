@@ -21,7 +21,6 @@ services:
     image: kids-first/etl:0.0.1
     links:
       - hpo
-      - hadoop
       - elasticsearch
     container_name: kf-etl
     hostname: kf-etl
@@ -34,10 +33,6 @@ services:
       - "../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
     ports:
       - "4040:4040"
-  hadoop:
-    image: sequenceiq/hadoop-docker:2.7.0
-    container_name: kf-hadoop
-    hostname: kf-hadoop
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: kf-es
@@ -48,3 +43,12 @@ services:
     environment:
       - discovery.type=single-node
       - cluster.name=kf-es
+  kf-dataservice:
+    container_name: kf-dataservice
+    hostname: kf-dataservice
+    image: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./external/dataservice/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./external/dataservice/data:/data/www

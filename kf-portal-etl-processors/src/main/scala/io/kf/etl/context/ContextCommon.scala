@@ -21,7 +21,7 @@ trait ContextCommon extends Context{
     KFConfig(
       (Option( System.getProperty(CONFIG_FILE_URL) ) match {
         case Some(path) => ConfigFactory.parseURL(new URL(path))
-        case None => ConfigFactory.parseURL(new URL(s"classpath:///${DEFAULT_CONFIG_FILE_NAME}"))
+        case None => ConfigFactory.parseURL(new URL(s"classpath:///$DEFAULT_CONFIG_FILE_NAME"))
       }).resolve()
     )
   }
@@ -34,17 +34,11 @@ trait ContextCommon extends Context{
 
     System.setProperty("es.set.netty.runtime.available.processors", "false")
 
-    (new PreBuiltTransportClient(
+    new PreBuiltTransportClient(
       Settings.builder()
         .put("cluster.name", config.esConfig.cluster_name)
         .build()
-    )).addTransportAddress(new TransportAddress(InetAddress.getByName(config.esConfig.host), config.esConfig.transport_port))
-  }
-
-  override def getHDFS(): FileSystem = {
-    val conf = new Configuration()
-    conf.set("fs.defaultFS", config.hdfsConfig.fs)
-    FileSystem.get(conf)
+    ).addTransportAddress(new TransportAddress(InetAddress.getByName(config.esConfig.host), config.esConfig.transport_port))
   }
 
   override def getRootPath():String = {

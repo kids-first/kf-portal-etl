@@ -12,32 +12,26 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 import scala.collection.convert.WrapAsScala
 
 object URLPathOps {
-  def removePathIfExists(path: URL, appContext: Context):Unit = {
+  def removePathIfExists(path: URL, appContext: Context): Unit = {
     val s3 = "s3(.*)".r
     path.getProtocol match {
-      case "file" => {
+      case "file" =>
         new FileURLOps().removePathIfExists(path)
-      }
-      case "hdfs" => {
-        val hdfs = appContext.hdfs
-        new HDFSURLOps(hdfs).removePathIfExists(path)
-      }
-      case s3(c) => {
+      case s3(_) =>
         val s3Client = appContext.awsS3
         new S3URLOps(s3Client.get).removePathIfExists(path)
-      }
-      case  _ => throw new Exception(s"${path.getProtocol} is not supported!")
+      case _ => throw new Exception(s"${path.getProtocol} is not supported!")
     }
   }
 
-  private sealed trait URLOps{
-    def removePathIfExists(path:URL):Unit
+  private sealed trait URLOps {
+    def removePathIfExists(path: URL): Unit
   }
 
   private class FileURLOps extends URLOps {
     override def removePathIfExists(path: URL): Unit = {
       val dir = new File(path.getFile)
-      if(dir.exists())
+      if (dir.exists())
         FileUtils.deleteDirectory(dir)
     }
   }
@@ -49,18 +43,19 @@ object URLPathOps {
     }
   }
 
-  private class S3URLOps(s3:AmazonS3) extends URLOps {
+  private class S3URLOps(s3: AmazonS3) extends URLOps {
     override def removePathIfExists(path: URL): Unit = {
       val bucket = path.getHost
       val common_path = path.getPath.split('/').filter(!_.trim.isEmpty).mkString("", "/", "/")
 
       val deleteObjsReq = new DeleteObjectsRequest(bucket).withKeys(
-        WrapAsScala.asScalaBuffer( s3.listObjects(bucket).getObjectSummaries ).filter(summary => {
+        WrapAsScala.asScalaBuffer(s3.listObjects(bucket).getObjectSummaries).filter(summary => {
           summary.getKey.startsWith(common_path)
-        }).map(_.getKey) : _*
+        }).map(_.getKey): _*
       )
 
       s3.deleteObjects(deleteObjsReq)
     }
   }
+
 }

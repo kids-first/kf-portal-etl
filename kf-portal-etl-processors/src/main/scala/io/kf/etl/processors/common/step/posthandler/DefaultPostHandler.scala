@@ -3,7 +3,7 @@ package io.kf.etl.processors.common.step.posthandler
 import java.net.URL
 
 import io.kf.etl.processors.common.step.StepExecutable
-import io.kf.etl.processors.filecentric.transform.steps.context.StepContext
+import io.kf.etl.processors.common.step.context.StepContext
 
 final case class DefaultPostHandler[T](override val ctx:StepContext = null) extends StepExecutable[T, T] {
   override def process(input: T): T = {

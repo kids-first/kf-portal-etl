@@ -16,6 +16,7 @@ object OwlManager {
   private val factory = SAXParserFactory.newInstance
 
   def getOntologyTermsFromURL(source: URL): Seq[OntologyTerm] = {
+    println(s"Start parsing ontology term from $source")
     val handler = new OwlTermHandler(source.toString.contains("ncit"))
 
     try {
@@ -26,7 +27,7 @@ object OwlManager {
       case e: IOException => e.printStackTrace()
       case e: SAXException => e.printStackTrace()
     }
-
+    println(s"End parsing ontology term from $source")
     handler.getTerms
   }
 
