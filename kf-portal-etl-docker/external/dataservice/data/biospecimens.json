@@ -1,0 +1,18 @@
+{
+  "_links": {
+    "self": "/biospecimens"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "participant_id": "1",
+      "visible": true
+    }
+  ],
+  "total": 2
+}

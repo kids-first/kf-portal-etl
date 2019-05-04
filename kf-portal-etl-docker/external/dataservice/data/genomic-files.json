@@ -1,0 +1,25 @@
+{
+  "_links": {
+    "self": "/genomic-files"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "data_type": "Align Reads",
+      "external_id": "G1",
+      "file_format": ".vcf",
+      "file_name": "test.vcf",
+      "latest_did": "1",
+      "urls": ["http://test"],
+      "visible": true
+
+
+    }
+  ],
+  "total": 2
+}

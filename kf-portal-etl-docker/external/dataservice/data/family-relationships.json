@@ -1,0 +1,13 @@
+{
+  "_links": {
+    "self": "/biospecimen-genomic-files"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+  ],
+  "total": 2
+}

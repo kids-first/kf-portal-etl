@@ -1,0 +1,21 @@
+{
+  "_links": {
+    "self": "/participants"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+    {
+      "kf_id": "1",
+      "external_id": "P1",
+      "is_proband": true,
+      "study_id": 1,
+      "family_id": "1",
+      "visible": true
+    }
+  ],
+  "total": 2
+}

@@ -1,0 +1,13 @@
+{
+  "_links": {
+    "self": "/investigators"
+  },
+  "_status": {
+    "code": 200,
+    "message": "success"
+  },
+  "limit": 10,
+  "results": [
+  ],
+  "total": 2
+}
