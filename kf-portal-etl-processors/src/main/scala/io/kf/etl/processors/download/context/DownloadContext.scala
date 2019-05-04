@@ -8,12 +8,12 @@ import io.kf.etl.processors.common.processor.{ProcessorConfig, ProcessorContext}
 
 case class DownloadContext(override val appContext: Context,
                            override val config: DownloadConfig) extends ProcessorContext {
-  def getJobDataPath():String = {
+  def getJobDataPath(): String = {
     config.dataPath match {
       case Some(cc) => cc
-      case None => s"${appContext.rootPath}/${DOWNLOAD_DEFAULT_DATA_PATH}"
+      case None => s"${appContext.rootPath}/$DOWNLOAD_DEFAULT_DATA_PATH"
     }
   }
 }
 
-case class DownloadConfig(override val name:String, dataService: DataServiceConfig, dumpPath:String, override val dataPath:Option[String], mysql: MysqlConfig) extends ProcessorConfig
+case class DownloadConfig(override val name: String, dataService: DataServiceConfig, dumpPath: String, override val dataPath: Option[String], mysql: MysqlConfig, mondoPath: String, ncitPath: String) extends ProcessorConfig
