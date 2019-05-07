@@ -1,25 +1,47 @@
 {
   "_links": {
-    "self": "/genomic-files"
+    "biospecimen_genomic_files": "/biospecimen-genomic-files?genomic_file_id=GF_R43EF2XY",
+    "biospecimens": "/biospecimens?genomic_file_id=GF_R43EF2XY",
+    "collection": "/genomic-files",
+    "read_group_genomic_files": "/read-group-genomic-files?genomic_file_id=GF_R43EF2XY",
+    "read_groups": "/read-groups?genomic_file_id=GF_R43EF2XY",
+    "self": "/genomic-files/GF_R43EF2XY",
+    "sequencing_experiment_genomic_files": "/sequencing-experiment-genomic-files?genomic_file_id=GF_R43EF2XY",
+    "sequencing_experiments": "/sequencing-experiments?genomic_file_id=GF_R43EF2XY",
+    "task_genomic_files": "/task-genomic-files?genomic_file_id=GF_R43EF2XY"
   },
   "_status": {
     "code": 200,
     "message": "success"
   },
-  "limit": 10,
-  "results": [
-    {
-      "kf_id": "1",
-      "data_type": "Align Reads",
-      "external_id": "G1",
-      "file_format": ".vcf",
-      "file_name": "test.vcf",
-      "latest_did": "1",
-      "urls": ["http://test"],
-      "visible": true
-
-
-    }
-  ],
-  "total": 2
+  "results": {
+    "access_urls": [
+      "https://api.gdc.cancer.gov/data/c297d58d-60c0-474d-9052-5355e49f4723"
+    ],
+    "acl": [
+      "phs000218"
+    ],
+    "availability": "Immediate Download",
+    "controlled_access": true,
+    "created_at": "2018-09-28T04:50:05.853376+00:00",
+    "data_type": "Aligned Reads",
+    "external_id": "https://api.gdc.cancer.gov/data/c297d58d-60c0-474d-9052-5355e49f4723",
+    "file_format": "bam",
+    "file_name": "C829.TARGET-30-PARJMX-01A-01D.3_gdc_realn.bam",
+    "hashes": {
+      "md5": "ff4581fc2943f5b228ca61a74da19df6"
+    },
+    "is_harmonized": false,
+    "kf_id": "GF_R43EF2XY",
+    "latest_did": "7285ce66-ca38-4c6b-96ee-32d48d6ac27c",
+    "metadata": {},
+    "modified_at": "2018-09-28T04:50:05.853383+00:00",
+    "paired_end": null,
+    "reference_genome": null,
+    "size": 9386298951,
+    "urls": [
+      "https://api.gdc.cancer.gov/data/c297d58d-60c0-474d-9052-5355e49f4723"
+    ],
+    "visible": true
+  }
 }

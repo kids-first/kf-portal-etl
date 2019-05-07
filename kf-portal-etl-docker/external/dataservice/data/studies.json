@@ -1,21 +1,29 @@
 {
   "_links": {
-    "self": "/studies"
+    "collection": "/studies",
+    "investigator": "/investigators/IG_7D556S7K",
+    "participants": "/participants?study_id=SD_YNSSAPHE",
+    "self": "/studies/SD_YNSSAPHE",
+    "study_files": "/study-files?study_id=SD_YNSSAPHE"
   },
   "_status": {
     "code": 200,
     "message": "success"
   },
-  "limit": 10,
   "results": [
     {
-      "kf_id": "1",
-      "name": "Study 1",
-      "participants": [
-        "1"
-      ],
+      "attribution": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000467.v17.p7",
+      "created_at": "2018-09-28T04:38:33.769022+00:00",
+      "data_access_authority": "dbGaP",
+      "external_id": "phs000467",
+      "kf_id": "SD_YNSSAPHE",
+      "modified_at": "2018-09-28T04:38:33.769031+00:00",
+      "name": "TARGET: Neuroblastoma (NBL)",
+      "release_status": "Pending",
+      "short_name": "TARGET: Neuroblastoma",
+      "version": "v17.p7",
       "visible": true
     }
   ],
-  "total": 2
+  "total": 1
 }

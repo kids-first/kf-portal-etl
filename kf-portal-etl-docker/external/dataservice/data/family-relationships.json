@@ -1,13 +1,12 @@
 {
   "_links": {
-    "self": "/biospecimen-genomic-files"
+    "self": "/family-relationships"
   },
   "_status": {
     "code": 200,
     "message": "success"
   },
   "limit": 10,
-  "results": [
-  ],
-  "total": 2
+  "results": [],
+  "total": 0
 }
