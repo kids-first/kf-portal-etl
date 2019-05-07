@@ -7,12 +7,6 @@
     "message": "success"
   },
   "limit": 10,
-  "results": [
-    {
-      "kf_id": "1",
-      "file_name": "study1.pdf",
-      "visible": true
-    }
-  ],
-  "total": 2
+  "results": [],
+  "total": 0
 }

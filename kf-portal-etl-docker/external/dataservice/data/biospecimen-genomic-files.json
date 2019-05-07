@@ -9,11 +9,18 @@
   "limit": 10,
   "results": [
     {
-      "kf_id": "1",
-      "biospecimen_id": "1",
-      "genomic_file_id": "1",
+      "_links": {
+        "biospecimen": "/biospecimens/BS_7TRMYRE1",
+        "collection": "/biospecimen-genomic-files",
+        "genomic_file": "/genomic-files/GF_R43EF2XY",
+        "self": "/biospecimen-genomic-files/BG_P9QS42S6"
+      },
+      "created_at": "2018-09-28T04:50:06.059993+00:00",
+      "external_id": null,
+      "kf_id": "BG_P9QS42S6",
+      "modified_at": "2018-09-28T04:50:06.059999+00:00",
       "visible": true
     }
   ],
-  "total": 2
+  "total": 1
 }

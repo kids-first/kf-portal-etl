@@ -8,6 +8,21 @@
   },
   "limit": 10,
   "results": [
+    {
+      "_links": {
+        "collection": "/outcomes",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": "/outcomes/OC_802NJPD5"
+      },
+      "age_at_event_days": 3777,
+      "created_at": "2018-09-28T04:55:55.233349+00:00",
+      "disease_related": null,
+      "external_id": null,
+      "kf_id": "OC_802NJPD5",
+      "modified_at": "2018-09-28T04:55:55.233355+00:00",
+      "visible": true,
+      "vital_status": "Alive"
+    }
   ],
-  "total": 2
+  "total": 1
 }

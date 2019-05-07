@@ -9,11 +9,34 @@
   "limit": 10,
   "results": [
     {
-      "kf_id": "1",
-      "external_id": "SE1",
-      "genomic_files": ["1"],
+      "_links": {
+        "collection": "/sequencing-experiments",
+        "genomic_files": "/genomic-files?sequencing_experiment_id=SE_CMXJ8AHZ",
+        "self": "/sequencing-experiments/SE_CMXJ8AHZ",
+        "sequencing_center": "/sequencing-centers/SC_9M4YB3QV",
+        "sequencing_experiment_genomic_files": "/sequencing-experiment-genomic-files?sequencing_experiment_id=SE_CMXJ8AHZ"
+      },
+      "created_at": "2018-09-19T16:39:01.233799+00:00",
+      "experiment_date": null,
+      "experiment_strategy": "WXS",
+      "external_id": "RIMGC000036F",
+      "instrument_model": "HiSeq2500",
+      "is_paired_end": true,
+      "kf_id": "SE_CMXJ8AHZ",
+      "library_name": null,
+      "library_strand": null,
+      "max_insert_size": null,
+      "mean_depth": null,
+      "mean_insert_size": null,
+      "mean_read_length": null,
+      "modified_at": "2018-09-19T16:39:01.233806+00:00",
+      "platform": "Illumina",
+      "sequencing_experiment_genomic_files": [
+        "SG_3VP9ZVGF"
+      ],
+      "total_reads": null,
       "visible": true
     }
   ],
-  "total": 2
+  "total": 1
 }

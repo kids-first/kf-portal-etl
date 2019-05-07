@@ -9,12 +9,18 @@
   "limit": 10,
   "results": [
     {
-      "visible": true,
-      "external_id": "SEG1",
-      "genomic_file": "1",
-      "kf_id": "1",
-      "sequencing_experiment": "1"
+      "_links": {
+        "collection": "/sequencing-experiment-genomic-files",
+        "genomic_file": "/genomic-files/GF_Q19ZG96Q",
+        "self": "/sequencing-experiment-genomic-files/SG_3VP9ZVGF",
+        "sequencing_experiment": "/sequencing-experiments/SE_CMXJ8AHZ"
+      },
+      "created_at": "2019-01-20T19:31:55.829208+00:00",
+      "external_id": null,
+      "kf_id": "SG_3VP9ZVGF",
+      "modified_at": "2019-01-20T19:31:55.829214+00:00",
+      "visible": true
     }
   ],
-  "total": 2
+  "total": 1
 }

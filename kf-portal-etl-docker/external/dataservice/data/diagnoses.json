@@ -9,13 +9,28 @@
   "limit": 10,
   "results": [
     {
-      "kf_id": "1",
-      "participant_id": "1",
-      "genomic_file_id": "1",
-      "visible": true,
-      "source_text_diagnosis": "Cancer"
-
+      "_links": {
+        "biospecimen_diagnoses": "/biospecimen-diagnoses?diagnosis_id=DG_53A66ZPY",
+        "biospecimens": "/biospecimens?diagnosis_id=DG_53A66ZPY",
+        "collection": "/diagnoses",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": "/diagnoses/DG_53A66ZPY"
+      },
+      "age_at_event_days": 903,
+      "created_at": "2018-09-28T04:57:05.163449+00:00",
+      "diagnosis_category": "Cancer",
+      "external_id": null,
+      "icd_id_diagnosis": null,
+      "kf_id": "DG_53A66ZPY",
+      "modified_at": "2018-09-28T04:57:05.163454+00:00",
+      "mondo_id_diagnosis": "MONDO:0005072",
+      "ncit_id_diagnosis": "NCIT:C3270",
+      "source_text_diagnosis": "Neuroblastoma",
+      "source_text_tumor_location": "Nervous System",
+      "spatial_descriptor": null,
+      "uberon_id_tumor_location": "UBERON:0001016",
+      "visible": true
     }
   ],
-  "total": 2
+  "total": 1
 }
