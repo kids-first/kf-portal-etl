@@ -3,6 +3,7 @@ package io.kf.etl.processors.test.processor.context
 import java.net.URL
 
 import io.kf.etl.context.CLIParametersHolder
+import io.kf.etl.test.common.KfEtlUnitTestSpec
 
 class CLIParametersHolderTest extends KfEtlUnitTestSpec{
   "A CLIParametersHolder" should "" in {

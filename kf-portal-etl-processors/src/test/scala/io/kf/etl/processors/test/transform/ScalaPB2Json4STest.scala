@@ -1,6 +1,8 @@
 package io.kf.etl.processors.test.transform
 
 import java.net.URL
+
+import io.kf.etl.test.common.KfEtlUnitTestSpec
 import io.kf.test.Doc
 import org.json4s.jackson.JsonMethods._
 

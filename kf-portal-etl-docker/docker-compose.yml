@@ -30,6 +30,7 @@ services:
         - KF_RELEASE_ID=RE_CEG0C8WK
     volumes:
       - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
+      - "./log4j.properties:/kf-etl/spark/conf/log4j.properties"
       - "../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
       - "./mondo.tsv.gz:/kf-etl/mondo.tsv.gz"
       - "./ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
