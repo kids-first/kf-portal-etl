@@ -5,6 +5,7 @@ import java.net.URL
 import com.typesafe.config.ConfigFactory
 import io.kf.etl.common.Constants.DEFAULT_CONFIG_FILE_NAME
 import io.kf.etl.common.conf.KFConfig
+import io.kf.etl.test.common.KfEtlUnitTestSpec
 
 class ConfigurationTest extends KfEtlUnitTestSpec{
 

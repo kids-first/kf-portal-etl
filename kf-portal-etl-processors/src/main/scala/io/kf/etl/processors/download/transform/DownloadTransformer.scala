@@ -23,7 +23,6 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
 
     val mondoTerms = loadTerms(context.config.mondoPath, spark)
     val ncitTerms = loadTerms(context.config.ncitPath, spark)
-
     OntologiesDataSet(
       hpoTerms = HPOTerm.get(context).cache,
       mondoTerms = mondoTerms.cache(),
@@ -31,15 +30,6 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
     )
   }
 
-  def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
-    import spark.implicits._
-    val schema = StructType(Seq(
-      StructField("id", StringType, nullable = true),
-      StructField("name", StringType, nullable = true)
-    )
-    )
-    spark.read.option("sep", "\t").schema(schema).csv(path).as[OntologyTerm]
-  }
 
   def setFileRepo(file: EGenomicFile): EGenomicFile = {
 
@@ -156,6 +146,16 @@ object DownloadTransformer {
         !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
       case None => true
     }
+  }
+
+  def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
+    import spark.implicits._
+    val schema = StructType(Seq(
+      StructField("id", StringType, nullable = true),
+      StructField("name", StringType, nullable = true)
+    )
+    )
+    spark.read.option("sep", "\t").schema(schema).csv(path).as[OntologyTerm]
   }
 
 }

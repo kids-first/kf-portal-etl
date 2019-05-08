@@ -17,13 +17,20 @@
   "results": [
     {
       "affected_status": true,
+      "alias_group": "",
+      "biospecimens": "",
       "created_at": "2018-09-28T04:38:46.570096+00:00",
+      "diagnoses": "",
+      "diagnosis_category": "",
       "ethnicity": "Hispanic or Latino",
       "external_id": "TARGET-30-PARJMX",
+      "family_id": "",
       "gender": "Female",
       "is_proband": true,
       "kf_id": "PT_29ZEF7YN",
       "modified_at": "2018-09-28T04:38:46.570102+00:00",
+      "outcomes": "",
+      "phenotypes": "",
       "race": "Not Reported",
       "study_id": "SD_YNSSAPHE",
       "visible": true
