@@ -3,8 +3,8 @@ version: '3'
 services:
   hpo:
     build:
-      context: ./external/hpo
-      dockerfile: Dockerfile
+      context: kf-portal-etl-docker/external/hpo
+      dockerfile: kf-portal-etl-docker/external/hpo/Dockerfile
       args:
         HPO_SQL_FILE_NAME: MYHPO_03_2018.sql
     image: kids-first/hpo:0.0.1
@@ -16,8 +16,8 @@ services:
       - MYSQL_DATABASE=HPO
   etl:
     build:
-      context: ./etl
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     image: kids-first/etl:0.0.1
     links:
       - hpo
@@ -29,11 +29,11 @@ services:
         #- KF_STUDY_ID="UNKNOWN_STUDY"
         - KF_RELEASE_ID=RE_CEG0C8WK
     volumes:
-      - "./kf_etl.conf:/kf-etl/mnt/conf/kf_etl.conf"
-      - "./log4j.properties:/kf-etl/spark/conf/log4j.properties"
-      - "../kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
-      - "./mondo.tsv.gz:/kf-etl/mondo.tsv.gz"
-      - "./ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
+      - "./kf-portal-etl-docker/kf_etl.conf:/kf-etl/conf/kf_etl.conf"
+      - "./kf-portal-etl-docker/log4j.properties:/kf-etl/spark/conf/log4j.properties"
+      - "./kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
+      - "./kf-portal-etl-docker/mondo.tsv.gz:/kf-etl/mondo.tsv.gz"
+      - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
     ports:
       - "4040:4040"
   elasticsearch:
@@ -53,5 +53,5 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./external/dataservice/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./external/dataservice/data:/data/www
+      - ./kf-portal-etl-docker/external/dataservice/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./kf-portal-etl-docker/external/dataservice/data:/data/www
