@@ -13,8 +13,11 @@ abstract class KfEtlUnitTestSpec extends FlatSpec with Matchers with
   OptionValues with Inside with Inspectors {
 
   val profile = Source.fromInputStream(classOf[KfEtlUnitTestSpec].getResourceAsStream("/aws_profile.properties")).mkString
-
-  URL.setURLStreamHandlerFactory(new KfURLStreamHandlerFactory(
-    AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider(profile)).build()
-  ))
+  try {
+    URL.setURLStreamHandlerFactory(new KfURLStreamHandlerFactory(
+      AmazonS3ClientBuilder.standard().withCredentials(new ProfileCredentialsProvider(profile)).withRegion("us-east-1").build()
+    ))
+  } catch {
+    case e: Error if e.getMessage == "factory already defined" =>
+  }
 }
