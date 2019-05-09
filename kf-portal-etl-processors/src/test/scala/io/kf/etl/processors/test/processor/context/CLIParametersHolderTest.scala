@@ -6,7 +6,7 @@ import io.kf.etl.context.CLIParametersHolder
 import io.kf.etl.test.common.KfEtlUnitTestSpec
 
 class CLIParametersHolderTest extends KfEtlUnitTestSpec{
-  "A CLIParametersHolder" should "" in {
+  "A CLIParametersHolder" should "parse parameters" in {
     val args = Array("-study_id", "sample_id1", "sample_id2", "-release_id", "sample_index")
 
     val holder = new CLIParametersHolder(args)
@@ -28,8 +28,9 @@ class CLIParametersHolderTest extends KfEtlUnitTestSpec{
     }
   }
 
-  "CLIParameterHolder" should "parse -study_id_file" in {
-    val args = Array("-study_id_file", "classpath:/study_ids.txt", "-study_id", "123", "456")
+  it should "parse -study_id_file" in {
+    val filePath = getClass.getResource("/study_ids.txt")
+    val args = Array("-study_id_file", filePath.toString, "-study_id", "123", "456")
 
     val holder = new CLIParametersHolder(args)
     holder.study_ids match {
@@ -41,15 +42,8 @@ class CLIParametersHolderTest extends KfEtlUnitTestSpec{
     }
   }
 
-  "s3 url" should "" in {
-    val url = new URL("s3://kf-dev-etl-bucket/study_ids.txt")
-    println(url.getProtocol)
-    println(url.getHost)
-    println(url.getPath)
 
-  }
-
-  "CLIParameterHolder-S3" should "parse -study_id_file s3..." in {
+  "CLIParameterHolder-S3" should "parse -study_id_file s3..." ignore {
 
     val args = Array("-study_id_file", "s3://kf-dev-etl-bucket/study_ids.txt", "-study_id", "123", "456")
 
