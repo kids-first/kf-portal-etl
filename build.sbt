@@ -15,30 +15,16 @@ lazy val commonSettings = Seq(
     twitter,
     spark_packages,
     artima
-  ),
-  test in assembly := {},
-
-  assemblyMergeStrategy in assembly := {
-    case "META-INF/io.netty.versions.properties" => MergeStrategy.last
-    case "META-INF/native/libnetty_transport_native_epoll_x86_64.so" => MergeStrategy.last
-    case "META-INF/DISCLAIMER" => MergeStrategy.last
-    case "mozilla/public-suffix-list.txt" => MergeStrategy.last
-    case "overview.html" => MergeStrategy.last
-    case "git.properties" => MergeStrategy.discard
-    case "mime.types" => MergeStrategy.first
-    case x =>
-      val oldStrategy = (assemblyMergeStrategy in assembly).value
-      oldStrategy(x)
-  }
+  )
 )
 
-lazy val root = (project in file(".")).aggregate(model, common, processors, pipeline)
+lazy val root = (project in file(".")).aggregate(model, common, processors, pipeline).disablePlugins(AssemblyPlugin)
 
-lazy val model = (project in file("kf-portal-etl-model")).settings(commonSettings:_*)
+lazy val model = (project in file("kf-portal-etl-model")).settings(commonSettings:_*).disablePlugins(AssemblyPlugin)
 
-lazy val common = (project in file("kf-portal-etl-common")).dependsOn(model).settings(commonSettings:_*)
+lazy val common = (project in file("kf-portal-etl-common")).dependsOn(model).settings(commonSettings:_*).disablePlugins(AssemblyPlugin)
 
-lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common%"test->test;compile->compile").settings(commonSettings:_*)
+lazy val processors = (project in file("kf-portal-etl-processors")).dependsOn(common%"test->test;compile->compile").settings(commonSettings:_*).disablePlugins(AssemblyPlugin)
 
 lazy val pipeline = (project in file("kf-portal-etl-pipeline")).dependsOn(processors).settings(commonSettings:_*)
 
