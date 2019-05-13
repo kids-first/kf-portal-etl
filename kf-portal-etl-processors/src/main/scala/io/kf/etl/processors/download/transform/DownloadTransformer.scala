@@ -7,6 +7,7 @@ import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.hpo.HPOTerm
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever
+import org.apache.spark.SparkFiles
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
@@ -150,12 +151,14 @@ object DownloadTransformer {
 
   def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
     import spark.implicits._
+    spark.sparkContext.addFile(path)
     val schema = StructType(Seq(
       StructField("id", StringType, nullable = true),
       StructField("name", StringType, nullable = true)
     )
     )
-    spark.read.option("sep", "\t").schema(schema).csv(path).as[OntologyTerm]
+    val filename = path.split("/").last
+    spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).as[OntologyTerm]
   }
 
 }
