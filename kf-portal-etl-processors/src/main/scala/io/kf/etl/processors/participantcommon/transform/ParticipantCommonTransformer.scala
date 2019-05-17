@@ -14,7 +14,7 @@ class ParticipantCommonTransformer(val context: ParticipantCommonContext) {
 
     import context.appContext.sparkSession.implicits._
 
-    val ctx = StepContext(context.appContext.sparkSession, "participantcentric", context.getProcessorDataPath(), data)
+    val ctx = StepContext(context.appContext.sparkSession, "participantcommon", context.getProcessorDataPath(), data)
 
     val (posthandler1, posthandler2) = {
       if (context.config.write_intermediate_data) {
@@ -25,15 +25,16 @@ class ParticipantCommonTransformer(val context: ParticipantCommonContext) {
     }
 
     val ds =
-    Function.chain(
-      Seq(
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("02. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step2")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("03. merge Outcome into Participant", new MergeOutcome(ctx), posthandler1("step3")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("04. merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
-        Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Family into Participant", new MergeFamily(ctx), posthandler1("step5"))
-      )
-    )(context.appContext.sparkSession.emptyDataset[Participant_ES]).cache()
+      Function.chain(
+        Seq(
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("01. merge Study into Participant", new MergeStudy(ctx), posthandler1("step1")),
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("02. merge Diagnosis into Participant", new MergeDiagnosis(ctx), posthandler1("step2")),
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("03. merge Outcome into Participant", new MergeOutcome(ctx), posthandler1("step3")),
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("04. merge Phenotype into Participant", new MergePhenotype(ctx), posthandler1("step4")),
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("05. merge Family into Participant", new MergeFamily(ctx), posthandler1("step5")),
+          Step[Dataset[Participant_ES], Dataset[Participant_ES]]("06. merge Biospecimen into Participant", new MergeBiospecimenPerParticipant(ctx), posthandler1("step6"))
+        )
+      )(context.appContext.sparkSession.emptyDataset[Participant_ES]).cache()
 
     (data, ds)
 
