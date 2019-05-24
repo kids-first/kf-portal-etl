@@ -123,7 +123,10 @@ class BuildFileCentric(override val ctx: StepContext) extends StepExecutable[Dat
               case None => null
             }
           },
-          bio = tuple._2.bio,
+          bio = Option(tuple._2) match {
+            case Some(_) => tuple._2.bio
+            case None => null
+          },
           genomicFile = tuple._1.genomicFile
         )
 
