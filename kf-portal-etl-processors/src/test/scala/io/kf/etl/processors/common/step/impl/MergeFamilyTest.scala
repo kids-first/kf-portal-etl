@@ -2,7 +2,7 @@ package io.kf.etl.processors.common.step.impl
 
 import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
 import io.kf.etl.external.dataservice.entity._
-import io.kf.etl.processors.common.step.impl.MergeFamily.{Duo, DuoPlus, Trio, TrioPlus}
+import io.kf.etl.processors.common.step.impl.MergeFamily.{Duo, DuoPlus, Other, ProbandOnly, Trio, TrioPlus}
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.{StepContextUtil, WithSparkSession}
 import org.scalatest.{FlatSpec, Matchers}
@@ -186,6 +186,25 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
 
     MergeFamily.getFamilyComposition(fmr, probands = Seq("CHILD_ID")) shouldBe DuoPlus
   }
+
+  it should "return proband-only" in {
+    val fmr = Map(
+      "CHILD_ID" -> Nil
+    )
+
+    MergeFamily.getFamilyComposition(fmr, probands = Seq("CHILD_ID")) shouldBe ProbandOnly
+  }
+
+  it should "return other" in {
+    val fmr = Map(
+      "CHILD_ID" -> Seq(("GRANDFATHER_ID", "grandfather")),
+      "GRANDFATHER_ID" -> Seq(("CHILD_ID", "other"))
+    )
+
+
+    MergeFamily.getFamilyComposition(fmr, probands = Seq("CHILD_ID")) shouldBe Other
+  }
+
 
   "getProbandIds" should "return one id" in {
     val participants = Seq(

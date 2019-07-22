@@ -105,10 +105,16 @@ object MergeFamily {
     override def toString: String = "trio+"
   }
 
-  case object Member extends FamilyType {
+  case object Other extends FamilyType {
+    override val c: Int = 10
+
+    override def toString: String = "other"
+  }
+
+  case object ProbandOnly extends FamilyType {
     override val c: Int = 0
 
-    override def toString: String = "member"
+    override def toString: String = "proband-only"
   }
 
   /*
@@ -203,11 +209,12 @@ object MergeFamily {
     val membersCount = familyRelationship.keys.size
 
     val filteredRelationship = if (probands.isEmpty) familyRelationship else familyRelationship.filterKeys(probands.contains(_))
-    filteredRelationship.values.foldLeft(Member: FamilyType) { (previous, relations) =>
+    filteredRelationship.values.foldLeft(ProbandOnly: FamilyType) { (previous, relations) =>
       val current = relations.map(_._2).toSet match {
         case l if l.contains("mother") && l.contains("father") => if (membersCount > 3) TrioPlus else Trio
         case l if l.contains("mother") || l.contains("father") => if (membersCount > 2) DuoPlus else Duo
-        case _ => Member
+        case l if l.isEmpty => previous
+        case _ => Other
       }
 
       FamilyType.max(current, previous)
