@@ -128,7 +128,7 @@ object MergeFamily {
                                familyRelationship_broadcast: Broadcast[Map[String, Seq[(String, String)]]],
                                availableDataTypes_broadcast: Broadcast[Map[String, Seq[String]]]
                               ): Seq[Participant_ES] = {
-    val familyRelationship = familyRelationship_broadcast.value
+    val mapOfRelationships = familyRelationship_broadcast.value
     val mapOfAvailableDataTypes = availableDataTypes_broadcast.value
 
     familyId match {
@@ -173,10 +173,10 @@ object MergeFamily {
         val sharedHpoIds = getSharedHpoIds(family)
         val familyAvailableDataTypes = getAvailableDataTypes(family, mapOfAvailableDataTypes)
         val probandIds = getProbandIds(family)
-
+        val familyRelationship = mapOfRelationships.filterKeys(participantById.contains)
         val familyComposition = getFamilyComposition(familyRelationship, probandIds)
         family.map { participant =>
-          val familyMembersWithRelationship: Seq[FamilyMember_ES] = familyRelationship.getOrElse(participant.kfId.get, Nil).collect {
+          val familyMembersWithRelationship: Seq[FamilyMember_ES] = mapOfRelationships.getOrElse(participant.kfId.get, Nil).collect {
             case (relationParticipantId, relation) if participantById.contains(relationParticipantId) => getFamilyMemberFromParticipant(participantById(relationParticipantId), relation, sharedHpoIds, mapOfAvailableDataTypes)
           }
 
