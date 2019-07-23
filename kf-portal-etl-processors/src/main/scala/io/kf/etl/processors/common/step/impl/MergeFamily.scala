@@ -237,6 +237,8 @@ object MergeFamily {
       isProband = participant.isProband,
       availableDataTypes = availableDataTypes,
       phenotype = participant.phenotype,
+      diagnoses = participant.diagnoses,
+      gender = participant.gender,
       race = participant.race,
       ethnicity = participant.ethnicity,
       relationship = Some(relationship)
