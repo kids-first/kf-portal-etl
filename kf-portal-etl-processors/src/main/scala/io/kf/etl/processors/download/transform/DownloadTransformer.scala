@@ -13,7 +13,7 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 class DownloadTransformer(val context: DownloadContext)(implicit WSClient: StandaloneWSClient, ec: ExecutionContext) {
 
@@ -86,7 +86,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
     val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
     val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
-    val diagnosesF = retriever.retrieve[EDiagnosis](endpoints.diagnoses)
+    val diagnosesF: Future[Seq[EDiagnosis]] = retriever.retrieve[EDiagnosis](endpoints.diagnoses)
     val familyRelationshipsF = retriever.retrieve[EFamilyRelationship](endpoints.familyRelationships)
     val investigatorsF = retriever.retrieve[EInvestigator](endpoints.investigators)
     val outcomesF = retriever.retrieve[EOutcome](endpoints.outcomes)
@@ -124,7 +124,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
         sequencingExperimentGenomicFiles = spark.createDataset(sequencingExperimentGenomicFiles).cache,
         studies = spark.createDataset(studies).cache,
         biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
-        diagnoses = spark.createDataset(diagnoses).cache,
+        diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
         genomicFiles = spark.createDataset(genomicFiles)
           .filter(filterGenomicFile _)
           .cache(),
@@ -161,4 +161,24 @@ object DownloadTransformer {
     spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).as[OntologyTerm]
   }
 
+
+  def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {
+
+    import spark.implicits._
+    val diagnosesDS = spark.createDataset(diagnoses)
+    diagnosesDS
+      .joinWith(ontology.mondoTerms, diagnosesDS("mondoIdDiagnosis") === ontology.mondoTerms("id"), "left_outer")
+      .as[(EDiagnosis, Option[OntologyTerm])]
+      .joinWith(ontology.ncitTerms, $"_1.ncitIdDiagnosis" === ontology.ncitTerms("id"), "left_outer")
+      .map { case ((d, m), n) => (d, m, Option(n)) }
+      .map {
+        case (d, optMondoTerm, optNcitTerm) if optMondoTerm.isDefined => d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = formatTerm(optMondoTerm), ncitIdDiagnosis = formatTerm(optNcitTerm))
+        case (d, _, optNcitTerm) if optNcitTerm.isDefined => d.copy(diagnosisText = optNcitTerm.map(_.name), mondoIdDiagnosis = None, ncitIdDiagnosis = formatTerm(optNcitTerm))
+        case (d, _, _) => d.copy(diagnosisText = d.sourceTextDiagnosis, mondoIdDiagnosis = None, ncitIdDiagnosis = None)
+      }
+
+  }
+
+
+  def formatTerm(term: Option[OntologyTerm]): Option[String] = term.map(t => s"${t.name} (${t.id})")
 }
