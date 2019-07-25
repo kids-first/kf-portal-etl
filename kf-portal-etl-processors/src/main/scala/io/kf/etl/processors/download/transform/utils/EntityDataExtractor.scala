@@ -68,6 +68,15 @@ object EntityParentIDExtractor {
     }
   }
 
+  implicit val biospecimeDiagnosis: EntityParentIDExtractor[EBiospecimenDiagnosis] = new EntityParentIDExtractor[EBiospecimenDiagnosis] {
+    override def extract(entity: EBiospecimenDiagnosis, json: JValue): EBiospecimenDiagnosis = {
+      entity.copy(
+        biospecimenId = getIdFromLink("biospecimen", json),
+        diagnosisId = getIdFromLink("diagnosis", json)
+      )
+    }
+  }
+
   implicit val investigator: EntityParentIDExtractor[EInvestigator] = new EntityParentIDExtractor[EInvestigator] {
     override def extract(entity: EInvestigator, json: JValue): EInvestigator = entity
   }
