@@ -225,3 +225,10 @@ message EBiospecimenGenomicFile {
     optional string genomic_file_id = 3;
     optional bool visible = 1000;
 }
+
+message EBiospecimenDiagnosis {
+    optional string kf_id = 1;
+    optional string biospecimen_id = 2;
+    optional string diagnosis_id = 3;
+    optional bool visible = 1000;
+}

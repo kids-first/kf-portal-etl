@@ -87,6 +87,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
     val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
     val diagnosesF: Future[Seq[EDiagnosis]] = retriever.retrieve[EDiagnosis](endpoints.diagnoses)
+    val biospecimenDiagnosesF = retriever.retrieve[EBiospecimenDiagnosis](endpoints.biospecimenDiagnoses)
     val familyRelationshipsF = retriever.retrieve[EFamilyRelationship](endpoints.familyRelationships)
     val investigatorsF = retriever.retrieve[EInvestigator](endpoints.investigators)
     val outcomesF = retriever.retrieve[EOutcome](endpoints.outcomes)
@@ -109,6 +110,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
       sequencingExperimentGenomicFiles <- sequencingExperimentGenomicFilesF
       studies <- studiesF
       biospecimenGenomicFiles <- biospecimenGenomicFilesF
+      biospecimenDiagnoses <- biospecimenDiagnosesF
       diagnoses <- diagnosesF
       genomicFiles <- genomicFilesF
     } yield
@@ -124,6 +126,7 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
         sequencingExperimentGenomicFiles = spark.createDataset(sequencingExperimentGenomicFiles).cache,
         studies = spark.createDataset(studies).cache,
         biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
+        biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
         diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
         genomicFiles = spark.createDataset(genomicFiles)
           .filter(filterGenomicFile _)

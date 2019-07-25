@@ -13,6 +13,7 @@ class DownloadSource(val context: DownloadContext) {
       families = makeEndpointSeq(studyId, "/families"),
       biospecimens = makeEndpointSeq(studyId, "/biospecimens"),
       biospecimenGenomicFiles = makeEndpointSeq(studyId, "/biospecimen-genomic-files"),
+      biospecimenDiagnoses = makeEndpointSeq(studyId, "/biospecimen-diagnoses"),
       diagnoses = makeEndpointSeq(studyId, "/diagnoses"),
       familyRelationships = makeEndpointSeq(studyId, "/family-relationships"),
       genomicFiles = makeEndpointSeq(studyId, "/genomic-files"),
