@@ -89,6 +89,7 @@ message Biospecimen_ES {
     optional string uberon_id_anatomical_site = 20;
     optional double volume_ml = 21;
     optional string sequencing_center_id = 22;
+    repeated Diagnosis_ES diagnoses = 23;
 }
 
 message Diagnosis_ES {

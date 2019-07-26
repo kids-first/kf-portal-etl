@@ -55,6 +55,7 @@ object PBEntityConverter {
       spatialDescriptor = bio.spatialDescriptor,
       uberonIdAnatomicalSite = bio.uberonIdAnatomicalSite,
       volumeMl = bio.volumeMl,
+      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
       sequencingCenterId = bio.sequencingCenterId
     )
   }
