@@ -57,6 +57,7 @@ message EBiospecimen {
     optional string uberon_id_anatomical_site = 23;
     optional double volume_ml = 24;
     optional string sequencing_center_id = 25;
+    repeated EDiagnosis diagnoses = 26;
     optional bool visible = 1000;
 }
 
