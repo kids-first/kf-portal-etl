@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
+import io.kf.etl.es.models.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.external.dataservice.entity._
 import io.kf.etl.processors.common.step.impl.MergeFamily.{Duo, DuoPlus, Other, ProbandOnly, Trio, TrioPlus}
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
@@ -71,7 +71,6 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
 
   }
 
-
   "process" should "return participants with family composition" in {
     val fmr = Seq(
       EFamilyRelationship(kfId = Some("MOTHER_CHILD_ID"), participant1 = Some("MOTHER_ID"), participant2 = Some("CHILD_ID"), participant1ToParticipant2Relation = Some("Mother"), participant2ToParticipant1Relation = Some("Child")),
@@ -95,9 +94,7 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       Participant_ES(kfId = Some("FATHER_ID"), familyId = Some("FAMILY_ID"), family = Some(Family_ES(familyId = Some("FAMILY_ID"), familyCompositions = Seq(FamilyComposition_ES(Some("trio"), familyMembers = Seq(FamilyMember_ES(relationship = Some("child"), kfId = Some("CHILD_ID"), isProband = Some(true)), FamilyMember_ES(relationship = Some("member"), kfId = Some("MOTHER_ID"))))))))
     )
 
-
   }
-
 
   "getFlattenedFamilyRelationship" should "return a map of relationship" in {
     val fmr = Seq(
@@ -118,7 +115,6 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       "FATHER_ID" -> Seq(("CHILD_ID", "child"))
     )
 
-
   }
 
   "getFamilyComposition" should "return trio" in {
@@ -131,6 +127,7 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
 
     MergeFamily.getFamilyComposition(fmr, Nil) shouldBe Trio
   }
+
   "getFamilyComposition" should "return trio+" in {
     val fmr = Map(
       "CHILD_ID" -> Seq(("FATHER_ID", "father"), ("MOTHER_ID", "mother"), ("GRANDFATHER_ID", "grandfather")),
@@ -150,7 +147,6 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       "GRANDFATHER_ID" -> Seq(("MOTHER_ID", "child"), ("GRANDMOTHER_ID", "other")),
       "GRANDMOTHER_ID" -> Seq(("MOTHER_ID", "child"), ("GRANDFATHER_ID", "other"))
     )
-
 
     MergeFamily.getFamilyComposition(fmr, Nil) shouldBe TrioPlus
   }
@@ -183,7 +179,6 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       "GRANDMOTHER_ID" -> Seq(("MOTHER_ID", "child"), ("GRANDFATHER_ID", "other"))
     )
 
-
     MergeFamily.getFamilyComposition(fmr, probands = Seq("CHILD_ID")) shouldBe DuoPlus
   }
 
@@ -200,7 +195,6 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       "CHILD_ID" -> Seq(("GRANDFATHER_ID", "grandfather")),
       "GRANDFATHER_ID" -> Seq(("CHILD_ID", "other"))
     )
-
 
     MergeFamily.getFamilyComposition(fmr, probands = Seq("CHILD_ID")) shouldBe Other
   }
@@ -240,6 +234,38 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     MergeFamily.getProbandIds(participants) shouldBe Seq("CHILD_ID", "MOTHER_ID")
+  }
+
+  "getSharedHpoIds" should "return hpo observed phenotypes shared between participants" in {
+
+    val participants = Seq(
+      Participant_ES(kfId = Some("CHILD_ID"), phenotype = Seq(Phenotype_ES(hpoPhenotypeObserved = Some("pheno1")), Phenotype_ES(hpoPhenotypeObserved = Some("pheno2")), Phenotype_ES(hpoPhenotypeNotObserved = Some("pheno3")))),
+      Participant_ES(kfId = Some("MOTHER_ID"), phenotype = Seq(Phenotype_ES(hpoPhenotypeObserved = Some("pheno1")), Phenotype_ES(hpoPhenotypeObserved = Some("pheno2")), Phenotype_ES(hpoPhenotypeObserved = Some("pheno3"))))
+    )
+
+    MergeFamily.getSharedHpoIds(participants) should contain theSameElementsAs Seq(
+      "pheno1", "pheno2"
+    )
+
+  }
+
+  it should "return empty if there is no share phenotype between participant" in {
+
+    val participants = Seq(
+      Participant_ES(kfId = Some("CHILD_ID"), phenotype = Seq(Phenotype_ES(hpoPhenotypeObserved = Some("pheno1")))),
+      Participant_ES(kfId = Some("MOTHER_ID"), phenotype = Seq(Phenotype_ES(hpoPhenotypeObserved = Some("pheno2"))))
+    )
+
+    MergeFamily.getSharedHpoIds(participants) shouldBe empty
+  }
+  it should "return empty if one participant have no phenotype" in {
+
+    val participants = Seq(
+      Participant_ES(kfId = Some("CHILD_ID"), phenotype = Seq(Phenotype_ES(hpoPhenotypeObserved = Some("pheno1")))),
+      Participant_ES(kfId = Some("MOTHER_ID"), phenotype = Nil)
+    )
+
+    MergeFamily.getSharedHpoIds(participants) shouldBe empty
   }
 
 }
