@@ -15,7 +15,6 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   "process" should "merge phenotypes and participant" in {
     val p1 = Participant_ES(kfId = Some("participant_id_1"))
     val phenotype_11 = EPhenotype(kfId = Some("phenotype_id_11"), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"))
-    val phenotype_13 = EPhenotype(kfId = Some("phenotype_id_13"), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"))
     val phenotype_12 = EPhenotype(kfId = Some("phenotype_id_12"), participantId = Some("participant_id_1"), externalId = Some("phenotype 12"))
 
     val p2 = Participant_ES(kfId = Some("participant_id_2"))
@@ -26,7 +25,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     val p3 = Participant_ES(kfId = Some("participant_id_3"))
 
     val entityDataset = buildEntityDataSet(
-      phenotypes = Seq(phenotype_11, phenotype_13, phenotype_12, phenotype_2, phenotype_3)
+      phenotypes = Seq(phenotype_11, phenotype_12, phenotype_2, phenotype_3)
     )
 
     val merge = new MergePhenotype(ctx = buildContext(entityDataset))
@@ -35,10 +34,10 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
     result should contain theSameElementsAs Seq(
       Participant_ES(kfId = Some("participant_id_1"),
-        phenotype = Some(Phenotype_ES(externalId = Seq("phenotype 12", "phenotype 11")))
+        phenotype = Seq(Phenotype_ES(externalId = Some("phenotype 12")), Phenotype_ES(externalId = Some("phenotype 11")))
       ),
       Participant_ES(kfId = Some("participant_id_2"),
-        phenotype = Some(Phenotype_ES(externalId = Seq("phenotype 2")))
+        phenotype = Seq(Phenotype_ES(externalId = Some("phenotype 2")))
       ),
 
       Participant_ES(kfId = Some("participant_id_3"))
@@ -71,13 +70,13 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
     result should contain theSameElementsAs Seq(
       Participant_ES(kfId = Some("participant_id_1"),
-        phenotype = Some(Phenotype_ES(
-          sourceTextPhenotype = Seq("phenotype source text 1"),
-          hpoPhenotypeObserved = Seq("Arachnodactyly (HP:0001166)"),
-          ageAtEventDays = Seq(100),
-          externalId = Seq("external id"),
-          snomedPhenotypeObserved = Seq("SNOMED:4"),
-          hpoPhenotypeObservedText = Seq("Arachnodactyly (HP:0001166)")
+        phenotype = Seq(Phenotype_ES(
+          sourceTextPhenotype = Some("phenotype source text 1"),
+          hpoPhenotypeObserved = Some("Arachnodactyly (HP:0001166)"),
+          ageAtEventDays = Some(100),
+          externalId = Some("external id"),
+          snomedPhenotypeObserved = Some("SNOMED:4"),
+          hpoPhenotypeObservedText = Some("Arachnodactyly (HP:0001166)")
 
         ))
       )
@@ -105,14 +104,14 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
     result should contain theSameElementsAs Seq(
       Participant_ES(kfId = Some("participant_id_1"),
-        phenotype = Some(Phenotype_ES(
-          hpoPhenotypeNotObserved = Seq("Arachnodactyly (HP:0001166)")
+        phenotype = Seq(Phenotype_ES(
+          hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)")
         ))
       )
     )
   }
 
-  "joinPhenotypesWithTerms" should "return a dataset of phenotypes with fields hpoPhenotypeObserved and hpoPhenotypeNotObserved populated from HPO terms" in {
+  "transformPhenotypes" should "return a dataset of phenotypes with fields hpoPhenotypeObserved and hpoPhenotypeNotObserved populated from HPO terms" in {
 
     val entityDataset = buildEntityDataSet(
       phenotypes = Seq(
@@ -134,54 +133,15 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     val merge = new MergePhenotype(ctx = buildContext(entityDataset))
 
     merge.transformPhenotypes().collect() should contain theSameElementsAs Seq(
-      "participant_id_1" -> Phenotype_ES(hpoPhenotypeNotObserved = Seq("Arachnodactyly (HP:0001166)"), externalId = Seq("1")),
-      "participant_id_2" -> Phenotype_ES(hpoPhenotypeObserved = Seq("Abnormality of the skeletal system (HP:0000924)"), hpoPhenotypeObservedText = Seq("Abnormality of the skeletal system (HP:0000924)"), externalId = Seq("2"), sourceTextPhenotype = Seq("source")),
-      "participant_id_1" -> Phenotype_ES(externalId = Seq("3"), snomedPhenotypeNotObserved = Seq("SNOMED:1")),
-      "participant_id_2" -> Phenotype_ES(externalId = Seq("4"), snomedPhenotypeObserved = Seq("SNOMED:1"), sourceTextPhenotype = Seq("source")),
-      "participant_id_3" -> Phenotype_ES(externalId = Seq("5")),
-      "participant_id_4" -> Phenotype_ES(externalId = Seq("6")),
-      "participant_id_5" -> Phenotype_ES(externalId = Seq("7")),
-      "participant_id_6" -> Phenotype_ES(externalId = Seq("8"))
+      "participant_id_1" -> Phenotype_ES(hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)"), externalId = Some("1")),
+      "participant_id_2" -> Phenotype_ES(hpoPhenotypeObserved = Some("Abnormality of the skeletal system (HP:0000924)"), hpoPhenotypeObservedText = Some("Abnormality of the skeletal system (HP:0000924)"), externalId = Some("2"), sourceTextPhenotype = Some("source")),
+      "participant_id_1" -> Phenotype_ES(externalId = Some("3"), snomedPhenotypeNotObserved = Some("SNOMED:1")),
+      "participant_id_2" -> Phenotype_ES(externalId = Some("4"), snomedPhenotypeObserved = Some("SNOMED:1"), sourceTextPhenotype = Some("source")),
+      "participant_id_3" -> Phenotype_ES(externalId = Some("5")),
+      "participant_id_4" -> Phenotype_ES(externalId = Some("6")),
+      "participant_id_5" -> Phenotype_ES(externalId = Some("7")),
+      "participant_id_6" -> Phenotype_ES(externalId = Some("8"))
     )
-  }
-
-
-  "collectPhenotype" should "return empty phenotype" in {
-    MergePhenotype.reducePhenotype(Nil) shouldBe None
-  }
-
-  it should "return a reduced phenotype" in {
-    MergePhenotype.reducePhenotype(Seq(
-      Phenotype_ES(
-        externalId = Seq("1"),
-        ageAtEventDays = Seq(10),
-        hpoPhenotypeNotObserved = Seq("HPO not observed 1"),
-        hpoPhenotypeObserved = Seq("HPO observed 1"),
-        hpoPhenotypeObservedText = Seq("HPO observed 1"),
-        snomedPhenotypeNotObserved = Seq("SNOMED not observed 1"),
-        snomedPhenotypeObserved = Seq("SNOMED observed 1"),
-        sourceTextPhenotype = Seq("source text 1")
-      ),
-      Phenotype_ES(
-        externalId = Seq("2"),
-        ageAtEventDays = Seq(20),
-        hpoPhenotypeNotObserved = Seq("HPO not observed 2"),
-        hpoPhenotypeObserved = Seq("HPO observed 2"),
-        hpoPhenotypeObservedText = Seq("HPO observed 2"),
-        snomedPhenotypeNotObserved = Seq("SNOMED not observed 2"),
-        snomedPhenotypeObserved = Seq("SNOMED observed 2"),
-        sourceTextPhenotype = Seq("source text 2")
-      )
-    )) shouldBe Some(Phenotype_ES(
-      externalId = Seq("1", "2"),
-      ageAtEventDays = Seq(10, 20),
-      hpoPhenotypeNotObserved = Seq("HPO not observed 1","HPO not observed 2"),
-      hpoPhenotypeObserved = Seq("HPO observed 1","HPO observed 2"),
-      hpoPhenotypeObservedText = Seq("HPO observed 1","HPO observed 2"),
-      snomedPhenotypeNotObserved = Seq("SNOMED not observed 1","SNOMED not observed 2"),
-      snomedPhenotypeObserved = Seq("SNOMED observed 1","SNOMED observed 2"),
-      sourceTextPhenotype = Seq("source text 1","source text 2")
-    ))
   }
 
 

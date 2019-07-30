@@ -252,18 +252,17 @@ object MergeFamily {
 
   }
 
+  private def extractHpoObserved(participant: Participant_ES) = {
+    participant.phenotype.flatMap(_.hpoPhenotypeObserved).toSet
+  }
+
   def getSharedHpoIds(participants: Seq[Participant_ES]): Seq[String] = {
-    participants.tail.foldLeft(
-      participants.head.phenotype match {
-        case Some(pt) => pt.hpoPhenotypeObserved
-        case None => Seq.empty[String]
-      }
-    ) { (pts, participant) => {
-      participant.phenotype match {
-        case Some(pt) => pt.hpoPhenotypeObserved
-        case None => Seq.empty[String]
-      }
-    }
+    if (participants.isEmpty) Nil
+    else {
+      participants.tail.foldLeft(extractHpoObserved(participants.head)) { (acc, participant) =>
+        val hpoObserved: Set[String] = extractHpoObserved(participant)
+        acc.intersect(hpoObserved)
+      }.toSeq
     }
   }
 

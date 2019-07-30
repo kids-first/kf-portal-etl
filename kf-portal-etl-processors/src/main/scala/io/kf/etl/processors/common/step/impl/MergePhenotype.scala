@@ -21,24 +21,24 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
       .flatMap { case (phenotype, hpoTerm) if phenotype.participantId.isDefined =>
         val observed = phenotype.observed.map(_.toLowerCase)
         val (hpoObserved, hpoNotObserved) = observed match {
-          case Some("positive") => (formatTerm(hpoTerm).toSeq, Nil)
-          case Some("negative") => (Nil, formatTerm(hpoTerm).toSeq)
-          case _ => (Nil, Nil)
+          case Some("positive") => (formatTerm(hpoTerm), None)
+          case Some("negative") => (None, formatTerm(hpoTerm))
+          case _ => (None, None)
         }
 
         val (snomedObserved, snomedNotObserved) = observed match {
-          case Some("positive") => (phenotype.snomedIdPhenotype.toSeq, Nil)
-          case Some("negative") => (Nil, phenotype.snomedIdPhenotype.toSeq)
-          case _ => (Nil, Nil)
+          case Some("positive") => (phenotype.snomedIdPhenotype, None)
+          case Some("negative") => (None, phenotype.snomedIdPhenotype)
+          case _ => (None, None)
         }
 
         // Only append to source text in the positive case for observed
-        val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype.toSeq else Nil
+        val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype else None
 
 
         val p = Phenotype_ES(
-          ageAtEventDays = phenotype.ageAtEventDays.toSeq,
-          externalId = phenotype.externalId.toSeq,
+          ageAtEventDays = phenotype.ageAtEventDays,
+          externalId = phenotype.externalId,
           hpoPhenotypeObserved = hpoObserved,
           hpoPhenotypeObservedText = hpoObserved,
           hpoPhenotypeNotObserved = hpoNotObserved,
@@ -71,7 +71,7 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val filteredSeq: Seq[Phenotype_ES] = groups.flatMap(_._2)
-        participant.copy(phenotype = MergePhenotype.reducePhenotype(filteredSeq))
+        participant.copy(phenotype = filteredSeq)
 
       })
   }
@@ -80,31 +80,5 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
 }
 
 object MergePhenotype {
-
-  def reducePhenotype(phenotypes: Seq[Phenotype_ES]): Option[Phenotype_ES] = {
-
-    def agg[T](l1: Seq[T], l2: Seq[T]) = (l1 ++ l2).distinct
-
-    if (phenotypes.isEmpty)
-      None
-    else
-      Some(
-        phenotypes.reduce((p1, p2) =>
-          Phenotype_ES(
-            ageAtEventDays = agg(p1.ageAtEventDays, p2.ageAtEventDays),
-            externalId = agg(p1.externalId, p2.externalId),
-            hpoPhenotypeNotObserved = agg(p1.hpoPhenotypeNotObserved, p2.hpoPhenotypeNotObserved),
-            hpoPhenotypeObserved = agg(p1.hpoPhenotypeObserved, p2.hpoPhenotypeObserved),
-            hpoPhenotypeObservedText = agg(p1.hpoPhenotypeObservedText, p2.hpoPhenotypeObservedText),
-            snomedPhenotypeNotObserved = agg(p1.snomedPhenotypeNotObserved, p2.snomedPhenotypeNotObserved),
-            snomedPhenotypeObserved = agg(p1.snomedPhenotypeObserved, p2.snomedPhenotypeObserved),
-            sourceTextPhenotype = agg(p1.sourceTextPhenotype, p2.sourceTextPhenotype)
-
-          )
-
-        ))
-
-
-  } //end of collectPhenotype
   def formatTerm(term: Option[OntologyTerm]): Option[String] = term.map(t => s"${t.name} (${t.id})")
 }
