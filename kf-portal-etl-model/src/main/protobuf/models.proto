@@ -156,6 +156,7 @@ message Phenotype_ES {
     optional string snomed_phenotype_not_observed = 8;
     optional string snomed_phenotype_observed = 9;
     optional string source_text_phenotype = 10;
+    optional bool observed = 11;
 }
 
 message Study_ES {

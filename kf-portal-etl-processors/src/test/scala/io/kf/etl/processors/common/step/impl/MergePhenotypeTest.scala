@@ -76,7 +76,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           ageAtEventDays = Some(100),
           externalId = Some("external id"),
           snomedPhenotypeObserved = Some("SNOMED:4"),
-          hpoPhenotypeObservedText = Some("Arachnodactyly (HP:0001166)")
+          hpoPhenotypeObservedText = Some("Arachnodactyly (HP:0001166)"),
+          observed = Some(true)
 
         ))
       )
@@ -105,7 +106,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     result should contain theSameElementsAs Seq(
       Participant_ES(kfId = Some("participant_id_1"),
         phenotype = Seq(Phenotype_ES(
-          hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)")
+          hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)"),
+          observed = Some(false)
         ))
       )
     )
@@ -133,14 +135,14 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     val merge = new MergePhenotype(ctx = buildContext(entityDataset))
 
     merge.transformPhenotypes().collect() should contain theSameElementsAs Seq(
-      "participant_id_1" -> Phenotype_ES(hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)"), externalId = Some("1")),
-      "participant_id_2" -> Phenotype_ES(hpoPhenotypeObserved = Some("Abnormality of the skeletal system (HP:0000924)"), hpoPhenotypeObservedText = Some("Abnormality of the skeletal system (HP:0000924)"), externalId = Some("2"), sourceTextPhenotype = Some("source")),
-      "participant_id_1" -> Phenotype_ES(externalId = Some("3"), snomedPhenotypeNotObserved = Some("SNOMED:1")),
-      "participant_id_2" -> Phenotype_ES(externalId = Some("4"), snomedPhenotypeObserved = Some("SNOMED:1"), sourceTextPhenotype = Some("source")),
+      "participant_id_1" -> Phenotype_ES(hpoPhenotypeNotObserved = Some("Arachnodactyly (HP:0001166)"), externalId = Some("1"), observed = Some(false)),
+      "participant_id_2" -> Phenotype_ES(hpoPhenotypeObserved = Some("Abnormality of the skeletal system (HP:0000924)"), hpoPhenotypeObservedText = Some("Abnormality of the skeletal system (HP:0000924)"), externalId = Some("2"), sourceTextPhenotype = Some("source"), observed = Some(true)),
+      "participant_id_1" -> Phenotype_ES(externalId = Some("3"), snomedPhenotypeNotObserved = Some("SNOMED:1"), observed = Some(false)),
+      "participant_id_2" -> Phenotype_ES(externalId = Some("4"), snomedPhenotypeObserved = Some("SNOMED:1"), sourceTextPhenotype = Some("source"), observed = Some(true)),
       "participant_id_3" -> Phenotype_ES(externalId = Some("5")),
       "participant_id_4" -> Phenotype_ES(externalId = Some("6")),
-      "participant_id_5" -> Phenotype_ES(externalId = Some("7")),
-      "participant_id_6" -> Phenotype_ES(externalId = Some("8"))
+      "participant_id_5" -> Phenotype_ES(externalId = Some("7"), observed = Some(true)),
+      "participant_id_6" -> Phenotype_ES(externalId = Some("8"), observed = Some(false))
     )
   }
 
