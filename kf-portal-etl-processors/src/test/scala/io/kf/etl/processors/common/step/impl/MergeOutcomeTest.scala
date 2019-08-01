@@ -39,7 +39,7 @@ class MergeOutcomeTest extends FlatSpec with Matchers with WithSparkSession {
         outcome = Some(Outcome_ES(ageAtEventDays = Some(50), kfId = Some("outcome_21"), vitalStatus = Some("Alive"), diseaseRelated = Some("NA")))
       ),
 
-      Participant_ES(kfId = Some("participant_id_3"))
+      Participant_ES(kfId = Some("participant_id_3"), outcome = Some(Outcome_ES()))
     )
   }
 
