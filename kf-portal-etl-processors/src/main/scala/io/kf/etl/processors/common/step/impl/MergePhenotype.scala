@@ -32,6 +32,12 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
           case _ => (None, None)
         }
 
+        val observedOpt = observed match {
+          case Some("positive") => Some(true)
+          case Some("negative") => Some(false)
+          case _ => None
+        }
+
         // Only append to source text in the positive case for observed
         val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype else None
 
@@ -44,7 +50,8 @@ class MergePhenotype(override val ctx: StepContext) extends StepExecutable[Datas
           hpoPhenotypeNotObserved = hpoNotObserved,
           snomedPhenotypeObserved = snomedObserved,
           snomedPhenotypeNotObserved = snomedNotObserved,
-          sourceTextPhenotype = sourceText
+          sourceTextPhenotype = sourceText,
+          observed = observedOpt
         )
         Some(phenotype.participantId.get -> p)
       case _ => None
