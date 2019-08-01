@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.step.impl
 
-import io.kf.etl.es.models.Participant_ES
+import io.kf.etl.es.models.{Outcome_ES, Participant_ES}
 import io.kf.etl.external.dataservice.entity.EOutcome
 import io.kf.etl.processors.common.converter.PBEntityConverter
 import io.kf.etl.processors.common.step.StepExecutable
@@ -34,8 +34,11 @@ class MergeOutcome(override val ctx: StepContext) extends StepExecutable[Dataset
             case Some(o) => participant.copy(outcome = Some(PBEntityConverter.EOutcomeToOutcomeES(o)))
           }
 
-        } else
-          participant
+        } else {
+          //The survival graph need an empty outcome to work properly
+          participant.copy(outcome = Some(Outcome_ES()))
+        }
+
       })
 
   }
