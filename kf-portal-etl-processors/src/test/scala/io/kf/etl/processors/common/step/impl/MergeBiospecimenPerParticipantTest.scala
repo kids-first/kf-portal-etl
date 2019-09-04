@@ -5,7 +5,7 @@ import io.kf.etl.external.dataservice.entity.{EBiospecimen, EBiospecimenDiagnosi
 import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.test.util.EntityUtil._
 import io.kf.etl.processors.test.util.StepContextUtil.buildContext
-import io.kf.etl.processors.test.util.{StepContextUtil, WithSparkSession}
+import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers}
 
 class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with WithSparkSession {
