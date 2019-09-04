@@ -74,7 +74,8 @@ object PBEntityConverter {
       sourceTextTumorLocation = diagnosis.sourceTextTumorLocation,
       ncitIdDiagnosis = diagnosis.ncitIdDiagnosis,
       spatialDescriptor = diagnosis.spatialDescriptor,
-      diagnosis = diagnosis.diagnosisText
+      diagnosis = diagnosis.diagnosisText,
+      biospecimens = diagnosis.biospecimens
     )
   }
   

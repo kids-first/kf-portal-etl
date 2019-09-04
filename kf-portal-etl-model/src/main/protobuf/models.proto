@@ -105,6 +105,7 @@ message Diagnosis_ES {
     optional string ncit_id_diagnosis = 11;
     optional string spatial_descriptor = 12;
     optional string diagnosis = 13;
+    repeated string biospecimens = 14;
 }
 
 message Family_ES {
