@@ -3,7 +3,7 @@ FROM openjdk:8
 ###########################
 # Docker Build config
 ###########################
-ARG SPARK_VERSION=2.3.3
+ARG SPARK_VERSION=2.3.4
 EXPOSE 8080 4040 7077 6066 8081
 
 ###########################

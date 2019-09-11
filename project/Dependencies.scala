@@ -3,7 +3,7 @@ import sbt._
 
 object Dependencies {
 
-  val spark_version = "2.3.0"
+  val spark_version = "2.3.4"
   val spark_sql = "org.apache.spark" %% "spark-sql" % spark_version % Provided
   val typesafe_config = "com.typesafe" % "config" % "1.3.2"
 //  val parquet_protobuf= "org.apache.parquet" % "parquet-protobuf" % "1.9.0"
