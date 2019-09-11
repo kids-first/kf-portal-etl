@@ -23,5 +23,9 @@ fi
 
 
 KF_ETL_CONFIG="-Dkf.etl.config=file://${ETL_CONF_MOUNT_PATH}"
-/kf-etl/spark/bin/spark-submit --master local[*] --class io.kf.etl.ETLMain --driver-java-options "${KF_ETL_CONFIG}" --conf "spark.executor.extraJavaOptions=${KF_ETL_CONFIG}" ${KF_PORTAL_ETL_JAR} -study_id  ${KF_STUDY_ID} -release_id ${KF_RELEASE_ID}
+/kf-etl/spark/bin/spark-submit --master local[*] --class io.kf.etl.ETLMain ETLMain \
+    --driver-java-options "${KF_ETL_CONFIG}" \
+    --conf "spark.executor.extraJavaOptions=${KF_ETL_CONFIG}" \
+    --conf "spark.executor.memory=2g" \
+    ${KF_PORTAL_ETL_JAR} -study_id  ${KF_STUDY_ID} -release_id ${KF_RELEASE_ID}
 
