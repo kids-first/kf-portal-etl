@@ -35,7 +35,7 @@ class DefaultContext extends ContextCommon with AutoCloseable {
       })
 
       session
-        .config("es.nodes.wan.only", "true")
+        .config("es.nodes.ingest.only", "true")
         .config("es.nodes", s"${config.esConfig.host}:${config.esConfig.http_port}")
         .getOrCreate()
 
