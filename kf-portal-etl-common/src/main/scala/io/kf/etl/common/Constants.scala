@@ -38,6 +38,7 @@ object Constants {
   val CONFIG_NAME_DATA_PATH = "data_path"
   val CONFIG_NAME_MONDO_PATH = "mondo_path"
   val CONFIG_NAME_NCIT_PATH = "ncit_path"
+  val CONFIG_NAME_HPO_PATH = "hpo_path"
   val CONFIG_NAME_DUMP_PATH = "dump_path"
   val CONFIG_NAME_WRITE_INTERMEDIATE_DATA = "write_intermediate_data"
   val CONFIG_NAME_HPO = s"${ROOT_PACKAGE}.hpo"

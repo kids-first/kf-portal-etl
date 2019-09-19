@@ -8,7 +8,6 @@ libraryDependencies ++= Seq(
   reflections,
   es_spark,
   elasticsearch,
-  mysql,
   embedded_elasticsearch % "test",
   scalatest % "test",
   asyncHttp % "test"
