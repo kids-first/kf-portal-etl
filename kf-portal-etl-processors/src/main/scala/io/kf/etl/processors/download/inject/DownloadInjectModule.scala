@@ -35,9 +35,9 @@ class DownloadInjectModule(context: Context, moduleName: String) extends Process
         case Success(path) => Some(path)
         case Failure(_) => None
       },
-      mysql = context.mysql,
       mondoPath = config.get.getString(CONFIG_NAME_MONDO_PATH),
-      ncitPath = config.get.getString(CONFIG_NAME_NCIT_PATH)
+      ncitPath = config.get.getString(CONFIG_NAME_NCIT_PATH),
+      hpoPath = config.get.getString(CONFIG_NAME_HPO_PATH)
     )
     new DownloadContext(context, cc)
   }
