@@ -5,7 +5,6 @@ import io.kf.etl.external.hpo.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.context.DownloadContext
 import io.kf.etl.processors.download.transform.DownloadTransformer._
-import io.kf.etl.processors.download.transform.hpo.HPOTerm
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever
 import org.apache.spark.SparkFiles
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -24,8 +23,9 @@ class DownloadTransformer(val context: DownloadContext)(implicit WSClient: Stand
 
     val mondoTerms = loadTerms(context.config.mondoPath, spark)
     val ncitTerms = loadTerms(context.config.ncitPath, spark)
+    val hpoTerms = loadTerms(context.config.hpoPath, spark)
     OntologiesDataSet(
-      hpoTerms = HPOTerm.get(context).cache,
+      hpoTerms = hpoTerms.cache(),
       mondoTerms = mondoTerms.cache(),
       ncitTerms = ncitTerms.cache()
     )

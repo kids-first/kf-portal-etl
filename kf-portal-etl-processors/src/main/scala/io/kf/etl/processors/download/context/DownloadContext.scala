@@ -16,4 +16,4 @@ case class DownloadContext(override val appContext: Context,
   }
 }
 
-case class DownloadConfig(override val name: String, dataService: DataServiceConfig, dumpPath: String, override val dataPath: Option[String], mysql: MysqlConfig, mondoPath: String, ncitPath: String) extends ProcessorConfig
+case class DownloadConfig(override val name: String, dataService: DataServiceConfig, dumpPath: String, override val dataPath: Option[String], mondoPath: String, ncitPath: String, hpoPath: String) extends ProcessorConfig
