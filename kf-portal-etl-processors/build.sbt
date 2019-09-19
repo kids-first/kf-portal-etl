@@ -8,7 +8,6 @@ libraryDependencies ++= Seq(
   reflections,
   es_spark,
   elasticsearch,
-  mysql,
   "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.3",
   shaded_scalapb_json4s,
   kf_es_model,
