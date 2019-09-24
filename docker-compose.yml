@@ -20,7 +20,7 @@ services:
       - "./kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
       - "./kf-portal-etl-docker/mondo.tsv.gz:/kf-etl/mondo.tsv.gz"
       - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
-      - "./kf-portal-etl-docker/hpo_2018_03.tsv.gz:/kf-etl/hpo_2018_03.tsv.gz"
+      - "./kf-portal-etl-docker/hpo_2018_03.tsv.gz:/kf-etl/hpo.tsv.gz"
     ports:
       - "4040:4040"
   elasticsearch:
