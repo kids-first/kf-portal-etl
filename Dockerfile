@@ -42,9 +42,9 @@ RUN chmod +x ${ROOT_DIR}/bin/kf-etl-submit.sh
 ###########################
 ENV KF_PORTAL_ETL_JAR ${ROOT_DIR}/data/kf-portal-etl.jar
 # WARNING: this must be mounted externally
-ENV ETL_CONF_MOUNT_PATH /kf-etl/conf/kf_etl.conf
+ENV ETL_CONF_FILE /kf-etl/conf/kf_etl.conf
 
-ADD kf-portal-etl-pipeline/target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR}
+ADD target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR}
 
 ENTRYPOINT ["/kf-etl/bin/kf-etl-submit.sh"]
 

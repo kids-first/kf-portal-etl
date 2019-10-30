@@ -1,0 +1,31 @@
+package io.kf.etl.models.dataservice
+
+case class EBiospecimen(
+    ageAtEventDays: scala.Option[Int] = None,
+    analyteType: scala.Option[String] = None,
+    composition: scala.Option[String] = None,
+    concentrationMgPerMl: scala.Option[Double] = None,
+    consentType: scala.Option[String] = None,
+    createdAt: scala.Option[String] = None,
+    dbgapConsentCode: scala.Option[String] = None,
+    externalAliquotId: scala.Option[String] = None,
+    externalSampleId: scala.Option[String] = None,
+    kfId: scala.Option[String] = None,
+    methodOfSampleProcurement: scala.Option[String] = None,
+    modifiedAt: scala.Option[String] = None,
+    ncitIdAnatomicalSite: scala.Option[String] = None,
+    ncitIdTissueType: scala.Option[String] = None,
+    shipmentDate: scala.Option[String] = None,
+    shipmentOrigin: scala.Option[String] = None,
+    genomicFiles: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
+    participantId: scala.Option[String] = None,
+    sourceTextTumorDescriptor: scala.Option[String] = None,
+    sourceTextTissueType: scala.Option[String] = None,
+    sourceTextAnatomicalSite: scala.Option[String] = None,
+    spatialDescriptor: scala.Option[String] = None,
+    uberonIdAnatomicalSite: scala.Option[String] = None,
+    volumeMl: scala.Option[Double] = None,
+    sequencingCenterId: scala.Option[String] = None,
+    diagnoses: _root_.scala.collection.Seq[EDiagnosis] = _root_.scala.collection.Seq.empty,
+    visible: scala.Option[Boolean] = None
+    )

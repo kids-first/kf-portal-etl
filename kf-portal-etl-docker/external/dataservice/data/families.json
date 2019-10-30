@@ -1,14 +1,15 @@
 {
-  "_links": {
-    "collection": "/families",
-    "participants": "/participants?family_id=FM_VADAE4C0",
-    "self": "/families/FM_VADAE4C0"
-  },
+
   "_status": {
     "code": 200,
     "message": "success"
   },
   "results": {
+    "_links": {
+      "collection": "/families",
+      "participants": "/participants?family_id=FM_VADAE4C0",
+      "self": "/families/FM_VADAE4C0"
+    },
     "created_at": "2018-09-28T04:38:46.313965+00:00",
     "external_id": "TARGET-30-PARJMX",
     "family_type": null,
