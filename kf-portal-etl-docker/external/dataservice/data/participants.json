@@ -1,26 +1,24 @@
 {
-  "_links": {
-    "biospecimens": "/biospecimens?participant_id=PT_29ZEF7YN",
-    "collection": "/participants",
-    "diagnoses": "/diagnoses?participant_id=PT_29ZEF7YN",
-    "family": "/families/FM_VADAE4C0",
-    "family_relationships": "/family-relationships?participant_id=PT_29ZEF7YN",
-    "outcomes": "/outcomes?participant_id=PT_29ZEF7YN",
-    "phenotypes": "/phenotypes?participant_id=PT_29ZEF7YN",
-    "self": "/participants/PT_29ZEF7YN",
-    "study": "/studies/SD_YNSSAPHE"
-  },
   "_status": {
     "code": 200,
     "message": "success"
   },
   "results": [
     {
+      "_links": {
+        "biospecimens": "/biospecimens?participant_id=PT_29ZEF7YN",
+        "collection": "/participants",
+        "diagnoses": "/diagnoses?participant_id=PT_29ZEF7YN",
+        "family": "/families/FM_VADAE4C0",
+        "family_relationships": "/family-relationships?participant_id=PT_29ZEF7YN",
+        "outcomes": "/outcomes?participant_id=PT_29ZEF7YN",
+        "phenotypes": "/phenotypes?participant_id=PT_29ZEF7YN",
+        "self": "/participants/PT_29ZEF7YN",
+        "study": "/studies/SD_YNSSAPHE"
+      },
       "affected_status": true,
       "alias_group": "",
-      "biospecimens": "",
       "created_at": "2018-09-28T04:38:46.570096+00:00",
-      "diagnoses": "",
       "diagnosis_category": "",
       "ethnicity": "Hispanic or Latino",
       "external_id": "TARGET-30-PARJMX",
@@ -29,10 +27,7 @@
       "is_proband": true,
       "kf_id": "PT_29ZEF7YN",
       "modified_at": "2018-09-28T04:38:46.570102+00:00",
-      "outcomes": "",
-      "phenotypes": "",
       "race": "Not Reported",
-      "study_id": "SD_YNSSAPHE",
       "visible": true
     }
   ],

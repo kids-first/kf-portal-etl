@@ -1,17 +1,18 @@
 {
-  "_links": {
-    "collection": "/studies",
-    "investigator": "/investigators/IG_7D556S7K",
-    "participants": "/participants?study_id=SD_YNSSAPHE",
-    "self": "/studies/SD_YNSSAPHE",
-    "study_files": "/study-files?study_id=SD_YNSSAPHE"
-  },
+
   "_status": {
     "code": 200,
     "message": "success"
   },
   "results": [
     {
+      "_links": {
+        "collection": "/studies",
+        "investigator": "/investigators/IG_7D556S7K",
+        "participants": "/participants?study_id=SD_YNSSAPHE",
+        "self": "/studies/SD_YNSSAPHE",
+        "study_files": "/study-files?study_id=SD_YNSSAPHE"
+      },
       "attribution": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000467.v17.p7",
       "created_at": "2018-09-28T04:38:33.769022+00:00",
       "data_access_authority": "dbGaP",
