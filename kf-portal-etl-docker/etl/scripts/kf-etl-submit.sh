@@ -24,7 +24,7 @@ if [  -z ${KF_RELEASE_ID+x} ]; then
 fi
 
 /kf-etl/spark/bin/spark-submit --master local[*] --class io.kf.etl.ETLMain \
-    --driver-memory "${KF_DRIVER_MEMORY}" \
+    --driver-memory ${KF_DRIVER_MEMORY} \
     --conf "spark.executor.memory=${KF_EXECUTOR_MEMORY}" \
-    ${KF_PORTAL_ETL_JAR} -study_id  ${KF_STUDY_ID} -release_id ${KF_RELEASE_ID}
+    ${KF_PORTAL_ETL_JAR} -study_id ${KF_STUDY_ID} -release_id ${KF_RELEASE_ID}
 

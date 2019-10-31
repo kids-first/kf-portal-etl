@@ -14,6 +14,7 @@ services:
         - KF_STUDY_ID="SD_YNSSAPHE"
         #- KF_STUDY_ID="UNKNOWN_STUDY"
         - KF_RELEASE_ID=RE_CEG0C8WK
+        - KF_DRIVER_MEMORY=1g
     volumes:
       - "./kf-portal-etl-docker/kf_etl.conf:/kf-etl/conf/kf_etl.conf"
       - "./kf-portal-etl-docker/log4j.properties:/kf-etl/spark/conf/log4j.properties"
