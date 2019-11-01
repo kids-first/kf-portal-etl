@@ -8,12 +8,12 @@ import io.kf.etl.processors.participantcentric.ParticipantCentricProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
 
 object ETLMain extends App {
-  val context = new DefaultContext()
-  try {
-    lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
-    import context._
+
+  DefaultContext.withContext { context =>
+    import context.implicits._
 
     import scala.concurrent.ExecutionContext.Implicits._
+    lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
 
     cliArgs.study_ids match {
 
@@ -34,17 +34,12 @@ object ETLMain extends App {
 
       // No Study IDs:
       case None =>
-        println(s"No Study IDs provided - Nothing to run.")
-        System.exit(-1)
+        throw new IllegalArgumentException("No Study IDs provided - Nothing to run.")
 
     }
 
 
-  } finally {
-    context.close()
   }
-
-
 
 
 }

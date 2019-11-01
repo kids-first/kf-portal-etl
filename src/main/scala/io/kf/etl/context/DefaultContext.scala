@@ -15,16 +15,33 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 
 class DefaultContext extends AutoCloseable {
+  private var system: ActorSystem = _
+  private var materializer: ActorMaterializer = _
+  private var wsClientMutable: StandaloneAhcWSClient = _
+  private var configMutable: Config = _
+  private var esClientMutable: TransportClient = _
+  private var sparkMutable: SparkSession = _
 
-  implicit val system: ActorSystem = ActorSystem()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val wsClient: StandaloneAhcWSClient = StandaloneAhcWSClient()
-  private val configFileEnv: Option[String] = sys.env.get(CONFIG_FILE_URL)
-  private val configUrl = configFileEnv.map(c => new File(c))
-  implicit val config: Config = configUrl.map(f => ConfigFactory.parseFile(f)).getOrElse(ConfigFactory.parseResources("/kf_etl.conf"))
-  implicit val esClient: TransportClient = initESClient() // elasticsearch transport client should be created before SparkSession
-  implicit val spark: SparkSession = initSparkSession()
+  object implicits {
+    implicit def wsClient: StandaloneAhcWSClient = wsClientMutable
 
+    implicit def config: Config = configMutable
+
+    implicit def esClient: TransportClient = esClientMutable
+
+    implicit def spark: SparkSession = sparkMutable
+  }
+
+  private def init(): Unit = {
+    system = ActorSystem()
+    materializer = ActorMaterializer()(system)
+    wsClientMutable = StandaloneAhcWSClient()(materializer)
+    val configFileEnv: Option[String] = sys.env.get(CONFIG_FILE_URL)
+    val configUrl = configFileEnv.map(c => new File(c))
+    configMutable = configUrl.map(f => ConfigFactory.parseFile(f)).getOrElse(ConfigFactory.parseResources("/kf_etl.conf"))
+    esClientMutable = initESClient() // elasticsearch transport client should be created before SparkSession
+    sparkMutable = initSparkSession()
+  }
 
   private def initESClient(): TransportClient = {
 
@@ -32,10 +49,10 @@ class DefaultContext extends AutoCloseable {
 
     new PreBuiltTransportClient(
       Settings.builder()
-        .put("cluster.name", config.getString(CONFIG_NAME_ES_CLUSTER_NAME))
+        .put("cluster.name", configMutable.getString(CONFIG_NAME_ES_CLUSTER_NAME))
         .build()
     ).addTransportAddress(
-      new TransportAddress(InetAddress.getByName(config.getString(CONFIG_NAME_ES_HOST)), config.getInt(CONFIG_NAME_ES_TRANSPORT_PORT))
+      new TransportAddress(InetAddress.getByName(configMutable.getString(CONFIG_NAME_ES_HOST)), configMutable.getInt(CONFIG_NAME_ES_TRANSPORT_PORT))
 
     )
   }
@@ -44,8 +61,8 @@ class DefaultContext extends AutoCloseable {
     val session = SparkSession.builder().appName("Kids First Portal ETL")
 
     session
-      .config("es.nodes", s"${config.getString(CONFIG_NAME_ES_HOST)}:${config.getInt(CONFIG_NAME_ES_HTTP_PORT)}")
-      .config("es.nodes.wan.only", Option(config.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
+      .config("es.nodes", s"${configMutable.getString(CONFIG_NAME_ES_HOST)}:${configMutable.getInt(CONFIG_NAME_ES_HTTP_PORT)}")
+      .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
       .getOrCreate()
 
   }
@@ -53,9 +70,21 @@ class DefaultContext extends AutoCloseable {
 
   def close(): Unit = {
     println("Close default context")
-    wsClient.close()
+    wsClientMutable.close()
     system.terminate()
   }
 
   sys.addShutdownHook(close())
+}
+
+object DefaultContext {
+  def withContext[T](f: DefaultContext => T): T = {
+    val context = new DefaultContext()
+    try {
+      context.init()
+      f(context)
+    } finally {
+      context.close()
+    }
+  }
 }
