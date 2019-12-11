@@ -9,6 +9,7 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 object MergeOutcome {
   def apply(entityDataset: EntityDataSet, participants: Dataset[Participant_ES])(implicit spark: SparkSession): Dataset[Participant_ES] = {
     import spark.implicits._
+
     participants.joinWith(
       entityDataset.outcomes,
       participants.col("kf_id") === entityDataset.outcomes.col("participantId"),

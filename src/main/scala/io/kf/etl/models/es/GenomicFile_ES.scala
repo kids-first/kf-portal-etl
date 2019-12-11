@@ -17,6 +17,6 @@ final case class GenomicFile_ES(
                                  platforms: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
                                  reference_genome: scala.Option[String] = None,
                                  repository: scala.Option[String] = None,
-                                 sequencing_experiments: _root_.scala.collection.Seq[SequencingExperiment_ES] = _root_.scala.collection.Seq.empty,
-                                 size: scala.Option[Long] = None
+                                 sequencing_experiments: Seq[SequencingExperiment_ES] = Nil,
+                                 size: Option[Long] = None
                                )
