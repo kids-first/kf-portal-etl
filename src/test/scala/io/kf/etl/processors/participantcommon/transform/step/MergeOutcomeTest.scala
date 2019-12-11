@@ -19,11 +19,11 @@ class MergeOutcomeTest extends FlatSpec with Matchers with WithSparkSession {
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
     val outcome21 = EOutcome(kfId = Some("outcome_21"), participantId = Some("participant_id_2"), vitalStatus = Some("Alive"), diseaseRelated = Some("NA"), ageAtEventDays = Some(50))
-//    val outcome22 = EOutcome(kfId = Some("outcome_22"), participantId = Some("participant_id_2"), vitalStatus = Some("Deceased"), diseaseRelated = Some("NA"), ageAtEventDays = None)
+    //    val outcome22 = EOutcome(kfId = Some("outcome_22"), participantId = Some("participant_id_2"), vitalStatus = Some("Deceased"), diseaseRelated = Some("NA"), ageAtEventDays = None)
     val p3 = Participant_ES(kf_id = Some("participant_id_3"))
 
     val entityDataset = buildEntityDataSet(
-      outcomes = Seq(outcome11, outcome12, outcome13, outcome21)
+        outcomes = Seq(outcome11, outcome12, outcome13, outcome21)
     )
 
     val result = MergeOutcome(entityDataset, Seq(p1, p2, p3).toDS()).collect()

@@ -114,7 +114,7 @@ object ParticipantCentricTransformer{
       ParticipantCentric_ES(
         affected_status = participant.affected_status,
         alias_group = participant.alias_group,
-        biospecimens = participant.biospecimens,
+        biospecimens = Nil, //participant.biospecimens, FIXME
         diagnoses = participant.diagnoses,
         ethnicity = participant.ethnicity,
         external_id = participant.external_id,
