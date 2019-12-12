@@ -11,7 +11,7 @@ final case class ParticipantCentric_ES(
     external_id: scala.Option[String] = None,
     family_id: scala.Option[String] = None,
     family: scala.Option[Family_ES] = None,
-    files: _root_.scala.collection.Seq[GenomicFile_ES] = _root_.scala.collection.Seq.empty,
+    files: Seq[GenomicFile_ES] = Nil,
     gender: scala.Option[String] = None,
     is_proband: scala.Option[Boolean] = None,
     kf_id: scala.Option[String] = None,

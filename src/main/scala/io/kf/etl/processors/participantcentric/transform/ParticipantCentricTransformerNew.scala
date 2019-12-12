@@ -39,7 +39,7 @@ object ParticipantCentricTransformerNew{
       })
       .filter(_!=null)
 
-    val files: Dataset[GenomicFile_ES] =
+    val files =
       entityDataset.genomicFiles.joinWith(
         fileId_experiments,
         entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFile"),
@@ -52,50 +52,80 @@ object ParticipantCentricTransformerNew{
         }
       })
 
-    val bio_gf: Dataset[(EBiospecimen, Seq[GenomicFile_ES])] =
+    val bio_gf: Dataset[BiospecimenId_GenomicFileId] =
       entityDataset.biospecimens
         .joinWith(
           entityDataset.biospecimenGenomicFiles,
           entityDataset.biospecimens.col("kfId") === entityDataset.biospecimenGenomicFiles.col("biospecimenId"),
           "left_outer"
         )
-        .joinWith(
-          files,
-          $"_2.genomicFileId" === files("kfId")
-        ).as[((EBiospecimen, EBiospecimenGenomicFile), GenomicFile_ES)]
-        .map{ case ((biospecimen, _), file) => (biospecimen, file) }
-        .as[(EBiospecimen, GenomicFile_ES)]
-        .groupByKey { case (biospecimen, _) => biospecimen.kfId }
-        .mapGroups { case (_, groupsIterator) =>
-          val groups = groupsIterator.toSeq
-          val biospecimen: EBiospecimen = groups.head._1
-          val files: Seq[GenomicFile_ES] = groups.map(_._2)
-          (biospecimen, files)
+        .map(tuple => {
+          BiospecimenId_GenomicFileId(
+            bioId = tuple._1.kfId,
+            gfId = {
+              Option(tuple._2) match {
+                case Some(_) => tuple._2.genomicFileId
+                case None => null
+              }
+            }
+          )
+        })
+
+
+    val bioId_File =
+      bio_gf.joinWith(
+        files,
+        bio_gf.col("gfId") === files.col("kf_id")
+      ).map(tuple => {
+        BiospecimenId_GenomicFileES(
+          bioId = tuple._1.bioId.get,
+          file = tuple._2
+        )
+      })
+
+    val participants_bioId =
+      participants.joinWith(
+        entityDataset.biospecimens,
+        participants.col("kf_id") === entityDataset.biospecimens.col("participantId"),
+        "left_outer"
+      ).flatMap(tuple => {
+
+        Option(tuple._2) match {
+          case Some(_) =>
+            Seq(ParticipantES_BiospecimenId(bioId = tuple._2.kfId, participant = tuple._1))
+          case None =>
+            Seq(ParticipantES_BiospecimenId(participant = tuple._1, bioId = None))
         }
 
+      })
 
-    participants.joinWith(
-      bio_gf,
-      participants.col("kfId") === bio_gf("_1.participantId"),
-      "left_outer"
-    ).as[(Participant_ES, (EBiospecimen, Seq[GenomicFile_ES]))].groupByKey { case (participant, _) => participant.kf_id }
-      .mapGroups( { case (_, groupsIterator) =>
-        val groups = groupsIterator.toSeq
-        val participant = groups.head._1
-        val bioSpecimenCombined: Seq[BiospecimenCombined_ES] = groups.map { case (_, (biospecimen, gfiles)) => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen).copy(genomic_files = gfiles) }
+    val participents_bio_gf: Dataset[(ParticipantES_BiospecimenId, BiospecimenId_GenomicFileES)] =
+      participants_bioId.joinWith(
+        bioId_File,
+        participants_bioId.col("bioId") === bioId_File.col("bioId"),
+        "left_outer"
+      )
+
+    participents_bio_gf.show()
+
+    participants
+      .groupByKey{case(participant) => participant.kf_id}
+      .mapGroups{ case(_, interator) =>
+        val  groups = interator.toSeq
+        val participant = groups.head
 
         ParticipantCentric_ES(
           affected_status = participant.affected_status,
           alias_group = participant.alias_group,
           available_data_types = participant.available_data_types,
-          biospecimens = bioSpecimenCombined,
+          biospecimens = Nil,
           diagnoses = participant.diagnoses,
           diagnosis_category = participant.diagnosis_category  ,
           ethnicity = participant.ethnicity,
           external_id = participant.external_id,
           family = participant.family,
           family_id = participant.family_id,
-          files = groups.flatMap(a => a._2._2).distinct,
+          files = participents_bio_gf.collect().map(a => a._2.file),
           gender = participant.gender,
           is_proband = participant.is_proband,
           kf_id = participant.kf_id,
@@ -104,7 +134,39 @@ object ParticipantCentricTransformerNew{
           race = participant.race,
           study = participant.study
         )
-      })
+      }
+
+//    participants.joinWith(
+//      bio_gf,
+//      participants.col("kfId") === bio_gf.col("gfId"), // bio_gf("_1.participantId"),
+//      "left_outer"
+//    ).as[(Participant_ES, (EBiospecimen, Seq[GenomicFile_ES]))].groupByKey { case (participant, _) => participant.kf_id }
+//      .mapGroups( { case (_, groupsIterator) =>
+//        val groups = groupsIterator.toSeq
+//        val participant = groups.head._1
+//        val bioSpecimenCombined: Seq[BiospecimenCombined_ES] = groups.map { case (_, (biospecimen, gfiles)) => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen).copy(genomic_files = gfiles) }
+//
+//        ParticipantCentric_ES(
+//          affected_status = participant.affected_status,
+//          alias_group = participant.alias_group,
+//          available_data_types = participant.available_data_types,
+//          biospecimens = bioSpecimenCombined,
+//          diagnoses = participant.diagnoses,
+//          diagnosis_category = participant.diagnosis_category  ,
+//          ethnicity = participant.ethnicity,
+//          external_id = participant.external_id,
+//          family = participant.family,
+//          family_id = participant.family_id,
+//          files = groups.flatMap(a => a._2._2).distinct,
+//          gender = participant.gender,
+//          is_proband = participant.is_proband,
+//          kf_id = participant.kf_id,
+//          outcome = participant.outcome,
+//          phenotype = participant.phenotype,
+//          race = participant.race,
+//          study = participant.study
+//        )
+//      })
 
   }
 
