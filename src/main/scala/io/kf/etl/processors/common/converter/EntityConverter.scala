@@ -55,8 +55,8 @@ object EntityConverter {
       spatial_descriptor = bio.spatialDescriptor,
       uberon_id_anatomical_site = bio.uberonIdAnatomicalSite,
       volume_ml = bio.volumeMl,
-      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
-      sequencing_center_id = bio.sequencingCenterId
+      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES)//,
+//      sequencing_center_id = bio.sequencingCenterId
     )
   }
 

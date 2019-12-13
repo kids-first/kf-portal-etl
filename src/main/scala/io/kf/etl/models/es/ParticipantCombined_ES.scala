@@ -3,11 +3,11 @@ package io.kf.etl.models.es
 final case class ParticipantCombined_ES (
                                           affectedStatus: Option[Boolean] = None,
                                           aliasGroup: Option[String] = None,
-                                          biospecimens: Seq[Biospecimen_ES] = Nil,
+                                          biospecimens: Seq[BiospecimenCombined_ES] = Nil,
                                           diagnoses: Seq[Diagnosis_ES] = Nil,
                                           ethnicity: Option[String] = None,
                                           externalId: Option[String] = None,
-                                          family: Option[String] = None,
+                                          family: Option[Family_ES] = None,
                                           familyId: Option[String] = None,
                                           gender: Option[String] = None,
                                           isProband: Option[Boolean] = None,
