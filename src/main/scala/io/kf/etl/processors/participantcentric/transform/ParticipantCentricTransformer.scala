@@ -20,10 +20,10 @@ object ParticipantCentricTransformer{
       .map(tuple => {
         SequencingExperimentES_GenomicFileId(
           sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
-          genomicFile = tuple._2.genomicFile
+          genomicFileId = tuple._2.genomicFile
         )
       })
-      .groupByKey(_.genomicFile)
+      .groupByKey(_.genomicFileId)
       .mapGroups((fileId, iterator) => {
         fileId match {
           case Some(id) =>
@@ -31,7 +31,7 @@ object ParticipantCentricTransformer{
             val experiments = iterator.map(_.sequencingExperiment).toSeq
             SequencingExperimentsES_GenomicFileId(
               sequencingExperiments = experiments,
-              genomicFile = id
+              genomicFileId = id
             )
           case None => null
         }
@@ -114,7 +114,7 @@ object ParticipantCentricTransformer{
       ParticipantCentric_ES(
         affected_status = participant.affected_status,
         alias_group = participant.alias_group,
-        biospecimens = Nil, //participant.biospecimens, FIXME
+        biospecimens = Nil, //participant.biospecimens,
         diagnoses = participant.diagnoses,
         ethnicity = participant.ethnicity,
         external_id = participant.external_id,

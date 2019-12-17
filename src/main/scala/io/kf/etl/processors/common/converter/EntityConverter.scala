@@ -55,12 +55,12 @@ object EntityConverter {
       spatial_descriptor = bio.spatialDescriptor,
       uberon_id_anatomical_site = bio.uberonIdAnatomicalSite,
       volume_ml = bio.volumeMl,
-      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES)//,
-//      sequencing_center_id = bio.sequencingCenterId
+      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
+      sequencing_center_id = bio.sequencingCenterId
     )
   }
 
-  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen): BiospecimenCombined_ES = {
+  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): BiospecimenCombined_ES = {
     BiospecimenCombined_ES(
       age_at_event_days = bio.ageAtEventDays,
       analyte_type = bio.analyteType,
@@ -76,7 +76,7 @@ object EntityConverter {
       ncit_id_tissue_type = bio.ncitIdTissueType,
       shipment_date = bio.shipmentDate,
       shipment_origin = bio.shipmentOrigin,
-      genomic_files = Nil, // gFiles.map(f => EGenomicFileToGenomicFileES(f)),
+      genomic_files = gfiles,
       source_text_tumor_descriptor = bio.sourceTextTumorDescriptor,
       source_text_tissue_type = bio.sourceTextTissueType,
       source_text_anatomical_site = bio.sourceTextAnatomicalSite,

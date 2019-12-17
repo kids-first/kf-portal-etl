@@ -4,7 +4,7 @@ final case class Participant_ES(
                                  affected_status: scala.Option[Boolean] = None,
                                  alias_group: scala.Option[String] = None,
                                  available_data_types: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
-                                 biospecimens: _root_.scala.collection.Seq[Biospecimen_ES] = _root_.scala.collection.Seq.empty,
+                                 biospecimens: Seq[Biospecimen_ES] = Nil,
                                  diagnoses: _root_.scala.collection.Seq[Diagnosis_ES] = _root_.scala.collection.Seq.empty,
                                  diagnosis_category: scala.Option[String] = None,
                                  ethnicity: scala.Option[String] = None,
