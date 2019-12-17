@@ -5,7 +5,7 @@ import io.kf.etl.models.dataservice._
 import io.kf.etl.models.es.{BiospecimenCombined_ES, Diagnosis_ES, GenomicFile_ES, ParticipantCombined_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTransformerNew
+import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTransformer
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers}
@@ -42,7 +42,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
   val genomicFile4: EGenomicFile = EGenomicFile(kfId = Some("genomicFile4"), dataType = Some("Super Important type 4"), fileName = Some("File4"))
   val genomicFile5: EGenomicFile = EGenomicFile(kfId = Some("genomicFile5"), dataType = Some("Super Important type 5"), fileName = Some("File5"))
   val genomicFile6: EGenomicFile = EGenomicFile(kfId = Some("genomicFile6"), dataType = Some("Super Important type 6"), fileName = Some("File6"))
-  val genomicFile7: EGenomicFile = EGenomicFile(kfId = Some("genomicFile7"), dataType = Some("Super Important type 6"), fileName = Some("File7"))
+  val genomicFile7: EGenomicFile = EGenomicFile(kfId = Some("genomicFile7"), dataType = Some("Super Important type 7"), fileName = Some("File7"))
   val genomicFiles: Seq[EGenomicFile] = Seq(genomicFile1, genomicFile2, genomicFile3, genomicFile4, genomicFile5, genomicFile6, genomicFile7)
 
   val eBiospecimenGenomicFile1: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_1"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomicFile1"))
@@ -79,7 +79,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
 
   "apply" should "return the proper Sequence of ParticipantCombined_ES" in {
 
-    val result = ParticipantCentricTransformerNew(entityDataSet, participants.map(EntityConverter.EParticipantToParticipantES).toDS())
+    val result = ParticipantCentricTransformer(entityDataSet, participants.map(EntityConverter.EParticipantToParticipantES).toDS())
 
 //    result.show(truncate = false)
 

@@ -4,11 +4,11 @@ import com.typesafe.config.Config
 import io.kf.etl.models.es.{ParticipantCombined_ES, Participant_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.sink.WriteParquetSink
-import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTransformerNew
+import io.kf.etl.processors.participantcentric.transform.ParticipantCentricTransformer
 import org.apache.spark.sql.{Dataset, SparkSession}
 object ParticipantCentricProcessor {
   def apply(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[ParticipantCombined_ES] = {
-    val transformed = ParticipantCentricTransformerNew(entityDataSet, participants).cache()
+    val transformed = ParticipantCentricTransformer(entityDataSet, participants).cache()
     WriteParquetSink("participant_centric", transformed)
     transformed
   }

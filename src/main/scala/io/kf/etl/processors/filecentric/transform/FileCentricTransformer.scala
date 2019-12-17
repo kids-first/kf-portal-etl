@@ -40,7 +40,7 @@ object FileCentricTransformer{
     val files: Dataset[GenomicFile_ES] =
       entityDataset.genomicFiles.joinWith(
         fileId_experiments,
-        entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFile"),
+        entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFileId"),
         "left_outer"
       ).map(tuple => {
         Option(tuple._2) match {
