@@ -13,101 +13,110 @@ object ParticipantCentricTransformerNew{
     import spark.implicits._
 
 
-    val fileId_experiments = entityDataset.sequencingExperiments
-      .joinWith(
-        entityDataset.sequencingExperimentGenomicFiles,
-        entityDataset.sequencingExperiments.col("kfId") === entityDataset.sequencingExperimentGenomicFiles.col("sequencingExperiment"),
-        "left_outer"
-      )
-      .map(tuple => {
-        SequencingExperimentES_GenomicFileId(
-          sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
-          genomicFile = tuple._2.genomicFile
+    val fileId_experiments: Dataset[SequencingExperimentsES_GenomicFileId] =
+      entityDataset.sequencingExperiments
+        .joinWith(
+          entityDataset.sequencingExperimentGenomicFiles,
+          entityDataset.sequencingExperiments.col("kfId") === entityDataset.sequencingExperimentGenomicFiles.col("sequencingExperiment"),
+          "left_outer"
         )
-      })
-      .groupByKey(_.genomicFile)
-      .mapGroups((fileId, iterator) => {
-        fileId match {
-          case Some(id) =>
+        .map(tuple => {
+          SequencingExperimentES_GenomicFileId(
+            sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
+            genomicFileId = tuple._2.genomicFile
+          )
+        })
+        .groupByKey(_.genomicFileId)
+        .mapGroups((fileId, iterator) => {
+          fileId match {
+            case Some(id) =>
 
-            val experiments = iterator.map(_.sequencingExperiment).toSeq
-            SequencingExperimentsES_GenomicFileId(
-              sequencingExperiments = experiments,
-              genomicFile = id
-            )
-          case None => null
-        }
-      })
-      .filter(_ != null)
+              val experiments = iterator.map(_.sequencingExperiment).toSeq
+              SequencingExperimentsES_GenomicFileId(
+                genomicFileId = id,
+                sequencingExperiments = experiments
+              )
+            case None => null
+          }
+        })
+        .filter(_ != null)
 
-    val files =
+    val files: Dataset[GenomicFile_ES] =
       entityDataset.genomicFiles.joinWith(
         fileId_experiments,
-        entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFile"),
+        entityDataset.genomicFiles.col("kfId") === fileId_experiments.col("genomicFileId"),
         "left_outer"
       ).map(tuple => {
         Option(tuple._2) match {
           case Some(_) =>
-            EntityConverter.EGenomicFileToGenomicFileES(tuple._1, tuple._2.sequencingExperiments)
+            EntityConverter.EGenomicFileToGenomicFileES(
+              tuple._1,
+              tuple._2.sequencingExperiments)
           case None => EntityConverter.EGenomicFileToGenomicFileES(tuple._1, Seq.empty)
         }
-      })
+      }) //FIXME is Genomic files already has a sequencing_Experiments????
 
-    val bio_gf: Dataset[(EBiospecimen, Seq[GenomicFile_ES])] =
-      entityDataset.biospecimens
-        .joinWith(
-          entityDataset.biospecimenGenomicFiles,
-          entityDataset.biospecimens.col("kfId") === entityDataset.biospecimenGenomicFiles.col("biospecimenId"),
-          "left_outer"
-        ).as[(EBiospecimen, EBiospecimenGenomicFile)]
-        .joinWith(
-          files,
-          $"_2.genomicFileId" === files("kfId"))
-        .as[((EBiospecimen, EBiospecimenGenomicFile), GenomicFile_ES)]
-        .map { case ((biospecimen, _), file) => (biospecimen, file) }
-        .as[(EBiospecimen, GenomicFile_ES)]
-        .groupByKey { case (biospecimen, _) => biospecimen.kfId }
+    val bio_gf: Dataset[(EBiospecimen, Seq[GenomicFile_ES])] = {
+      val bioSpec_GFs: Dataset[(EBiospecimen, GenomicFile_ES)] =
+        entityDataset.biospecimens
+          .joinWith(
+            entityDataset.biospecimenGenomicFiles,
+            entityDataset.biospecimens.col("kfId") === entityDataset.biospecimenGenomicFiles.col("biospecimenId"),
+            "left_outer"
+          )
+          .as[(EBiospecimen, EBiospecimenGenomicFile)]
+          .toDF("eBiospecimen", "eBiospecimenGenomicFile")
+          .joinWith(
+            files,
+            $"eBiospecimenGenomicFile.genomicFileId" === files("kf_id")
+          )
+          .as[((EBiospecimen, EBiospecimenGenomicFile), GenomicFile_ES)]
+          .map { case ((biospecimen, _), file) => (biospecimen, file) }
+
+      bioSpec_GFs.groupByKey { case (biospecimen, _) => biospecimen.kfId }
         .mapGroups { case (_, groupsIterator) =>
           val groups = groupsIterator.toSeq
           val biospecimen: EBiospecimen = groups.head._1
           val files: Seq[GenomicFile_ES] = groups.map(_._2)
           (biospecimen, files)
         }
-
-    println("TOTOT")
-    println(bio_gf.show(10))
-    println("TOTOT")
+    }
 
     participants.joinWith(
       bio_gf,
-      participants.col("kfId") === bio_gf.col("participantId"),
+      participants.col("kf_id") === bio_gf.col("_1.participantId"),
       "left_outer"
     ).groupByKey { case (participant, _) => participant.kf_id.get }
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val bioFiles: Seq[BiospecimenCombined_ES] = groups.map { case (_, (biospecimen, gfiles)) => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen).copy(genomic_files = gfiles) }
+        val bioFiles: Seq[BiospecimenCombined_ES] = groups.collect {
+          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen, gfiles)
+        }
+        val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
+
 
         ParticipantCombined_ES(
-          affectedStatus = participant.affected_status,
-          aliasGroup = participant.alias_group,
-          biospecimens = Nil,// bioFiles,
+          affected_status = participant.affected_status,
+          alias_group = participant.alias_group,
+          available_data_types = participant.available_data_types,
+          biospecimens = bioFiles,
           diagnoses = participant.diagnoses,
+          diagnosis_category = participant.diagnosis_category,
           ethnicity = participant.ethnicity,
-          externalId = participant.external_id,
+          external_id = participant.external_id,
           family = participant.family,
-          familyId = participant.family_id,
+          family_id = participant.family_id,
+          files = gfiles,
           gender = participant.gender,
-          isProband = participant.is_proband,
-          kfId = participant.kf_id,
+          is_proband = participant.is_proband,
+          kf_id = participant.kf_id,
           outcome = participant.outcome,
           phenotype = participant.phenotype,
           race = participant.race,
-          study = participant.study,
-          availableDataTypes = participant.available_data_types
+          study = participant.study
         )
       }
 
   }
 }
-
