@@ -80,11 +80,11 @@ object FileCentricTransformer{
           "left_outer"
         )
         .map(tuple => {
-          BiospecimenES_GenomicFileId(
+          BiospecimenCombinedES_GenomicFileId(
             gfId = tuple._1.gfId.get,
             bio = {
               Option(tuple._2) match {
-                case Some(_) => EntityConverter.EBiospecimenToBiospecimenES(tuple._2)
+                case Some(_) => EntityConverter.EBiospecimenToBiospecimenCombinedES(tuple._2) //FIXME add files per biospecimen
                 case None => null
               }
             }
@@ -97,6 +97,7 @@ object FileCentricTransformer{
           bio_gfId,
           files.col("kf_id") === bio_gfId.col("gfId")
         )
+        .as[(GenomicFile_ES, BiospecimenCombinedES_GenomicFileId)]
         .map(tuple => {
           BiospecimenES_GenomicFileES(
             bio = tuple._2.bio,
@@ -161,7 +162,7 @@ object FileCentricTransformer{
           is_paired_end = genomicFile.is_paired_end,
           kf_id = genomicFile.kf_id,
           latest_did = genomicFile.latest_did,
-          participants = participants_in_genomicfile.toSeq,
+          participants = participants_in_genomicfile.toSeq, //FixME new BiospecimenCombined_ES
           platforms = genomicFile.platforms,
           reference_genome = genomicFile.reference_genome,
           repository = genomicFile.repository,
