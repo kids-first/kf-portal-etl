@@ -33,33 +33,6 @@ object EntityConverter {
     )
   }
   
-  def EBiospecimenToBiospecimenES(bio: EBiospecimen): Biospecimen_ES = {
-    Biospecimen_ES(
-      age_at_event_days = bio.ageAtEventDays,
-      analyte_type = bio.analyteType,
-      composition = bio.composition,
-      concentration_mg_per_ml = bio.concentrationMgPerMl,
-      consent_type = bio.consentType,
-      dbgap_consent_code = bio.dbgapConsentCode,
-      external_aliquot_id = bio.externalAliquotId,
-      external_sample_id = bio.externalSampleId,
-      kf_id = bio.kfId,
-      ncit_id_anatomical_site = bio.ncitIdAnatomicalSite,
-      ncit_id_tissue_type = bio.ncitIdTissueType,
-      shipment_date = bio.shipmentDate,
-      shipment_origin = bio.shipmentOrigin,
-      genomic_files = bio.genomicFiles,
-      source_text_tumor_descriptor = bio.sourceTextTumorDescriptor,
-      source_text_tissue_type = bio.sourceTextTissueType,
-      source_text_anatomical_site = bio.sourceTextAnatomicalSite,
-      spatial_descriptor = bio.spatialDescriptor,
-      uberon_id_anatomical_site = bio.uberonIdAnatomicalSite,
-      volume_ml = bio.volumeMl,
-      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
-      sequencing_center_id = bio.sequencingCenterId
-    )
-  }
-
   def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): BiospecimenCombined_ES = {
     BiospecimenCombined_ES(
       age_at_event_days = bio.ageAtEventDays,
