@@ -18,8 +18,5 @@ object ParticipantCommonTransformer {
     val mergedBiospecimens = withStepSink("merge_biospecimens")(MergeBiospecimenPerParticipant(data, mergedFamily))
 
     mergedBiospecimens
-
-
   }
-
 }
