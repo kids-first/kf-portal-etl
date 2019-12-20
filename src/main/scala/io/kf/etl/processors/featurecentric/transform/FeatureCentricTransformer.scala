@@ -26,7 +26,7 @@ object FeatureCentricTransformer {
       bio_gf,
       participants.col("kf_id") === bio_gf.col("_1.participantId"),
       "left_outer"
-    ).groupByKey { case (participant, _) => participant.kf_id.get }
+    ).groupByKey { case (participant, _) => participant.kf_id }
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
@@ -68,126 +68,29 @@ object FeatureCentricTransformer {
     val files: Dataset[GenomicFile_ES] =
       joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
 
-    val bio_par: Dataset[BiospecimenES_ParticipantES] =
-      participants.flatMap((p: Participant_ES) => p.biospecimens.map(b => BiospecimenES_ParticipantES(b, p)))
-
-    val bioId_gfId =
-      entityDataset.genomicFiles
-        .joinWith(
-          entityDataset.biospecimenGenomicFiles,
-          entityDataset.genomicFiles.col("kfId") === entityDataset.biospecimenGenomicFiles.col("genomicFileId"),
-          "left_outer"
-        )
-        .map(tuple => {
-          BiospecimenId_GenomicFileId(
-            gfId = tuple._1.kfId,
-            bioId = {
-              Option(tuple._2) match {
-                case Some(_) => tuple._2.biospecimenId
-                case None => null
-              }
-            }
-          )
-        })
-
-    val bio_gfId =
-      bioId_gfId
-        .joinWith(
-          entityDataset.biospecimens,
-          bioId_gfId.col("bioId") === entityDataset.biospecimens.col("kfId"),
-          "left_outer"
-        )
-        .map(tuple => {
-          BiospecimenCombinedES_GenomicFileId(
-            gfId = tuple._1.gfId.get,
-            bio = {
-              Option(tuple._2) match {
-                case Some(_) => EntityConverter.EBiospecimenToBiospecimenCombinedES(tuple._2) //FIXME add files per biospecimen
-                case None => null
-              }
-            }
-          )
-        })
-
-    val bio_fullGf: Dataset[BiospecimenES_GenomicFileES] =
-      files
-        .joinWith(
-          bio_gfId,
-          files.col("kf_id") === bio_gfId.col("gfId")
-        )
-        .as[(GenomicFile_ES, BiospecimenCombinedES_GenomicFileId)]
-        .map(tuple => {
-          BiospecimenES_GenomicFileES(
-            bio = tuple._2.bio,
-            genomicFile = tuple._1
-          )
-        })
-
-
-    bio_fullGf
+    val ebio_gfs = joinGenomicFiles_To_Biospecimen(
+      entityDataset.biospecimens,
+      entityDataset.biospecimenGenomicFiles,
+      entityDataset.genomicFiles.map(EntityConverter.EGenomicFileToGenomicFileES)
+    )
+    val prarticipants_Bio =
+      ebio_gfs
       .joinWith(
-        bio_par,
-        bio_par("bio")("kf_id") === bio_fullGf("bio")("kf_id"),
-        "left_outer"
-      )
-      .map(tuple => {
-
-        ParticipantES_BiospecimenES_GenomicFileES(
-          participant = {
-            Option(tuple._2) match {
-              case Some(_) => tuple._2.participant
-              case None => null
-            }
-          },
-          bio = Option(tuple._2) match {
-            case Some(_) => tuple._2.bio
-            case None => null
-          },
-          genomicFile = tuple._1.genomicFile
-        )
-
-      })
-      .groupByKey(_.genomicFile.kf_id)
-      .mapGroups((_, iterator) => {
-
-        val seq = iterator.toSeq
+        participants,
+        entityDataset.biospecimens.col("participantId") === participants.col("kf_id"),
+        "left_outer")
+      .map{ case(a, p) => (p, EntityConverter.EBiospecimenToBiospecimenCombinedES(a._1, a._2).genomic_files) }
 
 
-        val genomicFile = seq.head.genomicFile
-
-        val participants_in_genomicfile =
-          seq.filter(pbg => {
-            pbg.bio != null && pbg.participant != null
-          }).groupBy(_.participant.kf_id.get)
-            .map(tuple => {
-              val participant = tuple._2.head.participant
-              participant.copy(
-                biospecimens = tuple._2.map(_.bio)
-              )
-            })
-
-        FileCentric_ES(
-          acl = genomicFile.acl,
-          access_urls = genomicFile.access_urls,
-          availability = genomicFile.availability,
-          controlled_access = genomicFile.controlled_access,
-          data_type = genomicFile.data_type,
-          external_id = genomicFile.external_id,
-          file_format = genomicFile.file_format,
-          file_name = genomicFile.file_name,
-          instrument_models = genomicFile.instrument_models,
-          is_harmonized = genomicFile.is_harmonized,
-          is_paired_end = genomicFile.is_paired_end,
-          kf_id = genomicFile.kf_id,
-          latest_did = genomicFile.latest_did,
-          participants = participants_in_genomicfile.toSeq, //FixME new BiospecimenCombined_ES
-          platforms = genomicFile.platforms,
-          reference_genome = genomicFile.reference_genome,
-          repository = genomicFile.repository,
-          sequencing_experiments = genomicFile.sequencing_experiments,
-          size = genomicFile.size
-        )
-
+    prarticipants_Bio.joinWith(
+      files,
+      prarticipants_Bio.col("_2.participantId") === participants.col("kf_id"),
+    ).map(a => (a._2, a._1._1))
+      .groupByKey(_._1.kf_id)
+      .mapGroups((id, iterator) => {
+        val gf = iterator.toSeq.map(_._1).head
+        val participants = iterator.toSeq.map(_._2)
+        genomicFile_ES_to_FileCentric(gf, participants)
       })
   }
 
@@ -269,5 +172,32 @@ object FeatureCentricTransformer {
         val files: Seq[GenomicFile_ES] = groups.map(_._2)
         (biospecimen, files)
       }
+  }
+
+  private def genomicFile_ES_to_FileCentric(
+                                             genomicFile: GenomicFile_ES,
+                                             participants: Seq[Participant_ES]
+                                           ): FileCentric_ES = {
+    FileCentric_ES(
+      acl = genomicFile.acl,
+      availability = genomicFile.availability,
+      access_urls = genomicFile.access_urls,
+      controlled_access = genomicFile.controlled_access,
+      data_type = genomicFile.data_type,
+      external_id = genomicFile.external_id,
+      file_format = genomicFile.file_format,
+      file_name = genomicFile.file_name,
+      instrument_models = genomicFile.instrument_models,
+      is_harmonized = genomicFile.is_harmonized,
+      is_paired_end = genomicFile.is_paired_end,
+      kf_id = genomicFile.kf_id,
+      latest_did = genomicFile.latest_did,
+      participants = participants,
+      platforms = genomicFile.platforms,
+      reference_genome = genomicFile.reference_genome,
+      repository = genomicFile.repository,
+      sequencing_experiments = genomicFile.sequencing_experiments,
+      size = genomicFile.size
+    )
   }
 }

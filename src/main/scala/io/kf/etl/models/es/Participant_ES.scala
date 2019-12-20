@@ -13,7 +13,7 @@ final case class Participant_ES(
                                  family_id: Option[String] = None,
                                  gender: Option[String] = None,
                                  is_proband: Option[Boolean] = None,
-                                 kf_id: Option[String] = None,
+                                 kf_id: String,
                                  outcome: Option[Outcome_ES] = None,
                                  phenotype: Seq[Phenotype_ES] = Nil,
                                  race: Option[String] = None,
