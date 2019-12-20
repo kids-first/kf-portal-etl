@@ -33,7 +33,7 @@ class FileCentricTransformerSpec extends FlatSpec with Matchers with WithSparkSe
     val result = FileCentricTransformer(entityDataSet, Data.participants.map(EntityConverter.EParticipantToParticipantES).toDS())
 
     //    result.show(truncate = false)
-    
+
     result.collect() should contain theSameElementsAs Seq(
       FileCentric_ES(
         kf_id = Some("genomicFile1"),
