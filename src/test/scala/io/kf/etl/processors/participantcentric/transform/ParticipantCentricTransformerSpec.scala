@@ -5,6 +5,7 @@ import io.kf.etl.models.es.{BiospecimenCombined_ES, GenomicFile_ES, ParticipantC
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
+import io.kf.etl.processors.featurecentric.transform.FeatureCentricTransformer
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers}
@@ -28,7 +29,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
 
   "apply" should "return the proper Sequence of ParticipantCombined_ES" in {
 
-    val result = ParticipantCentricTransformer(entityDataSet, Data.participants.map(EntityConverter.EParticipantToParticipantES).toDS())
+    val result = FeatureCentricTransformer.participant(entityDataSet, Data.participants.map(EntityConverter.EParticipantToParticipantES).toDS())
 
 //    result.show(truncate = false)
 

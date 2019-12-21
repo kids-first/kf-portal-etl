@@ -35,27 +35,7 @@ object FeatureCentricTransformer {
         }
         val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
 
-
-        ParticipantCombined_ES(
-          affected_status = participant.affected_status,
-          alias_group = participant.alias_group,
-          available_data_types = participant.available_data_types,
-          biospecimens = bioFiles,
-          diagnoses = participant.diagnoses,
-          diagnosis_category = participant.diagnosis_category,
-          ethnicity = participant.ethnicity,
-          external_id = participant.external_id,
-          family = participant.family,
-          family_id = participant.family_id,
-          files = gfiles,
-          gender = participant.gender,
-          is_proband = participant.is_proband,
-          kf_id = participant.kf_id,
-          outcome = participant.outcome,
-          phenotype = participant.phenotype,
-          race = participant.race,
-          study = participant.study
-        )
+        participant_ES_to_ParticipantCentric_ES(participant,gfiles, bioFiles)
       }
 
   }
@@ -66,32 +46,35 @@ object FeatureCentricTransformer {
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
 
     val files: Dataset[GenomicFile_ES] =
-      joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
+    joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
+
+    files.show(false)
 
     val ebio_gfs = joinGenomicFiles_To_Biospecimen(
-      entityDataset.biospecimens,
-      entityDataset.biospecimenGenomicFiles,
-      entityDataset.genomicFiles.map(EntityConverter.EGenomicFileToGenomicFileES)
+        entityDataset.biospecimens,
+        entityDataset.biospecimenGenomicFiles,
+        entityDataset.genomicFiles.map(EntityConverter.EGenomicFileToGenomicFileES)
     )
+
     val prarticipants_Bio =
       ebio_gfs
-      .joinWith(
-        participants,
-        entityDataset.biospecimens.col("participantId") === participants.col("kf_id"),
-        "left_outer")
-      .map{ case(a, p) => (p, EntityConverter.EBiospecimenToBiospecimenCombinedES(a._1, a._2).genomic_files) }
+        .joinWith(
+          participants,
+          ebio_gfs.col("_1.participantId") === participants.col("kf_id"),
+          "left_outer")
+        .map{ case(a, p) => (p, EntityConverter.EBiospecimenToBiospecimenCombinedES(a._1, a._2).genomic_files) }
 
 
-    prarticipants_Bio.joinWith(
-      files,
-      prarticipants_Bio.col("_2.participantId") === participants.col("kf_id"),
-    ).map(a => (a._2, a._1._1))
-      .groupByKey(_._1.kf_id)
-      .mapGroups((id, iterator) => {
-        val gf = iterator.toSeq.map(_._1).head
-        val participants = iterator.toSeq.map(_._2)
-        genomicFile_ES_to_FileCentric(gf, participants)
-      })
+
+    prarticipants_Bio
+      .flatMap(a => a._2.map(gfs => (gfs, a._1)))
+      .filter(_._1 != null)
+      .groupByKey(_._1)
+        .mapGroups { case (file, groupsIterator) =>
+          (file,groupsIterator.toSeq.map(_._2))
+        }
+        .map{a =>
+          genomicFile_ES_to_FileCentric(a._1, a._2)}
   }
 
   //TODO Should be generic Type -- Join FileId to A / check if col("kfId") exist for A (of user an upper class/trait)
@@ -198,6 +181,32 @@ object FeatureCentricTransformer {
       repository = genomicFile.repository,
       sequencing_experiments = genomicFile.sequencing_experiments,
       size = genomicFile.size
+    )
+  }
+  private def participant_ES_to_ParticipantCentric_ES(
+                                                       participant: Participant_ES,
+                                                       files: Seq[GenomicFile_ES],
+                                                       biospecimens: Seq[BiospecimenCombined_ES]
+                                                     ): ParticipantCombined_ES = {
+    ParticipantCombined_ES(
+      affected_status = participant.affected_status,
+      alias_group = participant.alias_group,
+      available_data_types = participant.available_data_types,
+      biospecimens = biospecimens,
+      diagnoses = participant.diagnoses,
+      diagnosis_category = participant.diagnosis_category,
+      ethnicity = participant.ethnicity,
+      external_id = participant.external_id,
+      family = participant.family,
+      family_id = participant.family_id,
+      files = files,
+      gender = participant.gender,
+      is_proband = participant.is_proband,
+      kf_id = participant.kf_id,
+      outcome = participant.outcome,
+      phenotype = participant.phenotype,
+      race = participant.race,
+      study = participant.study
     )
   }
 }

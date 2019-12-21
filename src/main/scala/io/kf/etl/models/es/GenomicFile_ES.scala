@@ -12,7 +12,7 @@ final case class GenomicFile_ES(
                                  instrument_models: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
                                  is_harmonized: scala.Option[Boolean] = None,
                                  is_paired_end: scala.Option[Boolean] = None,
-                                 kf_id: String = "NO_GENOMICFILE_ID", //FIXME
+                                 kf_id: Option[String] = None,
                                  latest_did: scala.Option[String] = None,
                                  platforms: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
                                  reference_genome: scala.Option[String] = None,
