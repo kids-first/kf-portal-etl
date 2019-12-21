@@ -13,7 +13,7 @@ final case class FileCentric_ES(
                                  instrument_models: Seq[String] = Nil,
                                  is_paired_end: scala.Option[Boolean] = None,
                                  size: scala.Option[Long] = None,
-                                 kf_id: String,
+                                 kf_id: Option[String] = None,
                                  participants: Seq[Participant_ES] = Nil,
                                  platforms: Seq[String] = Nil,
                                  reference_genome: Option[String] = None,

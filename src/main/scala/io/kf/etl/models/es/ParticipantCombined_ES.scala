@@ -14,7 +14,7 @@ final case class ParticipantCombined_ES (
                                           files: Seq[GenomicFile_ES] = Nil,
                                           gender: Option[String] = None,
                                           is_proband: Option[Boolean] = None,
-                                          kf_id: String,
+                                          kf_id: Option[String] = None,
                                           outcome: Option[Outcome_ES] = None,
                                           phenotype: Seq[Phenotype_ES] = Nil,
                                           race: Option[String] = None,
