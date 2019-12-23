@@ -46,14 +46,14 @@ object FeatureCentricTransformer {
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
 
     val files: Dataset[GenomicFile_ES] =
-    joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
+      joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
 
     files.show(false)
 
     val ebio_gfs = joinGenomicFiles_To_Biospecimen(
-        entityDataset.biospecimens,
-        entityDataset.biospecimenGenomicFiles,
-        entityDataset.genomicFiles.map(EntityConverter.EGenomicFileToGenomicFileES)
+      entityDataset.biospecimens,
+      entityDataset.biospecimenGenomicFiles,
+      files
     )
 
     val prarticipants_Bio =
@@ -71,7 +71,7 @@ object FeatureCentricTransformer {
       .filter(_._1 != null)
       .groupByKey(_._1)
         .mapGroups { case (file, groupsIterator) =>
-          (file,groupsIterator.toSeq.map(_._2))
+          (file, groupsIterator.toSeq.filter{case (_, p)=> p != null}.map(_._2))
         }
         .map{a =>
           genomicFile_ES_to_FileCentric(a._1, a._2)}
