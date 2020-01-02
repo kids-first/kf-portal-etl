@@ -1,7 +1,7 @@
 package io.kf.etl.processors.featurecentric.transform
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenGenomicFile, EGenomicFile, ESequencingExperiment, ESequencingExperimentGenomicFile}
-import io.kf.etl.models.es.{BiospecimenCombined_ES, FileCentric_ES, GenomicFile_ES, ParticipantCombined_ES, Participant_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, ParticipantCombined_ES, Participant_ES}
 import io.kf.etl.models.internal.{BiospecimenCombinedES_GenomicFileId, BiospecimenES_GenomicFileES, BiospecimenES_ParticipantES, BiospecimenId_GenomicFileId, ParticipantES_BiospecimenES_GenomicFileES, SequencingExperimentES_GenomicFileId, SequencingExperimentsES_GenomicFileId}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -30,7 +30,7 @@ object FeatureCentricTransformer {
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val bioFiles: Seq[BiospecimenCombined_ES] = groups.collect {
+        val bioFiles: Seq[Biospecimen_ES] = groups.collect {
           case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen, gfiles)
         }
         val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
@@ -184,7 +184,7 @@ object FeatureCentricTransformer {
   private def participant_ES_to_ParticipantCentric_ES(
                                                        participant: Participant_ES,
                                                        files: Seq[GenomicFile_ES],
-                                                       biospecimens: Seq[BiospecimenCombined_ES]
+                                                       biospecimens: Seq[Biospecimen_ES]
                                                      ): ParticipantCombined_ES = {
     ParticipantCombined_ES(
       affected_status = participant.affected_status,

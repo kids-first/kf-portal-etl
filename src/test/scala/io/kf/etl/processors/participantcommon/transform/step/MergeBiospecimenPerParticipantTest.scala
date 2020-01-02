@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EDiagnosis}
-import io.kf.etl.models.es.{BiospecimenCombined_ES, Biospecimen_ES, Diagnosis_ES, Participant_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, Diagnosis_ES, Participant_ES}
 import io.kf.etl.models.ontology.OntologyTerm
 import io.kf.etl.processors.test.util.EntityUtil._
 import io.kf.etl.processors.test.util.WithSparkSession
@@ -46,12 +46,12 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
     val result = mergeBiospecimen.collect()
     result should contain theSameElementsAs Seq(
       Participant_ES(kf_id = Some("participant_id_1"),
-        biospecimens = Seq(BiospecimenCombined_ES(kf_id = Some("biospecimen_id_1"), ncit_id_anatomical_site = Some("NCIT:unknown"), diagnoses = Seq(Diagnosis_ES(kf_id = Some("diagnosis_id_1")))))
+        biospecimens = Seq(Biospecimen_ES(kf_id = Some("biospecimen_id_1"), ncit_id_anatomical_site = Some("NCIT:unknown"), diagnoses = Seq(Diagnosis_ES(kf_id = Some("diagnosis_id_1")))))
       ),
       Participant_ES(kf_id = Some("participant_id_2"),
         biospecimens = Seq(
-          BiospecimenCombined_ES(kf_id = Some("biospecimen_id_22")),
-          BiospecimenCombined_ES(kf_id = Some("biospecimen_id_21"), ncit_id_anatomical_site = Some("Central nervous system (NCIT:C12438)"), ncit_id_tissue_type = Some("Normal (NCIT:C14165)"))
+          Biospecimen_ES(kf_id = Some("biospecimen_id_22")),
+          Biospecimen_ES(kf_id = Some("biospecimen_id_21"), ncit_id_anatomical_site = Some("Central nervous system (NCIT:C12438)"), ncit_id_tissue_type = Some("Normal (NCIT:C14165)"))
         )),
       Participant_ES(kf_id = Some("participant_id_3"))
     )
