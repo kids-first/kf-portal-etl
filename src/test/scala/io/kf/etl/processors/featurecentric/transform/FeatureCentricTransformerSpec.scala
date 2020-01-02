@@ -105,7 +105,9 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         participants = Nil,
         sequencing_experiments = Seq(
           SequencingExperiment_ES(
-            kf_id = Some("eSeqExp1")
+            kf_id = Some("eSeqExp1"),
+            library_prep = Some("this_Prep1"),
+            library_selection = Some("this_Selection1")
           )
         )
       )
