@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcentric.transform
 
 import com.typesafe.config.Config
-import io.kf.etl.models.es.{BiospecimenCombined_ES, GenomicFile_ES, ParticipantCombined_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, GenomicFile_ES, ParticipantCombined_ES}
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -37,7 +37,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
       ParticipantCombined_ES(
         kf_id = Some("participant_id_1"),
         biospecimens = Seq(
-          BiospecimenCombined_ES(
+          Biospecimen_ES(
             kf_id = Some("biospecimen_id_1"),
             genomic_files = Seq(
               GenomicFile_ES(
@@ -53,7 +53,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
             ),
             ncit_id_anatomical_site = Some("NCIT:unknown")
           ),
-          BiospecimenCombined_ES(
+          Biospecimen_ES(
             kf_id = Some("biospecimen_id_1_1"),
             genomic_files = Seq(
               GenomicFile_ES(
@@ -64,7 +64,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
             ),
             ncit_id_anatomical_site = Some("NCIT:unknown2")
           ),
-          BiospecimenCombined_ES(
+          Biospecimen_ES(
             kf_id = Some("biospecimen_id_1_2"),
             genomic_files = Seq(
               GenomicFile_ES(
@@ -102,7 +102,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
       ParticipantCombined_ES(
         kf_id = Some("participant_id_2"),
         biospecimens = Seq(
-          BiospecimenCombined_ES(
+          Biospecimen_ES(
             kf_id = Some("biospecimen_id_2"),
             genomic_files = Seq(
               GenomicFile_ES(
@@ -127,7 +127,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
       ParticipantCombined_ES(
         kf_id = Some("participant_id_3"),
         biospecimens = Seq(
-          BiospecimenCombined_ES(
+          Biospecimen_ES(
             kf_id = Some("biospecimen_id_3"),
             genomic_files = Seq(
               GenomicFile_ES(

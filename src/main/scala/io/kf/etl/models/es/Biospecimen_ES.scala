@@ -15,7 +15,7 @@ final case class Biospecimen_ES(
                                  ncit_id_tissue_type: Option[String] = None,
                                  shipment_date: Option[String] = None,
                                  shipment_origin: Option[String] = None,
-                                 genomic_files: Seq[String] = Seq.empty,
+                                 genomic_files: Seq[GenomicFile_ES] = Nil,
                                  source_text_tumor_descriptor: Option[String] = None,
                                  source_text_tissue_type: Option[String] = None,
                                  source_text_anatomical_site: Option[String] = None,
@@ -23,5 +23,5 @@ final case class Biospecimen_ES(
                                  uberon_id_anatomical_site: Option[String] = None,
                                  volume_ml: Option[Double] = None,
                                  sequencing_center_id: Option[String] = None,
-                                 diagnoses: Seq[Diagnosis_ES] = Seq.empty
+                                 diagnoses: Seq[Diagnosis_ES] = Nil
                                )

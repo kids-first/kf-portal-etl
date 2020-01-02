@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EDiagnosis}
-import io.kf.etl.models.es.{BiospecimenCombined_ES, Participant_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, Participant_ES}
 import io.kf.etl.models.ontology.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -24,7 +24,7 @@ object MergeBiospecimenPerParticipant {
       .mapGroups((_, groupsIterator) => {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val filteredSeq: Seq[BiospecimenCombined_ES] = groups.collect { case (_, b) if b != null => EntityConverter.EBiospecimenToBiospecimenCombinedES(b) }
+        val filteredSeq: Seq[Biospecimen_ES] = groups.collect { case (_, b) if b != null => EntityConverter.EBiospecimenToBiospecimenCombinedES(b) }
         participant.copy(
           biospecimens = filteredSeq
         )

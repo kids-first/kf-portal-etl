@@ -1,5 +1,5 @@
 package io.kf.etl.models.internal
 
-import io.kf.etl.models.es.BiospecimenCombined_ES
+import io.kf.etl.models.es.Biospecimen_ES
 
-final case class BiospecimenCombinedES_GenomicFileId(bio: BiospecimenCombined_ES, gfId: String)
+final case class BiospecimenCombinedES_GenomicFileId(bio: Biospecimen_ES, gfId: String)

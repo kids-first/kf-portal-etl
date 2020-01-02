@@ -1,7 +1,7 @@
 package io.kf.etl.processors.filecentric.transform
 
 import com.typesafe.config.Config
-import io.kf.etl.models.es.{BiospecimenCombined_ES, FileCentric_ES, GenomicFile_ES, Participant_ES, SequencingExperiment_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, Participant_ES, SequencingExperiment_ES}
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter

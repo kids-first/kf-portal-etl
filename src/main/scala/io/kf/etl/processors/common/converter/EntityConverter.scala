@@ -33,8 +33,8 @@ object EntityConverter {
     )
   }
   
-  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): BiospecimenCombined_ES = {
-    BiospecimenCombined_ES(
+  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): Biospecimen_ES = {
+    Biospecimen_ES(
       age_at_event_days = bio.ageAtEventDays,
       analyte_type = bio.analyteType,
       composition = bio.composition,
