@@ -48,33 +48,31 @@ object FeatureCentricTransformer {
     val files: Dataset[GenomicFile_ES] =
       joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
 
-    files.show(false)
-
-    val ebio_gfs = joinGenomicFiles_To_Biospecimen(
-      entityDataset.biospecimens,
+    val filesBio = files.joinWith(
       entityDataset.biospecimenGenomicFiles,
-      files
+      entityDataset.biospecimenGenomicFiles.col("genomicFileId") === files("kf_id"),
+      "left_outer"
     )
 
-    val prarticipants_Bio =
-      ebio_gfs
-        .joinWith(
-          participants,
-          ebio_gfs.col("_1.participantId") === participants.col("kf_id"),
-          "left_outer")
-        .map{ case(a, p) => (p, EntityConverter.EBiospecimenToBiospecimenCombinedES(a._1, a._2).genomic_files) }
+    val test = filesBio.joinWith(
+      entityDataset.biospecimens,
+      filesBio.col("_2.biospecimenId") === entityDataset.biospecimens("kfId"),
+      "left_outer"
+    ).map(a => (a._1._1, a._2))
 
-
-
-    prarticipants_Bio
-      .flatMap(a => a._2.map(gfs => (gfs, a._1)))
-      .filter(_._1 != null)
+    test.joinWith(
+      participants,
+      participants.col("kf_id") === test.col("_2.participantId"),
+      "left_outer"
+    )
+      .map(a => (a._1._1, a._2))
       .groupByKey(_._1)
-        .mapGroups { case (file, groupsIterator) =>
-          (file, groupsIterator.toSeq.filter{case (_, p)=> p != null}.map(_._2))
-        }
-        .map{a =>
-          genomicFile_ES_to_FileCentric(a._1, a._2)}
+      .mapGroups { case (file, groupsIterator) =>
+        (file, groupsIterator.toSeq.filter{case (_, p)=> p != null}.map(_._2))
+      }
+      .map{a =>
+        genomicFile_ES_to_FileCentric(a._1, a._2)}
+
   }
 
   //TODO Should be generic Type -- Join FileId to A / check if col("kfId") exist for A (of user an upper class/trait)
