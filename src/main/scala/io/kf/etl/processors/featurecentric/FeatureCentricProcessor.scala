@@ -9,13 +9,13 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricProcessor {
   def participantCentric(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[ParticipantCentric_ES] = {
-    val transformed = FeatureCentricTransformer.participant(entityDataSet, participants).cache()
+    val transformed = FeatureCentricTransformer.participantCentric(entityDataSet, participants).cache()
     WriteParquetSink("participant_centric", transformed)
     transformed
   }
 
   def fileCentric(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[FileCentric_ES] = {
-    val transformed = FeatureCentricTransformer.file(entityDataSet, participants).cache()
+    val transformed = FeatureCentricTransformer.fileCentric(entityDataSet, participants).cache()
     WriteParquetSink("file_centric", transformed)
     transformed
   }
