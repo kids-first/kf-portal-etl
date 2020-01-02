@@ -8,13 +8,13 @@ import io.kf.etl.processors.featurecentric.transform.FeatureCentricTransformer
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricProcessor {
-  def participant(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[ParticipantCombined_ES] = {
+  def participantCentric(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[ParticipantCombined_ES] = {
     val transformed = FeatureCentricTransformer.participant(entityDataSet, participants).cache()
     WriteParquetSink("participant_centric", transformed)
     transformed
   }
 
-  def file(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[FileCentric_ES] = {
+  def fileCentric(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[FileCentric_ES] = {
     val transformed = FeatureCentricTransformer.file(entityDataSet, participants).cache()
     WriteParquetSink("file_centric", transformed)
     transformed

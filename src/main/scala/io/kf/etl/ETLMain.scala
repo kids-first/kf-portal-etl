@@ -2,6 +2,7 @@ package io.kf.etl
 
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
+import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
 import io.kf.etl.processors.featurecentric.transform.FeatureCentricTransformer
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
@@ -23,8 +24,8 @@ object ETLMain extends App {
         study_ids.foreach { studyId =>
           val dowloadData = DownloadProcessor(studyId)
           val participantCommon = ParticipantCommonProcessor(dowloadData)
-          val fileCentric = FeatureCentricTransformer.file(dowloadData, participantCommon)
-          val participantCentric = FeatureCentricTransformer.participant(dowloadData, participantCommon)
+          val fileCentric = FeatureCentricProcessor.fileCentric(dowloadData, participantCommon)
+          val participantCentric = FeatureCentricProcessor.participantCentric(dowloadData, participantCommon)
           IndexProcessor("file_centric", studyId, cliArgs.release_id.get, fileCentric)
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)
           spark.sqlContext.clearCache()
