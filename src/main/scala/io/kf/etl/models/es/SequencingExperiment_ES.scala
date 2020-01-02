@@ -6,6 +6,8 @@ final case class SequencingExperiment_ES(
                                           experiment_strategy: Option[String] = None,
                                           sequencing_center_id: Option[String] = None,
                                           library_name: Option[String] = None,
+                                          library_prep: Option[String] = None,
+                                          library_selection: Option[String] = None,
                                           library_strand: Option[String] = None,
                                           is_paired_end: Option[Boolean] = None,
                                           platform: Option[String] = None,
