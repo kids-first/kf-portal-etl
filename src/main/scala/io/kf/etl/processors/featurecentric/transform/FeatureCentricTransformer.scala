@@ -11,7 +11,7 @@ object FeatureCentricTransformer {
   val spark: SparkSession = SparkSession.builder.getOrCreate()
   import spark.implicits._
 
-  def participant(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
+  def participantCentric(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
 
     val fileId_experiments: Dataset[SequencingExperimentsES_GenomicFileId] =
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles )
@@ -40,7 +40,7 @@ object FeatureCentricTransformer {
 
   }
 
-  def file(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
+  def fileCentric(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
 
     val fileId_experiments =
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
