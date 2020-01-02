@@ -1,7 +1,7 @@
 package io.kf.etl.processors.featurecentric.transform
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenGenomicFile, EGenomicFile, ESequencingExperiment, ESequencingExperimentGenomicFile}
-import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, ParticipantCombined_ES, Participant_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, ParticipantCentric_ES, Participant_ES}
 import io.kf.etl.models.internal.{BiospecimenCombinedES_GenomicFileId, BiospecimenES_GenomicFileES, BiospecimenES_ParticipantES, BiospecimenId_GenomicFileId, ParticipantES_BiospecimenES_GenomicFileES, SequencingExperimentES_GenomicFileId, SequencingExperimentsES_GenomicFileId}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -11,7 +11,7 @@ object FeatureCentricTransformer {
   val spark: SparkSession = SparkSession.builder.getOrCreate()
   import spark.implicits._
 
-  def participant(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCombined_ES] = {
+  def participant(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
 
     val fileId_experiments: Dataset[SequencingExperimentsES_GenomicFileId] =
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles )
@@ -185,8 +185,8 @@ object FeatureCentricTransformer {
                                                        participant: Participant_ES,
                                                        files: Seq[GenomicFile_ES],
                                                        biospecimens: Seq[Biospecimen_ES]
-                                                     ): ParticipantCombined_ES = {
-    ParticipantCombined_ES(
+                                                     ): ParticipantCentric_ES = {
+    ParticipantCentric_ES(
       affected_status = participant.affected_status,
       alias_group = participant.alias_group,
       available_data_types = participant.available_data_types,

@@ -1,6 +1,6 @@
 package io.kf.etl.models.es
 
-final case class ParticipantCombined_ES (
+final case class ParticipantCentric_ES(
                                           affected_status: Option[Boolean] = None,
                                           alias_group: Option[String] = None,
                                           available_data_types: Seq[String] = Nil,

@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcentric.transform
 
 import com.typesafe.config.Config
-import io.kf.etl.models.es.{Biospecimen_ES, GenomicFile_ES, ParticipantCombined_ES}
+import io.kf.etl.models.es.{Biospecimen_ES, GenomicFile_ES, ParticipantCentric_ES}
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -34,7 +34,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
 //    result.show(truncate = false)
 
     result.collect() should contain theSameElementsAs Seq(
-      ParticipantCombined_ES(
+      ParticipantCentric_ES(
         kf_id = Some("participant_id_1"),
         biospecimens = Seq(
           Biospecimen_ES(
@@ -99,7 +99,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
           )
         )
       ),
-      ParticipantCombined_ES(
+      ParticipantCentric_ES(
         kf_id = Some("participant_id_2"),
         biospecimens = Seq(
           Biospecimen_ES(
@@ -124,7 +124,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
         ),
         race = Some("klingon")
       ),
-      ParticipantCombined_ES(
+      ParticipantCentric_ES(
         kf_id = Some("participant_id_3"),
         biospecimens = Seq(
           Biospecimen_ES(
@@ -146,7 +146,7 @@ class ParticipantCentricTransformerSpec extends FlatSpec with Matchers with With
           )
         )
       ),
-      ParticipantCombined_ES(
+      ParticipantCentric_ES(
         kf_id = Some("participant_id_4")
       )
     )
