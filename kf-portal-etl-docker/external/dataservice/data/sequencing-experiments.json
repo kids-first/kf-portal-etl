@@ -24,6 +24,8 @@
       "is_paired_end": true,
       "kf_id": "SE_CMXJ8AHZ",
       "library_name": null,
+      "library_prep":"Test Library Prep",
+      "library_selection":"Test Library Selection",
       "library_strand": null,
       "max_insert_size": null,
       "mean_depth": null,
