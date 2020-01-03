@@ -9,13 +9,16 @@ object Data {
   val bioSpecimen2: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_2"), participantId = Some("participant_id_2"), ncitIdAnatomicalSite = Some("NCIT:C12438"), ncitIdTissueType = Some("NCIT:C14165"))
   val bioSpecimen3: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_3"), participantId = Some("participant_id_3"))
   val bioSpecimen4: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_4")) //Does not have a participant
-  val bioSpecimens: Seq[EBiospecimen] = Seq(bioSpecimen1, bioSpecimen1_1, bioSpecimen1_2, bioSpecimen2, bioSpecimen3, bioSpecimen4)
+  val bioSpecimen5: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_5"), participantId = Some("participant_id_5"))
+  val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"))
+  val bioSpecimens: Seq[EBiospecimen] = Seq(bioSpecimen1, bioSpecimen1_1, bioSpecimen1_2, bioSpecimen2, bioSpecimen3, bioSpecimen4, bioSpecimen5, bioSpecimen6)
 
   val participant1: EParticipant = EParticipant(kfId = Some("participant_id_1"), biospecimens = Seq(bioSpecimen1.kfId.orNull, bioSpecimen1_1.kfId.orNull, bioSpecimen1_2.kfId.orNull))
   val participant2: EParticipant = EParticipant(kfId = Some("participant_id_2"), biospecimens = Seq(bioSpecimen2.kfId.orNull), diagnoses = Seq("diagnosis_id_2"), race = Some("klingon"))
   val participant3: EParticipant = EParticipant(kfId = Some("participant_id_3"), biospecimens = Seq(bioSpecimen3.kfId.orNull))
   val participant4: EParticipant = EParticipant(kfId = Some("participant_id_4"), biospecimens = Seq(bioSpecimen4.kfId.orNull))
-  val participants: Seq[EParticipant] = Seq(participant1, participant2, participant3, participant4)
+  val participant5: EParticipant = EParticipant(kfId = Some("participant_id_5"), biospecimens = Seq(bioSpecimen5.kfId.orNull))
+  val participants: Seq[EParticipant] = Seq(participant1, participant2, participant3, participant4, participant5)
 
   val diagnosis1: EDiagnosis = EDiagnosis(kfId = Some("diagnosis_id_1"), participantId = Some("participant_id_1"))
   val diagnosis1_2: EDiagnosis = EDiagnosis(kfId = Some("diagnosis_id_1_2"), participantId = Some("participant_id_1"))
@@ -30,7 +33,8 @@ object Data {
   val genomicFile5: EGenomicFile = EGenomicFile(kfId = Some("genomicFile5"), dataType = Some("Super Important type 5"), fileName = Some("File5"))
   val genomicFile6: EGenomicFile = EGenomicFile(kfId = Some("genomicFile6"), dataType = Some("Super Important type 6"), fileName = Some("File6"))
   val genomicFile7: EGenomicFile = EGenomicFile(kfId = Some("genomicFile7"), dataType = Some("Super Important type 7"), fileName = Some("File7"))
-  val genomicFiles: Seq[EGenomicFile] = Seq(genomicFile1, genomicFile2, genomicFile3, genomicFile4, genomicFile5, genomicFile6, genomicFile7)
+  val genomicFile8: EGenomicFile = EGenomicFile(kfId = Some("genomicFile8"), dataType = Some("Super Important type 8"), fileName = Some("File8"))
+  val genomicFiles: Seq[EGenomicFile] = Seq(genomicFile1, genomicFile2, genomicFile3, genomicFile4, genomicFile5, genomicFile6, genomicFile7, genomicFile8)
 
   val eBiospecimenGenomicFile1: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_1"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomicFile1"))
   val eBiospecimenGenomicFile2: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_2"), biospecimenId = Some("biospecimen_id_1_1"), genomicFileId = Some("genomicFile2"))
@@ -40,7 +44,9 @@ object Data {
   val eBiospecimenGenomicFile6: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_6"), biospecimenId = Some("biospecimen_id_4"), genomicFileId = Some("genomicFile6"))
   val eBiospecimenGenomicFile7: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_7"), biospecimenId = Some("biospecimen_id_1"), genomicFileId = Some("genomicFile6"))
   val eBiospecimenGenomicFile8: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_8"), biospecimenId = Some("biospecimen_id_3"), genomicFileId = Some("genomicFile1"))
-  val eBiospecimenGenomicFile: Seq[EBiospecimenGenomicFile] = Seq(eBiospecimenGenomicFile1, eBiospecimenGenomicFile2, eBiospecimenGenomicFile3,eBiospecimenGenomicFile4, eBiospecimenGenomicFile5, eBiospecimenGenomicFile6, eBiospecimenGenomicFile7, eBiospecimenGenomicFile8)
+  val eBiospecimenGenomicFile9: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_9"), biospecimenId = Some("biospecimen_id_5"), genomicFileId = None)
+  val eBiospecimenGenomicFile10: EBiospecimenGenomicFile = EBiospecimenGenomicFile(kfId = Some("eBiospecimenGenomicFile_id_10"), biospecimenId = Some("biospecimen_id_6"), genomicFileId = Some("genomicFile8"))
+  val eBiospecimenGenomicFile: Seq[EBiospecimenGenomicFile] = Seq(eBiospecimenGenomicFile1, eBiospecimenGenomicFile2, eBiospecimenGenomicFile3,eBiospecimenGenomicFile4, eBiospecimenGenomicFile5, eBiospecimenGenomicFile6, eBiospecimenGenomicFile7, eBiospecimenGenomicFile8, eBiospecimenGenomicFile9, eBiospecimenGenomicFile10)
 
   val biospecimenDiagnosis1: EBiospecimenDiagnosis = EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_1"), biospecimenId = Some("biospecimen_id_1"))
   val biospecimenDiagnosis2: EBiospecimenDiagnosis = EBiospecimenDiagnosis(kfId = Some("bd2"), diagnosisId = Some("diagnosis_id_1_2"), biospecimenId = Some("biospecimen_id_1_2"))
