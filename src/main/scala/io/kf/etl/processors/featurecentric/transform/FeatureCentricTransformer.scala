@@ -22,6 +22,9 @@ object FeatureCentricTransformer {
     val bio_gf: Dataset[(EBiospecimen, Seq[GenomicFile_ES])] =
       joinGenomicFiles_To_Biospecimen(entityDataset.biospecimens, entityDataset.biospecimenGenomicFiles, files)
 
+    println("biogf")
+    bio_gf.collect().foreach(println)
+
     participants.joinWith(
       bio_gf,
       participants.col("kf_id") === bio_gf.col("_1.participantId"),
@@ -54,15 +57,43 @@ object FeatureCentricTransformer {
       "left_outer"
     )
 
-    val test = filesBio.joinWith(
-      entityDataset.biospecimens,
-      filesBio.col("_2.biospecimenId") === entityDataset.biospecimens("kfId"),
-      "left_outer"
+    val gF_bio = filesBio.joinWith(
+        entityDataset.biospecimens,
+        filesBio.col("_2.biospecimenId") === entityDataset.biospecimens("kfId"),
+    "left_outer"
     ).map(a => (a._1._1, a._2))
 
-    test.joinWith(
+    println("GENOMICFILE_BIOSPECIMEN")
+    gF_bio.show(false)
+
+    println("PARTICIPANTS")
+    participants.show(false)
+
+    println("GF_BIO + Participant")
+    gF_bio.joinWith(
       participants,
-      participants.col("kf_id") === test.col("_2.participantId"),
+      participants.col("kf_id") === gF_bio.col("_2.participantId"),
+      "left_outer"
+    ).show(false)
+
+
+    println("File_Centric")
+    gF_bio.joinWith(
+      participants,
+      participants.col("kf_id") === gF_bio.col("_2.participantId"),
+      "left_outer"
+    )
+      .map(a => (a._1._1, a._2))
+      .groupByKey(_._1)
+      .mapGroups { case (file, groupsIterator) =>
+        (file, groupsIterator.toSeq.filter{case (_, p)=> p != null}.map(_._2))
+      }
+      .map{a =>
+        genomicFile_ES_to_FileCentric(a._1, a._2)}.show(false)
+
+    gF_bio.joinWith(
+      participants,
+      participants.col("kf_id") === gF_bio.col("_2.participantId"),
       "left_outer"
     )
       .map(a => (a._1._1, a._2))
@@ -141,7 +172,8 @@ object FeatureCentricTransformer {
         .toDF("eBiospecimen", "eBiospecimenGenomicFile")
         .joinWith(
           genomicFiles,
-          $"eBiospecimenGenomicFile.genomicFileId" === genomicFiles("kf_id")
+          $"eBiospecimenGenomicFile.genomicFileId" === genomicFiles("kf_id"),
+          "left_outer"
         )
         .as[((EBiospecimen, EBiospecimenGenomicFile), GenomicFile_ES)]
         .map { case ((biospecimen, _), file) => (biospecimen, file) }
@@ -150,7 +182,7 @@ object FeatureCentricTransformer {
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
         val biospecimen: EBiospecimen = groups.head._1
-        val files: Seq[GenomicFile_ES] = groups.map(_._2)
+        val files: Seq[GenomicFile_ES] = groups.collect{ case(_, f) if f != null => f }
         (biospecimen, files)
       }
   }
@@ -186,6 +218,7 @@ object FeatureCentricTransformer {
                                                        files: Seq[GenomicFile_ES],
                                                        biospecimens: Seq[Biospecimen_ES]
                                                      ): ParticipantCentric_ES = {
+
     ParticipantCentric_ES(
       affected_status = participant.affected_status,
       alias_group = participant.alias_group,
