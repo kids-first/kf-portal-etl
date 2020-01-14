@@ -3,6 +3,7 @@ package io.kf.etl.processors.download.transform
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
+import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.ontology.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
@@ -32,6 +33,9 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
     )
   }
 
+  def downloadDuoCodeLabelMap(): Dataset[DuoCode] = {
+    loadDuoLabel(config.getString(CONFIG_NAME_DUOCODE_PATH), spark).cache()
+  }
 
   def setFileRepo(file: EGenomicFile): EGenomicFile = {
     // Repository values are derived from the accessUrl
@@ -78,6 +82,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
     val ontologyData = downloadOntologyData()
     val retriever = EntityDataRetriever(dataService, filters)
+    val duoCodeDs = downloadDuoCodeLabelMap()
 
     val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
@@ -130,7 +135,8 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
         studyFiles = spark.emptyDataset[EStudyFile],
 
         // following two (graphPath, hpoTerms) are read from HPO mysql db:
-        ontologyData = ontologyData
+        ontologyData = ontologyData,
+        duoCodeDataSet = duoCodeDs
       )
 
 
@@ -160,6 +166,18 @@ object DownloadTransformer {
     spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).as[OntologyTerm]
   }
 
+  def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {
+    import spark.implicits._
+    spark.sparkContext.addFile(path, recursive = true)
+    val schema = StructType(Seq(
+      StructField("id", StringType, nullable = false),
+      StructField("shorthand", StringType),
+      StructField("label", StringType, nullable = false),
+      StructField("description", StringType)
+    ))
+    val filename = path.split("/").last
+    spark.read.option("sep", ",").option("header", value = true).schema(schema).csv(SparkFiles.get(filename)).as[DuoCode]
+  }
 
   def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {
 

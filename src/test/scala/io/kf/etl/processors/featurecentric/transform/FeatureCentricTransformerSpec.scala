@@ -29,9 +29,11 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
   "fileCentric" should "return the proper Sequence of FileCentric_ES" in {
 
+    val duoCodes = data.duoCodes.toDS()
+
 
     //Add biospecimens to participants beforehand to be passed to the service to be tested
-    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenCombinedES(b, Nil))) }
+    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenCombinedES(b, Nil, Option(duoCodes))))}
 
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)

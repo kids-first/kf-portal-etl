@@ -24,11 +24,13 @@ object Constants {
   val CONFIG_NAME_MONDO_PATH = "processors.download.mondo_path"
   val CONFIG_NAME_NCIT_PATH = "processors.download.ncit_path"
   val CONFIG_NAME_HPO_PATH = "processors.download.hpo_path"
+  val CONFIG_NAME_DUOCODE_PATH = "processors.download.duocode_path"
   val CONFIG_NAME_WRITE_INTERMEDIATE_DATA = "write_intermediate_data"
   val DEFAULT_FILE_CENTRIC_ALIAS = "file_centric"
   val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val FILE_CENTRIC_MAPPING_FILE_NAME = "file_centric.mapping.json"
   val PARTICIPANT_CENTRIC_MAPPING_FILE_NAME = "participant_centric.mapping.json"
+
 
 
 }

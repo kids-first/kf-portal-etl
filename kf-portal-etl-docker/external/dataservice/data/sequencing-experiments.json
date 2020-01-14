@@ -32,7 +32,7 @@
       "mean_insert_size": null,
       "mean_read_length": null,
       "modified_at": "2018-09-19T16:39:01.233806+00:00",
-      "platform": "Illumina",
+      "platform": "Illumina22",
       "sequencing_experiment_genomic_files": [
         "SG_3VP9ZVGF"
       ],

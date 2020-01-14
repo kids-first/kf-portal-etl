@@ -1,6 +1,7 @@
 package io.kf.etl.processors
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EBiospecimenGenomicFile, EDiagnosis, EGenomicFile, EParticipant, ESequencingExperiment, ESequencingExperimentGenomicFile}
+import io.kf.etl.models.duocode.DuoCode
 
 object Data {
   val bioSpecimen1: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_1"), participantId = Some("participant_id_1"), ncitIdAnatomicalSite = Some("NCIT:unknown"))
@@ -10,7 +11,7 @@ object Data {
   val bioSpecimen3: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_3"), participantId = Some("participant_id_3"))
   val bioSpecimen4: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_4")) //Does not have a participant
   val bioSpecimen5: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_5"), participantId = Some("participant_id_5"))
-  val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"))
+  val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"), duo_id = Some("duo_id1"))
   val bioSpecimens: Seq[EBiospecimen] = Seq(bioSpecimen1, bioSpecimen1_1, bioSpecimen1_2, bioSpecimen2, bioSpecimen3, bioSpecimen4, bioSpecimen5, bioSpecimen6)
 
   val participant1: EParticipant = EParticipant(kfId = Some("participant_id_1"), biospecimens = Seq("biospecimen_id_1", bioSpecimen1_1.kfId.orNull, bioSpecimen1_2.kfId.orNull))
@@ -60,4 +61,7 @@ object Data {
   val eSequencingExperimentGenomicFile1: ESequencingExperimentGenomicFile = ESequencingExperimentGenomicFile(kfId = Some("eSeqExpGF1"), sequencingExperiment = Some("eSeqExp1"), genomicFile = Some("genomicFile7"))
   val eSequencingExperimentGenomicFile = Seq(eSequencingExperimentGenomicFile1)
 
+  private val duoCode1: DuoCode = DuoCode(id = "duo_id1", shorthand = Some("DuoForShort 1"), label = Some("DuoLabel1"), description = Some("This is a description about duo code"))
+  private val duoCode2: DuoCode = DuoCode(id = "duo_id2", shorthand = Some("DuoForShort 2"), label = Some("DuoLabel2"), description = Some("This is another description about duo code"))
+  val duoCodes = Seq(duoCode1, duoCode2)
 }
