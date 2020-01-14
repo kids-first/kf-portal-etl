@@ -1,6 +1,7 @@
 package io.kf.etl.processors.common
 
 import io.kf.etl.models.dataservice._
+import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.ontology.OntologyTerm
 import org.apache.spark.sql.Dataset
 
@@ -22,7 +23,8 @@ object ProcessorCommonDefinitions {
                             sequencingExperimentGenomicFiles: Dataset[ESequencingExperimentGenomicFile],
                             studies: Dataset[EStudy],
                             studyFiles: Dataset[EStudyFile],
-                            ontologyData: OntologiesDataSet
+                            ontologyData: OntologiesDataSet,
+                            duoCodeDataSet: Dataset[DuoCode]
   )
 
   case class EntityEndpointSet(
@@ -41,11 +43,11 @@ object ProcessorCommonDefinitions {
                                 sequencingExperimentGenomicFiles: String,
                                 studies: String,
                                 studyFiles: String
-  )
+                              )
 
   case class OntologiesDataSet(
-    hpoTerms: Dataset[OntologyTerm],
-    mondoTerms: Dataset[OntologyTerm],
-    ncitTerms: Dataset[OntologyTerm]
-  )
+                                hpoTerms: Dataset[OntologyTerm],
+                                mondoTerms: Dataset[OntologyTerm],
+                                ncitTerms: Dataset[OntologyTerm]
+                              )
 }

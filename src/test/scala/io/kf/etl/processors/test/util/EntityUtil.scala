@@ -1,9 +1,10 @@
 package io.kf.etl.processors.test.util
 
 import io.kf.etl.models.dataservice._
+import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.ontology.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Dataset, SparkSession}
 
 object EntityUtil {
 
@@ -24,7 +25,8 @@ object EntityUtil {
                           sequencingExperimentGenomicFiles: Seq[ESequencingExperimentGenomicFile] = Nil,
                           studies: Seq[EStudy] = Nil,
                           studyFiles: Seq[EStudyFile] = Nil,
-                          ontologyData: Option[OntologiesDataSet] = None
+                          ontologyData: Option[OntologiesDataSet] = None,
+                          duoCodes: Dataset[DuoCode]
                         )(implicit spark: SparkSession): EntityDataSet = {
     import spark.implicits._
     EntityDataSet(
@@ -44,7 +46,8 @@ object EntityUtil {
       sequencingExperimentGenomicFiles = sequencingExperimentGenomicFiles.toDS(),
       studies = studies.toDS(),
       studyFiles = studyFiles.toDS(),
-      ontologyData = ontologyData.getOrElse(buildOntologiesDataSet())
+      ontologyData = ontologyData.getOrElse(buildOntologiesDataSet()),
+      duoCodeDataSet = duoCodes
     )
   }
 

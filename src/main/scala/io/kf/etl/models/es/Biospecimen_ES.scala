@@ -1,11 +1,14 @@
 package io.kf.etl.models.es
 
+import io.kf.etl.models.duocode.DuoCode
+
 final case class Biospecimen_ES(
                                  age_at_event_days: Option[Int] = None,
                                  analyte_type: Option[String] = None,
                                  composition: Option[String] = None,
                                  concentration_mg_per_ml: Option[Double] = None,
                                  consent_type: Option[String] = None,
+                                 duo_code: Option[DuoCode] = None,
                                  dbgap_consent_code: Option[String] = None,
                                  external_aliquot_id: Option[String] = None,
                                  external_sample_id: Option[String] = None,

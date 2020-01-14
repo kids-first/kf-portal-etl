@@ -1,7 +1,9 @@
 package io.kf.etl.processors.common.converter
 
 import io.kf.etl.models.dataservice._
+import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.es._
+import org.apache.spark.sql.Dataset
 
 object EntityConverter {
   
@@ -33,13 +35,14 @@ object EntityConverter {
     )
   }
   
-  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): Biospecimen_ES = {
+  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil, duoCodesDs: Option[Dataset[DuoCode]] = None): Biospecimen_ES = {
     Biospecimen_ES(
       age_at_event_days = bio.ageAtEventDays,
       analyte_type = bio.analyteType,
       composition = bio.composition,
       concentration_mg_per_ml = bio.concentrationMgPerMl,
       consent_type = bio.consentType,
+      duo_code = duoCodesDs.orNull.filter(_.id == bio.duo_id.orNull).collect().headOption,
       dbgap_consent_code = bio.dbgapConsentCode,
       external_aliquot_id = bio.externalAliquotId,
       external_sample_id = bio.externalSampleId,
