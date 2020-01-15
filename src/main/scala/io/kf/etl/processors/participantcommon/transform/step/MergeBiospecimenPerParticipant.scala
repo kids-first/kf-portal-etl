@@ -26,7 +26,7 @@ object MergeBiospecimenPerParticipant {
       .mapGroups((_, groupsIterator) => {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val filteredSeq: Seq[Biospecimen_ES] = groups.collect { case (_, b) if b != null => EntityConverter.EBiospecimenToBiospecimenES(b, duoCodesDs = entityDataset.duoCodeDataSet) }
+        val filteredSeq: Seq[Biospecimen_ES] = groups.collect { case (_, b) if b != null => EntityConverter.EBiospecimenToBiospecimenES(b) }
         participant.copy(
           biospecimens = filteredSeq
         )

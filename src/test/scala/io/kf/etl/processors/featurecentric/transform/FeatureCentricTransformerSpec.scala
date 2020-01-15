@@ -31,7 +31,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
   "fileCentric" should "return the proper Sequence of FileCentric_ES" in {
 
     //Add biospecimens to participants beforehand to be passed to the service to be tested
-    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenES(b, Nil, entityDataSet.duoCodeDataSet)))}
+    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenES(b, Nil)))}
 
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)
@@ -171,7 +171,8 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             kf_id = Some("participant_id_5"),
             biospecimens = Seq(
               Biospecimen_ES(
-                kf_id = Some("biospecimen_id_6")
+                kf_id = Some("biospecimen_id_6"),
+                duo_code = Some("duo_id1")
               )
             )
           )
@@ -184,7 +185,8 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
     val result = FeatureCentricTransformer.participantCentric(entityDataSet, entityDataSet.participants.map(EntityConverter.EParticipantToParticipantES))
 
-//    result.show(truncate = false)
+    result.collect().foreach(println)
+
 
     //FIXME
     // theSameElementsAs has arguably a bug. Ordering is important for this test to pass for Sets < 5.
@@ -326,7 +328,8 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 data_type = Some("Super Important type 8"),
                 file_name = Some("File8")
               )
-            )
+            ),
+            duo_code = Some("duo_id1")
           ),
           Biospecimen_ES(
             kf_id = Some("biospecimen_id_5"),
