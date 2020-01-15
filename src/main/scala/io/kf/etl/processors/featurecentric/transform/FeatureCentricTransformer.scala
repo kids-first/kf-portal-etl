@@ -31,7 +31,7 @@ object FeatureCentricTransformer {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val bioFiles: Seq[Biospecimen_ES] = groups.collect {
-          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenCombinedES(biospecimen, gfiles)
+          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenES(biospecimen, gfiles, entityDataset.duoCodeDataSet)
         }
         val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
 
@@ -41,41 +41,6 @@ object FeatureCentricTransformer {
   }
 
   def fileCentric(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
-
-    val fileId_experiments =
-      joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
-
-    val files: Dataset[GenomicFile_ES] =
-      joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
-
-    val filesBio = files.joinWith(
-      entityDataset.biospecimenGenomicFiles,
-      entityDataset.biospecimenGenomicFiles.col("genomicFileId") === files("kf_id"),
-      "left_outer"
-    )
-
-    val gF_bio = filesBio.joinWith(
-        entityDataset.biospecimens,
-        filesBio.col("_2.biospecimenId") === entityDataset.biospecimens("kfId"),
-    "left_outer"
-    ).map(a => (a._1._1, a._2))
-
-    gF_bio.joinWith(
-      participants,
-      participants.col("kf_id") === gF_bio.col("_2.participantId"),
-      "left_outer"
-    )
-      .map(a => (a._1._1, a._2))
-      .groupByKey(_._1)
-      .mapGroups { case (file, groupsIterator) =>
-        (file, groupsIterator.toSeq.filter{case (_, p)=> p != null}.map(_._2))
-      }
-      .map{a =>
-        genomicFile_ES_to_FileCentric(a._1, a._2)}
-
-  }
-
-  def fileCentricOld(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
     import spark.implicits._
     val fileId_experiments =
       joinFileId_To_SeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
@@ -85,6 +50,7 @@ object FeatureCentricTransformer {
 
     val bio_par: Dataset[BiospecimenES_ParticipantES] =
       participants.flatMap((p: Participant_ES) => p.biospecimens.map(b => BiospecimenES_ParticipantES(b, p)))
+
 
     val bioId_gfId =
       entityDataset.genomicFiles
@@ -105,6 +71,9 @@ object FeatureCentricTransformer {
           )
         })
 
+    val toto = entityDataset.duoCodeDataSet
+    toto.show(false)
+
     val bio_gfId =
       bioId_gfId
         .joinWith(
@@ -117,12 +86,14 @@ object FeatureCentricTransformer {
             gfId = tuple._1.gfId.get,
             bio = {
               Option(tuple._2) match {
-                case Some(_) => EntityConverter.EBiospecimenToBiospecimenCombinedES(tuple._2)
+                case Some(_) => EntityConverter.EBiospecimenToBiospecimenES(tuple._2, Nil , toto)
                 case None => null
               }
             }
           )
         })
+
+    bio_gfId.show(false)
 
     val bio_fullGf: Dataset[BiospecimenES_GenomicFileES] =
       files
