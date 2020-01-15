@@ -15,7 +15,7 @@ object FeatureCentricProcessor {
   }
 
   def fileCentric(entityDataSet: EntityDataSet, participants: Dataset[Participant_ES])(implicit config: Config, spark: SparkSession): Dataset[FileCentric_ES] = {
-    val transformed = FeatureCentricTransformer.fileCentricOld(entityDataSet, participants).cache()
+    val transformed = FeatureCentricTransformer.fileCentric(entityDataSet, participants).cache()
     WriteParquetSink("file_centric", transformed)
     transformed
   }

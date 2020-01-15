@@ -24,23 +24,21 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     biospecimenGenomicFiles = data.eBiospecimenGenomicFile,
     biospecimenDiagnoses = data.biospecimenDiagnosis,
     sequencingExperiments = data.eSequencingExperiment,
-    sequencingExperimentGenomicFiles = data.eSequencingExperimentGenomicFile
+    sequencingExperimentGenomicFiles = data.eSequencingExperimentGenomicFile,
+    duoCodes = Some(data.duoCodes.toDS())
   )
 
   "fileCentric" should "return the proper Sequence of FileCentric_ES" in {
 
-    val duoCodes = data.duoCodes.toDS()
-
-
     //Add biospecimens to participants beforehand to be passed to the service to be tested
-    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenCombinedES(b, Nil, Option(duoCodes))))}
+    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenES(b, Nil, entityDataSet.duoCodeDataSet)))}
 
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)
       .map(p => p.copy(biospecimens = if(participantId_Bios.contains(p.kf_id.get)) {participantId_Bios(p.kf_id.orNull)} else Nil))
       .toDS()
 
-    val result = FeatureCentricTransformer.fileCentricOld(entityDataSet, participants)
+    val result = FeatureCentricTransformer.fileCentric(entityDataSet, participants)
 
     //FIXME
     // theSameElementsAs has arguably a bug. Ordering is important for this test to pass for Sets < 5.

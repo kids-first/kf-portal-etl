@@ -61,7 +61,7 @@ object Data {
   val eSequencingExperimentGenomicFile1: ESequencingExperimentGenomicFile = ESequencingExperimentGenomicFile(kfId = Some("eSeqExpGF1"), sequencingExperiment = Some("eSeqExp1"), genomicFile = Some("genomicFile7"))
   val eSequencingExperimentGenomicFile = Seq(eSequencingExperimentGenomicFile1)
 
-  private val duoCode1: DuoCode = DuoCode(id = "duo_id1", shorthand = Some("DuoForShort 1"), label = Some("DuoLabel1"), description = Some("This is a description about duo code"))
-  private val duoCode2: DuoCode = DuoCode(id = "duo_id2", shorthand = Some("DuoForShort 2"), label = Some("DuoLabel2"), description = Some("This is another description about duo code"))
+  val duoCode1: DuoCode = DuoCode(id = "duo_id1", shorthand = Some("DuoForShort 1"), label = Some("DuoLabel1"), description = Some("This is a description about duo code"))
+  val duoCode2: DuoCode = DuoCode(id = "duo_id2", shorthand = Some("DuoForShort 2"), label = Some("DuoLabel2"), description = Some("This is another description about duo code"))
   val duoCodes = Seq(duoCode1, duoCode2)
 }

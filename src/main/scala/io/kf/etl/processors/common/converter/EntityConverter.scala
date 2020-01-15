@@ -35,14 +35,14 @@ object EntityConverter {
     )
   }
   
-  def EBiospecimenToBiospecimenCombinedES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil, duoCodesDs: Option[Dataset[DuoCode]] = None): Biospecimen_ES = {
+  def EBiospecimenToBiospecimenES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil, duoCodesDs: Dataset[DuoCode]): Biospecimen_ES = {
     Biospecimen_ES(
       age_at_event_days = bio.ageAtEventDays,
       analyte_type = bio.analyteType,
       composition = bio.composition,
       concentration_mg_per_ml = bio.concentrationMgPerMl,
       consent_type = bio.consentType,
-      duo_code = duoCodesDs.orNull.filter(_.id == bio.duo_id.orNull).collect().headOption,
+      duo_code = bio.duoCode,
       dbgap_consent_code = bio.dbgapConsentCode,
       external_aliquot_id = bio.externalAliquotId,
       external_sample_id = bio.externalSampleId,
