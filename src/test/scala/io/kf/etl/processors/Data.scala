@@ -11,7 +11,7 @@ object Data {
   val bioSpecimen3: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_3"), participantId = Some("participant_id_3"))
   val bioSpecimen4: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_4")) //Does not have a participant
   val bioSpecimen5: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_5"), participantId = Some("participant_id_5"))
-  val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"), duo_id = Some("duo_id1"))
+  val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"), duoCode = Some("duo_id1"))
   val bioSpecimens: Seq[EBiospecimen] = Seq(bioSpecimen1, bioSpecimen1_1, bioSpecimen1_2, bioSpecimen2, bioSpecimen3, bioSpecimen4, bioSpecimen5, bioSpecimen6)
 
   val participant1: EParticipant = EParticipant(kfId = Some("participant_id_1"), biospecimens = Seq("biospecimen_id_1", bioSpecimen1_1.kfId.orNull, bioSpecimen1_2.kfId.orNull))

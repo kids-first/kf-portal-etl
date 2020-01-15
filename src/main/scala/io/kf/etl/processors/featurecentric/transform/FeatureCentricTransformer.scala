@@ -31,7 +31,7 @@ object FeatureCentricTransformer {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val bioFiles: Seq[Biospecimen_ES] = groups.collect {
-          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenES(biospecimen, gfiles, entityDataset.duoCodeDataSet)
+          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenES(biospecimen, gfiles)
         }
         val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
 
@@ -71,9 +71,6 @@ object FeatureCentricTransformer {
           )
         })
 
-    val toto = entityDataset.duoCodeDataSet
-    toto.show(false)
-
     val bio_gfId =
       bioId_gfId
         .joinWith(
@@ -86,14 +83,12 @@ object FeatureCentricTransformer {
             gfId = tuple._1.gfId.get,
             bio = {
               Option(tuple._2) match {
-                case Some(_) => EntityConverter.EBiospecimenToBiospecimenES(tuple._2, Nil , toto)
+                case Some(_) => EntityConverter.EBiospecimenToBiospecimenES(tuple._2)
                 case None => null
               }
             }
           )
         })
-
-    bio_gfId.show(false)
 
     val bio_fullGf: Dataset[BiospecimenES_GenomicFileES] =
       files

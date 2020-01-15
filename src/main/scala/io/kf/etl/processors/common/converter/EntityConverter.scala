@@ -35,7 +35,7 @@ object EntityConverter {
     )
   }
   
-  def EBiospecimenToBiospecimenES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil, duoCodesDs: Dataset[DuoCode]): Biospecimen_ES = {
+  def EBiospecimenToBiospecimenES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): Biospecimen_ES = {
     Biospecimen_ES(
       age_at_event_days = bio.ageAtEventDays,
       analyte_type = bio.analyteType,
