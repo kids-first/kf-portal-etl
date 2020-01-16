@@ -8,7 +8,7 @@ final case class Biospecimen_ES(
                                  composition: Option[String] = None,
                                  concentration_mg_per_ml: Option[Double] = None,
                                  consent_type: Option[String] = None,
-                                 duo_code: Option[String] = None,
+                                 duo_code: Seq[String] = Nil,
                                  dbgap_consent_code: Option[String] = None,
                                  external_aliquot_id: Option[String] = None,
                                  external_sample_id: Option[String] = None,

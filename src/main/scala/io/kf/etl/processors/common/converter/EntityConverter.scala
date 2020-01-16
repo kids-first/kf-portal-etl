@@ -42,7 +42,7 @@ object EntityConverter {
       composition = bio.composition,
       concentration_mg_per_ml = bio.concentrationMgPerMl,
       consent_type = bio.consentType,
-      duo_code = bio.duoCode,
+      duo_code = bio.duo_ids,
       dbgap_consent_code = bio.dbgapConsentCode,
       external_aliquot_id = bio.externalAliquotId,
       external_sample_id = bio.externalSampleId,

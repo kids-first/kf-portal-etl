@@ -26,6 +26,10 @@
       "consent_type": null,
       "created_at": "2018-09-28T04:41:03.070985+00:00",
       "dbgap_consent_code": null,
+      "duo_ids":[
+        "DUO:0000021",
+        "DUO:0000025"
+      ],
       "external_aliquot_id": "TARGET-30-PARJMX-01A-01D",
       "external_sample_id": "TARGET-30-PARJMX-01A",
       "kf_id": "BS_7TRMYRE1",
