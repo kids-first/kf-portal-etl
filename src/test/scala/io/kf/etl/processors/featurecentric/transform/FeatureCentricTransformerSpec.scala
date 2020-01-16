@@ -172,7 +172,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             biospecimens = Seq(
               Biospecimen_ES(
                 kf_id = Some("biospecimen_id_6"),
-                duo_code = Some("duo_id1")
+                duo_code = Seq("duo_id1")
               )
             )
           )
@@ -329,7 +329,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 file_name = Some("File8")
               )
             ),
-            duo_code = Some("duo_id1")
+            duo_code = Seq("duo_id1")
           ),
           Biospecimen_ES(
             kf_id = Some("biospecimen_id_5"),
