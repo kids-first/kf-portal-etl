@@ -3,12 +3,9 @@ package io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EDiagnosis}
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.es.{Biospecimen_ES, Participant_ES}
-import io.kf.etl.models.internal.BiospecimenES_ParticipantES
 import io.kf.etl.models.ontology.OntologyTerm
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import org.apache.avro.generic.GenericData.StringType
-import org.apache.spark.sql.types.{DataType, StructField}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergeBiospecimenPerParticipant {
@@ -65,29 +62,30 @@ object MergeBiospecimenPerParticipant {
   }
 
   def enrichBiospecimenDuoCode(biospecimens: Dataset[EBiospecimen], duoCodeDataSet: Dataset[DuoCode])(implicit spark: SparkSession): Dataset[EBiospecimen] = {
-    import spark.implicits._
     import org.apache.spark.sql.functions.explode_outer
+    import spark.implicits._
 
     val bioId_duoId = biospecimens
-      .withColumn("duo_ids", explode_outer($"duo_ids"))
-      .select("kfId", "duo_ids")
+      .withColumn("duoIds", explode_outer($"duoIds"))
+      .select("kfId", "duoIds")
       .withColumnRenamed("kfId", "id") //avoid column name clash
-      .withColumnRenamed("duo_ids", "duo_id") //avoid column name clash
+      .withColumnRenamed("duoIds", "duoId") //avoid column name clash
       .as[(String, String)]
 
-    //Get Dataset of (Biospecimen, DuoCodeId)
-    val bio_duoId = biospecimens.flatMap(b => b.duo_ids.map(i => (b, i)))
+    val eBioSpecimen_duoId: Dataset[(EBiospecimen, String)] = bioId_duoId
+      .joinWith(biospecimens,
+        bioId_duoId.col("id") === biospecimens.col("kfId"),
+        "left")
+      .map{ case((_, duoId), eBio) => (eBio, duoId) }
 
-    val temp = bioId_duoId
-      .joinWith(biospecimens, bioId_duoId.col("id") === biospecimens.col("kfId"), "left")
-      .map(o => (o._2, o._1._2))
-
-    val temp2 = temp.joinWith(duoCodeDataSet, temp.col("_2") === duoCodeDataSet.col("id"), "left_outer")
-    .map(row => (row._1._1, row._1._2, row._2))
-    temp2.show(false)
+    val eBio_duoId_duoCode = eBioSpecimen_duoId
+      .joinWith(duoCodeDataSet,
+        eBioSpecimen_duoId.col("_2") === duoCodeDataSet.col("id"),
+        "left_outer")
+      .map{ case((eBio, duoId), duoCode) => (eBio, duoId, duoCode) }
 
     //For Each item. Join the duocode and then "toString".
-    temp2
+    eBio_duoId_duoCode
       .groupByKey { case (biospeciem, _, _) => biospeciem.kfId }
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
@@ -95,8 +93,7 @@ object MergeBiospecimenPerParticipant {
         val duoCodes: Seq[String] = groups.collect {
           case (b, duoId, duo) if b != null && duoId != null => if(duo != null){duo.toString}else{duoId}
         }
-        eBiospecimen.copy(duo_ids = duoCodes)
+        eBiospecimen.copy(duoIds = duoCodes)
       }
   }
-
 }

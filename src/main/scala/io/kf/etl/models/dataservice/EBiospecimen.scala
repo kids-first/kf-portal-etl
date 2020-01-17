@@ -7,7 +7,7 @@ case class EBiospecimen(
                          concentrationMgPerMl: Option[Double] = None,
                          consentType: Option[String] = None,
                          createdAt: Option[String] = None,
-                         duo_ids: Seq[String] = Nil,
+                         duoIds: Seq[String] = Nil,
                          dbgapConsentCode: Option[String] = None,
                          externalAliquotId: Option[String] = None,
                          externalSampleId: Option[String] = None,
