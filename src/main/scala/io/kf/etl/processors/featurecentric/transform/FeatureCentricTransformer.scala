@@ -1,10 +1,11 @@
 package io.kf.etl.processors.featurecentric.transform
 
-import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenGenomicFile, EGenomicFile, ESequencingExperiment, ESequencingExperimentGenomicFile}
-import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, ParticipantCentric_ES, Participant_ES}
-import io.kf.etl.models.internal.{BiospecimenCombinedES_GenomicFileId, BiospecimenES_GenomicFileES, BiospecimenES_ParticipantES, BiospecimenId_GenomicFileId, ParticipantES_BiospecimenES_GenomicFileES, SequencingExperimentES_GenomicFileId, SequencingExperimentsES_GenomicFileId}
+import io.kf.etl.models.dataservice.{EBiospecimenGenomicFile, EGenomicFile, ESequencingExperiment, ESequencingExperimentGenomicFile}
+import io.kf.etl.models.es._
+import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
+import org.apache.spark.sql.functions.explode_outer
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
@@ -19,19 +20,37 @@ object FeatureCentricTransformer {
     val files: Dataset[GenomicFile_ES] =
       joinGenomicFiles_To_SequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
 
-    val bio_gf: Dataset[(EBiospecimen, Seq[GenomicFile_ES])] =
-      joinGenomicFiles_To_Biospecimen(entityDataset.biospecimens, entityDataset.biospecimenGenomicFiles, files)
+    val bios = participants.flatMap(o => o.biospecimens)
 
-    participants.joinWith(
-      bio_gf,
-      participants.col("kf_id") === bio_gf.col("_1.participantId"),
-      "left_outer"
-    ).groupByKey { case (participant, _) => participant.kf_id }
+    val bio_gf: Dataset[(Biospecimen_ES, Seq[GenomicFile_ES])] =
+      joinGenomicFiles_To_Biospecimen(bios, entityDataset.biospecimenGenomicFiles, files)
+
+
+    val participant_Biospecimen = participants
+      .map(p => (p, p.biospecimens))
+      .withColumn("_2", explode_outer($"_2"))
+      .withColumnRenamed("_1", "Participant_ES")
+      .withColumnRenamed("_2", "Biospecimen_ES")
+      .as[(Participant_ES, Biospecimen_ES)]
+
+    val part_bio_Gfs = participant_Biospecimen
+      .joinWith(
+        bio_gf,
+        participant_Biospecimen.col("Biospecimen_ES.kf_id") === bio_gf.col("_1.kf_id"),
+        "left")
+      .map{
+        case ((a1, a2), (_, b2)) => (a1, a2, b2)
+        case ((a1, a2), _) => (a1, a2, Nil)
+      }
+      .as[(Participant_ES, Biospecimen_ES, Seq[GenomicFile_ES])]
+
+    part_bio_Gfs
+      .groupByKey { case (participant, _, _) => participant.kf_id }
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val bioFiles: Seq[Biospecimen_ES] = groups.collect {
-          case (_, (biospecimen, gfiles)) if biospecimen != null => EntityConverter.EBiospecimenToBiospecimenES(biospecimen, gfiles)
+          case (_, biospecimen, gfiles) if biospecimen != null => biospecimen.copy(genomic_files = gfiles)
         }
         val gfiles: Seq[GenomicFile_ES] = bioFiles.flatMap(_.genomic_files)
 
@@ -202,31 +221,31 @@ object FeatureCentricTransformer {
   }
 
   private def joinGenomicFiles_To_Biospecimen(
-                                               biospecimen: Dataset[EBiospecimen],
+                                               biospecimen: Dataset[Biospecimen_ES],
                                                biospecimentGenomicFile: Dataset[EBiospecimenGenomicFile],
                                                genomicFiles: Dataset[GenomicFile_ES]
-                                             ): Dataset[(EBiospecimen, Seq[GenomicFile_ES])] = {
-    val bioSpec_GFs: Dataset[(EBiospecimen, GenomicFile_ES)] =
+                                             ): Dataset[(Biospecimen_ES, Seq[GenomicFile_ES])] = {
+    val bioSpec_GFs: Dataset[(Biospecimen_ES, GenomicFile_ES)] =
       biospecimen
         .joinWith(
           biospecimentGenomicFile,
-          biospecimen.col("kfId") === biospecimentGenomicFile.col("biospecimenId"),
+          biospecimen.col("kf_id") === biospecimentGenomicFile.col("biospecimenId"),
           "left_outer"
         )
-        .as[(EBiospecimen, EBiospecimenGenomicFile)]
-        .toDF("eBiospecimen", "eBiospecimenGenomicFile")
+//        .as[(Biospecimen_ES, EBiospecimenGenomicFile)]
+        .toDF("Biospecimen_ES", "eBiospecimenGenomicFile")
         .joinWith(
           genomicFiles,
           $"eBiospecimenGenomicFile.genomicFileId" === genomicFiles("kf_id"),
           "left_outer"
         )
-        .as[((EBiospecimen, EBiospecimenGenomicFile), GenomicFile_ES)]
+        .as[((Biospecimen_ES, EBiospecimenGenomicFile), GenomicFile_ES)]
         .map { case ((biospecimen, _), file) => (biospecimen, file) }
 
-    bioSpec_GFs.groupByKey { case (biospecimen, _) => biospecimen.kfId }
+    bioSpec_GFs.groupByKey { case (biospecimen, _) => biospecimen.kf_id }
       .mapGroups { case (_, groupsIterator) =>
         val groups = groupsIterator.toSeq
-        val biospecimen: EBiospecimen = groups.head._1
+        val biospecimen: Biospecimen_ES = groups.head._1
         val files: Seq[GenomicFile_ES] = groups.collect{ case(_, f) if f != null => f }
         (biospecimen, files)
       }

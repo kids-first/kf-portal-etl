@@ -14,11 +14,11 @@ object Data {
   val bioSpecimen6: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_6"), participantId = Some("participant_id_5"), duoIds = Seq("duo_id1"))
   val bioSpecimens: Seq[EBiospecimen] = Seq(bioSpecimen1, bioSpecimen1_1, bioSpecimen1_2, bioSpecimen2, bioSpecimen3, bioSpecimen4, bioSpecimen5, bioSpecimen6)
 
-  val participant1: EParticipant = EParticipant(kfId = Some("participant_id_1"), biospecimens = Seq("biospecimen_id_1", bioSpecimen1_1.kfId.orNull, bioSpecimen1_2.kfId.orNull))
-  val participant2: EParticipant = EParticipant(kfId = Some("participant_id_2"), biospecimens = Seq(bioSpecimen2.kfId.orNull), diagnoses = Seq("diagnosis_id_2"), race = Some("klingon"))
-  val participant3: EParticipant = EParticipant(kfId = Some("participant_id_3"), biospecimens = Seq(bioSpecimen3.kfId.orNull))
+  val participant1: EParticipant = EParticipant(kfId = Some("participant_id_1"), biospecimens = Seq("biospecimen_id_1", "biospecimen_id_1_1", "biospecimen_id_1_2"))
+  val participant2: EParticipant = EParticipant(kfId = Some("participant_id_2"), biospecimens = Seq("biospecimen_id_2"), diagnoses = Seq("diagnosis_id_2"), race = Some("klingon"))
+  val participant3: EParticipant = EParticipant(kfId = Some("participant_id_3"), biospecimens = Seq("biospecimen_id_3"))
   val participant4: EParticipant = EParticipant(kfId = Some("participant_id_4"))
-  val participant5: EParticipant = EParticipant(kfId = Some("participant_id_5"), biospecimens = Seq(bioSpecimen5.kfId.orNull, bioSpecimen6.kfId.orNull))
+  val participant5: EParticipant = EParticipant(kfId = Some("participant_id_5"), biospecimens = Seq("biospecimen_id_5", "biospecimen_id_6"))
   val participants: Seq[EParticipant] = Seq(participant1, participant2, participant3, participant4, participant5)
 
   val diagnosis1: EDiagnosis = EDiagnosis(kfId = Some("diagnosis_id_1"), participantId = Some("participant_id_1"))

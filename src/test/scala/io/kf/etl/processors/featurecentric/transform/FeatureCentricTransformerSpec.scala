@@ -183,10 +183,19 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
   "participantCentric" should "return the proper Sequence of ParticipantCentric_ES" in {
 
-    val result = FeatureCentricTransformer.participantCentric(entityDataSet, entityDataSet.participants.map(EntityConverter.EParticipantToParticipantES))
+    //Convert all EBiospecimen to Biospecimen_ES
+    val biospecimen_ES = data.bioSpecimens.map(b => EntityConverter.EBiospecimenToBiospecimenES(b))
 
-    result.collect().foreach(println)
+    //Enhance Participant_ES with all corresponding Biospeciment_ES
+    val participant_ES =
+      entityDataSet
+        .participants
+        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse("")) )))
 
+    val result = FeatureCentricTransformer.participantCentric(
+      entityDataSet,
+      participant_ES
+    )
 
     //FIXME
     // theSameElementsAs has arguably a bug. Ordering is important for this test to pass for Sets < 5.
