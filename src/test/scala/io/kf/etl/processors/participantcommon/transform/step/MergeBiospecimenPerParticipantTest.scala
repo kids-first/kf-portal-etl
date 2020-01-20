@@ -21,7 +21,7 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
   "process" should "join biospecimen and participant and enrich the ncid tissue type, anatomical site and diagnoses" in {
 
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val bioSpecimen1 = EBiospecimen(kfId = Some("biospecimen_id_1"), participantId = Some("participant_id_1"), ncitIdAnatomicalSite = Some("NCIT:unknown"), duoIds = Seq("duoCodeId1", "duoCodeId2"))
+    val bioSpecimen1 = EBiospecimen(kfId = Some("biospecimen_id_1"), participantId = Some("participant_id_1"), ncitIdAnatomicalSite = Some("NCIT:unknown"), duoIds = Seq("duoCodeId1", "duoCodeId2", "duoCodeId_NoLabel"))
     val diagnosis = EDiagnosis(kfId = Some("diagnosis_id_1"))
     val biospecimenDiagnosis = EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_1"), biospecimenId = Some("biospecimen_id_1"))
 
@@ -55,7 +55,7 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
 
     result should contain theSameElementsAs Seq(
       Participant_ES(kf_id = Some("participant_id_1"),
-        biospecimens = Seq(Biospecimen_ES(kf_id = Some("biospecimen_id_1"), ncit_id_anatomical_site = Some("NCIT:unknown"), diagnoses = Seq(Diagnosis_ES(kf_id = Some("diagnosis_id_1"))), duo_code = Seq("Label1 (duoCodeId1)", "Label2 (duoCodeId2)")))
+        biospecimens = Seq(Biospecimen_ES(kf_id = Some("biospecimen_id_1"), ncit_id_anatomical_site = Some("NCIT:unknown"), diagnoses = Seq(Diagnosis_ES(kf_id = Some("diagnosis_id_1"))), duo_code = Seq("Label1 (duoCodeId1)", "Label2 (duoCodeId2)", "duoCodeId_NoLabel")))
       ),
       Participant_ES(kf_id = Some("participant_id_2"),
         biospecimens = Seq(

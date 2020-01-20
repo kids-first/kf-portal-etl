@@ -62,38 +62,38 @@ object MergeBiospecimenPerParticipant {
   }
 
   def enrichBiospecimenDuoCode(biospecimens: Dataset[EBiospecimen], duoCodeDataSet: Dataset[DuoCode])(implicit spark: SparkSession): Dataset[EBiospecimen] = {
-    import org.apache.spark.sql.functions.explode_outer
+    import org.apache.spark.sql.functions.{collect_list, explode_outer, first}
     import spark.implicits._
 
     val bioId_duoId = biospecimens
-      .withColumn("duoIds", explode_outer($"duoIds"))
-      .select("kfId", "duoIds")
-      .withColumnRenamed("kfId", "id") //avoid column name clash
-      .withColumnRenamed("duoIds", "duoId") //avoid column name clash
-      .as[(String, String)]
+      .withColumn("duoId", explode_outer($"duoIds"))
 
-    val eBioSpecimen_duoId: Dataset[(EBiospecimen, String)] = bioId_duoId
-      .joinWith(biospecimens,
-        bioId_duoId.col("id") === biospecimens.col("kfId"),
-        "left")
-      .map{ case((_, duoId), eBio) => (eBio, duoId) }
-
-    val eBio_duoId_duoCode = eBioSpecimen_duoId
-      .joinWith(duoCodeDataSet,
-        eBioSpecimen_duoId.col("_2") === duoCodeDataSet.col("id"),
-        "left_outer")
-      .map{ case((eBio, duoId), duoCode) => (eBio, duoId, duoCode) }
-
-    //For Each item. Join the duocode and then "toString".
-    eBio_duoId_duoCode
-      .groupByKey { case (biospeciem, _, _) => biospeciem.kfId }
-      .mapGroups { case (_, groupsIterator) =>
-        val groups = groupsIterator.toSeq
-        val eBiospecimen = groups.head._1
-        val duoCodes: Seq[String] = groups.collect {
-          case (b, duoId, duo) if b != null && duoId != null => if(duo != null){duo.toString}else{duoId}
+    val b = bioId_duoId.joinWith(
+      duoCodeDataSet,
+      $"duoId" === duoCodeDataSet("id"),
+      "left_outer"
+    )
+      .withColumn("duoId", $"_1.duoId")
+        .as[(EBiospecimen, DuoCode, String)]
+        .map{
+          case (b, null, d) => (b, d)
+          case (b, code, _) => (b, code.toString)
         }
-        eBiospecimen.copy(duoIds = duoCodes)
-      }
+      .withColumnRenamed("_1", "biospecimen")
+      .withColumnRenamed("_2", "duocode")
+
+    val df =  b
+      .groupBy(
+        "biospecimen.kfId"
+      )
+        .agg(first("biospecimen") as "biospecimen", collect_list("duocode") as "duocodes")
+        .select("biospecimen", "duocodes")
+        .as[(EBiospecimen, Seq[String])]
+
+    df.map {
+      case (biospecimen, Nil) => biospecimen
+      case (biospecimen, duocodes) =>
+        biospecimen.copy(duoIds = duocodes)
+    }
   }
 }
