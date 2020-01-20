@@ -33,7 +33,6 @@ libraryDependencies ++= Seq(
   typesafe_config,
   json4s,
   "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.3",
-  kf_es_model,
   scalatest % "test",
   asyncHttp % "test"
 )
