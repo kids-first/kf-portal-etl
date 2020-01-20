@@ -22,6 +22,8 @@ object FeatureCentricTransformer {
 
     val bios = participants.flatMap(o => o.biospecimens)
 
+//    Dataset[biospecimenId, Seq[genomicfiles]]
+
     val bio_gf: Dataset[(Biospecimen_ES, Seq[GenomicFile_ES])] =
       joinGenomicFiles_To_Biospecimen(bios, entityDataset.biospecimenGenomicFiles, files)
 
