@@ -3,7 +3,6 @@ package io.kf.etl
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
-import io.kf.etl.processors.featurecentric.transform.FeatureCentricTransformer
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
 
