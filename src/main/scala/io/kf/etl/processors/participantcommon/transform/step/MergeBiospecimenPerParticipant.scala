@@ -62,33 +62,33 @@ object MergeBiospecimenPerParticipant {
   }
 
   def enrichBiospecimenDuoCode(biospecimens: Dataset[EBiospecimen], duoCodeDataSet: Dataset[DuoCode])(implicit spark: SparkSession): Dataset[EBiospecimen] = {
-    import org.apache.spark.sql.functions.{collect_list, explode_outer, first}
+    import org.apache.spark.sql.functions.{collect_list, explode_outer, first, when}
     import spark.implicits._
 
     val bioId_duoId = biospecimens
       .withColumn("duoId", explode_outer($"duoIds"))
 
+    val formattedDuocodes = duoCodeDataSet.map(d => (d.id, d.toString))
+      .withColumnRenamed("_1", "id")
+      .withColumnRenamed("_2", "label")
+
     val b = bioId_duoId.joinWith(
-      duoCodeDataSet,
-      $"duoId" === duoCodeDataSet("id"),
+      formattedDuocodes,
+      $"duoId" === formattedDuocodes("id"),
       "left_outer"
     )
-      .withColumn("duoId", $"_1.duoId")
-        .as[(EBiospecimen, DuoCode, String)]
-        .map{
-          case (b, null, d) => (b, d)
-          case (b, code, _) => (b, code.toString)
-        }
       .withColumnRenamed("_1", "biospecimen")
-      .withColumnRenamed("_2", "duocode")
+      .withColumn("duocode", when($"_2".isNotNull, $"_2.label").otherwise($"biospecimen.duoId"))
+      .drop("_2")
+      .as[(EBiospecimen, String)]
 
-    val df =  b
+    val df = b
       .groupBy(
         "biospecimen.kfId"
       )
-        .agg(first("biospecimen") as "biospecimen", collect_list("duocode") as "duocodes")
-        .select("biospecimen", "duocodes")
-        .as[(EBiospecimen, Seq[String])]
+      .agg(first("biospecimen") as "biospecimen", collect_list("duocode") as "duocodes")
+      .select("biospecimen", "duocodes")
+      .as[(EBiospecimen, Seq[String])]
 
     df.map {
       case (biospecimen, Nil) => biospecimen
