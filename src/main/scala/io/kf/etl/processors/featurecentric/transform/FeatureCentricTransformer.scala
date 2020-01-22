@@ -5,6 +5,7 @@ import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
+import org.apache.spark.sql.functions.{collect_list, explode_outer, first}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
@@ -12,7 +13,6 @@ object FeatureCentricTransformer {
   import spark.implicits._
 
   def participantCentric(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
-    import org.apache.spark.sql.functions.{collect_list, explode_outer, first}
 
     val fileId_experiments: Dataset[SequencingExperimentsES_GenomicFileId] =
       joinFileIdToSeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles )
@@ -68,107 +68,49 @@ object FeatureCentricTransformer {
     val files: Dataset[GenomicFile_ES] =
       joinGenomicFilesToSequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
 
-    val bio_par: Dataset[BiospecimenES_ParticipantES] =
-      participants.flatMap((p: Participant_ES) => p.biospecimens.map(b => BiospecimenES_ParticipantES(b, p)))
+    val participantExploded = participants
+      .withColumn("biospecimen", explode_outer($"biospecimens"))
 
-
-    val bioId_gfId =
-      entityDataset.genomicFiles
-        .joinWith(
-          entityDataset.biospecimenGenomicFiles,
-          entityDataset.genomicFiles.col("kfId") === entityDataset.biospecimenGenomicFiles.col("genomicFileId"),
-          "left_outer"
-        )
-        .map(tuple => {
-          BiospecimenId_GenomicFileId(
-            gfId = tuple._1.kfId,
-            bioId = {
-              Option(tuple._2) match {
-                case Some(_) => tuple._2.biospecimenId
-                case None => null
-              }
-            }
-          )
-        })
-
-    val bio_gfId =
-      bioId_gfId
-        .joinWith(
-          entityDataset.biospecimens,
-          bioId_gfId.col("bioId") === entityDataset.biospecimens.col("kfId"),
-          "left_outer"
-        )
-        .map(tuple => {
-          BiospecimenCombinedES_GenomicFileId(
-            gfId = tuple._1.gfId.get,
-            bio = {
-              Option(tuple._2) match {
-                case Some(_) => EntityConverter.EBiospecimenToBiospecimenES(tuple._2)
-                case None => null
-              }
-            }
-          )
-        })
-
-    val bio_fullGf: Dataset[BiospecimenES_GenomicFileES] =
-      files
-        .joinWith(
-          bio_gfId,
-          files.col("kf_id") === bio_gfId.col("gfId")
-        )
-        .map(tuple => {
-          BiospecimenES_GenomicFileES(
-            bio = tuple._2.bio,
-            genomicFile = tuple._1
-          )
-        })
-
-
-    bio_fullGf
+    files.joinWith(
+      entityDataset.biospecimenGenomicFiles,
+      files.col("kf_id") === $"genomicFileId",
+      "left_outer"
+    )
+      .select("_1", "_2.biospecimenId")
+      .as[(GenomicFile_ES, String)]
       .joinWith(
-        bio_par,
-        bio_par("bio")("kf_id") === bio_fullGf("bio")("kf_id"),
+        participantExploded,
+        $"biospecimenId" === participantExploded.col("biospecimen.kf_id"),
         "left_outer"
       )
-      .map(tuple => {
-
-        ParticipantES_BiospecimenES_GenomicFileES(
-          participant = {
-            Option(tuple._2) match {
-              case Some(_) => tuple._2.participant
-              case None => null
-            }
-          },
-          bio = Option(tuple._2) match {
-            case Some(_) => tuple._2.bio
-            case None => null
-          },
-          genomicFile = tuple._1.genomicFile
-        )
-
-      })
-      .groupByKey(_.genomicFile.kf_id)
-      .mapGroups((_, iterator) => {
-
-        val seq = iterator.toSeq
-
-
-        val genomicFile = seq.head.genomicFile
-
-        val participants_in_genomicfile =
-          seq.filter(pbg => {
-            pbg.bio != null && pbg.participant != null
-          }).groupBy(_.participant.kf_id.get)
-            .map(tuple => {
-              val participant = tuple._2.head.participant
-              participant.copy(
-                biospecimens = tuple._2.map(_.bio)
-              )
-            })
-
-        genomicFile_ES_to_FileCentric(genomicFile, participants_in_genomicfile.toSeq)
-
-      })
+      .select(
+        $"_1._1" as "genomicFile",
+        $"_2" as "participant",
+        $"_2.biospecimen" as "biospecimen"
+      )
+      .groupBy(
+        "genomicFile", "participant.kf_id"
+      )
+      .agg(
+        first("participant") as "participant",
+        collect_list("biospecimen") as "biospecimens"
+      )
+      .drop("kf_id")
+      .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
+      .map{
+        case(gf, null, _) => (gf, null)
+        case(gf, p, bs) => (gf, p.copy(biospecimens = bs))
+      }
+      .withColumnRenamed("_1", "genomicFile")
+      .withColumnRenamed("_2", "participant")
+      .groupBy("genomicFile")
+      .agg(
+        collect_list("participant") as "participants"
+      )
+      .as[(GenomicFile_ES, Seq[Participant_ES])]
+      .map{
+        case(gf, ps) => genomicFile_ES_to_FileCentric(gf, ps)
+      }
 
   }
 

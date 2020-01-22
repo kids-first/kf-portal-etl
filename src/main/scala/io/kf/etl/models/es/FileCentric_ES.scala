@@ -11,14 +11,14 @@ final case class FileCentric_ES(
                                  file_format: Option[String] = None,
                                  file_name: Option[String] = None,
                                  instrument_models: Seq[String] = Nil,
-                                 is_paired_end: scala.Option[Boolean] = None,
+                                 is_harmonized: Option[Boolean] = None,
+                                 is_paired_end: Option[Boolean] = None,
                                  size: scala.Option[Long] = None,
                                  kf_id: Option[String] = None,
+                                 latest_did: Option[String] = None,
                                  participants: Seq[Participant_ES] = Nil,
                                  platforms: Seq[String] = Nil,
                                  reference_genome: Option[String] = None,
                                  repository: Option[String] = None,
-                                 sequencing_experiments: Seq[SequencingExperiment_ES] = Nil,
-                                 is_harmonized: Option[Boolean] = None,
-                                 latest_did: Option[String] = None
+                                 sequencing_experiments: Seq[SequencingExperiment_ES] = Nil
                                )
