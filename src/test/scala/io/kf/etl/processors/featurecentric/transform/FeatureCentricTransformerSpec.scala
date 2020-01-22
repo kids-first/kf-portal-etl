@@ -50,19 +50,19 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         file_name = Some("File1"),
         participants = Seq(
           Participant_ES(
+            kf_id = Some("participant_id_3"),
+            biospecimens = Seq(
+              Biospecimen_ES(
+                kf_id = Some("biospecimen_id_3")
+              )
+            )
+          ),
+          Participant_ES(
             kf_id = Some("participant_id_1"),
             biospecimens = Seq(
               Biospecimen_ES(
                 kf_id = Some("biospecimen_id_1"),
                 ncit_id_anatomical_site = Some("NCIT:unknown")
-              )
-            )
-          ),
-          Participant_ES(
-            kf_id = Some("participant_id_3"),
-            biospecimens = Seq(
-              Biospecimen_ES(
-                kf_id = Some("biospecimen_id_3")
               )
             )
           )
