@@ -44,30 +44,28 @@ object DownloadTransformer {
     }
   }
 
-  def transformOntologyData(data: List[OntologyTerm]): Unit = {
-    //TODO add root at the end /required?
-    //Use Map
+  def transformOntologyData(data: Map[String, OntologyTerm]) = {
     data.flatMap(term => {
-      val cumulativeList =  mutable.MutableList.empty[OntologyTerm]
-      getAllParentPath(term, term, data, Nil, cumulativeList)
-    }).foreach(println)
+      val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[String]]
+      getAllParentPath(term._2, term._2, data, Nil, cumulativeList)
+    })
   }
 
-  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: List[OntologyTerm], list: Seq[String], cumulativeList: mutable.MutableList[OntologyTerm]): Seq[OntologyTerm] = {
-    term.parents.map(p => {
-      data.collectFirst { case i if i.id == p => i } match {
-        case Some(parentTerm) =>
-          if(parentTerm.parents.isEmpty){
-            cumulativeList += OntologyTerm(originalTerm.id, originalTerm.name, parents = list :+ p)
-          }
-          else {
-            getAllParentPath(parentTerm, originalTerm, data, list :+ p, cumulativeList)
-          }
+  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Seq[String], cumulativeList: mutable.Map[OntologyTerm, Set[String]]): mutable.Map[OntologyTerm, Set[String]] = {
+    term.parents.foreach(p => {
+      val parentTerm = data(p)
 
-        case None => //TODO Maybe log terms that parents not found.
+      if(parentTerm.parents.isEmpty){
+        cumulativeList.get(originalTerm) match {
+          case Some(value) => cumulativeList.update(originalTerm, value ++ list.toSet + p)
+          case None => cumulativeList.update(originalTerm, list.toSet + p)
+        }
+      }
+      else {
+        getAllParentPath(parentTerm, originalTerm, data, list :+ p, cumulativeList)
       }
     })
-    cumulativeList //merge
+    cumulativeList
   }
 
   def readTextFileWithTry(): Try[List[String]] = {
