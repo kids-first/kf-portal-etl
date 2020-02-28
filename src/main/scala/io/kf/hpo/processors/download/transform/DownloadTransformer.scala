@@ -9,7 +9,7 @@ import scala.util.{Failure, Success, Try}
 object DownloadTransformer {
   val patternId = "id: (HP:[0-9]+)".r
   val patternName = "name: (.*)".r
-  val patternIsA = "is_a: (HP:[0-9]+) (.*)".r
+  val patternIsA = "is_a: (HP:[0-9]+) ! (.*)".r
 
   def using[A](r : BufferedSource)(f : BufferedSource => A) : A =
     try {
@@ -32,11 +32,14 @@ object DownloadTransformer {
           val patternName(name) = line
           val headOnto = current.head
           headOnto.copy(name = name) :: current.tail
-        } else if(line.matches(patternIsA.regex)) {
-          val patternIsA(id, _) = line
+        }
+        else if(line.matches(patternIsA.regex)) {
+          val patternIsA(id, name) = line
           val headOnto = current.head
-          headOnto.copy(parents = headOnto.parents :+ id) :: current.tail
-        } else {
+          val headOntoCopy = headOnto.copy(parents = headOnto.parents :+ OntologyTerm(id, name, Nil))
+          headOntoCopy :: current.tail
+        }
+        else {
           current
         }
       }
@@ -46,14 +49,14 @@ object DownloadTransformer {
 
   def transformOntologyData(data: Map[String, OntologyTerm]) = {
     data.flatMap(term => {
-      val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[String]]
-      getAllParentPath(term._2, term._2, data, Set.empty[String], cumulativeList)
+      val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[OntologyTerm]]
+      getAllParentPath(term._2, term._2, data, Set.empty[OntologyTerm], cumulativeList)
     })
   }
 
-  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Set[String], cumulativeList: mutable.Map[OntologyTerm, Set[String]]): mutable.Map[OntologyTerm, Set[String]] = {
+  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Set[OntologyTerm], cumulativeList: mutable.Map[OntologyTerm, Set[OntologyTerm]]): mutable.Map[OntologyTerm, Set[OntologyTerm]] = {
     term.parents.foreach(p => {
-      val parentTerm = data(p)
+      val parentTerm = data(p.id)
 
       if(parentTerm.parents.isEmpty){
         cumulativeList.get(originalTerm) match {

@@ -3,6 +3,6 @@ package io.kf.hpo.models.ontology
 case class OntologyTerm (
                           id: String,
                           name: String,
-                          parents: Seq[String] = Nil
+                          parents: Seq[OntologyTerm] = Nil
                         )
 
