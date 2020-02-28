@@ -47,22 +47,22 @@ object DownloadTransformer {
   def transformOntologyData(data: Map[String, OntologyTerm]) = {
     data.flatMap(term => {
       val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[String]]
-      getAllParentPath(term._2, term._2, data, Nil, cumulativeList)
+      getAllParentPath(term._2, term._2, data, Set.empty[String], cumulativeList)
     })
   }
 
-  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Seq[String], cumulativeList: mutable.Map[OntologyTerm, Set[String]]): mutable.Map[OntologyTerm, Set[String]] = {
+  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Set[String], cumulativeList: mutable.Map[OntologyTerm, Set[String]]): mutable.Map[OntologyTerm, Set[String]] = {
     term.parents.foreach(p => {
       val parentTerm = data(p)
 
       if(parentTerm.parents.isEmpty){
         cumulativeList.get(originalTerm) match {
-          case Some(value) => cumulativeList.update(originalTerm, value ++ list.toSet + p)
-          case None => cumulativeList.update(originalTerm, list.toSet + p)
+          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p)
+          case None => cumulativeList.update(originalTerm, list + p)
         }
       }
       else {
-        getAllParentPath(parentTerm, originalTerm, data, list :+ p, cumulativeList)
+        getAllParentPath(parentTerm, originalTerm, data, list + p, cumulativeList)
       }
     })
     cumulativeList
