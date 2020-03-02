@@ -25,7 +25,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
     val mondoTerms = loadTerms(config.getString(CONFIG_NAME_MONDO_PATH), spark)
     val ncitTerms = loadTerms(config.getString(CONFIG_NAME_NCIT_PATH), spark)
-    val hpoTerms = loadTerms(config.getString(CONFIG_NAME_MONDO_PATH), spark)
+    val hpoTerms = loadTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
     OntologiesDataSet(
       hpoTerms = hpoTerms.cache(),
       mondoTerms = mondoTerms.cache(),
