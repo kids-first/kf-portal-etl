@@ -8,7 +8,8 @@ case class OntologyTermOutput (
                                 id: String,
                                 name: String,
                                 parents: Seq[BasicOntologyTermOutput] = Nil,
-                                ancestors: Seq[BasicOntologyTermOutput] = Nil
+                                ancestors: Seq[BasicOntologyTermOutput] = Nil,
+                                is_leaf: Boolean
                               ) {}
 
 case class BasicOntologyTermOutput (
@@ -25,8 +26,8 @@ object WriteJson {
 
   import spark.implicits._
 
-  def toJson(data: Map[OntologyTerm, Set[OntologyTerm]]) = {
-    data.map{ case(k, v) => OntologyTermOutput(k.id, k.name, k.parents.map(i => BasicOntologyTermOutput(i.id, i.name)), v.map(i => BasicOntologyTermOutput(i.id, i.name)).toSeq)}.toSeq.toDF().write.mode("overwrite").json("/home/adrianpaul/projects/TEST")
+  def toJson(data: Map[OntologyTerm, (Set[OntologyTerm], Boolean)]) = {
+    data.map{ case(k, v) => OntologyTermOutput(k.id, k.name, k.parents.map(i => BasicOntologyTermOutput(i.id, i.name)), v._1.map(i => BasicOntologyTermOutput(i.id, i.name)).toSeq, v._2)}.toSeq.toDF().write.mode("overwrite").json("/home/adrianpaul/projects/TEST")
   }
 }
 
