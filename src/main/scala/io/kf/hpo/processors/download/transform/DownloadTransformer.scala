@@ -60,8 +60,8 @@ object DownloadTransformer {
 
       if(parentTerm.parents.isEmpty){
         cumulativeList.get(originalTerm) match {
-          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p)
-          case None => cumulativeList.update(originalTerm, list + p)
+          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p + originalTerm)
+          case None => cumulativeList.update(originalTerm, list + p + originalTerm)
         }
       }
       else {
