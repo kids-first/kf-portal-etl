@@ -2,7 +2,7 @@ package io.kf.etl.processors.common
 
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.ontology.{HPOOntologyTerm, OntologyTerm}
 import org.apache.spark.sql.Dataset
 
 object ProcessorCommonDefinitions {
@@ -46,7 +46,7 @@ object ProcessorCommonDefinitions {
                               )
 
   case class OntologiesDataSet(
-                                hpoTerms: Dataset[OntologyTerm],
+                                hpoTerms: Dataset[HPOOntologyTerm],
                                 mondoTerms: Dataset[OntologyTerm],
                                 ncitTerms: Dataset[OntologyTerm]
                               )

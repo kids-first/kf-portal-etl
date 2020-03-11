@@ -1,7 +1,7 @@
 package io.kf.etl.processors.featurecentric.transform
 
 import com.typesafe.config.Config
-import io.kf.etl.models.es.{Biospecimen_ES, FileCentric_ES, GenomicFile_ES, ParticipantCentric_ES, Participant_ES, SequencingExperiment_ES}
+import io.kf.etl.models.es._
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
@@ -16,6 +16,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
   implicit var config: Config = _
 
   val data: Data.type = Data
+
   val entityDataSet: EntityDataSet = buildEntityDataSet(
     participants = data.participants,
     biospecimens = data.bioSpecimens,
@@ -40,9 +41,6 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
     val result = FeatureCentricTransformer.fileCentric(entityDataSet, participants)
 
-    //FIXME
-    // theSameElementsAs has arguably a bug. Ordering is important for this test to pass for Sets < 5.
-    // See https://github.com/scala-exercises/scala-exercises/issues/18
     result.collect() should contain theSameElementsAs Seq(
       FileCentric_ES(
         kf_id = Some("genomicFile1"),
@@ -185,21 +183,19 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
     //Convert all EBiospecimen to Biospecimen_ES
     val biospecimen_ES = data.bioSpecimens.map(b => EntityConverter.EBiospecimenToBiospecimenES(b))
+    val phenotypes_ES = data.phenotypes
 
     //Enhance Participant_ES with all corresponding Biospeciment_ES
     val participant_ES =
       entityDataSet
         .participants
-        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse("")) )))
+        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))), phenotype = if (p.kfId.get == "participant_id_4") phenotypes_ES else Nil))
 
     val result = FeatureCentricTransformer.participantCentric(
       entityDataSet,
       participant_ES
     )
 
-    //FIXME
-    // theSameElementsAs has arguably a bug. Ordering is important for this test to pass for Sets < 5.
-    // See https://github.com/scala-exercises/scala-exercises/issues/18
     result.collect() should contain theSameElementsAs Seq(
       ParticipantCentric_ES(
         kf_id = Some("participant_id_1"),
@@ -324,7 +320,21 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         )
       ),
       ParticipantCentric_ES(
-        kf_id = Some("participant_id_4")
+        kf_id = Some("participant_id_4"),
+        phenotype = Seq(
+          Phenotype_ES(
+            age_at_event_days = Some(15),
+            hpo_phenotype_observed = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+            hpo_phenotype_observed_text = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+            observed = Some(true)
+          ),
+          Phenotype_ES(
+            age_at_event_days = Some(18),
+            hpo_phenotype_observed = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+            hpo_phenotype_observed_text = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+            observed = Some(true)
+          )
+        )
       ),
       ParticipantCentric_ES(
         kf_id = Some("participant_id_5"),

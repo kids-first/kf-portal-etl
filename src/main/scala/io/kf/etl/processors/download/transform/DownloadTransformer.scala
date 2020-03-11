@@ -4,7 +4,7 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.ontology.{HPOOntologyTerm, OntologyTerm}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.utils.{DataServiceConfig, EntityDataRetriever}
@@ -25,7 +25,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
     val mondoTerms = loadTerms(config.getString(CONFIG_NAME_MONDO_PATH), spark)
     val ncitTerms = loadTerms(config.getString(CONFIG_NAME_NCIT_PATH), spark)
-    val hpoTerms = loadTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
+    val hpoTerms = loadHPOTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
     OntologiesDataSet(
       hpoTerms = hpoTerms.cache(),
       mondoTerms = mondoTerms.cache(),
@@ -164,6 +164,14 @@ object DownloadTransformer {
     )
     val filename = path.split("/").last
     spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).as[OntologyTerm]
+  }
+
+  def loadHPOTerms(path: String, spark: SparkSession): Dataset[HPOOntologyTerm] = {
+    import spark.implicits._
+    spark.sparkContext.addFile(path)
+
+    val filename = path.split("/").last
+    spark.read.json(SparkFiles.get(filename)).as[HPOOntologyTerm]
   }
 
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {

@@ -1,26 +1,64 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.EPhenotype
-import io.kf.etl.models.es.{Participant_ES, Phenotype_ES}
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.es.{Participant_ES, PhenotypeWithParents_ES, Phenotype_ES}
+import io.kf.etl.models.ontology.{HPOOntologyTerm, OntologyTerm}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
+import org.apache.spark.sql.functions.{collect_list, explode_outer}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergePhenotype {
 
-  def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES)] = {
-    import entityDataset.ontologyData.hpoTerms
+  type PhenotypeWParentsAtAge = Seq[((String, Seq[String]), Int)]
+
+  def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES, PhenotypeWParentsAtAge)] = {
     import entityDataset.phenotypes
+    import entityDataset.ontologyData.hpoTerms
     import spark.implicits._
 
-    phenotypes
+    val phenotype_hpo = phenotypes
+      .filter(p =>
+        p.observed.getOrElse("").trim.equalsIgnoreCase("positive") ||
+          p.observed.getOrElse("").trim.equalsIgnoreCase("negative")) // remove phenotypes the are neither observed nor non-observed
       .joinWith(hpoTerms, phenotypes("hpoIdPhenotype") === hpoTerms("id"), "left_outer")
-      .as[(EPhenotype, Option[OntologyTerm])]
-      .flatMap { case (phenotype, hpoTerm) if phenotype.participantId.isDefined =>
+      .as[(EPhenotype, HPOOntologyTerm)]
+
+    val phenotype_hpo_ancestor = phenotype_hpo.map{
+      case u if u._2 != null => (u._1, u._2, u._2.ancestors)
+      case u => (u._1, u._2, Nil)
+    }
+      .withColumnRenamed("_1", "phenotype")
+      .withColumnRenamed("_2", "ontological_term")
+      .withColumnRenamed("_3", "ancestors")
+      .withColumn("ancestor", explode_outer($"ancestors"))
+      .drop("ancestors")
+      .as[(EPhenotype, HPOOntologyTerm, OntologyTerm)]
+
+    val phenotype_hpo_ancestor_parents = phenotype_hpo_ancestor
+      .joinWith(hpoTerms, phenotype_hpo_ancestor("ancestor.id") === hpoTerms("id"), "left_outer")
+      .map(u => (
+        u._1._1,
+        u._1._2,
+        if(u._1._3 != null && u._1._1.ageAtEventDays.isDefined) {(
+          (u._1._3.toString,
+          if(u._2 != null) u._2.parents.map(_.toString) else Nil),
+          u._1._1.ageAtEventDays.get
+        )} else null
+      ))
+      .withColumnRenamed("_1", "phenotype")
+      .withColumnRenamed("_2", "ontological_term")
+      .withColumnRenamed("_3", "ancestors_with_parents")
+      .groupBy("phenotype", "ontological_term")
+      .agg(collect_list("ancestors_with_parents"))
+      .as[(EPhenotype, HPOOntologyTerm, Seq[((String, Seq[String]), Int)])]
+
+    phenotype_hpo_ancestor_parents.flatMap {
+      case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participantId.isDefined => {
         val observed = phenotype.observed.map(_.toLowerCase)
+
         val (hpoObserved, hpoNotObserved) = observed match {
-          case Some("positive") => (formatTerm(hpoTerm), None)
-          case Some("negative") => (None, formatTerm(hpoTerm))
+          case Some("positive") if hpoTerm != null => (Option(hpoTerm.toString), None)
+          case Some("negative") if hpoTerm != null => (None, Option(hpoTerm.toString))
           case _ => (None, None)
         }
 
@@ -40,10 +78,13 @@ object MergePhenotype {
         val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype else None
 
 
+
         val p = Phenotype_ES(
           age_at_event_days = phenotype.ageAtEventDays,
           external_id = phenotype.externalId,
           hpo_phenotype_observed = hpoObserved,
+          hpo_phenotype_observed_is_leaf = if(hpoObserved.isDefined) hpoTerm.is_leaf else None,
+          hpo_phenotype_not_observed_is_leaf = if(hpoNotObserved.isDefined) hpoTerm.is_leaf else None,
           hpo_phenotype_observed_text = hpoObserved,
           hpo_phenotype_not_observed = hpoNotObserved,
           snomed_phenotype_observed = snomedObserved,
@@ -51,10 +92,10 @@ object MergePhenotype {
           source_text_phenotype = sourceText,
           observed = observedOpt
         )
-        Some(phenotype.participantId.get -> p)
-      case _ => None
+        Some((phenotype.participantId.get, p, phenotypeWParentsAtAge))
       }
-
+      case _ => None
+    }
   }
 
   def apply(entityDataset: EntityDataSet, participants: Dataset[Participant_ES])(implicit spark: SparkSession): Dataset[Participant_ES] = {
@@ -62,25 +103,34 @@ object MergePhenotype {
     import spark.implicits._
 
     val transformedPhenotypes = transformPhenotypes(entityDataset)
+
     participants.joinWith(
       transformedPhenotypes,
       participants.col("kf_id") === transformedPhenotypes.col("_1"),
       "left_outer"
-    ).as[(Participant_ES, Option[(String, Phenotype_ES)])]
-      .map {
-        case (participant, Some((_, phenotype))) => (participant, Some(phenotype))
-        case (participant, _) => (participant, None)
-      }
+    ).map(u => (u._1, if(u._2 != null) (u._2._2, u._2._3) else (null, Nil) ))
       .groupByKey { case (participant, _) => participant.kf_id.get }
       .mapGroups((_, groupsIterator) => {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val filteredSeq: Seq[Phenotype_ES] = groups.flatMap(_._2)
-        participant.copy(phenotype = filteredSeq)
-
+        val filteredSeq: Seq[(Phenotype_ES, (PhenotypeWParentsAtAge, Option[Boolean]))] = groups.filter(_._2._1 != null).map(b => b._2._1 -> (b._2._2, b._2._1.observed))
+        participant.copy(
+          phenotype = filteredSeq.map(_._1),
+          non_observed_phenotypes = filteredSeq
+            .filter(_._2._2.contains(false))
+            .flatMap(_._2._1)
+            .groupBy(_._1)
+            .mapValues(_.map(_._2))
+            .map(u => PhenotypeWithParents_ES(name = u._1._1, parents = u._1._2, age_at_event_days = u._2.distinct.sorted))
+            .toSeq,
+          observed_phenotypes = filteredSeq
+            .filter(_._2._2.contains(true))
+            .flatMap(_._2._1)
+            .groupBy(_._1)
+            .mapValues(_.map(_._2))
+            .map(u => PhenotypeWithParents_ES(name = u._1._1, parents = u._1._2, age_at_event_days = u._2.distinct.sorted))
+            .toSeq
+        )
       })
   }
-
-
-  def formatTerm(term: Option[OntologyTerm]): Option[String] = term.map(t => s"${t.name} (${t.id})")
 }

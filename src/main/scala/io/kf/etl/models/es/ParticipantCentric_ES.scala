@@ -17,6 +17,8 @@ final case class ParticipantCentric_ES(
                                           kf_id: Option[String] = None,
                                           outcome: Option[Outcome_ES] = None,
                                           phenotype: Seq[Phenotype_ES] = Nil,
+                                          observed_Phenotype: Seq[PhenotypeWithParents_ES] = Nil,
+                                          non_observed_Phenotype: Seq[PhenotypeWithParents_ES] = Nil,
                                           race: Option[String] = None,
                                           study: Option[Study_ES] = None
                                         )
