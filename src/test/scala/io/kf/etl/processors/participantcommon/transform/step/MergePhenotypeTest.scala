@@ -52,7 +52,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   import spark.implicits._
 
   val ontologiesDataSet: OntologiesDataSet = OntologiesDataSet(
-    hpoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/hpo_terms.json").select("id", "name", "parents", "ancestors", "is_leaf").as[HPOOntologyTerm],
+//    hpoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/hpo_terms.json").select("id", "name", "parents", "ancestors", "is_leaf").as[HPOOntologyTerm],
+    hpoTerms = spark.read.json("../TEST").select("id", "name", "parents", "ancestors", "is_leaf").as[HPOOntologyTerm],
     mondoTerms = Seq.empty[OntologyTerm].toDS(),
     ncitTerms = Seq.empty[OntologyTerm].toDS()
   )

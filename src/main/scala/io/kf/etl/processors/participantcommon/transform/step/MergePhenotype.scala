@@ -24,8 +24,8 @@ object MergePhenotype {
       .as[(EPhenotype, HPOOntologyTerm)]
 
     val phenotype_hpo_ancestor = phenotype_hpo.map{
-      case u if u._2 != null => (u._1, u._2, u._2.ancestors)
-      case u => (u._1, u._2, Nil)
+      case (ePhenotype, hpoTerm) if hpoTerm != null => (ePhenotype, hpoTerm, hpoTerm.ancestors)
+      case (ePhenotype, hpoTerm) => (ePhenotype, hpoTerm, Nil)
     }
       .withColumnRenamed("_1", "phenotype")
       .withColumnRenamed("_2", "ontological_term")
@@ -34,17 +34,18 @@ object MergePhenotype {
       .drop("ancestors")
       .as[(EPhenotype, HPOOntologyTerm, OntologyTerm)]
 
-    val phenotype_hpo_ancestor_parents = phenotype_hpo_ancestor
-      .joinWith(hpoTerms, phenotype_hpo_ancestor("ancestor.id") === hpoTerms("id"), "left_outer")
-      .map(u => (
-        u._1._1,
-        u._1._2,
-        if(u._1._3 != null && u._1._1.ageAtEventDays.isDefined) {(
-          (u._1._3.toString,
-          if(u._2 != null) u._2.parents.map(_.toString) else Nil),
-          u._1._1.ageAtEventDays.get
+    phenotype_hpo_ancestor.show(false)
+
+    val phenotype_hpo_ancestor_parents = phenotype_hpo_ancestor.map{
+      case(phenotype, hpoTerm, ontoTerm) => (
+        phenotype,
+        hpoTerm,
+        if(ontoTerm != null && phenotype.ageAtEventDays.isDefined) {(
+          (ontoTerm.toString,
+            if(ontoTerm != null) ontoTerm.parents else Nil),
+          phenotype.ageAtEventDays.get
         )} else null
-      ))
+      )}
       .withColumnRenamed("_1", "phenotype")
       .withColumnRenamed("_2", "ontological_term")
       .withColumnRenamed("_3", "ancestors_with_parents")
@@ -76,8 +77,6 @@ object MergePhenotype {
 
         // Only append to source text in the positive case for observed
         val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype else None
-
-
 
         val p = Phenotype_ES(
           age_at_event_days = phenotype.ageAtEventDays,
