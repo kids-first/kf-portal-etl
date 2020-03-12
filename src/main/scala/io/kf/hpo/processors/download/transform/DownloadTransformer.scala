@@ -7,14 +7,15 @@ import scala.io.{BufferedSource, Source}
 import scala.util.{Failure, Success, Try}
 
 object DownloadTransformer {
-  val patternId = "id: (HP:[0-9]+)".r
+  val patternId = "id: ([A-Z]+:[0-9]+)".r
   val patternName = "name: (.*)".r
-  val patternIsA = "is_a: (HP:[0-9]+) ! (.*)".r
+  val patternIsA = "is_a: ([A-Z]+:[0-9]+) (\\{.*})? ?! (.*)".r
 
   def using[A](r : BufferedSource)(f : BufferedSource => A) : A =
     try {
       f(r)
-    } finally {
+    }
+    finally {
       r.close()
     }
 
@@ -34,7 +35,7 @@ object DownloadTransformer {
           headOnto.copy(name = name) :: current.tail
         }
         else if(line.matches(patternIsA.regex)) {
-          val patternIsA(id, name) = line
+          val patternIsA(id,_ , name) = line
           val headOnto = current.head
           val headOntoCopy = headOnto.copy(parents = headOnto.parents :+ OntologyTerm(id, name, Nil))
           headOntoCopy :: current.tail
@@ -47,7 +48,16 @@ object DownloadTransformer {
     }
   }
 
+  def addParentsToAncestors(map: Map[String, OntologyTerm]): Map[String, OntologyTerm] = {
+    map.mapValues(v => v.copy(parents = addParents(v.parents, map)))
+  }
+
+  def addParents(seqOntologyTerm: Seq[OntologyTerm], map: Map[String, OntologyTerm]): Seq[OntologyTerm] = {
+    seqOntologyTerm.map(t => t.copy(parents = map(t.id).parents))
+  }
+
   def transformOntologyData(data: Map[String, OntologyTerm]) = {
+
     data.flatMap(term => {
       val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[OntologyTerm]]
       getAllParentPath(term._2, term._2, data, Set.empty[OntologyTerm], cumulativeList)
@@ -74,6 +84,7 @@ object DownloadTransformer {
   def readTextFileWithTry(): Try[List[String]] = {
     Try {
       val lines = using(Source.fromURL("https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo")) { source =>
+//      val lines = using(Source.fromURL("file:///home/adrianpaul/Downloads/mondo.obo")) { source =>
         (for (line <- source.getLines) yield line).toList
       }
       lines

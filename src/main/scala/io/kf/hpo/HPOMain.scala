@@ -1,15 +1,19 @@
 package io.kf.hpo
 
+import io.kf.hpo.models.ontology.OntologyTerm
 import io.kf.hpo.processors.download.transform.{DownloadTransformer, WriteJson}
 
 object HPOMain extends App {
 
-    val downloadData = DownloadTransformer.downloadOntologyData()
+    val dT: Seq[OntologyTerm] = DownloadTransformer.downloadOntologyData()
 
-    val allParents = downloadData.flatMap(_.parents.map(_.id))
+    val mapDT = dT map(d => d.id -> d) toMap
 
-    val ontologyWithParents = DownloadTransformer.transformOntologyData(downloadData map (i => i.id -> i) toMap)
+    val dTwAncestorsParents = DownloadTransformer.addParentsToAncestors(mapDT)
 
+    val allParents = dT.flatMap(_.parents.map(_.id))
+
+    val ontologyWithParents = DownloadTransformer.transformOntologyData(dTwAncestorsParents)
 
     val result = ontologyWithParents.map{
         case (k, v) if allParents.contains(k.id) => k -> (v, false)
