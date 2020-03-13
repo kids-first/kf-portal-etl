@@ -57,25 +57,25 @@ object DownloadTransformer {
   }
 
   def transformOntologyData(data: Map[String, OntologyTerm]) = {
-
+    val allParents = data.values.flatMap(_.parents.map(_.id)).toSet
     data.flatMap(term => {
       val cumulativeList =  mutable.Map.empty[OntologyTerm, Set[OntologyTerm]]
-      getAllParentPath(term._2, term._2, data, Set.empty[OntologyTerm], cumulativeList)
+      getAllParentPath(term._2, term._2, data, Set.empty[OntologyTerm], cumulativeList, allParents)
     })
   }
 
-  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Set[OntologyTerm], cumulativeList: mutable.Map[OntologyTerm, Set[OntologyTerm]]): mutable.Map[OntologyTerm, Set[OntologyTerm]] = {
+  def getAllParentPath(term: OntologyTerm, originalTerm: OntologyTerm, data: Map[String, OntologyTerm], list: Set[OntologyTerm], cumulativeList: mutable.Map[OntologyTerm, Set[OntologyTerm]], allParents: Set[String]): mutable.Map[OntologyTerm, Set[OntologyTerm]] = {
     term.parents.foreach(p => {
       val parentTerm = data(p.id)
 
       if(parentTerm.parents.isEmpty){
         cumulativeList.get(originalTerm) match {
-          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p + originalTerm)
+          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p + originalTerm.copy(isLeaf = !allParents.contains(originalTerm.id)))
           case None => cumulativeList.update(originalTerm, list + p + originalTerm)
         }
       }
       else {
-        getAllParentPath(parentTerm, originalTerm, data, list + p, cumulativeList)
+        getAllParentPath(parentTerm, originalTerm, data, list + p, cumulativeList, allParents)
       }
     })
     cumulativeList
