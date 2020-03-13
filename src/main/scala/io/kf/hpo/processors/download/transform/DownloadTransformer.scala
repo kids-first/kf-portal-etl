@@ -70,8 +70,8 @@ object DownloadTransformer {
 
       if(parentTerm.parents.isEmpty){
         cumulativeList.get(originalTerm) match {
-          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p + originalTerm.copy(isLeaf = !allParents.contains(originalTerm.id)))
-          case None => cumulativeList.update(originalTerm, list + p + originalTerm)
+          case Some(value) => cumulativeList.update(originalTerm, value ++ list + p)
+          case None => cumulativeList.update(originalTerm, list + p)
         }
       }
       else {

@@ -8,14 +8,14 @@ case class OntologyTermOutput (
                                 id: String,
                                 name: String,
                                 parents: Seq[String] = Nil,
-                                ancestors: Seq[BasicOntologyTermOutput] = Nil
+                                ancestors: Seq[BasicOntologyTermOutput] = Nil,
+                                is_leaf: Boolean =false
                               ) {}
 
 case class BasicOntologyTermOutput (
                                    id: String,
                                    name: String,
-                                   parents: Seq[String] = Nil,
-                                   isLeaf: Boolean
+                                   parents: Seq[String] = Nil
                                    ){
   override def toString(): String = s"$name ($id)"
 }
@@ -35,7 +35,8 @@ object WriteJson {
         k.id,
         k.name,
         k.parents.map(i => i.toString),
-        v._1.map(i => BasicOntologyTermOutput(i.id, i.name, i.parents.map(j => j.toString), i.isLeaf)).toSeq
+        v._1.map(i => BasicOntologyTermOutput(i.id, i.name, i.parents.map(j => j.toString))).toSeq,
+        v._2
       )}.toSeq.toDF().write.mode("overwrite").json("/home/adrianpaul/projects/TEST")
   }
 }
