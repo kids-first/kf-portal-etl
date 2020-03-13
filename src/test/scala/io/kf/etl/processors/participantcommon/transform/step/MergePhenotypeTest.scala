@@ -48,12 +48,15 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   val hpo_0001166: HPOOntologyTerm = HPOOntologyTerm("HP:0001166", "Arachnodactyly")
   val hpo_0001872: HPOOntologyTerm = HPOOntologyTerm("HP:0001872", "Abnormal thrombocyte morphology")
   val hpo_0001871: HPOOntologyTerm = HPOOntologyTerm("HP:0001871", "Abnormality of blood and blood-forming tissues")
+  val hpo_0011869: HPOOntologyTerm = HPOOntologyTerm("HP:0011869", "Abnormal platelet function")
+  val hpo_0011878: HPOOntologyTerm = HPOOntologyTerm("HP:0011878", "Abnormal platelet membrane protein expression")
+  val hpo_0011879: HPOOntologyTerm = HPOOntologyTerm("HP:0011879", "Decreased platelet glycoprotein Ib-IX-V")
 
   import spark.implicits._
 
   val ontologiesDataSet: OntologiesDataSet = OntologiesDataSet(
 //    hpoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/hpo_terms.json").select("id", "name", "parents", "ancestors", "is_leaf").as[HPOOntologyTerm],
-    hpoTerms = spark.read.json("../TEST").select("id", "name", "parents", "ancestors", "is_leaf").as[HPOOntologyTerm],
+    hpoTerms = spark.read.json("../TEST").select("id", "name", "parents", "ancestors", "isLeaf").as[HPOOntologyTerm],
     mondoTerms = Seq.empty[OntologyTerm].toDS(),
     ncitTerms = Seq.empty[OntologyTerm].toDS()
   )
@@ -133,26 +136,25 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
             external_id = Some("external id"),
             snomed_phenotype_observed = Some("SNOMED:4"),
             hpo_phenotype_observed_text = Some("Arachnodactyly (HP:0001166)"),
-            observed = Some(true),
-            hpo_phenotype_observed_is_leaf = Some(true) //HP: 0001166 it is a leaf
+            observed = Some(true)
           )),
         observed_phenotypes = Seq(
-          PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(100)),
+          PhenotypeWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Seq(100), isLeaf = true),
+          PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Seq(100)),
           PhenotypeWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Seq(100))
-        )
+        ).sorted
       )
     )
   }
@@ -177,10 +179,17 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     result should contain theSameElementsAs Seq(
       Participant_ES(kf_id = Some("participant_id_1"),
         phenotype = Seq(Phenotype_ES(
-          hpo_phenotype_not_observed = Some("Arachnodactyly (HP:0001166)"),
-          observed = Some(false),
-          hpo_phenotype_not_observed_is_leaf = Some(true)
-        ))
+          hpo_phenotype_not_observed = Some(hpo_0001166.toString),
+          observed = Some(false)
+        )),
+        non_observed_phenotypes = Seq(
+          PhenotypeWithParents_ES(
+            name = hpo_0001166.toString,
+            parents = Seq(hpo_0001238.toString, hpo_0100807.toString), // FIXME sorted
+            age_at_event_days = Nil,
+            isLeaf = true
+          )
+        )
       )
     )
   }
@@ -202,9 +211,23 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     MergePhenotype.transformPhenotypes(entityDataset).collect().sortBy(_._1) should contain theSameElementsAs Seq(
-      ("participant_id_1", Phenotype_ES(hpo_phenotype_not_observed = Some("Arachnodactyly (HP:0001166)"), hpo_phenotype_not_observed_is_leaf = Some(true), external_id = Some("1"), observed = Some(false)), Nil),
+      ("participant_id_1",
+        Phenotype_ES(
+          hpo_phenotype_not_observed = Some(hpo_0001166.toString),
+          external_id = Some("1"),
+          observed = Some(false)
+        ),
+        Seq(PhenotypeWithParents_ES(hpo_0001166.toString, Seq(hpo_0001238.toString, hpo_0100807.toString), isLeaf = true))),
       ("participant_id_1", Phenotype_ES(external_id = Some("3"), snomed_phenotype_not_observed = Some("SNOMED:1"), observed = Some(false)), Nil),
-      ("participant_id_2", Phenotype_ES(hpo_phenotype_observed = Some("Abnormality of the skeletal system (HP:0000924)"), hpo_phenotype_observed_is_leaf = Some(false), hpo_phenotype_observed_text = Some("Abnormality of the skeletal system (HP:0000924)"), external_id = Some("2"), source_text_phenotype = Some("source"), observed = Some(true)), Nil),
+      ("participant_id_2",
+        Phenotype_ES(
+          hpo_phenotype_observed = Some(hpo_0000924.toString),
+          hpo_phenotype_observed_text = Some(hpo_0000924.toString),
+          external_id = Some("2"),
+          source_text_phenotype = Some("source"),
+          observed = Some(true)),
+        Seq(PhenotypeWithParents_ES(hpo_0000924.toString, Seq(hpo_0000118.toString), isLeaf = false))
+      ),
       ("participant_id_2", Phenotype_ES(external_id = Some("4"), snomed_phenotype_observed = Some("SNOMED:1"), source_text_phenotype = Some("source"), observed = Some(true)), Nil),
 //      ("participant_id_3", Phenotype_ES(external_id = Some("5")), Nil), observed is None
 //      ("participant_id_4", Phenotype_ES(external_id = Some("6")), Nil), observed is None
@@ -218,8 +241,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     val phenotype_11 = EPhenotype(kfId = Some("phenotype_id_11"), ageAtEventDays = Some(15), hpoIdPhenotype = Some("HP:0009654"), observed = Some("positive"), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"))
     val phenotype_13 = EPhenotype(kfId = Some("phenotype_id_13"), ageAtEventDays = Some(18), hpoIdPhenotype = Some("HP:0045009"), observed = Some("positive"), participantId = Some("participant_id_1"), externalId = Some("phenotype 13"))
     val phenotype_14 = EPhenotype(kfId = Some("phenotype_id_14"), ageAtEventDays = Some(9999), hpoIdPhenotype = Some("HP:0031816"), participantId = Some("participant_id_1"), externalId = Some("phenotype 14")) // observed in None
-    val phenotype_15 = EPhenotype(kfId = Some("phenotype_id_15"), ageAtEventDays = Some(22), hpoIdPhenotype = Some("HP:0001872"), observed = Some("negative"), participantId = Some("participant_id_1"), externalId = Some("phenotype 15")) // Not observed
-    val phenotype_12 = EPhenotype(kfId = Some("phenotype_id_12"), participantId = Some("participant_id_1"), externalId = Some("phenotype 12"))
+    val phenotype_15 = EPhenotype(kfId = Some("phenotype_id_15"), ageAtEventDays = Some(22), hpoIdPhenotype = Some("HP:0011879"), observed = Some("negative"), participantId = Some("participant_id_1"), externalId = Some("phenotype 15")) // Not observed
+    val phenotype_12 = EPhenotype(kfId = Some("phenotype_id_12"), participantId = Some("participant_id_1"), externalId = Some("phenotype 12")) // observed in None
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
     val phenotype_2 = EPhenotype(kfId = Some("phenotype_id_2"), participantId = Some("participant_id_2"), externalId = Some("phenotype 2"))
@@ -287,17 +310,20 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(15, 18)),
       PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(15, 18)),
       PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(15, 18))
-    )
+    ).sorted
 
     (result.find(_.kf_id.contains("participant_id_1")) match {
       case Some(a) => a.non_observed_phenotypes
       case None => Nil
     }) should contain theSameElementsAs Seq(
       //22 only
+      PhenotypeWithParents_ES(name = hpo_0011879.toString, parents = Seq(hpo_0011878.toString), age_at_event_days = Seq(22), isLeaf = true),
+      PhenotypeWithParents_ES(name = hpo_0011878.toString, parents = Seq(hpo_0011869.toString), age_at_event_days = Seq(22)),
+      PhenotypeWithParents_ES(name = hpo_0011869.toString, parents = Seq(hpo_0001872.toString), age_at_event_days = Seq(22)),
       PhenotypeWithParents_ES(name = hpo_0001872.toString, parents = Seq(hpo_0001871.toString), age_at_event_days = Seq(22)),
       PhenotypeWithParents_ES(name = hpo_0001871.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(22)),
       PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(22)),
       PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(22))
-    )
+    ).sorted
   }
 }

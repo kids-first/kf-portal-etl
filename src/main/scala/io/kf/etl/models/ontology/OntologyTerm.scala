@@ -5,7 +5,7 @@ case class HPOOntologyTerm(
                          name: String,
                          parents: Seq[String] = Nil,
                          ancestors: Seq[OntologyTerm] = Nil,
-                         is_leaf: Option[Boolean] = None
+                         isLeaf: Boolean = false
                        ){
   override def toString: String = {
     s"$name ($id)"
