@@ -21,7 +21,7 @@ services:
       - "./target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
       - "./kf-portal-etl-docker/mondo.tsv.gz:/kf-etl/mondo.tsv.gz"
       - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
-      - "./kf-portal-etl-docker/hpo_terms.json:/kf-etl/hpo_terms.json"
+      - "./kf-portal-etl-docker/hpo_terms.json.gz:/kf-etl/hpo_terms.json.gz"
       - "./kf-portal-etl-docker/duo_code/duo.csv:/kf-etl/duo.csv"
     ports:
       - "4040:4040"

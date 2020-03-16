@@ -15,9 +15,11 @@ object MergePhenotype {
     import spark.implicits._
 
     val phenotype_hpo = phenotypes
-      .filter(p =>
-        p.observed.getOrElse("").trim.equalsIgnoreCase("positive") ||
-          p.observed.getOrElse("").trim.equalsIgnoreCase("negative")) // remove phenotypes the are neither observed nor non-observed
+      .filter(p => {
+        val observed = p.observed.getOrElse("").trim
+        observed.equalsIgnoreCase("positive") ||
+          observed.equalsIgnoreCase("negative")
+      })
       .joinWith(hpoTerms, phenotypes("hpoIdPhenotype") === hpoTerms("id"), "left_outer")
       .as[(EPhenotype, HPOOntologyTerm)]
 
@@ -121,7 +123,9 @@ object MergePhenotype {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val filteredSeq: Seq[(Phenotype_ES, (Seq[PhenotypeWithParents_ES], Option[Boolean]))] =
-          groups.filter(_._2._1 != null).map(b => b._2._1 -> (b._2._2, b._2._1.observed))
+          groups.filter(_._2._1 != null).map{ case(_, (phenotype_ES, phenotypeWParents_ES)) =>
+            phenotype_ES -> (phenotypeWParents_ES, phenotype_ES.observed)
+          }
         participant.copy(
           phenotype = filteredSeq.map(_._1),
           non_observed_phenotypes = filteredSeq
