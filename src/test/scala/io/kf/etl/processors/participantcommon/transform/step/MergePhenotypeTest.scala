@@ -2,7 +2,7 @@ package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.EPhenotype
 import io.kf.etl.models.es.{Participant_ES, PhenotypeWithParents_ES, Phenotype_ES}
-import io.kf.etl.models.ontology.{HPOOntologyTerm, OntologyTerm}
+import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.OntologiesDataSet
 import io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
@@ -14,50 +14,50 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
 
   //Ancestors of HP:0009654 | Osteolytic defect of thumb phalanx
-  val hpo_0002813: HPOOntologyTerm = HPOOntologyTerm("HP:0002813", "Abnormality of limb bone morphology")
-  val hpo_0009774: HPOOntologyTerm = HPOOntologyTerm("HP:0009774", "Triangular shaped phalanges of the hand")
-  val hpo_0001155: HPOOntologyTerm = HPOOntologyTerm("HP:0001155", "Abnormality of the hand")
-  val hpo_0011297: HPOOntologyTerm = HPOOntologyTerm("HP:0011297", "Abnormal digit morphology")
-  val hpo_0009771: HPOOntologyTerm = HPOOntologyTerm("HP:0009771", "Osteolytic defects of the phalanges of the hand")
-  val hpo_0009699: HPOOntologyTerm = HPOOntologyTerm("HP:0009699", "Osteolytic defects of the hand bones")
-  val hpo_0002817: HPOOntologyTerm = HPOOntologyTerm("HP:0002817", "Abnormality of the upper limb")
-  val hpo_0002797: HPOOntologyTerm = HPOOntologyTerm("HP:0002797", "Osteolysis")
-  val hpo_0003330: HPOOntologyTerm = HPOOntologyTerm("HP:0003330", "Abnormal bone structure")
-  val hpo_0000001: HPOOntologyTerm = HPOOntologyTerm("HP:0000001", "All")
-  val hpo_0005918: HPOOntologyTerm = HPOOntologyTerm("HP:0005918", "Abnormal finger phalanx morphology")
-  val hpo_0000118: HPOOntologyTerm = HPOOntologyTerm("HP:0000118", "Phenotypic abnormality")
-  val hpo_0040068: HPOOntologyTerm = HPOOntologyTerm("HP:0040068", "Abnormality of limb bone")
-  val hpo_0000924: HPOOntologyTerm = HPOOntologyTerm("HP:0000924", "Abnormality of the skeletal system")
-  val hpo_0011844: HPOOntologyTerm = HPOOntologyTerm("HP:0011844", "Abnormal appendicular skeleton morphology")
-  val hpo_0045039: HPOOntologyTerm = HPOOntologyTerm("HP:0045039", "Osteolysis involving bones of the upper limbs")
-  val hpo_0009602: HPOOntologyTerm = HPOOntologyTerm("HP:0009602", "Abnormality of thumb phalanx")
-  val hpo_0040064: HPOOntologyTerm = HPOOntologyTerm("HP:0040064", "Abnormality of limbs")
-  val hpo_0001167: HPOOntologyTerm = HPOOntologyTerm("HP:0001167", "Abnormality of finger")
-  val hpo_0011842: HPOOntologyTerm = HPOOntologyTerm("HP:0011842", "Abnormality of skeletal morphology")
-  val hpo_0001172: HPOOntologyTerm = HPOOntologyTerm("HP:0001172", "Abnormal thumb morphology")
-  val hpo_0040070: HPOOntologyTerm = HPOOntologyTerm("HP:0040070", "Abnormal upper limb bone morphology")
-  val hpo_0002818: HPOOntologyTerm = HPOOntologyTerm("HP:0002818", "Abnormality of the radius")
-  val hpo_0011314: HPOOntologyTerm = HPOOntologyTerm("HP:0011314", "Abnormality of long bone morphology")
-  val hpo_0040073: HPOOntologyTerm = HPOOntologyTerm("HP:0040073", "Abnormal forearm bone morphology")
-  val hpo_0040072: HPOOntologyTerm = HPOOntologyTerm("HP:0040072", "Abnormality of forearm bone")
-  val hpo_0002973: HPOOntologyTerm = HPOOntologyTerm("HP:0002973", "Abnormality of the forearm")
-  val hpo_0001238: HPOOntologyTerm = HPOOntologyTerm("HP:0001238", "Slender finger")
-  val hpo_0100807: HPOOntologyTerm = HPOOntologyTerm("HP:0100807", "Long fingers")
-  val hpo_0009654: HPOOntologyTerm = HPOOntologyTerm("HP:0009654", "Osteolytic defect of thumb phalanx")
-  val hpo_0045009: HPOOntologyTerm = HPOOntologyTerm("HP:0045009", "Abnormal morphology of the radius")
-  val hpo_0001166: HPOOntologyTerm = HPOOntologyTerm("HP:0001166", "Arachnodactyly")
-  val hpo_0001872: HPOOntologyTerm = HPOOntologyTerm("HP:0001872", "Abnormal thrombocyte morphology")
-  val hpo_0001871: HPOOntologyTerm = HPOOntologyTerm("HP:0001871", "Abnormality of blood and blood-forming tissues")
-  val hpo_0011869: HPOOntologyTerm = HPOOntologyTerm("HP:0011869", "Abnormal platelet function")
-  val hpo_0011878: HPOOntologyTerm = HPOOntologyTerm("HP:0011878", "Abnormal platelet membrane protein expression")
-  val hpo_0011879: HPOOntologyTerm = HPOOntologyTerm("HP:0011879", "Decreased platelet glycoprotein Ib-IX-V")
+  val hpo_0002813: OntologyTermBasic = OntologyTermBasic("HP:0002813", "Abnormality of limb bone morphology")
+  val hpo_0009774: OntologyTermBasic = OntologyTermBasic("HP:0009774", "Triangular shaped phalanges of the hand")
+  val hpo_0001155: OntologyTermBasic = OntologyTermBasic("HP:0001155", "Abnormality of the hand")
+  val hpo_0011297: OntologyTermBasic = OntologyTermBasic("HP:0011297", "Abnormal digit morphology")
+  val hpo_0009771: OntologyTermBasic = OntologyTermBasic("HP:0009771", "Osteolytic defects of the phalanges of the hand")
+  val hpo_0009699: OntologyTermBasic = OntologyTermBasic("HP:0009699", "Osteolytic defects of the hand bones")
+  val hpo_0002817: OntologyTermBasic = OntologyTermBasic("HP:0002817", "Abnormality of the upper limb")
+  val hpo_0002797: OntologyTermBasic = OntologyTermBasic("HP:0002797", "Osteolysis")
+  val hpo_0003330: OntologyTermBasic = OntologyTermBasic("HP:0003330", "Abnormal bone structure")
+  val hpo_0000001: OntologyTermBasic = OntologyTermBasic("HP:0000001", "All")
+  val hpo_0005918: OntologyTermBasic = OntologyTermBasic("HP:0005918", "Abnormal finger phalanx morphology")
+  val hpo_0000118: OntologyTermBasic = OntologyTermBasic("HP:0000118", "Phenotypic abnormality")
+  val hpo_0040068: OntologyTermBasic = OntologyTermBasic("HP:0040068", "Abnormality of limb bone")
+  val hpo_0000924: OntologyTermBasic = OntologyTermBasic("HP:0000924", "Abnormality of the skeletal system")
+  val hpo_0011844: OntologyTermBasic = OntologyTermBasic("HP:0011844", "Abnormal appendicular skeleton morphology")
+  val hpo_0045039: OntologyTermBasic = OntologyTermBasic("HP:0045039", "Osteolysis involving bones of the upper limbs")
+  val hpo_0009602: OntologyTermBasic = OntologyTermBasic("HP:0009602", "Abnormality of thumb phalanx")
+  val hpo_0040064: OntologyTermBasic = OntologyTermBasic("HP:0040064", "Abnormality of limbs")
+  val hpo_0001167: OntologyTermBasic = OntologyTermBasic("HP:0001167", "Abnormality of finger")
+  val hpo_0011842: OntologyTermBasic = OntologyTermBasic("HP:0011842", "Abnormality of skeletal morphology")
+  val hpo_0001172: OntologyTermBasic = OntologyTermBasic("HP:0001172", "Abnormal thumb morphology")
+  val hpo_0040070: OntologyTermBasic = OntologyTermBasic("HP:0040070", "Abnormal upper limb bone morphology")
+  val hpo_0002818: OntologyTermBasic = OntologyTermBasic("HP:0002818", "Abnormality of the radius")
+  val hpo_0011314: OntologyTermBasic = OntologyTermBasic("HP:0011314", "Abnormality of long bone morphology")
+  val hpo_0040073: OntologyTermBasic = OntologyTermBasic("HP:0040073", "Abnormal forearm bone morphology")
+  val hpo_0040072: OntologyTermBasic = OntologyTermBasic("HP:0040072", "Abnormality of forearm bone")
+  val hpo_0002973: OntologyTermBasic = OntologyTermBasic("HP:0002973", "Abnormality of the forearm")
+  val hpo_0001238: OntologyTermBasic = OntologyTermBasic("HP:0001238", "Slender finger")
+  val hpo_0100807: OntologyTermBasic = OntologyTermBasic("HP:0100807", "Long fingers")
+  val hpo_0009654: OntologyTermBasic = OntologyTermBasic("HP:0009654", "Osteolytic defect of thumb phalanx")
+  val hpo_0045009: OntologyTermBasic = OntologyTermBasic("HP:0045009", "Abnormal morphology of the radius")
+  val hpo_0001166: OntologyTermBasic = OntologyTermBasic("HP:0001166", "Arachnodactyly")
+  val hpo_0001872: OntologyTermBasic = OntologyTermBasic("HP:0001872", "Abnormal thrombocyte morphology")
+  val hpo_0001871: OntologyTermBasic = OntologyTermBasic("HP:0001871", "Abnormality of blood and blood-forming tissues")
+  val hpo_0011869: OntologyTermBasic = OntologyTermBasic("HP:0011869", "Abnormal platelet function")
+  val hpo_0011878: OntologyTermBasic = OntologyTermBasic("HP:0011878", "Abnormal platelet membrane protein expression")
+  val hpo_0011879: OntologyTermBasic = OntologyTermBasic("HP:0011879", "Decreased platelet glycoprotein Ib-IX-V")
 
   import spark.implicits._
 
   val ontologiesDataSet: OntologiesDataSet = OntologiesDataSet(
-    hpoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/hpo_terms.json.gz").select("id", "name", "parents", "ancestors", "isLeaf").as[HPOOntologyTerm],
+    hpoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/hpo_terms.json.gz").select("id", "name", "parents", "ancestors", "isLeaf").as[OntologyTerm],
     mondoTerms = Seq.empty[OntologyTerm].toDS(),
-    ncitTerms = Seq.empty[OntologyTerm].toDS()
+    ncitTerms = Seq.empty[OntologyTermBasic].toDS()
   )
 
   "process" should "merge phenotypes and participant" in {
@@ -287,8 +287,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       PhenotypeWithParents_ES(name = hpo_0005918.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(15)),
       PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Seq(15)),
       PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Seq(15)),
       PhenotypeWithParents_ES(name = hpo_0003330.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Seq(15)),
+      PhenotypeWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Seq(15)),
 
       //18 only
       PhenotypeWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Seq(18)),

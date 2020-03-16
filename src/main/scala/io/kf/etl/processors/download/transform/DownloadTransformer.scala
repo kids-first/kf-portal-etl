@@ -4,13 +4,14 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.ontology.{HPOOntologyTerm, OntologyTerm}
+import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.utils.{DataServiceConfig, EntityDataRetriever}
 import org.apache.spark.SparkFiles
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, SparkSession}
+import org.apache.spark.sql.functions.lit
 import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration.Duration
@@ -24,8 +25,8 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
   def downloadOntologyData(): OntologiesDataSet = {
 
     val mondoTerms = loadTerms(config.getString(CONFIG_NAME_MONDO_PATH), spark)
-    val ncitTerms = loadTerms(config.getString(CONFIG_NAME_NCIT_PATH), spark)
-    val hpoTerms = loadHPOTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
+    val ncitTerms = loadTermsBasic(config.getString(CONFIG_NAME_NCIT_PATH), spark)
+    val hpoTerms = loadTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
     OntologiesDataSet(
       hpoTerms = hpoTerms.cache(),
       mondoTerms = mondoTerms.cache(),
@@ -154,7 +155,7 @@ object DownloadTransformer {
     }
   }
 
-  def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
+  def loadTermsBasic(path: String, spark: SparkSession): Dataset[OntologyTermBasic] = {
     import spark.implicits._
     spark.sparkContext.addFile(path)
     val schema = StructType(Seq(
@@ -163,15 +164,15 @@ object DownloadTransformer {
     )
     )
     val filename = path.split("/").last
-    spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).as[OntologyTerm]
+    spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).withColumn("parents", lit(null)).as[OntologyTermBasic]
   }
 
-  def loadHPOTerms(path: String, spark: SparkSession): Dataset[HPOOntologyTerm] = {
+  def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
     import spark.implicits._
     spark.sparkContext.addFile(path)
 
     val filename = path.split("/").last
-    spark.read.json(SparkFiles.get(filename)).as[HPOOntologyTerm]
+    spark.read.json(SparkFiles.get(filename)).as[OntologyTerm]
   }
 
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {
@@ -193,7 +194,7 @@ object DownloadTransformer {
     val diagnosesDS = spark.createDataset(diagnoses)
     diagnosesDS
       .joinWith(ontology.mondoTerms, diagnosesDS("mondoIdDiagnosis") === ontology.mondoTerms("id"), "left_outer")
-      .as[(EDiagnosis, Option[OntologyTerm])]
+      .as[(EDiagnosis, Option[OntologyTermBasic])]
       .joinWith(ontology.ncitTerms, $"_1.ncitIdDiagnosis" === ontology.ncitTerms("id"), "left_outer")
       .map { case ((d, m), n) => (d, m, Option(n)) }
       .map {
@@ -205,5 +206,5 @@ object DownloadTransformer {
   }
 
 
-  def formatTerm(term: Option[OntologyTerm]): Option[String] = term.map(t => s"${t.name} (${t.id})")
+  def formatTerm(term: Option[OntologyTermBasic]): Option[String] = term.map(t => s"${t.name} (${t.id})")
 }
