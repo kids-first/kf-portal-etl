@@ -124,8 +124,11 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     val result = step.MergePhenotype(entityDataset,Seq(p1).toDS()).collect()
+    val resultSorted = result.map(p =>
+      p.copy(observed_phenotypes = p.observed_phenotypes.sorted)
+    )
 
-    result should contain theSameElementsAs Seq(
+    resultSorted should contain theSameElementsAs Seq(
       Participant_ES(kf_id = Some("participant_id_1"),
         phenotype = Seq(
           Phenotype_ES(
@@ -138,21 +141,21 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
             observed = Some(true)
           )),
         observed_phenotypes = Seq(
-          PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Seq(100), isLeaf = true),
-          PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Seq(100)),
-          PhenotypeWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Seq(100))
+          PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), isLeaf = true),
+          PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set(100)),
+          PhenotypeWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Set(100))
         ).sorted
       )
     )
@@ -185,7 +188,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           PhenotypeWithParents_ES(
             name = hpo_0001166.toString,
             parents = Seq(hpo_0001238.toString, hpo_0100807.toString), // FIXME sorted
-            age_at_event_days = Nil,
+            age_at_event_days = Set.empty[Int],
             isLeaf = true
           )
         )
@@ -276,53 +279,53 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       case None => Nil
     }) should contain theSameElementsAs Seq(
       //15 only
-      PhenotypeWithParents_ES(name = hpo_0009654.toString, parents = Seq(hpo_0009602.toString, hpo_0009771.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0009602.toString, parents = Seq(hpo_0001172.toString, hpo_0009774.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0009771.toString, parents = Seq(hpo_0005918.toString, hpo_0009699.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0001172.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0009774.toString, parents = Seq(hpo_0005918.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0009699.toString, parents = Seq(hpo_0001155.toString, hpo_0045039.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0045039.toString, parents = Seq(hpo_0002797.toString, hpo_0040070.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0005918.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0003330.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Seq(15)),
-      PhenotypeWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Seq(15)),
+      PhenotypeWithParents_ES(name = hpo_0009654.toString, parents = Seq(hpo_0009602.toString, hpo_0009771.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0009602.toString, parents = Seq(hpo_0001172.toString, hpo_0009774.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0009771.toString, parents = Seq(hpo_0005918.toString, hpo_0009699.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0001172.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0009774.toString, parents = Seq(hpo_0005918.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0009699.toString, parents = Seq(hpo_0001155.toString, hpo_0045039.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0045039.toString, parents = Seq(hpo_0002797.toString, hpo_0040070.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0005918.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0003330.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(15)),
+      PhenotypeWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Set(15)),
 
       //18 only
-      PhenotypeWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Seq(18)),
-      PhenotypeWithParents_ES(name = hpo_0002818.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Seq(18)),
-      PhenotypeWithParents_ES(name = hpo_0011314.toString, parents = Seq(hpo_0011844.toString), age_at_event_days = Seq(18)),
-      PhenotypeWithParents_ES(name = hpo_0040073.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Seq(18)),
-      PhenotypeWithParents_ES(name = hpo_0040072.toString, parents = Seq(hpo_0002973.toString, hpo_0040070.toString), age_at_event_days = Seq(18)),
-      PhenotypeWithParents_ES(name = hpo_0002973.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Seq(18)),
+      PhenotypeWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Set(18)),
+      PhenotypeWithParents_ES(name = hpo_0002818.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
+      PhenotypeWithParents_ES(name = hpo_0011314.toString, parents = Seq(hpo_0011844.toString), age_at_event_days = Set(18)),
+      PhenotypeWithParents_ES(name = hpo_0040073.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
+      PhenotypeWithParents_ES(name = hpo_0040072.toString, parents = Seq(hpo_0002973.toString, hpo_0040070.toString), age_at_event_days = Set(18)),
+      PhenotypeWithParents_ES(name = hpo_0002973.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(18)),
 
       //15 & 18
-      PhenotypeWithParents_ES(name = hpo_0040070.toString, parents = Seq(hpo_0002813.toString, hpo_0002817.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(15, 18)),
-      PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(15, 18))
-    ).sorted
+      PhenotypeWithParents_ES(name = hpo_0040070.toString, parents = Seq(hpo_0002813.toString, hpo_0002817.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(15, 18)),
+      PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(18, 15)),
+      PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18))
+    )
 
     (result.find(_.kf_id.contains("participant_id_1")) match {
       case Some(a) => a.non_observed_phenotypes
       case None => Nil
     }) should contain theSameElementsAs Seq(
       //22 only
-      PhenotypeWithParents_ES(name = hpo_0011879.toString, parents = Seq(hpo_0011878.toString), age_at_event_days = Seq(22), isLeaf = true),
-      PhenotypeWithParents_ES(name = hpo_0011878.toString, parents = Seq(hpo_0011869.toString), age_at_event_days = Seq(22)),
-      PhenotypeWithParents_ES(name = hpo_0011869.toString, parents = Seq(hpo_0001872.toString), age_at_event_days = Seq(22)),
-      PhenotypeWithParents_ES(name = hpo_0001872.toString, parents = Seq(hpo_0001871.toString), age_at_event_days = Seq(22)),
-      PhenotypeWithParents_ES(name = hpo_0001871.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Seq(22)),
-      PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Seq(22)),
-      PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Seq(22))
-    ).sorted
+      PhenotypeWithParents_ES(name = hpo_0011879.toString, parents = Seq(hpo_0011878.toString), age_at_event_days = Set(22), isLeaf = true),
+      PhenotypeWithParents_ES(name = hpo_0011878.toString, parents = Seq(hpo_0011869.toString), age_at_event_days = Set(22)),
+      PhenotypeWithParents_ES(name = hpo_0011869.toString, parents = Seq(hpo_0001872.toString), age_at_event_days = Set(22)),
+      PhenotypeWithParents_ES(name = hpo_0001872.toString, parents = Seq(hpo_0001871.toString), age_at_event_days = Set(22)),
+      PhenotypeWithParents_ES(name = hpo_0001871.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(22)),
+      PhenotypeWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(22)),
+      PhenotypeWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(22))
+    )
   }
 }

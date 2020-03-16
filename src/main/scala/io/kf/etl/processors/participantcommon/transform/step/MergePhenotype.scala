@@ -41,7 +41,7 @@ object MergePhenotype {
           PhenotypeWithParents_ES(
             name = ontoTerm.toString,
             parents = if(ontoTerm != null) ontoTerm.parents else Nil,
-            age_at_event_days = Seq(phenotype.ageAtEventDays.get)
+            age_at_event_days = Set(phenotype.ageAtEventDays.get)
           )
         } else null
       )}
@@ -95,7 +95,7 @@ object MergePhenotype {
             PhenotypeWithParents_ES(
               name = hpoTerm.toString,
               parents = hpoTerm.parents,
-              age_at_event_days = if(phenotype.ageAtEventDays.isDefined) Seq(phenotype.ageAtEventDays.get) else Nil,
+              age_at_event_days = if(phenotype.ageAtEventDays.isDefined) Set(phenotype.ageAtEventDays.get) else Set.empty[Int],
               isLeaf = hpoTerm.isLeaf) +: phenotypeWParentsAtAge
           } else Nil
         ))
@@ -147,6 +147,6 @@ object MergePhenotype {
           name = p.head.name,
           parents = p.head.parents,
           isLeaf = p.head.isLeaf,
-          age_at_event_days = p.flatMap(_.age_at_event_days).distinct.sorted))
-      .values.toSeq.sorted
+          age_at_event_days = p.flatMap(_.age_at_event_days).toSet))
+      .values.toSeq
 }
