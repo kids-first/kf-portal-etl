@@ -19,9 +19,9 @@ services:
       - "./kf-portal-etl-docker/kf_etl.conf:/kf-etl/conf/kf_etl.conf"
       - "./kf-portal-etl-docker/log4j.properties:/kf-etl/spark/conf/log4j.properties"
       - "./target/scala-2.11/kf-portal-etl.jar:/kf-etl/data/kf-portal-etl.jar"
-      - "./kf-portal-etl-docker/mondo_terms.json:/kf-etl/mondo_terms.json"
+      - "./kf-portal-etl-docker/mondo_terms.json.gz:/kf-etl/mondo_terms.json.gz"
       - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
-      - "./kf-portal-etl-docker/hpo_terms.json:/kf-etl/hpo_terms.json"
+      - "./kf-portal-etl-docker/hpo_terms.json.gz:/kf-etl/hpo_terms.json.gz"
       - "./kf-portal-etl-docker/duo_code/duo.csv:/kf-etl/duo.csv"
     ports:
       - "4040:4040"
