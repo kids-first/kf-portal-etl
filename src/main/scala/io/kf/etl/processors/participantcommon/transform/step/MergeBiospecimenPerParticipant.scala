@@ -3,7 +3,7 @@ package io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EDiagnosis}
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.es.{Biospecimen_ES, Participant_ES}
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.ontology.OntologyTermBasic
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
 import org.apache.spark.sql.{Dataset, SparkSession}
@@ -33,9 +33,9 @@ object MergeBiospecimenPerParticipant {
       })
   }
 
-  private def formatTerm(term: OntologyTerm): Option[String] = Some(s"${term.name} (${term.id})")
+  private def formatTerm(term: OntologyTermBasic): Option[String] = Some(s"${term.name} (${term.id})")
 
-  private def enrichBiospecimenWithNcitTerms(biospecimens: Dataset[EBiospecimen], ncitTerms: Dataset[OntologyTerm])(implicit spark: SparkSession) = {
+  private def enrichBiospecimenWithNcitTerms(biospecimens: Dataset[EBiospecimen], ncitTerms: Dataset[OntologyTermBasic])(implicit spark: SparkSession) = {
     import spark.implicits._
     biospecimens
       .joinWith(ncitTerms, biospecimens.col("ncitIdAnatomicalSite") === ncitTerms.col("id"), "left")

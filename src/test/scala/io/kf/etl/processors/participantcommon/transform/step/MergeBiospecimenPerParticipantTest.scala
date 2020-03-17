@@ -3,7 +3,7 @@ package io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EDiagnosis}
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.es.{Biospecimen_ES, Diagnosis_ES, Participant_ES}
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.ontology.OntologyTermBasic
 import io.kf.etl.processors.test.util.EntityUtil._
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers}
@@ -37,8 +37,8 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
 
     val ontologiesDataset = buildOntologiesDataSet(
       ncitTerms = Seq(
-        OntologyTerm(name = "Central nervous system", id = "NCIT:C12438"),
-        OntologyTerm(name = "Normal", id = "NCIT:C14165")
+        OntologyTermBasic(name = "Central nervous system", id = "NCIT:C12438"),
+        OntologyTermBasic(name = "Normal", id = "NCIT:C14165")
       )
     )
 

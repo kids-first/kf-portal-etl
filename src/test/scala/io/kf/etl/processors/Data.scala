@@ -2,6 +2,7 @@ package io.kf.etl.processors
 
 import io.kf.etl.models.dataservice.{EBiospecimen, EBiospecimenDiagnosis, EBiospecimenGenomicFile, EDiagnosis, EGenomicFile, EParticipant, ESequencingExperiment, ESequencingExperimentGenomicFile}
 import io.kf.etl.models.duocode.DuoCode
+import io.kf.etl.models.es.Phenotype_ES
 
 object Data {
   val bioSpecimen1: EBiospecimen = EBiospecimen(kfId = Some("biospecimen_id_1"), participantId = Some("participant_id_1"), ncitIdAnatomicalSite = Some("NCIT:unknown"))
@@ -64,4 +65,20 @@ object Data {
   val duoCode1: DuoCode = DuoCode(id = "duo_id1", shorthand = Some("DuoForShort 1"), label = Some("DuoLabel1"), description = Some("This is a description about duo code"))
   val duoCode2: DuoCode = DuoCode(id = "duo_id2", shorthand = Some("DuoForShort 2"), label = Some("DuoLabel2"), description = Some("This is another description about duo code"))
   val duoCodes = Seq(duoCode1, duoCode2)
+
+  val phenotype_ES1: Phenotype_ES = Phenotype_ES(
+    age_at_event_days = Some(15),
+    hpo_phenotype_observed = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+    hpo_phenotype_observed_text = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+    observed = Some(true)
+  )
+
+  val phenotype_ES2: Phenotype_ES = Phenotype_ES(
+    age_at_event_days = Some(18),
+    hpo_phenotype_observed = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+    hpo_phenotype_observed_text = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+    observed = Some(true)
+  )
+
+  val phenotypes = Seq(phenotype_ES1, phenotype_ES2)
 }

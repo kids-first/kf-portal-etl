@@ -2,7 +2,7 @@ package io.kf.etl.processors.test.util
 
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.ontology.OntologyTerm
+import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
@@ -53,7 +53,7 @@ object EntityUtil {
 
   def buildOntologiesDataSet(hpoTerms: Seq[OntologyTerm] = Nil,
                              mondoTerms: Seq[OntologyTerm] = Nil,
-                             ncitTerms: Seq[OntologyTerm] = Nil)(implicit spark: SparkSession): OntologiesDataSet = {
+                             ncitTerms: Seq[OntologyTermBasic] = Nil)(implicit spark: SparkSession): OntologiesDataSet = {
     import spark.implicits._
     OntologiesDataSet(hpoTerms.toDS(), mondoTerms.toDS(), ncitTerms.toDS())
   }

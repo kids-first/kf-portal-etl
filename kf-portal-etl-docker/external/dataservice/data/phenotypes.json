@@ -7,6 +7,55 @@
     "message": "success"
   },
   "limit": 10,
-  "results": [],
-  "total": 0
+  "results": [
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": 	"/phenotypes/PH_X7XZSKM8"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 10,
+      "observed": "positive",
+      "kf_id": "PH_X7XZSKM8",
+      "hpo_id_phenotype": "HP:0001166"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": 	"/phenotypes/PH_X7XZSKM9"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 20,
+      "observed": "positive",
+      "kf_id": "PH_X7XZSKM9",
+      "hpo_id_phenotype": "HP:0009602"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": 	"/phenotypes/PH_X7XZSKM7"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 30,
+      "observed": null,
+      "kf_id": "PH_X7XZSKM7",
+      "hpo_id_phenotype": "HP:0045009"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YN",
+        "self": 	"/phenotypes/PH_X7XZSKM7"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 40,
+      "observed": "negative",
+      "kf_id": "PH_X7XZSKM6",
+      "hpo_id_phenotype": "HP:0005938"
+    }
+  ],
+  "total": 3
 }
