@@ -1,56 +1,25 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
-import io.kf.etl.models.dataservice.EPhenotype
-import io.kf.etl.models.es.{Participant_ES, PhenotypeWithParents_ES, Phenotype_ES}
-import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
+import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
-import org.apache.spark.sql.functions.{collect_list, explode_outer}
+import io.kf.etl.processors.common.mergers.MergersTool
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergePhenotype {
 
-  def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES, Seq[PhenotypeWithParents_ES])] = {
-    import entityDataset.phenotypes
+  def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES, Seq[OntologicalTermWithParents_ES])] = {
     import entityDataset.ontologyData.hpoTerms
+    import entityDataset.phenotypes
     import spark.implicits._
 
-    val phenotype_hpo = phenotypes
+    val filteredPhenotypes = phenotypes
       .filter { p => p.observed match {
         case Some(o) => Seq("positive", "negative").contains(o.trim.toLowerCase)
         case _ => false
       }}
-      .joinWith(hpoTerms, phenotypes("hpoIdPhenotype") === hpoTerms("id"), "left_outer")
-      .as[(EPhenotype, OntologyTerm)]
 
-    val phenotype_hpo_ancestor = phenotype_hpo.map{
-      case (ePhenotype, hpoTerm) if hpoTerm != null => (ePhenotype, hpoTerm, hpoTerm.ancestors)
-      case (ePhenotype, hpoTerm) => (ePhenotype, hpoTerm, Nil)
-    }
-      .withColumnRenamed("_1", "phenotype")
-      .withColumnRenamed("_2", "ontological_term")
-      .withColumnRenamed("_3", "ancestors")
-      .withColumn("ancestor", explode_outer($"ancestors"))
-      .drop("ancestors")
-      .as[(EPhenotype, OntologyTerm, OntologyTermBasic)]
-
-    val phenotype_hpo_ancestor_parents = phenotype_hpo_ancestor.map{
-      case(phenotype, hpoTerm, ontoTerm) => (
-        phenotype,
-        hpoTerm,
-        if(ontoTerm != null && phenotype.ageAtEventDays.isDefined) {
-          PhenotypeWithParents_ES(
-            name = ontoTerm.toString,
-            parents = if(ontoTerm != null) ontoTerm.parents else Nil,
-            age_at_event_days = Set(phenotype.ageAtEventDays.get)
-          )
-        } else null
-      )}
-      .withColumnRenamed("_1", "phenotype")
-      .withColumnRenamed("_2", "ontological_term")
-      .withColumnRenamed("_3", "ancestors_with_parents")
-      .groupBy("phenotype", "ontological_term")
-      .agg(collect_list("ancestors_with_parents"))
-      .as[(EPhenotype, OntologyTerm, Seq[PhenotypeWithParents_ES])]
+    val phenotype_hpo_ancestor_parents =
+      MergersTool.mapOntologyTermsToObservable(filteredPhenotypes, "hpoIdPhenotype")(hpoTerms)
 
     phenotype_hpo_ancestor_parents.flatMap {
       case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participantId.isDefined => {
@@ -92,7 +61,7 @@ object MergePhenotype {
           phenotype.participantId.get,
           p,
           if(hpoTerm != null){
-            PhenotypeWithParents_ES(
+            OntologicalTermWithParents_ES(
               name = hpoTerm.toString,
               parents = hpoTerm.parents,
               age_at_event_days = if(phenotype.ageAtEventDays.isDefined) Set(phenotype.ageAtEventDays.get) else Set.empty[Int],
@@ -123,7 +92,7 @@ object MergePhenotype {
       .mapGroups((_, groupsIterator) => {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val filteredSeq: Seq[(Phenotype_ES, (Seq[PhenotypeWithParents_ES], Option[Boolean]))] =
+        val filteredSeq: Seq[(Phenotype_ES, (Seq[OntologicalTermWithParents_ES], Option[Boolean]))] =
           groups.filter(_._2._1 != null).map{ case(_, (phenotype_ES, phenotypeWParents_ES)) =>
             phenotype_ES -> (phenotypeWParents_ES, phenotype_ES.observed)
           }
@@ -139,11 +108,11 @@ object MergePhenotype {
       })
   }
 
-  private def groupPhenotypesWParents (phenotypesWP: Seq[PhenotypeWithParents_ES]): Seq[PhenotypeWithParents_ES] =
+  private def groupPhenotypesWParents (phenotypesWP: Seq[OntologicalTermWithParents_ES]): Seq[OntologicalTermWithParents_ES] =
     phenotypesWP
       .groupBy(_.name)
       .mapValues(p =>
-        PhenotypeWithParents_ES(
+        OntologicalTermWithParents_ES(
           name = p.head.name,
           parents = p.head.parents,
           isLeaf = p.head.isLeaf,

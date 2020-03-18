@@ -2,16 +2,20 @@ package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EDiagnosis}
 import io.kf.etl.models.es.{Diagnosis_ES, Participant_ES}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
 import io.kf.etl.processors.common.converter.EntityConverter
+import io.kf.etl.processors.common.mergers.MergersTool
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergeDiagnosis {
 
   def apply(entityDataset: EntityDataSet, participants: Dataset[Participant_ES])(implicit spark: SparkSession): Dataset[Participant_ES] = {
-    import entityDataset.{biospecimenDiagnoses, diagnoses}
+    import entityDataset.{biospecimenDiagnoses, diagnoses, ontologyData}
     import spark.implicits._
     val diagnosisWithBiospecimens = enrichDiagnosesWithBiospecimens(biospecimenDiagnoses, diagnoses)
+
+    enrichParticipantsWithMondoDiagnosis(diagnosisWithBiospecimens, ontologyData)
+
     participants
       .joinWith(
         diagnosisWithBiospecimens,
@@ -38,6 +42,16 @@ object MergeDiagnosis {
       .mapGroups(
         (diagnosis, iter) => diagnosis.copy(biospecimens = iter.collect { case (_, d) if d != null && d.biospecimenId.isDefined => d.biospecimenId.get }.toSeq))
     ds
+  }
+
+  def enrichParticipantsWithMondoDiagnosis(diagnosisWithBiospecimens: Dataset[EDiagnosis], ontologicalData: OntologiesDataSet)(implicit spark: SparkSession) = { //FIXME fix name
+    import ontologicalData.mondoTerms
+    import spark.implicits._
+
+    val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participantId.isDefined)
+
+    val test = MergersTool.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(mondoTerms)
+
   }
 
 }

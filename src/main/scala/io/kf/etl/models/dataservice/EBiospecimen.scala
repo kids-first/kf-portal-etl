@@ -1,5 +1,7 @@
 package io.kf.etl.models.dataservice
 
+import io.kf.etl.models.es.ObservableAtAge
+
 case class EBiospecimen(
                          ageAtEventDays: Option[Int] = None,
                          analyteType: Option[String] = None,
@@ -29,4 +31,4 @@ case class EBiospecimen(
                          sequencingCenterId: Option[String] = None,
                          diagnoses: Seq[EDiagnosis] = Nil,
                          visible: Option[Boolean] = None
-    )
+    ) extends ObservableAtAge

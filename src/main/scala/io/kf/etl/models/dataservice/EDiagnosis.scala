@@ -1,21 +1,23 @@
 package io.kf.etl.models.dataservice
 
+import io.kf.etl.models.es.ObservableAtAge
+
 case class EDiagnosis(
-    ageAtEventDays: scala.Option[Int] = None,
-    createdAt: scala.Option[String] = None,
-    diagnosisCategory: scala.Option[String] = None,
-    externalId: scala.Option[String] = None,
-    icdIdDiagnosis: scala.Option[String] = None,
-    kfId: scala.Option[String] = None,
-    modifiedAt: scala.Option[String] = None,
-    mondoIdDiagnosis: scala.Option[String] = None,
-    participantId: scala.Option[String] = None,
-    sourceTextDiagnosis: scala.Option[String] = None,
-    uberonIdTumorLocation: scala.Option[String] = None,
-    sourceTextTumorLocation: scala.Option[String] = None,
-    ncitIdDiagnosis: scala.Option[String] = None,
-    spatialDescriptor: scala.Option[String] = None,
-    diagnosisText: scala.Option[String] = None,
-    biospecimens: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
-    visible: scala.Option[Boolean] = None
-    )
+    ageAtEventDays: Option[Int] = None,
+    createdAt: Option[String] = None,
+    diagnosisCategory: Option[String] = None,
+    externalId: Option[String] = None,
+    icdIdDiagnosis: Option[String] = None,
+    kfId: Option[String] = None,
+    modifiedAt: Option[String] = None,
+    mondoIdDiagnosis: Option[String] = None,
+    participantId: Option[String] = None,
+    sourceTextDiagnosis: Option[String] = None,
+    uberonIdTumorLocation: Option[String] = None,
+    sourceTextTumorLocation: Option[String] = None,
+    ncitIdDiagnosis: Option[String] = None,
+    spatialDescriptor: Option[String] = None,
+    diagnosisText: Option[String] = None,
+    biospecimens: _root_.scala.collection.Seq[String] = Nil,
+    visible: Option[Boolean] = None
+    ) extends ObservableAtAge
