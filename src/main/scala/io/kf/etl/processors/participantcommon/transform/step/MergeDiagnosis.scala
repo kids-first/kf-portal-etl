@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EDiagnosis}
-import io.kf.etl.models.es.{Diagnosis_ES, Participant_ES}
+import io.kf.etl.models.es.{Diagnosis_ES, OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
 import io.kf.etl.processors.common.converter.EntityConverter
 import io.kf.etl.processors.common.mergers.MergersTool
@@ -14,22 +14,37 @@ object MergeDiagnosis {
     import spark.implicits._
     val diagnosisWithBiospecimens = enrichDiagnosesWithBiospecimens(biospecimenDiagnoses, diagnoses)
 
-    enrichParticipantsWithMondoDiagnosis(diagnosisWithBiospecimens, ontologyData)
+    val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participantId.isDefined)
+
+    val diagnosisWithBioAndMondo = MergersTool.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(ontologyData.mondoTerms)
 
     participants
       .joinWith(
-        diagnosisWithBiospecimens,
-        participants.col("kf_id") === diagnosisWithBiospecimens.col("participantId"),
+        diagnosisWithBioAndMondo,
+        participants.col("kf_id") === diagnosisWithBioAndMondo.col("observable.participantId"),
         "left_outer"
       )
-      .as[(Participant_ES, Option[EDiagnosis])]
       .groupByKey { case (participant, _) => participant.kf_id }
       .mapGroups((_, groupsIterator) => {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
-        val filteredSeq: Seq[Diagnosis_ES] = groups.collect { case (_, Some(d)) => EntityConverter.EDiagnosisToDiagnosisES(d) }
+        val filteredSeq = groups.filter(g => g._2 != null && g._2._1 != null).map{
+          case(_, (eDiagnosis, ontologyTerm, ontoTermsWParents)) => {
+            val diagnosis_ES = EntityConverter.EDiagnosisToDiagnosisES(eDiagnosis)
+            val currentOntologicalTerm = if(ontologyTerm != null){
+              Seq(OntologicalTermWithParents_ES(
+                name = ontologyTerm.toString,
+                parents = ontologyTerm.parents,
+                age_at_event_days = if(eDiagnosis.ageAtEventDays.isDefined) Set(eDiagnosis.ageAtEventDays.get) else Set.empty[Int],
+                isLeaf = ontologyTerm.isLeaf
+              ))} else Nil
+            val mergedOntoTermsWParents = currentOntologicalTerm ++ MergersTool.groupPhenotypesWParents(ontoTermsWParents)
+            diagnosis_ES -> mergedOntoTermsWParents
+          }
+        }
         participant.copy(
-          diagnoses = filteredSeq
+          diagnoses = filteredSeq.map(_._1),
+          mondo_diagnosis = filteredSeq.flatMap(_._2)  //TODO need to add original
         )
       })
   }
@@ -43,15 +58,4 @@ object MergeDiagnosis {
         (diagnosis, iter) => diagnosis.copy(biospecimens = iter.collect { case (_, d) if d != null && d.biospecimenId.isDefined => d.biospecimenId.get }.toSeq))
     ds
   }
-
-  def enrichParticipantsWithMondoDiagnosis(diagnosisWithBiospecimens: Dataset[EDiagnosis], ontologicalData: OntologiesDataSet)(implicit spark: SparkSession) = { //FIXME fix name
-    import ontologicalData.mondoTerms
-    import spark.implicits._
-
-    val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participantId.isDefined)
-
-    val test = MergersTool.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(mondoTerms)
-
-  }
-
 }

@@ -50,4 +50,15 @@ object MergersTool {
       .agg(collect_list("ancestors_with_parents"))
       .as[(T, OntologyTerm, Seq[OntologicalTermWithParents_ES])]
   }
+
+  def groupPhenotypesWParents (phenotypesWP: Seq[OntologicalTermWithParents_ES]): Seq[OntologicalTermWithParents_ES] =
+    phenotypesWP
+      .groupBy(_.name)
+      .mapValues(p =>
+        OntologicalTermWithParents_ES(
+          name = p.head.name,
+          parents = p.head.parents,
+          isLeaf = p.head.isLeaf,
+          age_at_event_days = p.flatMap(_.age_at_event_days).toSet))
+      .values.toSeq
 }

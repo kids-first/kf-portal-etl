@@ -79,6 +79,7 @@ object MergePhenotype {
 
     val transformedPhenotypes = transformPhenotypes(entityDataset)
 
+
     participants.joinWith(
       transformedPhenotypes,
       participants.col("kf_id") === transformedPhenotypes.col("_1"),
@@ -98,24 +99,13 @@ object MergePhenotype {
           }
         participant.copy(
           phenotype = filteredSeq.map(_._1),
-          non_observed_phenotypes = groupPhenotypesWParents(
+          non_observed_phenotypes = MergersTool.groupPhenotypesWParents(
             filteredSeq.filter(_._2._2.contains(false)).flatMap(_._2._1)
           ),
-          observed_phenotypes = groupPhenotypesWParents(
+          observed_phenotypes = MergersTool.groupPhenotypesWParents(
             filteredSeq.filter(_._2._2.contains(true)).flatMap(_._2._1)
           )
         )
       })
   }
-
-  private def groupPhenotypesWParents (phenotypesWP: Seq[OntologicalTermWithParents_ES]): Seq[OntologicalTermWithParents_ES] =
-    phenotypesWP
-      .groupBy(_.name)
-      .mapValues(p =>
-        OntologicalTermWithParents_ES(
-          name = p.head.name,
-          parents = p.head.parents,
-          isLeaf = p.head.isLeaf,
-          age_at_event_days = p.flatMap(_.age_at_event_days).toSet))
-      .values.toSeq
 }

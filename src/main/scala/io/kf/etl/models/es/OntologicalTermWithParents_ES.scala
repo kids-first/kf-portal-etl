@@ -15,5 +15,5 @@ final case class OntologicalTermWithParents_ES(
     val regex(id) = name
     id
   }
-  val regex = ".* \\(HP:([0-9]+)\\)".r
+  val regex = ".* \\(HP:([0-9]+)\\)".r //FIXME for mondo terms
 }

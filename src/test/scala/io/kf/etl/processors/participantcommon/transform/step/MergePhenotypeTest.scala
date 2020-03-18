@@ -11,8 +11,6 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
-
-
   //Ancestors of HP:0009654 | Osteolytic defect of thumb phalanx
   val hpo_0002813: OntologyTermBasic = OntologyTermBasic("HP:0002813", "Abnormality of limb bone morphology")
   val hpo_0009774: OntologyTermBasic = OntologyTermBasic("HP:0009774", "Triangular shaped phalanges of the hand")
