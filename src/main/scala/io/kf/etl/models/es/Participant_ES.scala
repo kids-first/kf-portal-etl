@@ -16,8 +16,10 @@ final case class Participant_ES(
                                  kf_id: Option[String] = None,
                                  outcome: Option[Outcome_ES] = None,
                                  phenotype: Seq[Phenotype_ES] = Nil,
-                                 observed_phenotypes: Seq[PhenotypeWithParents_ES] = Nil,
-                                 non_observed_phenotypes: Seq[PhenotypeWithParents_ES] = Nil,
+                                 observed_phenotypes: Seq[OntologicalTermWithParents_ES] = Nil,
+                                 non_observed_phenotypes: Seq[OntologicalTermWithParents_ES] = Nil,
+                                 mondo_diagnosis: Seq[OntologicalTermWithParents_ES] = Nil,
+                                 ncit_diagnosis: Seq[OntologicalTermWithParents_ES] = Nil,
                                  race: Option[String] = None,
                                  study: Option[Study_ES] = None
                                )

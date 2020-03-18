@@ -1,15 +1,17 @@
 package io.kf.etl.models.dataservice
 
+import io.kf.etl.models.es.ObservableAtAge
+
 case class EPhenotype(
-    kfId: scala.Option[String] = None,
-    modifiedAt: scala.Option[String] = None,
-    createdAt: scala.Option[String] = None,
-    ageAtEventDays: scala.Option[Int] = None,
-    hpoIdPhenotype: scala.Option[String] = None,
-    observed: scala.Option[String] = None,
-    participantId: scala.Option[String] = None,
-    sourceTextPhenotype: scala.Option[String] = None,
-    snomedIdPhenotype: scala.Option[String] = None,
-    externalId: scala.Option[String] = None,
-    visible: scala.Option[Boolean] = None
-    )
+    kfId: Option[String] = None,
+    modifiedAt: Option[String] = None,
+    createdAt: Option[String] = None,
+    ageAtEventDays: Option[Int] = None,
+    hpoIdPhenotype: Option[String] = None,
+    observed: Option[String] = None,
+    participantId: Option[String] = None,
+    sourceTextPhenotype: Option[String] = None,
+    snomedIdPhenotype: Option[String] = None,
+    externalId: Option[String] = None,
+    visible: Option[Boolean] = None
+    ) extends ObservableAtAge
