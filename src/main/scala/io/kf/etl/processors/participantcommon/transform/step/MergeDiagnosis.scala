@@ -38,13 +38,13 @@ object MergeDiagnosis {
                 age_at_event_days = if(eDiagnosis.ageAtEventDays.isDefined) Set(eDiagnosis.ageAtEventDays.get) else Set.empty[Int],
                 isLeaf = ontologyTerm.isLeaf
               ))} else Nil
-            val mergedOntoTermsWParents = currentOntologicalTerm ++ MergersTool.groupPhenotypesWParents(ontoTermsWParents)
+            val mergedOntoTermsWParents = currentOntologicalTerm ++ ontoTermsWParents
             diagnosis_ES -> mergedOntoTermsWParents
           }
         }
         participant.copy(
           diagnoses = filteredSeq.map(_._1),
-          mondo_diagnosis = filteredSeq.flatMap(_._2)  //TODO need to add original
+          mondo_diagnosis = MergersTool.groupPhenotypesWParents(filteredSeq.flatMap(_._2))
         )
       })
   }
