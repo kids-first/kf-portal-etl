@@ -37,7 +37,7 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val diagnoses21 = EDiagnosis(kfId = Some("diagnosis_21"), participantId = Some("participant_id_2"), mondoIdDiagnosis = Some("MONDO:0043197"), ageAtEventDays = Some(15))
+    val diagnoses21 = EDiagnosis(kfId = Some("diagnosis_21"), participantId = Some("participant_id_2"), mondoIdDiagnosis = Some("MONDO:0043197"),diagnosisText = Some("ruvalcaba churesigaew myhre syndrome"), ageAtEventDays = Some(15))
     val diagnoses22 = EDiagnosis(kfId = Some("diagnosis_22"), participantId = Some("participant_id_2"), mondoIdDiagnosis = Some("MONDO:0000232"), ageAtEventDays = Some(18))
 
     val diagnoses3 = EDiagnosis(kfId = Some("diagnosis_3"))
@@ -59,7 +59,7 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
     val result = MergeDiagnosis(entityDataset, Seq(p1, p2, p3).toDS()).collect()
 
     //We sort diagnoses for each participant
-    val sortedResult = result.map(r => r.copy(diagnoses = r.diagnoses.sortBy(_.kf_id), mondo_diagnosis = r.mondo_diagnosis))
+    val sortedResult = result.map(r => r.copy(diagnoses = r.diagnoses.sortBy(_.kf_id), mondo_diagnosis = r.mondo_diagnosis.sorted))
 
     sortedResult should contain theSameElementsAs Seq(
       Participant_ES(
@@ -71,8 +71,8 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
       ),
       Participant_ES(kf_id = Some("participant_id_2"),
         diagnoses = Seq(
-          Diagnosis_ES(kf_id = Some("diagnosis_21"), age_at_event_days = Some(15), mondo_id_diagnosis = Some("MONDO:0043197")),
-          Diagnosis_ES(kf_id = Some("diagnosis_22"), age_at_event_days = Some(18), mondo_id_diagnosis = Some("MONDO:0000232"), biospecimens = Seq("biospecimen_id_3"))
+          Diagnosis_ES(kf_id = Some("diagnosis_21"), age_at_event_days = Some(15), mondo_id_diagnosis = Some(mondo_0043197.toString), diagnosis = Some(mondo_0043197.name)),
+          Diagnosis_ES(kf_id = Some("diagnosis_22"), age_at_event_days = Some(18), mondo_id_diagnosis = Some(mondo_0000232.id), biospecimens = Seq("biospecimen_id_3"))
         ),
         mondo_diagnosis = Seq(
           OntologicalTermWithParents_ES(name = mondo_0006956.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
@@ -85,7 +85,7 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
           OntologicalTermWithParents_ES(name = mondo_0043197.toString, parents = Seq(mondo_0002254.toString), age_at_event_days = Set(15), isLeaf = true),
           OntologicalTermWithParents_ES(name = mondo_0000232.toString, parents = Seq(mondo_0001195.toString), age_at_event_days = Set(18), isLeaf = true),
           OntologicalTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18))
-        )
+        ).sorted
       ),
       Participant_ES(kf_id = Some("participant_id_3"))
     )

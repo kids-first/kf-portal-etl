@@ -1,6 +1,6 @@
 package io.kf.etl.models.dataservice
 
-import io.kf.etl.models.es.ObservableAtAge
+import io.kf.etl.models.es.Observable
 
 case class EPhenotype(
     kfId: Option[String] = None,
@@ -14,4 +14,4 @@ case class EPhenotype(
     snomedIdPhenotype: Option[String] = None,
     externalId: Option[String] = None,
     visible: Option[Boolean] = None
-    ) extends ObservableAtAge
+    ) extends Observable

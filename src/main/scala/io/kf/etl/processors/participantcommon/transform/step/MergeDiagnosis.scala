@@ -1,8 +1,8 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EDiagnosis}
-import io.kf.etl.models.es.{Diagnosis_ES, OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, OntologiesDataSet}
+import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
 import io.kf.etl.processors.common.mergers.MergersTool
 import org.apache.spark.sql.{Dataset, SparkSession}

@@ -19,7 +19,6 @@ final case class Participant_ES(
                                  observed_phenotypes: Seq[OntologicalTermWithParents_ES] = Nil,
                                  non_observed_phenotypes: Seq[OntologicalTermWithParents_ES] = Nil,
                                  mondo_diagnosis: Seq[OntologicalTermWithParents_ES] = Nil,
-                                 ncit_diagnosis: Seq[OntologicalTermWithParents_ES] = Nil,
                                  race: Option[String] = None,
                                  study: Option[Study_ES] = None
                                )
