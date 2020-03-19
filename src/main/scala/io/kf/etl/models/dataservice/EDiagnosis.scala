@@ -1,6 +1,6 @@
 package io.kf.etl.models.dataservice
 
-import io.kf.etl.models.es.ObservableAtAge
+import io.kf.etl.models.es.Observable
 
 case class EDiagnosis(
     ageAtEventDays: Option[Int] = None,
@@ -20,4 +20,4 @@ case class EDiagnosis(
     diagnosisText: Option[String] = None,
     biospecimens: _root_.scala.collection.Seq[String] = Nil,
     visible: Option[Boolean] = None
-    ) extends ObservableAtAge
+    ) extends Observable

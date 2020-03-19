@@ -68,7 +68,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
     val result = DownloadTransformer.createDiagnosis(diagnoses, ontologiesDataset, spark).collect()
 
     result should contain theSameElementsAs Seq(
-      EDiagnosis(kfId = Some("diagnosis_1"), mondoIdDiagnosis = Some("Neuroblastoma Mondo (MONDO:0005072)"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma Mondo")),
+      EDiagnosis(kfId = Some("diagnosis_1"), mondoIdDiagnosis = Some("MONDO:0005072"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma Mondo")),
       EDiagnosis(kfId = Some("diagnosis_2"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma NCIT")),
       EDiagnosis(kfId = Some("diagnosis_3"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma source text")),
       EDiagnosis(kfId = Some("diagnosis_4")),

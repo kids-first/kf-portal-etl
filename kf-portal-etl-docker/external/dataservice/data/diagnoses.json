@@ -23,7 +23,7 @@
       "icd_id_diagnosis": null,
       "kf_id": "DG_53A66ZPY",
       "modified_at": "2018-09-28T04:57:05.163454+00:00",
-      "mondo_id_diagnosis": "MONDO:0005072",
+      "mondo_id_diagnosis": "MONDO:0000232",
       "ncit_id_diagnosis": "NCIT:C3270",
       "source_text_diagnosis": "Neuroblastoma",
       "source_text_tumor_location": "Nervous System",

@@ -1,6 +1,6 @@
 package io.kf.etl.processors.common.mergers
 
-import io.kf.etl.models.es.{ObservableAtAge, OntologicalTermWithParents_ES}
+import io.kf.etl.models.es.{Observable, OntologicalTermWithParents_ES}
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import org.apache.spark.sql.functions.{collect_list, explode_outer}
 import org.apache.spark.sql.{Dataset, Encoder, SparkSession}
@@ -9,7 +9,7 @@ import scala.reflect.runtime.universe.TypeTag
 
 object MergersTool {
 
-  def mapOntologyTermsToObservable[T <: ObservableAtAge: Encoder : TypeTag]
+  def mapOntologyTermsToObservable[T <: Observable: Encoder : TypeTag]
   (observableDS: Dataset[T], pivotColName: String)
   (ontologyTerms: Dataset[OntologyTerm])
   (implicit spark: SparkSession): Dataset[(T, OntologyTerm, Seq[OntologicalTermWithParents_ES] )] = {

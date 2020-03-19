@@ -198,11 +198,14 @@ object DownloadTransformer {
       .joinWith(ontology.ncitTerms, $"_1.ncitIdDiagnosis" === ontology.ncitTerms("id"), "left_outer")
       .map { case ((d, m), n) => (d, m, Option(n)) }
       .map {
-        case (d, optMondoTerm, optNcitTerm) if optMondoTerm.isDefined => d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = formatTerm(optMondoTerm), ncitIdDiagnosis = formatTerm(optNcitTerm))
-        case (d, _, optNcitTerm) if optNcitTerm.isDefined => d.copy(diagnosisText = optNcitTerm.map(_.name), mondoIdDiagnosis = None, ncitIdDiagnosis = formatTerm(optNcitTerm))
+        case (d, optMondoTerm, optNcitTerm) if optMondoTerm.isDefined && optNcitTerm.isDefined =>
+          d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = optMondoTerm.map(_.id), ncitIdDiagnosis = formatTerm(optNcitTerm))
+        case (d, optMondoTerm, _) if optMondoTerm.isDefined =>
+          d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = optMondoTerm.map(_.id), ncitIdDiagnosis = None)
+        case (d, _, optNcitTerm) if optNcitTerm.isDefined =>
+          d.copy(diagnosisText = optNcitTerm.map(_.name), mondoIdDiagnosis = None, ncitIdDiagnosis = formatTerm(optNcitTerm))
         case (d, _, _) => d.copy(diagnosisText = d.sourceTextDiagnosis, mondoIdDiagnosis = None, ncitIdDiagnosis = None)
       }
-
   }
 
 

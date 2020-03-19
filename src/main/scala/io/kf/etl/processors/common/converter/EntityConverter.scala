@@ -65,14 +65,18 @@ object EntityConverter {
   }
 
   def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
+    val mondoIdDiagnosos = (diagnosis.mondoIdDiagnosis, diagnosis.diagnosisText) match {
+      case (Some(id), Some(s)) => Some(s"$s ($id)")
+      case (Some(id), None) => Some(s"$id")
+      case _ => None
+    }
     Diagnosis_ES(
-
       age_at_event_days = diagnosis.ageAtEventDays,
       diagnosis_category = diagnosis.diagnosisCategory,
       external_id = diagnosis.externalId,
       icd_id_diagnosis = diagnosis.icdIdDiagnosis,
       kf_id = diagnosis.kfId,
-      mondo_id_diagnosis = diagnosis.mondoIdDiagnosis,
+      mondo_id_diagnosis = mondoIdDiagnosos,
       source_text_diagnosis = diagnosis.sourceTextDiagnosis,
       uberon_id_tumor_location = diagnosis.uberonIdTumorLocation,
       source_text_tumor_location = diagnosis.sourceTextTumorLocation,
