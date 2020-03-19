@@ -70,19 +70,21 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
         )
       ),
       Participant_ES(kf_id = Some("participant_id_2"),
-        diagnoses = Seq(Diagnosis_ES(kf_id = Some("diagnosis_21"))),
+        diagnoses = Seq(
+          Diagnosis_ES(kf_id = Some("diagnosis_21"), age_at_event_days = Some(15), mondo_id_diagnosis = Some("MONDO:0043197")),
+          Diagnosis_ES(kf_id = Some("diagnosis_22"), age_at_event_days = Some(18), mondo_id_diagnosis = Some("MONDO:0000232"), biospecimens = Seq("biospecimen_id_3"))
+        ),
         mondo_diagnosis = Seq(
-          OntologicalTermWithParents_ES(name = mondo_0043197.toString, parents = Seq(mondo_0002254.toString), age_at_event_days = Set(15), isLeaf = true),
-          OntologicalTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18)),
+          OntologicalTermWithParents_ES(name = mondo_0006956.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
+          OntologicalTermWithParents_ES(name = mondo_0005113.toString, parents = Seq(mondo_0005550.toString), age_at_event_days = Set(18)),
           OntologicalTermWithParents_ES(name = mondo_0002254.toString, parents = Seq(mondo_0000001.toString), age_at_event_days = Set(15)),
+          OntologicalTermWithParents_ES(name = mondo_0001195.toString, parents = Seq(mondo_0006927.toString), age_at_event_days = Set(18)),
+          OntologicalTermWithParents_ES(name = mondo_0006927.toString, parents = Seq(mondo_0006956.toString, mondo_0021678.toString), age_at_event_days = Set(18)),
+          OntologicalTermWithParents_ES(name = mondo_0005550.toString, parents = Seq(mondo_0000001.toString), age_at_event_days = Set(18)),
+          OntologicalTermWithParents_ES(name = mondo_0021678.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
+          OntologicalTermWithParents_ES(name = mondo_0043197.toString, parents = Seq(mondo_0002254.toString), age_at_event_days = Set(15), isLeaf = true),
           OntologicalTermWithParents_ES(name = mondo_0000232.toString, parents = Seq(mondo_0001195.toString), age_at_event_days = Set(18), isLeaf = true),
-            OntologicalTermWithParents_ES(name = mondo_0006956.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
-            OntologicalTermWithParents_ES(name = mondo_0005113.toString, parents = Seq(mondo_0005550.toString), age_at_event_days = Set(18)),
-            OntologicalTermWithParents_ES(name = mondo_0001195.toString, parents = Seq(mondo_0006927.toString), age_at_event_days = Set(18)),
-            OntologicalTermWithParents_ES(name = mondo_0006927.toString, parents = Seq(mondo_0006956.toString, mondo_0021678.toString), age_at_event_days = Set(18)),
-            OntologicalTermWithParents_ES(name = mondo_0005550.toString, parents = Seq(mondo_0000001.toString), age_at_event_days = Set(18)),
-            OntologicalTermWithParents_ES(name = mondo_0021678.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
-
+          OntologicalTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18))
         )
       ),
       Participant_ES(kf_id = Some("participant_id_3"))
