@@ -17,8 +17,8 @@ final case class ParticipantCentric_ES(
                                         kf_id: Option[String] = None,
                                         outcome: Option[Outcome_ES] = None,
                                         phenotype: Seq[Phenotype_ES] = Nil,
-                                        observed_Phenotype: Seq[OntologicalTermWithParents_ES] = Nil,
-                                        non_observed_Phenotype: Seq[OntologicalTermWithParents_ES] = Nil,
+                                        observed_phenotype: Seq[OntologicalTermWithParents_ES] = Nil,
+                                        non_observed_phenotype: Seq[OntologicalTermWithParents_ES] = Nil,
                                         mondo_diagnosis: Seq[OntologicalTermWithParents_ES] = Nil,
                                         race: Option[String] = None,
                                         study: Option[Study_ES] = None

@@ -595,6 +595,57 @@
             }
           }
         },
+        "observed_phenotype": {
+          "properties": {
+            "age_at_event_days": {
+              "type": "long"
+            },
+            "is_leaf": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "parents": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "non_observed_phenotype": {
+          "properties": {
+            "age_at_event_days": {
+              "type": "long"
+            },
+            "is_leaf": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "parents": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "mondo_diagnosis": {
+          "type": "nested",
+          "properties": {
+            "age_at_event_days": {
+              "type": "long"
+            },
+            "is_leaf": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "keyword"
+            },
+            "parents": {
+              "type": "keyword"
+            }
+          }
+        },
         "phenotype": {
           "properties": {
             "age_at_event_days": {
