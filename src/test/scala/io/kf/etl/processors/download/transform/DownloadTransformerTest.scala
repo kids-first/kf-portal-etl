@@ -11,7 +11,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSession {
   import spark.implicits._
   "loadTerms" should "load ontological terms from compressed TSV file" in {
-    val terms = spark.read.json("./src/test/resources/mondo_terms.json").select("id", "name", "parents", "ancestors", "isLeaf").as[OntologyTerm]
+    val terms = spark.read.json("./src/test/resources/mondo_terms.json").select("id", "name", "parents", "ancestors", "is_leaf").as[OntologyTerm]
 
 
     terms.collect() should contain theSameElementsAs Seq(
@@ -25,8 +25,8 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
             name = "neoplasm (disease)",
             parents = Seq("neoplastic disease or syndrome (MONDO:0023370)"))
         ),
-        isLeaf = true),
-      OntologyTerm(id = "MONDO:0007471", name = "Doyne honeycomb retinal dystrophy", isLeaf = true)
+        is_leaf = true),
+      OntologyTerm(id = "MONDO:0007471", name = "Doyne honeycomb retinal dystrophy", is_leaf = true)
     )
   }
 

@@ -1,2 +1,2 @@
-{"id":"MONDO:0015341","name":"congenital panfollicular nevus (disease)","parents":["melanocytic nevus (MONDO:0005073)"],"ancestors":[{"id":"MONDO:0005070","name":"neoplasm (disease)","parents":["neoplastic disease or syndrome (MONDO:0023370)"]}],"isLeaf":true}
-{"id":"MONDO:0007471","name":"Doyne honeycomb retinal dystrophy","parents":[],"ancestors":[],"isLeaf":true}
+{"id":"MONDO:0015341","name":"congenital panfollicular nevus (disease)","parents":["melanocytic nevus (MONDO:0005073)"],"ancestors":[{"id":"MONDO:0005070","name":"neoplasm (disease)","parents":["neoplastic disease or syndrome (MONDO:0023370)"]}],"is_leaf":true}
+{"id":"MONDO:0007471","name":"Doyne honeycomb retinal dystrophy","parents":[],"ancestors":[],"is_leaf":true}

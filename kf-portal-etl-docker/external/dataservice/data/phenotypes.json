@@ -36,26 +36,122 @@
       "_links": {
         "collection": 	"/phenotypes",
         "participant": "/participants/PT_29ZEF7YN",
-        "self": 	"/phenotypes/PH_X7XZSKM7"
+        "self": 	"/phenotypes/PH_X7XZSKM10"
       },
       "created_at": "2018-09-20T17:41:00.765025+00:00",
       "age_at_event_days": 30,
       "observed": null,
-      "kf_id": "PH_X7XZSKM7",
+      "kf_id": "PH_X7XZSKM10",
       "hpo_id_phenotype": "HP:0045009"
     },
     {
       "_links": {
         "collection": 	"/phenotypes",
         "participant": "/participants/PT_29ZEF7YN",
-        "self": 	"/phenotypes/PH_X7XZSKM7"
+        "self": 	"/phenotypes/PH_X7XZSKM11"
       },
       "created_at": "2018-09-20T17:41:00.765025+00:00",
       "age_at_event_days": 40,
       "observed": "negative",
-      "kf_id": "PH_X7XZSKM6",
+      "kf_id": "PH_X7XZSKM11",
       "hpo_id_phenotype": "HP:0005938"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YM",
+        "self": 	"/phenotypes/PH_X7XZSKN8"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 1000,
+      "observed": "positive",
+      "kf_id": "PH_X7XZSKN8",
+      "hpo_id_phenotype": "HP:0001670"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YM",
+        "self": 	"/phenotypes/PH_X7XZSKN9"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 2000,
+      "observed": "positive",
+      "kf_id": "PH_X7XZSKN9",
+      "hpo_id_phenotype": "HP:0009602"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YM",
+        "self": 	"/phenotypes/PH_X7XZSKN10"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 3000,
+      "observed": null,
+      "kf_id": "PH_X7XZSKN10",
+      "hpo_id_phenotype": "HP:0001256"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF7YM",
+        "self": 	"/phenotypes/PH_X7XZSKN11"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 4000,
+      "observed": "negative",
+      "kf_id": "PH_X7XZSKN11",
+      "hpo_id_phenotype": "HP:0031569"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF777",
+        "self": 	"/phenotypes/PH_X7XZS7771"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 201,
+      "observed": "positive",
+      "kf_id": "PH_X7XZS7771",
+      "hpo_id_phenotype": "HP:0004857"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF777",
+        "self": 	"/phenotypes/PH_X7XZS7772"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 202,
+      "observed": "positive",
+      "kf_id": "PH_X7XZS7772",
+      "hpo_id_phenotype": "HP:0000152"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF777",
+        "self": 	"/phenotypes/PH_X7XZS7773"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 203,
+      "observed": "negative",
+      "kf_id": "PH_X7XZS7773",
+      "hpo_id_phenotype": "HP:3000008"
+    },
+    {
+      "_links": {
+        "collection": 	"/phenotypes",
+        "participant": "/participants/PT_29ZEF777",
+        "self": 	"/phenotypes/PH_X7XZS7773"
+      },
+      "created_at": "2018-09-20T17:41:00.765025+00:00",
+      "age_at_event_days": 204,
+      "observed": "positive",
+      "kf_id": "PH_X7XZS7773",
+      "hpo_id_phenotype": "HP:0012763"
     }
   ],
-  "total": 3
+  "total": 12
 }

@@ -36,7 +36,7 @@ object MergeDiagnosis {
                 name = ontologyTerm.toString,
                 parents = ontologyTerm.parents,
                 age_at_event_days = if(eDiagnosis.ageAtEventDays.isDefined) Set(eDiagnosis.ageAtEventDays.get) else Set.empty[Int],
-                isLeaf = ontologyTerm.isLeaf
+                is_leaf = ontologyTerm.is_leaf
               ))} else Nil
             val mergedOntoTermsWParents = currentOntologicalTerm ++ ontoTermsWParents
             diagnosis_ES -> mergedOntoTermsWParents

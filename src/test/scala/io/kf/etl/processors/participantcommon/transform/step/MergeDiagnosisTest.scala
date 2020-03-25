@@ -26,7 +26,7 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
   val ontologiesDataSet: OntologiesDataSet = OntologiesDataSet(
     hpoTerms = Seq.empty[OntologyTerm].toDS(),
-    mondoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/mondo_terms.json.gz").select("id", "name", "parents", "ancestors", "isLeaf").as[OntologyTerm],
+    mondoTerms = spark.read.json("../kf-portal-etl/kf-portal-etl-docker/mondo_terms.json.gz").select("id", "name", "parents", "ancestors", "is_leaf").as[OntologyTerm],
     ncitTerms = Seq.empty[OntologyTermBasic].toDS()
   )
 
@@ -82,8 +82,8 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
           OntologicalTermWithParents_ES(name = mondo_0006927.toString, parents = Seq(mondo_0006956.toString, mondo_0021678.toString), age_at_event_days = Set(18)),
           OntologicalTermWithParents_ES(name = mondo_0005550.toString, parents = Seq(mondo_0000001.toString), age_at_event_days = Set(18)),
           OntologicalTermWithParents_ES(name = mondo_0021678.toString, parents = Seq(mondo_0005113.toString), age_at_event_days = Set(18)),
-          OntologicalTermWithParents_ES(name = mondo_0043197.toString, parents = Seq(mondo_0002254.toString), age_at_event_days = Set(15), isLeaf = true),
-          OntologicalTermWithParents_ES(name = mondo_0000232.toString, parents = Seq(mondo_0001195.toString), age_at_event_days = Set(18), isLeaf = true),
+          OntologicalTermWithParents_ES(name = mondo_0043197.toString, parents = Seq(mondo_0002254.toString), age_at_event_days = Set(15), is_leaf = true),
+          OntologicalTermWithParents_ES(name = mondo_0000232.toString, parents = Seq(mondo_0001195.toString), age_at_event_days = Set(18), is_leaf = true),
           OntologicalTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18))
         ).sorted
       ),

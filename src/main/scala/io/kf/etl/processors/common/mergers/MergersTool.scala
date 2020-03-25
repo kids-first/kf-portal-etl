@@ -58,7 +58,7 @@ object MergersTool {
         OntologicalTermWithParents_ES(
           name = p.head.name,
           parents = p.head.parents,
-          isLeaf = p.head.isLeaf,
+          is_leaf = p.head.is_leaf,
           age_at_event_days = p.flatMap(_.age_at_event_days).toSet))
       .values.toSeq
 }
