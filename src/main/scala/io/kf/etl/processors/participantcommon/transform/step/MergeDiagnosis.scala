@@ -4,7 +4,7 @@ import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EDiagnosis}
 import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import io.kf.etl.processors.common.mergers.MergersTool
+import io.kf.etl.processors.common.mergers.OntologyUtil
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergeDiagnosis {
@@ -16,7 +16,7 @@ object MergeDiagnosis {
 
     val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participantId.isDefined)
 
-    val diagnosisWithBioAndMondo = MergersTool.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(ontologyData.mondoTerms)
+    val diagnosisWithBioAndMondo = OntologyUtil.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(ontologyData.mondoTerms)
 
     participants
       .joinWith(
@@ -44,7 +44,7 @@ object MergeDiagnosis {
         }
         participant.copy(
           diagnoses = filteredSeq.map(_._1),
-          mondo_diagnosis = MergersTool.groupPhenotypesWParents(filteredSeq.flatMap(_._2))
+          mondo_diagnosis = OntologyUtil.groupOntologyTermsWithParents(filteredSeq.flatMap(_._2))
         )
       })
   }

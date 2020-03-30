@@ -1,22 +1,22 @@
 package io.kf.etl.processors.common.mergers
 
-import io.kf.etl.models.es.{Observable, OntologicalTermWithParents_ES}
+import io.kf.etl.models.es.{ObservableAtAge, OntologicalTermWithParents_ES}
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import org.apache.spark.sql.functions.{collect_list, explode_outer}
 import org.apache.spark.sql.{Dataset, Encoder, SparkSession}
 
 import scala.reflect.runtime.universe.TypeTag
 
-object MergersTool {
+object OntologyUtil {
 
-  def mapOntologyTermsToObservable[T <: Observable: Encoder : TypeTag]
+  def mapOntologyTermsToObservable[T <: ObservableAtAge: Encoder : TypeTag]
   (observableDS: Dataset[T], pivotColName: String)
   (ontologyTerms: Dataset[OntologyTerm])
   (implicit spark: SparkSession): Dataset[(T, OntologyTerm, Seq[OntologicalTermWithParents_ES] )] = {
 
     import spark.implicits._
 
-    val observable_mondo_ancestor = observableDS
+    val observable_ontology_ancestor = observableDS
       .joinWith(ontologyTerms, observableDS(pivotColName) === ontologyTerms("id"), "left_outer")
       .map {
         case(eObservable, ontologyTerm) if ontologyTerm != null =>
@@ -31,7 +31,7 @@ object MergersTool {
       .drop("ancestors")
       .as[(T, OntologyTerm, OntologyTermBasic)]
 
-    observable_mondo_ancestor.map{
+    observable_ontology_ancestor.map{
       case(observable, mondoTerm, ontoTerm) => (
         observable,
         mondoTerm,
@@ -51,7 +51,7 @@ object MergersTool {
       .as[(T, OntologyTerm, Seq[OntologicalTermWithParents_ES])]
   }
 
-  def groupPhenotypesWParents (phenotypesWP: Seq[OntologicalTermWithParents_ES]): Seq[OntologicalTermWithParents_ES] =
+  def groupOntologyTermsWithParents(phenotypesWP: Seq[OntologicalTermWithParents_ES]): Seq[OntologicalTermWithParents_ES] =
     phenotypesWP
       .groupBy(_.name)
       .mapValues(p =>

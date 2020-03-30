@@ -1,6 +1,6 @@
 package io.kf.etl.models.es
 
 
-trait Observable {
+trait ObservableAtAge {
   val ageAtEventDays: Option[Int]
 }
