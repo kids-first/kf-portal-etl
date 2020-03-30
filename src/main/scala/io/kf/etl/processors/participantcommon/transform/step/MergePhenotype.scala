@@ -2,7 +2,7 @@ package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
-import io.kf.etl.processors.common.mergers.MergersTool
+import io.kf.etl.processors.common.mergers.OntologyUtil
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergePhenotype {
@@ -19,7 +19,7 @@ object MergePhenotype {
       }}
 
     val phenotype_hpo_ancestor_parents =
-      MergersTool.mapOntologyTermsToObservable(filteredPhenotypes, "hpoIdPhenotype")(hpoTerms)
+      OntologyUtil.mapOntologyTermsToObservable(filteredPhenotypes, "hpoIdPhenotype")(hpoTerms)
 
     phenotype_hpo_ancestor_parents.flatMap {
       case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participantId.isDefined => {
@@ -99,10 +99,10 @@ object MergePhenotype {
           }
         participant.copy(
           phenotype = filteredSeq.map(_._1),
-          non_observed_phenotypes = MergersTool.groupPhenotypesWParents(
+          non_observed_phenotypes = OntologyUtil.groupOntologyTermsWithParents(
             filteredSeq.filter(_._2._2.contains(false)).flatMap(_._2._1)
           ),
-          observed_phenotypes = MergersTool.groupPhenotypesWParents(
+          observed_phenotypes = OntologyUtil.groupOntologyTermsWithParents(
             filteredSeq.filter(_._2._2.contains(true)).flatMap(_._2._1)
           )
         )
