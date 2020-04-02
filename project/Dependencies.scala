@@ -12,4 +12,5 @@ object Dependencies {
   val elasticsearch = "org.elasticsearch.client" % "transport" % "6.1.3"
   val scalatest = "org.scalatest" %% "scalatest" % "3.0.4"
   val json4s = "org.json4s" %% "json4s-jackson" % "3.2.11"
+  val typesafe_akka = "com.typesafe.akka" %% "akka-actor" % "2.5.30"
 }
