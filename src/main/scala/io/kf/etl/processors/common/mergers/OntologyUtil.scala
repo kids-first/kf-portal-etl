@@ -32,14 +32,14 @@ object OntologyUtil {
       .as[(T, OntologyTerm, OntologyTermBasic)]
 
     observable_ontology_ancestor.map{
-      case(observable, mondoTerm, ontoTerm) => (
+      case(observable, ontologyTerm, ontologyTermBasic) => (
         observable,
-        mondoTerm,
-        if(ontoTerm != null && observable.ageAtEventDays.isDefined) {
+        ontologyTerm,
+        if(ontologyTermBasic != null) {
           OntologicalTermWithParents_ES(
-            name = ontoTerm.toString,
-            parents = if(ontoTerm != null) ontoTerm.parents else Nil,
-            age_at_event_days = Set(observable.ageAtEventDays.get)
+            name = ontologyTermBasic.toString,
+            parents = if(ontologyTermBasic != null) ontologyTermBasic.parents else Nil,
+            age_at_event_days = if(observable.ageAtEventDays.isDefined) Set(observable.ageAtEventDays.get) else Set.empty[Int]
           )
         } else null
       )}

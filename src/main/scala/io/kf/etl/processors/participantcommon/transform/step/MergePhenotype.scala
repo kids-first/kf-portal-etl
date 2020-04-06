@@ -79,7 +79,6 @@ object MergePhenotype {
 
     val transformedPhenotypes = transformPhenotypes(entityDataset)
 
-
     participants.joinWith(
       transformedPhenotypes,
       participants.col("kf_id") === transformedPhenotypes.col("_1"),
