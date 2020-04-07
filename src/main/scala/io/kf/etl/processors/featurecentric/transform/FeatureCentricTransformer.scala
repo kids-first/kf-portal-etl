@@ -10,12 +10,13 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
   val spark: SparkSession = SparkSession.builder.getOrCreate()
+
   import spark.implicits._
 
-  def participantCentric(entityDataset:EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
+  def participantCentric(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[ParticipantCentric_ES] = {
 
     val fileId_experiments: Dataset[SequencingExperimentsES_GenomicFileId] =
-      joinFileIdToSeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles )
+      joinFileIdToSeqExperiments(entityDataset.sequencingExperiments, entityDataset.sequencingExperimentGenomicFiles)
 
     val files: Dataset[GenomicFile_ES] =
       joinGenomicFilesToSequencingExperimentFileId(fileId_experiments, entityDataset.genomicFiles)
@@ -39,13 +40,13 @@ object FeatureCentricTransformer {
 
     participantExploded.joinWith(
       bioId_GF,
-      participantExploded.col("biospecimen.kf_id") ===  bioId_GF.col("biospecimenId"),
+      participantExploded.col("biospecimen.kf_id") === bioId_GF.col("biospecimenId"),
       "left_outer"
     ).select($"_1" as "participant", $"_2.genomicFiles" as "genomicFiles", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
-      .map{
-        case(p, gfs, null) => (p, gfs, null)
-        case(p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
+      .map {
+        case (p, gfs, null) => (p, gfs, null)
+        case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
       }
       .withColumnRenamed("_1", "participant")
       .withColumnRenamed("_2", "genomicFiles")
@@ -57,7 +58,7 @@ object FeatureCentricTransformer {
         collect_list("biospecimens") as "biospecimens")
       .drop("kf_id")
       .as[(Participant_ES, Seq[Seq[GenomicFile_ES]], Seq[Biospecimen_ES])]
-      .map{ case(p, gfs, b) =>  participant_ES_to_ParticipantCentric_ES(p, gfs.flatten.distinct, b) }
+      .map { case (p, gfs, b) => participant_ES_to_ParticipantCentric_ES(p, gfs.flatten.distinct, b) }
   }
 
   def fileCentric(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
@@ -97,9 +98,9 @@ object FeatureCentricTransformer {
       )
       .drop("kf_id")
       .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
-      .map{
-        case(gf, null, _) => (gf, null)
-        case(gf, p, bs) => (gf, p.copy(biospecimens = bs))
+      .map {
+        case (gf, null, _) => (gf, null)
+        case (gf, p, bs) => (gf, p.copy(biospecimens = bs))
       }
       .withColumnRenamed("_1", "genomicFile")
       .withColumnRenamed("_2", "participant")
@@ -108,8 +109,8 @@ object FeatureCentricTransformer {
         collect_list("participant") as "participants"
       )
       .as[(GenomicFile_ES, Seq[Participant_ES])]
-      .map{
-        case(gf, ps) => genomicFile_ES_to_FileCentric(gf, ps)
+      .map {
+        case (gf, ps) => genomicFile_ES_to_FileCentric(gf, ps)
       }
 
   }
@@ -124,12 +125,12 @@ object FeatureCentricTransformer {
         eSequencingExperiment.col("kfId") === eSequencingExperimentGenomicFile.col("sequencingExperiment"),
         "left_outer"
       )
-      .map(tuple => {
+      .map { case (sequencingExperiment, sequencingExperimentGenomicFile) =>
         SequencingExperimentES_GenomicFileId(
-          sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(tuple._1),
-          genomicFileId = tuple._2.genomicFile
+          sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(sequencingExperiment),
+          genomicFileId = if (sequencingExperimentGenomicFile != null) sequencingExperimentGenomicFile.genomicFile else None
         )
-      })
+      }
       .groupByKey(_.genomicFileId)
       .mapGroups((fileId, iterator) => {
         fileId match {
@@ -147,9 +148,9 @@ object FeatureCentricTransformer {
   }
 
   private def joinGenomicFilesToSequencingExperimentFileId(
-                                            sequencingExperimentsES_GenomicFileId: Dataset[SequencingExperimentsES_GenomicFileId],
-                                            genomicFile: Dataset[EGenomicFile]
-                                          ): Dataset[GenomicFile_ES] = {
+                                                            sequencingExperimentsES_GenomicFileId: Dataset[SequencingExperimentsES_GenomicFileId],
+                                                            genomicFile: Dataset[EGenomicFile]
+                                                          ): Dataset[GenomicFile_ES] = {
     genomicFile.joinWith(
       sequencingExperimentsES_GenomicFileId,
       genomicFile.col("kfId") === sequencingExperimentsES_GenomicFileId.col("genomicFileId"),
@@ -189,6 +190,7 @@ object FeatureCentricTransformer {
       size = genomicFile.size
     )
   }
+
   private def participant_ES_to_ParticipantCentric_ES(
                                                        participant: Participant_ES,
                                                        files: Seq[GenomicFile_ES],
@@ -212,8 +214,8 @@ object FeatureCentricTransformer {
       kf_id = participant.kf_id,
       outcome = participant.outcome,
       phenotype = participant.phenotype,
-      observed_phenotype =  participant.observed_phenotypes,
-      non_observed_phenotype =  participant.non_observed_phenotypes,
+      observed_phenotype = participant.observed_phenotypes,
+      non_observed_phenotype = participant.non_observed_phenotypes,
       mondo_diagnosis = participant.mondo_diagnosis,
       race = participant.race,
       study = participant.study
