@@ -149,7 +149,7 @@ class EntityDataRetrieverTest extends FlatSpec with Matchers with BeforeAndAfter
       """.stripMargin, 2)
     DataService.withDataService(Map("/studies" -> handler)) {
       url =>
-        EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EStudy]("/studies").map {
+        EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EStudy]("/studies", retries = 3).map {
           r =>
             r shouldBe Seq(
               EStudy(kfId = Some("1"), name = Some("Study 1")),

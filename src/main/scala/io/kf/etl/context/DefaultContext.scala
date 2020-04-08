@@ -30,8 +30,6 @@ class DefaultContext extends AutoCloseable {
     implicit def esClient: TransportClient = esClientMutable
 
     implicit def spark: SparkSession = sparkMutable
-
-    implicit def actorSystem: ActorSystem = system
   }
 
   private def init(): Unit = {

@@ -1,22 +1,17 @@
 package io.kf.etl.processors.download.transform.utils
 
-import akka.actor.{ActorSystem, Scheduler}
-import akka.pattern.retry
 import org.json4s
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
 import play.api.libs.ws.StandaloneWSClient
 
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] = Seq.empty[String])(implicit wsClient: StandaloneWSClient, ec: ExecutionContext, system: ActorSystem) {
-
-  implicit val scheduler: Scheduler = system.scheduler
+case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] = Seq.empty[String])(implicit wsClient: StandaloneWSClient, ec: ExecutionContext) {
 
   private lazy val filterQueryString = filters.mkString("&")
 
-  final def retrieve[T](endpoint: String, data: Seq[T] = Seq.empty[T])(implicit extractor: EntityDataExtractor[T]): Future[Seq[T]] = {
+  final def retrieve[T](endpoint: String, data: Seq[T] = Seq.empty[T], retries: Int = 10)(implicit extractor: EntityDataExtractor[T]): Future[Seq[T]] = {
     def extractDataset(responseBody: json4s.JValue) = {
       responseBody \ "results" match {
         case JNull | JNothing => Seq.empty
@@ -40,26 +35,29 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
         Some(entity)
     }
 
-    def attempt(nextEndPoint: String): Future[Seq[T]] = {
+    val url = s"${config.url}$endpoint&limit=100&$filterQueryString"
+    println(s"Retrieving (remain try = $retries): $url")
 
-        val url = s"${config.url}$nextEndPoint&limit=100&$filterQueryString"
-
-        wsClient.url(url).get().flatMap{ response =>
-          response.status match {
-            case 200 =>
-              import play.api.libs.ws.DefaultBodyReadables.readableAsString
-              val responseBody = JsonMethods.parse(response.body)
-              val currentDataset = data ++ extractDataset(responseBody)
-              responseBody \ "_links" \ "next" match {
-                case JString(next) => attempt(next)
-                case _ => Future.successful(currentDataset)
-              }
-            case _ => Future.failed(new IllegalStateException(s"Impossible to fetch data from $url, got statusCode=${response.status} and body=${response.body}"))
-          }
+    wsClient.url(url).get().flatMap { response =>
+      if (response.status != 200) {
+        if (retries > 0)
+          retrieve(endpoint, data, retries - 1)
+        else
+          Future.failed(new IllegalStateException(s"Impossible to fetch data from $url, got statusCode = ${response.status} and body = ${response.body}"))
+      } else {
+        import play.api.libs.ws.DefaultBodyReadables.readableAsString
+        val responseBody = JsonMethods.parse(response.body)
+        val currentDataset = data ++ extractDataset(responseBody)
+        // Retrieve content from "next" URL in links, or return our dataset
+        responseBody \ "_links" \ "next" match {
+          case JString(next) => retrieve(next, currentDataset)
+          case _ => Future.successful(currentDataset)
         }
+
+      }
     }
 
-    retry(() => attempt(endpoint), 10, 100 milliseconds)
+
   }
 
 
