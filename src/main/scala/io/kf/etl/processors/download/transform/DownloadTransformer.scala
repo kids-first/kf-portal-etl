@@ -1,5 +1,6 @@
 package io.kf.etl.processors.download.transform
 
+import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
@@ -17,7 +18,7 @@ import play.api.libs.ws.StandaloneWSClient
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionContext, spark: SparkSession, config: Config) {
+class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionContext, spark: SparkSession, config: Config, system: ActorSystem) {
 
   val dataService = DataServiceConfig(config)
   val filters: Seq[String] = Seq("visible=true")
