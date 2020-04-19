@@ -1,7 +1,7 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice.EPhenotype
-import io.kf.etl.models.es.{Participant_ES, OntologicalTermWithParents_ES, Phenotype_ES}
+import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.OntologiesDataSet
 import io.kf.etl.processors.participantcommon.transform.step
@@ -71,12 +71,12 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
   "process" should "merge phenotypes and participant" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val phenotype_11 = EPhenotype(kfId = Some("phenotype_id_11"), ageAtEventDays = Some(15), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"), observed = Some("positive"))
-    val phenotype_13 = EPhenotype(kfId = Some("phenotype_id_13"), ageAtEventDays = Some(18), participantId = Some("participant_id_1"), externalId = Some("phenotype 13"), observed = Some("positive"))
-    val phenotype_12 = EPhenotype(kfId = Some("phenotype_id_12"), participantId = Some("participant_id_1"), externalId = Some("phenotype 12"), observed = Some("negative"))
-    val phenotype_14 = EPhenotype(kfId = Some("phenotype_id_14"), ageAtEventDays = Some(22), participantId = Some("participant_id_1"), externalId = Some("phenotype 14"), observed = None)
-    val phenotype_2 = EPhenotype(kfId = Some("phenotype_id_2"), participantId = Some("participant_id_2"), externalId = Some("phenotype 2"), observed = Some("positive"))
-    val phenotype_3 = EPhenotype(kfId = Some("phenotype_id_3"), externalId = Some("phenotype 3"), observed = Some("positive"))
+    val phenotype_11 = EPhenotype(kf_id = Some("phenotype_id_11"), age_at_event_days = Some(15), participant_id = Some("participant_id_1"), external_id = Some("phenotype 11"), observed = Some("positive"))
+    val phenotype_13 = EPhenotype(kf_id = Some("phenotype_id_13"), age_at_event_days = Some(18), participant_id = Some("participant_id_1"), external_id = Some("phenotype 13"), observed = Some("positive"))
+    val phenotype_12 = EPhenotype(kf_id = Some("phenotype_id_12"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 12"), observed = Some("negative"))
+    val phenotype_14 = EPhenotype(kf_id = Some("phenotype_id_14"), age_at_event_days = Some(22), participant_id = Some("participant_id_1"), external_id = Some("phenotype 14"), observed = None)
+    val phenotype_2 = EPhenotype(kf_id = Some("phenotype_id_2"), participant_id = Some("participant_id_2"), external_id = Some("phenotype 2"), observed = Some("positive"))
+    val phenotype_3 = EPhenotype(kf_id = Some("phenotype_id_3"), external_id = Some("phenotype 3"), observed = Some("positive"))
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
 
@@ -115,15 +115,15 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   it should "merge phenotypes and participant binding all fields for an observed phenotype" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
     val phenotype_1 = EPhenotype(
-      kfId = Some("phenotype_id_1"),
-      participantId = Some("participant_id_1"),
-      sourceTextPhenotype = Some("phenotype source text 1"),
+      kf_id = Some("phenotype_id_1"),
+      participant_id = Some("participant_id_1"),
+      source_text_phenotype = Some("phenotype source text 1"),
       observed = Some("positive"),
-      createdAt = Some("should be removed"), modifiedAt = Some("should be removed"),
-      hpoIdPhenotype = Some("HP:0001166"),
-      ageAtEventDays = Some(100),
-      snomedIdPhenotype = Some("SNOMED:4"),
-      externalId = Some("external id"),
+      created_at = Some("should be removed"), modified_at = Some("should be removed"),
+      hpo_id_phenotype = Some("HP:0001166"),
+      age_at_event_days = Some(100),
+      snomed_id_phenotype = Some("SNOMED:4"),
+      external_id = Some("external id"),
       visible = Some(true)
     )
 
@@ -172,12 +172,12 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   it should "merge phenotypes and participant binding all fields for a not observed phenotype" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
     val phenotype_1 = EPhenotype(
-      kfId = Some("phenotype_id_1"),
-      participantId = Some("participant_id_1"),
-      sourceTextPhenotype = Some("phenotype source text 1"),
+      kf_id = Some("phenotype_id_1"),
+      participant_id = Some("participant_id_1"),
+      source_text_phenotype = Some("phenotype source text 1"),
       observed = Some("negative"),
-      createdAt = Some("should be removed"), modifiedAt = Some("should be removed"),
-      hpoIdPhenotype = Some("HP:0001166")
+      created_at = Some("should be removed"), modified_at = Some("should be removed"),
+      hpo_id_phenotype = Some("HP:0001166")
     )
 
     val entityDataset = buildEntityDataSet(
@@ -209,14 +209,14 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
     val entityDataset = buildEntityDataSet(
       phenotypes = Seq(
-        EPhenotype(participantId = Some("participant_id_1"), kfId = Some("phenotype_id_1"), observed = Some("negative"), hpoIdPhenotype = Some("HP:0001166"), externalId = Some("1"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_2"), kfId = Some("phenotype_id_2"), observed = Some("positive"), hpoIdPhenotype = Some("HP:0000924"), externalId = Some("2"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_1"), kfId = Some("phenotype_id_1"), observed = Some("NEGATIVE"), snomedIdPhenotype = Some("SNOMED:1"), externalId = Some("3"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_2"), kfId = Some("phenotype_id_2"), observed = Some("POSITIVE"), snomedIdPhenotype = Some("SNOMED:1"), externalId = Some("4"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_3"), kfId = Some("phenotype_id_3"), observed = Some("unknown"), hpoIdPhenotype = Some("HP:0000924"), externalId = Some("5"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_4"), kfId = Some("phenotype_id_4"), observed = None, hpoIdPhenotype = Some("HP:0000924"), externalId = Some("6"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_5"), kfId = Some("phenotype_id_5"), observed = Some("positive"), hpoIdPhenotype = Some("HP:unknown"), externalId = Some("7"), sourceTextPhenotype = Some("source")),
-        EPhenotype(participantId = Some("participant_id_6"), kfId = Some("phenotype_id_6"), observed = Some("negative"), hpoIdPhenotype = Some("HP:unknown"), externalId = Some("8"), sourceTextPhenotype = Some("source"))
+        EPhenotype(participant_id = Some("participant_id_1"), kf_id = Some("phenotype_id_1"), observed = Some("negative"), hpo_id_phenotype = Some("HP:0001166"), external_id = Some("1"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_2"), kf_id = Some("phenotype_id_2"), observed = Some("positive"), hpo_id_phenotype = Some("HP:0000924"), external_id = Some("2"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_1"), kf_id = Some("phenotype_id_1"), observed = Some("NEGATIVE"), snomed_id_phenotype = Some("SNOMED:1"), external_id = Some("3"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_2"), kf_id = Some("phenotype_id_2"), observed = Some("POSITIVE"), snomed_id_phenotype = Some("SNOMED:1"), external_id = Some("4"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_3"), kf_id = Some("phenotype_id_3"), observed = Some("unknown"), hpo_id_phenotype = Some("HP:0000924"), external_id = Some("5"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_4"), kf_id = Some("phenotype_id_4"), observed = None, hpo_id_phenotype = Some("HP:0000924"), external_id = Some("6"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_5"), kf_id = Some("phenotype_id_5"), observed = Some("positive"), hpo_id_phenotype = Some("HP:unknown"), external_id = Some("7"), source_text_phenotype = Some("source")),
+        EPhenotype(participant_id = Some("participant_id_6"), kf_id = Some("phenotype_id_6"), observed = Some("negative"), hpo_id_phenotype = Some("HP:unknown"), external_id = Some("8"), source_text_phenotype = Some("source"))
       ),
       ontologyData = Some(ontologiesDataSet)
     )
@@ -245,21 +245,27 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       ("participant_id_5", Phenotype_ES(external_id = Some("7"), observed = Some(true)), Nil),
       ("participant_id_6", Phenotype_ES(external_id = Some("8"), observed = Some(false)), Nil)
     )
+
+    //Array(
+    // (participant_id_1,Phenotype_ES(None,None,Some(3),None,None,None,None,Some(SNOMED:1),None,None,Some(false)),List()),
+    // (participant_id_1,Phenotype_ES(None,None,Some(1),Some(Arachnodactyly (HP:0001166)),None,None,None,None,None,None,Some(false)),List(OntologicalTermWithParents_ES(Arachnodactyly (HP:0001166),List(Slender finger (HP:0001238), Long fingers (HP:0100807)),Set(),true), OntologicalTermWithParents_ES(Abnormality of the skeletal system (HP:0000924),List(Phenotypic abnormality (HP:0000118)),Set(),false), OntologicalTermWithParents_ES(Abnormality of the upper limb (HP:0002817),List(Abnormality of limbs (HP:0040064)),Set(),false), OntologicalTermWithParents_ES(Long fingers (HP:0100807),List(Abnormality of finger (HP:0001167)),Set(),false), OntologicalTermWithParents_ES(All (HP:0000001),List(),Set(),false), OntologicalTermWithParents_ES(Abnormality of the hand (HP:0001155),List(Abnormality of the upper limb (HP:0002817)),Set(),false), OntologicalTermWithParents_ES(Abnormality of finger (HP:0001167),List(Abnormality of the hand (HP:0001155), Abnormal digit morphology (HP:0011297)),Set(),false), OntologicalTermWithParents_ES(Abnormality of limbs (HP:0040064),List(Phenotypic abnormality (HP:0000118)),Set(),false), OntologicalTermWithParents_ES(Abnormality of limb bone (HP:0040068),List(Abnormality of the skeletal system (HP:0000924), Abnormality of limbs (HP:0040064)),Set(),false), OntologicalTermWithParents_ES(Phenotypic abnormality (HP:0000118),List(All (HP:0000001)),Set(),false), OntologicalTermWithParents_ES(Abnormal appendicular skeleton morphology (HP:0011844),List(Abnormality of skeletal morphology (HP:0011842)),Set(),false), OntologicalTermWithParents_ES(Slender finger (HP:0001238),List(Abnormality of finger (HP:0001167)),Set(),false), OntologicalTermWithParents_ES(Abnormal digit morphology (HP:0011297),List(Abnormality of limb bone morphology (HP:0002813)),Set(),false), OntologicalTermWithParents_ES(Abnormality of skeletal morphology (HP:0011842),List(Abnormality of the skeletal system (HP:0000924)),Set(),false), OntologicalTermWithParents_ES(Abnormality of limb bone morphology (HP:0002813),List(Abnormal appendicular skeleton morphology (HP:0011844), Abnormality of limb bone (HP:0040068)),Set(),false))), (participant_id_2,Phenotype_ES(None,None,Some(2),None,Some(Abnormality of the skeletal system (HP:0000924)),Some(Abnormality of the skeletal system (HP:0000924)),None,None,None,Some(source),Some(true)),List(OntologicalTermWithParents_ES(Abnormality of the skeletal system (HP:0000924),List(Phenotypic abnormality (HP:0000118)),Set(),false), OntologicalTermWithParents_ES(Phenotypic abnormality (HP:0000118),List(All (HP:0000001)),Set(),false), OntologicalTermWithParents_ES(All (HP:0000001),List(),Set(),false))), (participant_id_2,Phenotype_ES(None,None,Some(4),None,None,None,None,None,Some(SNOMED:1),Some(source),Some(true)),List()), (participant_id_5,Phenotype_ES(None,None,Some(7),None,None,None,None,None,None,None,Some(true)),List()), (participant_id_6,Phenotype_ES(None,None,Some(8),None,None,None,None,None,None,None,Some(false)),List()))
+    //List(
+    // (participant_id_1,Phenotype_ES(None,None,Some(1),Some(Arachnodactyly (HP:0001166)),None,None,None,None,None,None,Some(false)),List(OntologicalTermWithParents_ES(Arachnodactyly (HP:0001166),List(Slender finger (HP:0001238), Long fingers (HP:0100807)),Set(),true))), (participant_id_1,Phenotype_ES(None,None,Some(3),None,None,None,None,Some(SNOMED:1),None,None,Some(false)),List()), (participant_id_2,Phenotype_ES(None,None,Some(2),None,Some(Abnormality of the skeletal system (HP:0000924)),Some(Abnormality of the skeletal system (HP:0000924)),None,None,None,Some(source),Some(true)),List(OntologicalTermWithParents_ES(Abnormality of the skeletal system (HP:0000924),List(Phenotypic abnormality (HP:0000118)),Set(),false))), (participant_id_2,Phenotype_ES(None,None,Some(4),None,None,None,None,None,Some(SNOMED:1),Some(source),Some(true)),List()), (participant_id_5,Phenotype_ES(None,None,Some(7),None,None,None,None,None,None,None,Some(true)),List()), (participant_id_6,Phenotype_ES(None,None,Some(8),None,None,None,None,None,None,None,Some(false)),List()))
   }
 
   "process" should "merge phenotypes and their ancestors" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val phenotype_11 = EPhenotype(kfId = Some("phenotype_id_11"), ageAtEventDays = Some(15), hpoIdPhenotype = Some("HP:0009654"), observed = Some("positive"), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"))
-    val phenotype_16 = EPhenotype(kfId = Some("phenotype_id_11"), ageAtEventDays = None, hpoIdPhenotype = Some("HP:0000175"), observed = Some("positive"), participantId = Some("participant_id_1"), externalId = Some("phenotype 11"))
-    val phenotype_13 = EPhenotype(kfId = Some("phenotype_id_13"), ageAtEventDays = Some(18), hpoIdPhenotype = Some("HP:0045009"), observed = Some("positive"), participantId = Some("participant_id_1"), externalId = Some("phenotype 13"))
-    val phenotype_14 = EPhenotype(kfId = Some("phenotype_id_14"), ageAtEventDays = Some(9999), hpoIdPhenotype = Some("HP:0031816"), participantId = Some("participant_id_1"), externalId = Some("phenotype 14")) // observed in None
-    val phenotype_15 = EPhenotype(kfId = Some("phenotype_id_15"), ageAtEventDays = Some(22), hpoIdPhenotype = Some("HP:0011879"), observed = Some("negative"), participantId = Some("participant_id_1"), externalId = Some("phenotype 15")) // Not observed
-    val phenotype_12 = EPhenotype(kfId = Some("phenotype_id_12"), participantId = Some("participant_id_1"), externalId = Some("phenotype 12")) // observed in None
+    val phenotype_11 = EPhenotype(kf_id = Some("phenotype_id_11"), age_at_event_days = Some(15), hpo_id_phenotype = Some("HP:0009654"), observed = Some("positive"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 11"))
+    val phenotype_16 = EPhenotype(kf_id = Some("phenotype_id_11"), age_at_event_days = None, hpo_id_phenotype = Some("HP:0000175"), observed = Some("positive"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 11"))
+    val phenotype_13 = EPhenotype(kf_id = Some("phenotype_id_13"), age_at_event_days = Some(18), hpo_id_phenotype = Some("HP:0045009"), observed = Some("positive"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 13"))
+    val phenotype_14 = EPhenotype(kf_id = Some("phenotype_id_14"), age_at_event_days = Some(9999), hpo_id_phenotype = Some("HP:0031816"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 14")) // observed in None
+    val phenotype_15 = EPhenotype(kf_id = Some("phenotype_id_15"), age_at_event_days = Some(22), hpo_id_phenotype = Some("HP:0011879"), observed = Some("negative"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 15")) // Not observed
+    val phenotype_12 = EPhenotype(kf_id = Some("phenotype_id_12"), participant_id = Some("participant_id_1"), external_id = Some("phenotype 12")) // observed in None
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val phenotype_2 = EPhenotype(kfId = Some("phenotype_id_2"), participantId = Some("participant_id_2"), externalId = Some("phenotype 2"))
+    val phenotype_2 = EPhenotype(kf_id = Some("phenotype_id_2"), participant_id = Some("participant_id_2"), external_id = Some("phenotype 2"))
 
-    val phenotype_3 = EPhenotype(kfId = Some("phenotype_id_3"), externalId = Some("phenotype 3"))
+    val phenotype_3 = EPhenotype(kf_id = Some("phenotype_id_3"), external_id = Some("phenotype 3"))
 
     val p3 = Participant_ES(kf_id = Some("participant_id_3"))
 

@@ -11,9 +11,9 @@ services:
     container_name: kf-etl
     hostname: kf-etl
     environment:
-        - KF_STUDY_ID="SD_YNSSAPHE"
+        - KF_STUDY_ID="SD_B8X3C1MX"
         #- KF_STUDY_ID="UNKNOWN_STUDY"
-        - KF_RELEASE_ID=RE_CEG0C8WK
+        - KF_RELEASE_ID=RE_123456
         - KF_DRIVER_MEMORY=1g
     volumes:
       - "./kf-portal-etl-docker/kf_etl.conf:/kf-etl/conf/kf_etl.conf"
@@ -23,6 +23,7 @@ services:
       - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
       - "./kf-portal-etl-docker/hpo_terms.json.gz:/kf-etl/hpo_terms.json.gz"
       - "./kf-portal-etl-docker/duo_code/duo.csv:/kf-etl/duo.csv"
+      - "./kf-portal-etl-docker/data:/kf-etl/data"
     ports:
       - "4040:4040"
   elasticsearch:

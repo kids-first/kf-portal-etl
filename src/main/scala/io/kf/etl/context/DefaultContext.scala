@@ -34,14 +34,15 @@ class DefaultContext extends AutoCloseable {
     implicit def actorSystem: ActorSystem = system
   }
 
-  private def init(): Unit = {
+  private def init(withES: Boolean): Unit = {
     system = ActorSystem()
     materializer = ActorMaterializer()(system)
     wsClientMutable = StandaloneAhcWSClient()(materializer)
     val configFileEnv: Option[String] = sys.env.get(CONFIG_FILE_URL)
     val configUrl = configFileEnv.map(c => new File(c))
     configMutable = configUrl.map(f => ConfigFactory.parseFile(f)).getOrElse(ConfigFactory.parseResources("/kf_etl.conf"))
-    esClientMutable = initESClient() // elasticsearch transport client should be created before SparkSession
+    if (withES)
+      esClientMutable = initESClient() // elasticsearch transport client should be created before SparkSession
     sparkMutable = initSparkSession()
   }
 
@@ -80,13 +81,15 @@ class DefaultContext extends AutoCloseable {
 }
 
 object DefaultContext {
-  def withContext[T](f: DefaultContext => T): T = {
+  def withContext[T](withES: Boolean)(f: DefaultContext => T): T = {
     val context = new DefaultContext()
     try {
-      context.init()
+      context.init(withES)
       f(context)
     } finally {
       context.close()
     }
   }
+
+  def withContext[T](f: DefaultContext => T): T = withContext(withES = true)(f)
 }

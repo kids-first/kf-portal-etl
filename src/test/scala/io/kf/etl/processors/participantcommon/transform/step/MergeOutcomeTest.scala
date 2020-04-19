@@ -12,14 +12,14 @@ class MergeOutcomeTest extends FlatSpec with Matchers with WithSparkSession {
 
   "process" should "merge outcomes and participant" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val outcome11 = EOutcome(kfId = Some("outcome_11"), participantId = Some("participant_id_1"), vitalStatus = Some("Alive"), ageAtEventDays = Some(100))
-    val outcome12 = EOutcome(kfId = Some("outcome_12"), participantId = Some("participant_id_1"), vitalStatus = Some("Deceased"), ageAtEventDays = Some(200))
-    val outcome13 = EOutcome(kfId = Some("outcome_13"), participantId = Some("participant_id_1"), vitalStatus = Some("Alive"), ageAtEventDays = Some(200))
+    val outcome11 = EOutcome(kf_id = Some("outcome_11"), participant_id = Some("participant_id_1"), vital_status = Some("Alive"), age_at_event_days = Some(100))
+    val outcome12 = EOutcome(kf_id = Some("outcome_12"), participant_id = Some("participant_id_1"), vital_status = Some("Deceased"), age_at_event_days = Some(200))
+    val outcome13 = EOutcome(kf_id = Some("outcome_13"), participant_id = Some("participant_id_1"), vital_status = Some("Alive"), age_at_event_days = Some(200))
 
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val outcome21 = EOutcome(kfId = Some("outcome_21"), participantId = Some("participant_id_2"), vitalStatus = Some("Alive"), diseaseRelated = Some("NA"), ageAtEventDays = Some(50))
-    //    val outcome22 = EOutcome(kfId = Some("outcome_22"), participantId = Some("participant_id_2"), vitalStatus = Some("Deceased"), diseaseRelated = Some("NA"), ageAtEventDays = None)
+    val outcome21 = EOutcome(kf_id = Some("outcome_21"), participant_id = Some("participant_id_2"), vital_status = Some("Alive"), disease_related = Some("NA"), age_at_event_days = Some(50))
+    //    val outcome22 = EOutcome(kfId = Some("outcome_22"), participant_id = Some("participant_id_2"), vitalStatus = Some("Deceased"), diseaseRelated = Some("NA"), ageAtEventDays = None)
     val p3 = Participant_ES(kf_id = Some("participant_id_3"))
 
     val entityDataset = buildEntityDataSet(

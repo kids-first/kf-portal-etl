@@ -1,10 +1,10 @@
 package io.kf.etl.models.dataservice
 
 case class EStudyFile(
-    kfId: scala.Option[String] = None,
-    modifiedAt: scala.Option[String] = None,
-    createdAt: scala.Option[String] = None,
-    fileName: scala.Option[String] = None,
-    studyId: scala.Option[String] = None,
-    visible: scala.Option[Boolean] = None
+                       kf_id: scala.Option[String] = None,
+                       modified_at: scala.Option[String] = None,
+                       created_at: scala.Option[String] = None,
+                       file_name: scala.Option[String] = None,
+                       study_id: scala.Option[String] = None,
+                       visible: scala.Option[Boolean] = None
     )

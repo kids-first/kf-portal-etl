@@ -1,8 +1,8 @@
 package io.kf.etl.models.dataservice
 
 case class EBiospecimenDiagnosis(
-    kfId: scala.Option[String] = None,
-    biospecimenId: scala.Option[String] = None,
-    diagnosisId: scala.Option[String] = None,
-    visible: scala.Option[Boolean] = None
+                                  kf_id: scala.Option[String] = None,
+                                  biospecimen_id: scala.Option[String] = None,
+                                  diagnosis_id: scala.Option[String] = None,
+                                  visible: scala.Option[Boolean] = None
     )

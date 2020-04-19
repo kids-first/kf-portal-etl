@@ -32,21 +32,21 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
   "process" should "merge diagnoses and participant" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val diagnoses11 = EDiagnosis(kfId = Some("diagnosis_11"), participantId = Some("participant_id_1"))
-    val diagnoses12 = EDiagnosis(kfId = Some("diagnosis_12"), participantId = Some("participant_id_1"))
+    val diagnoses11 = EDiagnosis(kf_id = Some("diagnosis_11"), participant_id = Some("participant_id_1"))
+    val diagnoses12 = EDiagnosis(kf_id = Some("diagnosis_12"), participant_id = Some("participant_id_1"))
 
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val diagnoses21 = EDiagnosis(kfId = Some("diagnosis_21"), participantId = Some("participant_id_2"), mondoIdDiagnosis = Some("MONDO:0043197"),diagnosisText = Some("ruvalcaba churesigaew myhre syndrome"), ageAtEventDays = Some(15))
-    val diagnoses22 = EDiagnosis(kfId = Some("diagnosis_22"), participantId = Some("participant_id_2"), mondoIdDiagnosis = Some("MONDO:0000232"), ageAtEventDays = Some(18))
+    val diagnoses21 = EDiagnosis(kf_id = Some("diagnosis_21"), participant_id = Some("participant_id_2"), mondo_id_diagnosis = Some("MONDO:0043197"),diagnosis_text = Some("ruvalcaba churesigaew myhre syndrome"), age_at_event_days = Some(15))
+    val diagnoses22 = EDiagnosis(kf_id = Some("diagnosis_22"), participant_id = Some("participant_id_2"), mondo_id_diagnosis = Some("MONDO:0000232"), age_at_event_days = Some(18))
 
-    val diagnoses3 = EDiagnosis(kfId = Some("diagnosis_3"))
+    val diagnoses3 = EDiagnosis(kf_id = Some("diagnosis_3"))
 
     val p3 = Participant_ES(kf_id = Some("participant_id_3"))
 
-    val biospecimenDiagnosis1 = EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_11"), biospecimenId = Some("biospecimen_id_1"))
-    val biospecimenDiagnosis2 = EBiospecimenDiagnosis(kfId = Some("bd2"), diagnosisId = Some("diagnosis_11"), biospecimenId = Some("biospecimen_id_2"))
-    val biospecimenDiagnosis3 = EBiospecimenDiagnosis(kfId = Some("bd3"), diagnosisId = Some("diagnosis_22"), biospecimenId = Some("biospecimen_id_3"))
+    val biospecimenDiagnosis1 = EBiospecimenDiagnosis(kf_id = Some("bd1"), diagnosis_id = Some("diagnosis_11"), biospecimen_id = Some("biospecimen_id_1"))
+    val biospecimenDiagnosis2 = EBiospecimenDiagnosis(kf_id = Some("bd2"), diagnosis_id = Some("diagnosis_11"), biospecimen_id = Some("biospecimen_id_2"))
+    val biospecimenDiagnosis3 = EBiospecimenDiagnosis(kf_id = Some("bd3"), diagnosis_id = Some("diagnosis_22"), biospecimen_id = Some("biospecimen_id_3"))
 
 
     val entityDataset = buildEntityDataSet(

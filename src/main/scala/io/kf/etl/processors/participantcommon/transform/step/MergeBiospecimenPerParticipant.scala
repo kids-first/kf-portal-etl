@@ -20,7 +20,7 @@ object MergeBiospecimenPerParticipant {
 
     participants.joinWith(
       biospecimenJoinedDuoCode,
-      participants.col("kf_id") === biospecimenJoinedDuoCode.col("participantId"),
+      participants.col("kf_id") === biospecimenJoinedDuoCode.col("participant_id"),
       "left_outer"
     ).groupByKey { case (participant, _) => participant.kf_id }
       .mapGroups((_, groupsIterator) => {
@@ -38,22 +38,22 @@ object MergeBiospecimenPerParticipant {
   private def enrichBiospecimenWithNcitTerms(biospecimens: Dataset[EBiospecimen], ncitTerms: Dataset[OntologyTermBasic])(implicit spark: SparkSession) = {
     import spark.implicits._
     biospecimens
-      .joinWith(ncitTerms, biospecimens.col("ncitIdAnatomicalSite") === ncitTerms.col("id"), "left")
+      .joinWith(ncitTerms, biospecimens.col("ncit_id_anatomical_site") === ncitTerms.col("id"), "left")
       .map {
-        case (biospeciem, term) if term != null => biospeciem.copy(ncitIdAnatomicalSite = formatTerm(term))
+        case (biospeciem, term) if term != null => biospeciem.copy(ncit_id_anatomical_site = formatTerm(term))
         case (biospecimen, _) => biospecimen
       }
-      .joinWith(ncitTerms, $"ncitIdTissueType" === ncitTerms.col("id"), "left")
+      .joinWith(ncitTerms, $"ncit_id_tissue_type" === ncitTerms.col("id"), "left")
       .map {
-        case (biospeciem, term) if term != null => biospeciem.copy(ncitIdTissueType = formatTerm(term))
+        case (biospeciem, term) if term != null => biospeciem.copy(ncit_id_tissue_type = formatTerm(term))
         case (biospeciem, _) => biospeciem
       }
   }
 
   def enrichBiospecimenWithDiagnoses(biospecimens: Dataset[EBiospecimen], biospecimensDiagnoses: Dataset[EBiospecimenDiagnosis], diagnoses: Dataset[EDiagnosis])(implicit spark: SparkSession): Dataset[EBiospecimen] = {
     import spark.implicits._
-    val ds: Dataset[EBiospecimen] = biospecimens.joinWith(biospecimensDiagnoses, biospecimens("kfId") === biospecimensDiagnoses("biospecimenId"), joinType = "left")
-      .joinWith(diagnoses, diagnoses("kfId") === $"_2.diagnosisId", joinType = "left")
+    val ds: Dataset[EBiospecimen] = biospecimens.joinWith(biospecimensDiagnoses, biospecimens("kf_id") === biospecimensDiagnoses("biospecimen_id"), joinType = "left")
+      .joinWith(diagnoses, diagnoses("kf_id") === $"_2.diagnosis_id", joinType = "left")
       .map { case ((b, _), d) => (b, d) }
       .groupByKey(_._1)
       .mapGroups(
@@ -66,7 +66,7 @@ object MergeBiospecimenPerParticipant {
     import spark.implicits._
 
     val bioId_duoId = biospecimens
-      .withColumn("duoId", explode_outer($"duoIds"))
+      .withColumn("duo_id", explode_outer($"duo_ids"))
 
     val formattedDuocodes = duoCodeDataSet.map(d => (d.id, d.toString))
       .withColumnRenamed("_1", "id")
@@ -74,17 +74,17 @@ object MergeBiospecimenPerParticipant {
 
     val b = bioId_duoId.joinWith(
       formattedDuocodes,
-      $"duoId" === formattedDuocodes("id"),
+      $"duo_id" === formattedDuocodes("id"),
       "left_outer"
     )
       .withColumnRenamed("_1", "biospecimen")
-      .withColumn("duocode", when($"_2".isNotNull, $"_2.label").otherwise($"biospecimen.duoId"))
+      .withColumn("duocode", when($"_2".isNotNull, $"_2.label").otherwise($"biospecimen.duo_id"))
       .drop("_2")
       .as[(EBiospecimen, String)]
 
     val df = b
       .groupBy(
-        "biospecimen.kfId"
+        "biospecimen.kf_id"
       )
       .agg(first("biospecimen") as "biospecimen", collect_list("duocode") as "duocodes")
       .select("biospecimen", "duocodes")
@@ -93,7 +93,7 @@ object MergeBiospecimenPerParticipant {
     df.map {
       case (biospecimen, Nil) => biospecimen
       case (biospecimen, duocodes) =>
-        biospecimen.copy(duoIds = duocodes)
+        biospecimen.copy(duo_ids = duocodes)
     }
   }
 }

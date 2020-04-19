@@ -12,7 +12,7 @@ object MergeOutcome {
 
     participants.joinWith(
       entityDataset.outcomes,
-      participants.col("kf_id") === entityDataset.outcomes.col("participantId"),
+      participants.col("kf_id") === entityDataset.outcomes.col("participant_id"),
       "left_outer"
     )
       .as[(Participant_ES, Option[EOutcome])]
@@ -24,10 +24,10 @@ object MergeOutcome {
 
         val outcomes = groups.flatMap(_._2)
         if (outcomes.nonEmpty) {
-          val deceasedOutcome: Option[EOutcome] = outcomes.find(o => o.vitalStatus.contains("Deceased"))
+          val deceasedOutcome: Option[EOutcome] = outcomes.find(o => o.vital_status.contains("Deceased"))
           deceasedOutcome match {
             case None =>
-              val lastOutcome = outcomes.maxBy(_.ageAtEventDays)
+              val lastOutcome = outcomes.maxBy(_.age_at_event_days)
               participant.copy(
                 outcome = Some(EntityConverter.EOutcomeToOutcomeES(lastOutcome))
               )

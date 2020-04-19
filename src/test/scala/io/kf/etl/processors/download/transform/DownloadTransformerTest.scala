@@ -46,12 +46,12 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
   "createDiagnosis" should "return enriched diagnosis with ontlogy terms" in {
 
     val diagnoses = Seq(
-      EDiagnosis(kfId = Some("diagnosis_1"), mondoIdDiagnosis = Some("MONDO:0005072"), ncitIdDiagnosis = Some("NCIT:C0475358"), sourceTextDiagnosis = Some("Neuroblastoma source text")),
-      EDiagnosis(kfId = Some("diagnosis_2"), ncitIdDiagnosis = Some("NCIT:C0475358"), sourceTextDiagnosis = Some("Neuroblastoma source text")),
-      EDiagnosis(kfId = Some("diagnosis_3"), sourceTextDiagnosis = Some("Neuroblastoma source text")),
-      EDiagnosis(kfId = Some("diagnosis_4")),
-      EDiagnosis(kfId = Some("diagnosis_5"), mondoIdDiagnosis = Some("MONDO:UNKNOWN"), ncitIdDiagnosis = Some("NCIT:C0475358"), sourceTextDiagnosis = Some("Neuroblastoma source text")),
-      EDiagnosis(kfId = Some("diagnosis_6"), ncitIdDiagnosis = Some("NCIT:UNKNOWN"), sourceTextDiagnosis = Some("Neuroblastoma source text"))
+      EDiagnosis(kf_id = Some("diagnosis_1"), mondo_id_diagnosis = Some("MONDO:0005072"), ncit_id_diagnosis = Some("NCIT:C0475358"), source_text_diagnosis = Some("Neuroblastoma source text")),
+      EDiagnosis(kf_id = Some("diagnosis_2"), ncit_id_diagnosis = Some("NCIT:C0475358"), source_text_diagnosis = Some("Neuroblastoma source text")),
+      EDiagnosis(kf_id = Some("diagnosis_3"), source_text_diagnosis = Some("Neuroblastoma source text")),
+      EDiagnosis(kf_id = Some("diagnosis_4")),
+      EDiagnosis(kf_id = Some("diagnosis_5"), mondo_id_diagnosis = Some("MONDO:UNKNOWN"), ncit_id_diagnosis = Some("NCIT:C0475358"), source_text_diagnosis = Some("Neuroblastoma source text")),
+      EDiagnosis(kf_id = Some("diagnosis_6"), ncit_id_diagnosis = Some("NCIT:UNKNOWN"), source_text_diagnosis = Some("Neuroblastoma source text"))
     )
     val ontologiesDataset = buildOntologiesDataSet(
       ncitTerms = Seq(
@@ -68,12 +68,12 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
     val result = DownloadTransformer.createDiagnosis(diagnoses, ontologiesDataset, spark).collect()
 
     result should contain theSameElementsAs Seq(
-      EDiagnosis(kfId = Some("diagnosis_1"), mondoIdDiagnosis = Some("MONDO:0005072"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma Mondo")),
-      EDiagnosis(kfId = Some("diagnosis_2"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma NCIT")),
-      EDiagnosis(kfId = Some("diagnosis_3"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma source text")),
-      EDiagnosis(kfId = Some("diagnosis_4")),
-      EDiagnosis(kfId = Some("diagnosis_5"), ncitIdDiagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma NCIT")),
-      EDiagnosis(kfId = Some("diagnosis_6"), sourceTextDiagnosis = Some("Neuroblastoma source text"), diagnosisText = Some("Neuroblastoma source text"))
+      EDiagnosis(kf_id = Some("diagnosis_1"), mondo_id_diagnosis = Some("MONDO:0005072"), ncit_id_diagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma Mondo")),
+      EDiagnosis(kf_id = Some("diagnosis_2"), ncit_id_diagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma NCIT")),
+      EDiagnosis(kf_id = Some("diagnosis_3"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma source text")),
+      EDiagnosis(kf_id = Some("diagnosis_4")),
+      EDiagnosis(kf_id = Some("diagnosis_5"), ncit_id_diagnosis = Some("Neuroblastoma NCIT (NCIT:C0475358)"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma NCIT")),
+      EDiagnosis(kf_id = Some("diagnosis_6"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma source text"))
     )
 
   }

@@ -39,7 +39,7 @@ object OntologyUtil {
           OntologicalTermWithParents_ES(
             name = ontologyTermBasic.toString,
             parents = if(ontologyTermBasic != null) ontologyTermBasic.parents else Nil,
-            age_at_event_days = observable.ageAtEventDays.toSet
+            age_at_event_days = observable.age_at_event_days.toSet
           )
         } else null
       )}

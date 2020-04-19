@@ -14,14 +14,14 @@ object MergeDiagnosis {
     import spark.implicits._
     val diagnosisWithBiospecimens = enrichDiagnosesWithBiospecimens(biospecimenDiagnoses, diagnoses)
 
-    val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participantId.isDefined)
+    val filteredDiagnosis = diagnosisWithBiospecimens.filter(_.participant_id.isDefined)
 
-    val diagnosisWithBioAndMondo = OntologyUtil.mapOntologyTermsToObservable(filteredDiagnosis, "mondoIdDiagnosis")(ontologyData.mondoTerms)
+    val diagnosisWithBioAndMondo = OntologyUtil.mapOntologyTermsToObservable(filteredDiagnosis, "mondo_id_diagnosis")(ontologyData.mondoTerms)
 
     participants
       .joinWith(
         diagnosisWithBioAndMondo,
-        participants.col("kf_id") === diagnosisWithBioAndMondo.col("observable.participantId"),
+        participants.col("kf_id") === diagnosisWithBioAndMondo.col("observable.participant_id"),
         "left_outer"
       )
       .groupByKey { case (participant, _) => participant.kf_id }
@@ -35,7 +35,7 @@ object MergeDiagnosis {
               Seq(OntologicalTermWithParents_ES(
                 name = ontologyTerm.toString,
                 parents = ontologyTerm.parents,
-                age_at_event_days = if(eDiagnosis.ageAtEventDays.isDefined) Set(eDiagnosis.ageAtEventDays.get) else Set.empty[Int],
+                age_at_event_days = if(eDiagnosis.age_at_event_days.isDefined) Set(eDiagnosis.age_at_event_days.get) else Set.empty[Int],
                 is_leaf = ontologyTerm.is_leaf
               ))} else Nil
             val mergedOntoTermsWParents = currentOntologicalTerm ++ ontoTermsWParents
@@ -52,10 +52,10 @@ object MergeDiagnosis {
 
   def enrichDiagnosesWithBiospecimens(biospecimensDiagnoses: Dataset[EBiospecimenDiagnosis], diagnoses: Dataset[EDiagnosis])(implicit spark: SparkSession): Dataset[EDiagnosis] = {
     import spark.implicits._
-    val ds: Dataset[EDiagnosis] = diagnoses.joinWith(biospecimensDiagnoses, diagnoses("kfId") === biospecimensDiagnoses("diagnosisId"), joinType = "left")
+    val ds: Dataset[EDiagnosis] = diagnoses.joinWith(biospecimensDiagnoses, diagnoses("kf_id") === biospecimensDiagnoses("diagnosis_id"), joinType = "left")
       .groupByKey(_._1)
       .mapGroups(
-        (diagnosis, iter) => diagnosis.copy(biospecimens = iter.collect { case (_, d) if d != null && d.biospecimenId.isDefined => d.biospecimenId.get }.toSeq))
+        (diagnosis, iter) => diagnosis.copy(biospecimens = iter.collect { case (_, d) if d != null && d.biospecimen_id.isDefined => d.biospecimen_id.get }.toSeq))
     ds
   }
 }

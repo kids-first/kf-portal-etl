@@ -24,11 +24,11 @@ object MergeFamily {
     import entityDataset._
     import spark.implicits._
     val datatypeByParticipant = participants
-      .join(biospecimens, participants("kfId") === biospecimens("participantId"))
-      .join(biospecimenGenomicFiles, biospecimens("kfId") === biospecimenGenomicFiles("biospecimenId"))
-      .join(genomicFiles, biospecimenGenomicFiles("genomicFileId") === genomicFiles("kfId"))
-      .select(participants("kfId") as "participantId", genomicFiles("dataType") as "dataType")
-      .groupBy($"participantId").agg(collect_list("dataType") as "dataTypes")
+      .join(biospecimens, participants("kf_id") === biospecimens("participant_id"))
+      .join(biospecimenGenomicFiles, biospecimens("kf_id") === biospecimenGenomicFiles("biospecimen_id"))
+      .join(genomicFiles, biospecimenGenomicFiles("genomic_file_id") === genomicFiles("kf_id"))
+      .select(participants("kf_id") as "participant_id", genomicFiles("data_type") as "data_type")
+      .groupBy($"participant_id").agg(collect_list("data_type") as "data_types")
       .as[(String, Seq[String])]
       .collect()
       .toMap
@@ -50,8 +50,8 @@ object MergeFamily {
     val g: Dataset[(String, Seq[(String, String)])] = entityDataset.familyRelationships
       .flatMap(tf => {
         Seq(
-          (tf.participant1, (tf.participant2, tf.participant2ToParticipant1Relation)),
-          (tf.participant2, (tf.participant1, tf.participant1ToParticipant2Relation))
+          (tf.participant1, (tf.participant2, tf.participant2_to_participant1_relation)),
+          (tf.participant2, (tf.participant1, tf.participant1_to_participant2_relation))
         )
       })
       .groupByKey(_._1)

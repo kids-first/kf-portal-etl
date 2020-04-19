@@ -55,8 +55,8 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
         EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EStudy]("/studies"), 60.seconds)
 
       result shouldBe Seq(
-        EStudy(kfId = Some("1"), name = Some("Study 1")),
-        EStudy(kfId = Some("2"), name = Some("Study 2"))
+        EStudy(kf_id = Some("1"), name = Some("Study 1")),
+        EStudy(kf_id = Some("2"), name = Some("Study 2"))
 
       )
 
@@ -113,8 +113,8 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
       EntityDataRetriever(DataServiceConfig(url, 1, "", "")).retrieve[EStudy]("/studies").map {
         r =>
           r shouldBe Seq(
-            EStudy(kfId = Some("1"), name = Some("Study 1")),
-            EStudy(kfId = Some("2"), name = Some("Study 2"))
+            EStudy(kf_id = Some("1"), name = Some("Study 1")),
+            EStudy(kf_id = Some("2"), name = Some("Study 2"))
           )
           handlerPage1.count shouldBe 1
           handlerPage2.count shouldBe 1
@@ -152,8 +152,8 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
         EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EStudy]("/studies", retries = 3).map {
           r =>
             r shouldBe Seq(
-              EStudy(kfId = Some("1"), name = Some("Study 1")),
-              EStudy(kfId = Some("2"), name = Some("Study 2"))
+              EStudy(kf_id = Some("1"), name = Some("Study 1")),
+              EStudy(kf_id = Some("2"), name = Some("Study 2"))
 
             )
             handler.count shouldBe 2
@@ -212,8 +212,8 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
         val result = Await.result(
           EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EBiospecimenDiagnosis]("/biospecimen-diagnoses"), 60.seconds)
         result shouldBe Seq(
-          EBiospecimenDiagnosis(kfId = Some("BD_EY46KMKQ"), biospecimenId = Some("BS_CGXTFM67"), diagnosisId = Some("DG_BXRD7128"), visible = Some(true)),
-          EBiospecimenDiagnosis(kfId = Some("BD_HTXNZM74"), biospecimenId = Some("BS_3Z40EZHD"), diagnosisId = Some("DG_PBK7GH8K"), visible = Some(true) )
+          EBiospecimenDiagnosis(kf_id = Some("BD_EY46KMKQ"), biospecimen_id = Some("BS_CGXTFM67"), diagnosis_id = Some("DG_BXRD7128"), visible = Some(true)),
+          EBiospecimenDiagnosis(kf_id = Some("BD_HTXNZM74"), biospecimen_id = Some("BS_3Z40EZHD"), diagnosis_id = Some("DG_PBK7GH8K"), visible = Some(true) )
 
         )
 

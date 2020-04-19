@@ -23,15 +23,15 @@ object FeatureCentricTransformer {
 
     val bioId_GF = entityDataset.biospecimenGenomicFiles.joinWith(
       files,
-      $"genomicFileId" === $"kf_id",
+      $"genomic_file_id" === files("kf_id"),
       "left_outer"
     )
-      .select("_1.biospecimenId", "_2")
-      .withColumnRenamed("_2", "genomicFiles")
+      .select("_1.biospecimen_id", "_2")
+      .withColumnRenamed("_2", "genomic_files")
       .groupBy(
-        "biospecimenId"
+        "biospecimen_id"
       )
-      .agg(collect_list("genomicFiles") as "genomicFiles")
+      .agg(collect_list("genomic_files") as "genomic_files")
       .as[(String, Seq[GenomicFile_ES])]
 
 
@@ -40,21 +40,21 @@ object FeatureCentricTransformer {
 
     participantExploded.joinWith(
       bioId_GF,
-      participantExploded.col("biospecimen.kf_id") === bioId_GF.col("biospecimenId"),
+      participantExploded.col("biospecimen.kf_id") === bioId_GF.col("biospecimen_id"),
       "left_outer"
-    ).select($"_1" as "participant", $"_2.genomicFiles" as "genomicFiles", $"_1.biospecimen" as "biospecimen")
+    ).select($"_1" as "participant", $"_2.genomic_files" as "genomic_files", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
       .map {
         case (p, gfs, null) => (p, gfs, null)
         case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
       }
       .withColumnRenamed("_1", "participant")
-      .withColumnRenamed("_2", "genomicFiles")
+      .withColumnRenamed("_2", "genomic_files")
       .withColumnRenamed("_3", "biospecimens")
       .groupBy("participant.kf_id")
       .agg(
         first("participant") as "participant",
-        collect_list("genomicFiles") as "genomicFiles",
+        collect_list("genomic_files") as "genomic_files",
         collect_list("biospecimens") as "biospecimens")
       .drop("kf_id")
       .as[(Participant_ES, Seq[Seq[GenomicFile_ES]], Seq[Biospecimen_ES])]
@@ -74,23 +74,23 @@ object FeatureCentricTransformer {
 
     files.joinWith(
       entityDataset.biospecimenGenomicFiles,
-      files.col("kf_id") === $"genomicFileId",
+      files.col("kf_id") === $"genomic_file_id",
       "left_outer"
     )
-      .select("_1", "_2.biospecimenId")
+      .select("_1", "_2.biospecimen_id")
       .as[(GenomicFile_ES, String)]
       .joinWith(
         participantExploded,
-        $"biospecimenId" === participantExploded.col("biospecimen.kf_id"),
+        $"biospecimen_id" === participantExploded.col("biospecimen.kf_id"),
         "left_outer"
       )
       .select(
-        $"_1._1" as "genomicFile",
+        $"_1._1" as "genomic_file",
         $"_2" as "participant",
         $"_2.biospecimen" as "biospecimen"
       )
       .groupBy(
-        "genomicFile", "participant.kf_id"
+        "genomic_file", "participant.kf_id"
       )
       .agg(
         first("participant") as "participant",
@@ -102,9 +102,9 @@ object FeatureCentricTransformer {
         case (gf, null, _) => (gf, null)
         case (gf, p, bs) => (gf, p.copy(biospecimens = bs))
       }
-      .withColumnRenamed("_1", "genomicFile")
+      .withColumnRenamed("_1", "genomic_file")
       .withColumnRenamed("_2", "participant")
-      .groupBy("genomicFile")
+      .groupBy("genomic_file")
       .agg(
         collect_list("participant") as "participants"
       )
@@ -122,24 +122,24 @@ object FeatureCentricTransformer {
     eSequencingExperiment
       .joinWith(
         eSequencingExperimentGenomicFile,
-        eSequencingExperiment.col("kfId") === eSequencingExperimentGenomicFile.col("sequencingExperiment"),
+        eSequencingExperiment.col("kf_id") === eSequencingExperimentGenomicFile.col("sequencing_experiment"),
         "left_outer"
       )
       .map { case (sequencingExperiment, sequencingExperimentGenomicFile) =>
         SequencingExperimentES_GenomicFileId(
-          sequencingExperiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(sequencingExperiment),
-          genomicFileId = if (sequencingExperimentGenomicFile != null) sequencingExperimentGenomicFile.genomicFile else None
+          sequencing_experiment = EntityConverter.ESequencingExperimentToSequencingExperimentES(sequencingExperiment),
+          genomic_file_id = if (sequencingExperimentGenomicFile != null) sequencingExperimentGenomicFile.genomic_file else None
         )
       }
-      .groupByKey(_.genomicFileId)
+      .groupByKey(_.genomic_file_id)
       .mapGroups((fileId, iterator) => {
         fileId match {
           case Some(id) =>
 
-            val experiments = iterator.map(_.sequencingExperiment).toSeq
+            val experiments = iterator.map(_.sequencing_experiment).toSeq
             SequencingExperimentsES_GenomicFileId(
-              genomicFileId = id,
-              sequencingExperiments = experiments
+              genomic_file_id = id,
+              sequencing_experiments = experiments
             )
           case None => null
         }
@@ -153,12 +153,12 @@ object FeatureCentricTransformer {
                                                           ): Dataset[GenomicFile_ES] = {
     genomicFile.joinWith(
       sequencingExperimentsES_GenomicFileId,
-      genomicFile.col("kfId") === sequencingExperimentsES_GenomicFileId.col("genomicFileId"),
+      genomicFile.col("kf_id") === sequencingExperimentsES_GenomicFileId.col("genomic_file_id"),
       "left_outer"
     ).map(tuple => {
       Option(tuple._2) match {
         case Some(_) =>
-          EntityConverter.EGenomicFileToGenomicFileES(tuple._1, tuple._2.sequencingExperiments)
+          EntityConverter.EGenomicFileToGenomicFileES(tuple._1, tuple._2.sequencing_experiments)
         case None => EntityConverter.EGenomicFileToGenomicFileES(tuple._1, Seq.empty)
       }
     })

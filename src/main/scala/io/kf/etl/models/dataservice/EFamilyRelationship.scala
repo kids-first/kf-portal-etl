@@ -1,12 +1,12 @@
 package io.kf.etl.models.dataservice
 
 case class EFamilyRelationship(
-    kfId: scala.Option[String] = None,
-    modifiedAt: scala.Option[String] = None,
-    createdAt: scala.Option[String] = None,
-    participant1: scala.Option[String] = None,
-    participant2: scala.Option[String] = None,
-    participant1ToParticipant2Relation: scala.Option[String] = None,
-    participant2ToParticipant1Relation: scala.Option[String] = None,
-    visible: scala.Option[Boolean] = None
+                                kf_id: scala.Option[String] = None,
+                                modified_at: scala.Option[String] = None,
+                                created_at: scala.Option[String] = None,
+                                participant1: scala.Option[String] = None,
+                                participant2: scala.Option[String] = None,
+                                participant1_to_participant2_relation: scala.Option[String] = None,
+                                participant2_to_participant1_relation: scala.Option[String] = None,
+                                visible: scala.Option[Boolean] = None
     )

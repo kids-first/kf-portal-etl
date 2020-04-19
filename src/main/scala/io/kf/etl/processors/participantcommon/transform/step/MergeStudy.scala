@@ -10,7 +10,7 @@ object MergeStudy {
     import spark.implicits._
     entityDataset.participants.joinWith(
       entityDataset.studies,
-      entityDataset.participants.col("studyId") === entityDataset.studies.col("kfId"),
+      entityDataset.participants.col("study_id") === entityDataset.studies.col("kf_id"),
       "left_outer"
     ).map(tuple => {
       val study = EntityConverter.EStudyToStudyES(tuple._2)
