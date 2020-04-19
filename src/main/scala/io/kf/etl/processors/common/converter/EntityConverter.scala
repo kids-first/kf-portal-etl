@@ -1,98 +1,96 @@
 package io.kf.etl.processors.common.converter
 
 import io.kf.etl.models.dataservice._
-import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.es._
-import org.apache.spark.sql.Dataset
 
 object EntityConverter {
   
   def EStudyToStudyES(study: EStudy): Study_ES = {
     Study_ES(
-      kf_id = study.kfId,
+      kf_id = study.kf_id,
       attribution = study.attribution,
       name = study.name,
       version = study.version,
-      external_id = study.externalId,
-      release_status = study.releaseStatus,
-      data_access_authority = study.dataAccessAuthority,
-      short_name = study.shortName
+      external_id = study.external_id,
+      release_status = study.release_status,
+      data_access_authority = study.data_access_authority,
+      short_name = study.short_name
     )
   }
   
   def EParticipantToParticipantES(participant: EParticipant): Participant_ES = {
     Participant_ES(
-      affected_status = participant.affectedStatus,
-      alias_group = participant.aliasGroup,
-      diagnosis_category = participant.diagnosisCategory,
+      affected_status = participant.affected_status,
+      alias_group = participant.alias_group,
+      diagnosis_category = participant.diagnosis_category,
       ethnicity = participant.ethnicity,
-      external_id = participant.externalId,
-      family_id = participant.familyId,
+      external_id = participant.external_id,
+      family_id = participant.family_id,
       gender = participant.gender,
-      is_proband = participant.isProband,
-      kf_id = participant.kfId,
+      is_proband = participant.is_proband,
+      kf_id = participant.kf_id,
       race = participant.race
     )
   }
   
   def EBiospecimenToBiospecimenES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): Biospecimen_ES = {
     Biospecimen_ES(
-      age_at_event_days = bio.ageAtEventDays,
-      analyte_type = bio.analyteType,
+      age_at_event_days = bio.age_at_event_days,
+      analyte_type = bio.analyte_type,
       composition = bio.composition,
-      concentration_mg_per_ml = bio.concentrationMgPerMl,
-      consent_type = bio.consentType,
-      duo_code = bio.duoIds,
-      dbgap_consent_code = bio.dbgapConsentCode,
-      external_aliquot_id = bio.externalAliquotId,
-      external_sample_id = bio.externalSampleId,
-      kf_id = bio.kfId,
-      method_of_sample_procurement = bio.methodOfSampleProcurement,
-      ncit_id_anatomical_site = bio.ncitIdAnatomicalSite,
-      ncit_id_tissue_type = bio.ncitIdTissueType,
-      shipment_date = bio.shipmentDate,
-      shipment_origin = bio.shipmentOrigin,
+      concentration_mg_per_ml = bio.concentration_mg_per_ml,
+      consent_type = bio.consent_type,
+      duo_code = bio.duo_ids,
+      dbgap_consent_code = bio.dbgap_consent_code,
+      external_aliquot_id = bio.external_aliquot_id,
+      external_sample_id = bio.external_sample_id,
+      kf_id = bio.kf_id,
+      method_of_sample_procurement = bio.method_of_sample_procurement,
+      ncit_id_anatomical_site = bio.ncit_id_anatomical_site,
+      ncit_id_tissue_type = bio.ncit_id_tissue_type,
+      shipment_date = bio.shipment_date,
+      shipment_origin = bio.shipment_origin,
       genomic_files = gfiles,
-      source_text_tumor_descriptor = bio.sourceTextTumorDescriptor,
-      source_text_tissue_type = bio.sourceTextTissueType,
-      source_text_anatomical_site = bio.sourceTextAnatomicalSite,
-      spatial_descriptor = bio.spatialDescriptor,
-      uberon_id_anatomical_site = bio.uberonIdAnatomicalSite,
-      volume_ml = bio.volumeMl,
+      source_text_tumor_descriptor = bio.source_text_tumor_descriptor,
+      source_text_tissue_type = bio.source_text_tissue_type,
+      source_text_anatomical_site = bio.source_text_anatomical_site,
+      spatial_descriptor = bio.spatial_descriptor,
+      uberon_id_anatomical_site = bio.uberon_id_anatomical_site,
+      volume_ml = bio.volume_ml,
       diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
-      sequencing_center_id = bio.sequencingCenterId
+      sequencing_center_id = bio.sequencing_center_id
     )
   }
 
   def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
-    val mondoIdDiagnosos = (diagnosis.mondoIdDiagnosis, diagnosis.diagnosisText) match {
+    val mondoIdDiagnosos = (diagnosis.mondo_id_diagnosis, diagnosis.diagnosis_text) match {
       case (Some(id), Some(s)) => Some(s"$s ($id)")
       case (Some(id), None) => Some(s"$id")
       case _ => None
     }
     Diagnosis_ES(
-      age_at_event_days = diagnosis.ageAtEventDays,
-      diagnosis_category = diagnosis.diagnosisCategory,
-      external_id = diagnosis.externalId,
-      icd_id_diagnosis = diagnosis.icdIdDiagnosis,
-      kf_id = diagnosis.kfId,
+      age_at_event_days = diagnosis.age_at_event_days,
+      diagnosis_category = diagnosis.diagnosis_category,
+      external_id = diagnosis.external_id,
+      icd_id_diagnosis = diagnosis.icd_id_diagnosis,
+      kf_id = diagnosis.kf_id,
       mondo_id_diagnosis = mondoIdDiagnosos,
-      source_text_diagnosis = diagnosis.sourceTextDiagnosis,
-      uberon_id_tumor_location = diagnosis.uberonIdTumorLocation,
-      source_text_tumor_location = diagnosis.sourceTextTumorLocation,
-      ncit_id_diagnosis = diagnosis.ncitIdDiagnosis,
-      spatial_descriptor = diagnosis.spatialDescriptor,
-      diagnosis = diagnosis.diagnosisText,
+      source_text_diagnosis = diagnosis.source_text_diagnosis,
+      uberon_id_tumor_location = diagnosis.uberon_id_tumor_location,
+      source_text_tumor_location = diagnosis.source_text_tumor_location,
+      ncit_id_diagnosis = diagnosis.ncit_id_diagnosis,
+      spatial_descriptor = diagnosis.spatial_descriptor,
+      diagnosis = diagnosis.diagnosis_text,
       biospecimens = diagnosis.biospecimens
     )
   }
   
   def EOutcomeToOutcomeES(outcome: EOutcome): Outcome_ES = {
     Outcome_ES(
-      age_at_event_days = outcome.ageAtEventDays,
-      disease_related = outcome.diseaseRelated,
-      kf_id = outcome.kfId,
-      vital_status = outcome.vitalStatus
+      age_at_event_days = outcome.age_at_event_days,
+      disease_related = outcome.disease_related,
+      kf_id = outcome.kf_id,
+      vital_status = outcome.vital_status
     )
   }
 
@@ -103,20 +101,20 @@ object EntityConverter {
   def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): GenomicFile_ES = {
     GenomicFile_ES(
       acl = gf.acl,
-      access_urls = gf.accessUrls,
+      access_urls = gf.access_urls,
       availability = gf.availability,
-      controlled_access = gf.controlledAccess,
-      data_type = gf.dataType,
-      external_id = gf.externalId,
-      file_format = gf.fileFormat,
-      file_name = gf.fileName,
-      instrument_models = gf.instrumentModels,
-      is_harmonized = gf.isHarmonized,
-      is_paired_end = gf.isPairedEnd,
-      kf_id = gf.kfId,
-      latest_did = gf.latestDid,
+      controlled_access = gf.controlled_access,
+      data_type = gf.data_type,
+      external_id = gf.external_id,
+      file_format = gf.file_format,
+      file_name = gf.file_name,
+      instrument_models = gf.instrument_models,
+      is_harmonized = gf.is_harmonized,
+      is_paired_end = gf.is_paired_end,
+      kf_id = gf.kf_id,
+      latest_did = gf.latest_did,
       platforms = gf.platforms,
-      reference_genome = gf.referenceGenome,
+      reference_genome = gf.reference_genome,
       repository = gf.repository,
       sequencing_experiments = seqExps,
       size = gf.size
@@ -125,44 +123,44 @@ object EntityConverter {
 
   def ESequencingExperimentToSequencingExperimentES(seqExp: ESequencingExperiment): SequencingExperiment_ES = {
     SequencingExperiment_ES(
-      kf_id = seqExp.kfId,
-      experiment_date = seqExp.experimentDate,
-      experiment_strategy = seqExp.experimentStrategy,
-      sequencing_center_id = seqExp.sequencingCenterId,
-      library_name = seqExp.libraryName,
-      library_prep = seqExp.libraryPrep,
-      library_selection = seqExp.librarySelection,
-      library_strand = seqExp.libraryStrand,
-      is_paired_end = seqExp.isPairedEnd,
+      kf_id = seqExp.kf_id,
+      experiment_date = seqExp.experiment_date,
+      experiment_strategy = seqExp.experiment_strategy,
+      sequencing_center_id = seqExp.sequencing_center_id,
+      library_name = seqExp.library_name,
+      library_prep = seqExp.library_prep,
+      library_selection = seqExp.library_selection,
+      library_strand = seqExp.library_strand,
+      is_paired_end = seqExp.is_paired_end,
       platform = seqExp.platform,
-      instrument_model = seqExp.instrumentModel,
-      max_insert_size = seqExp.maxInsertSize,
-      mean_insert_size = seqExp.meanInsertSize,
-      mean_depth = seqExp.meanDepth,
-      total_reads = seqExp.totalReads,
-      mean_read_length = seqExp.meanReadLength,
-      external_id = seqExp.externalId
+      instrument_model = seqExp.instrument_model,
+      max_insert_size = seqExp.max_insert_size,
+      mean_insert_size = seqExp.mean_insert_size,
+      mean_depth = seqExp.mean_depth,
+      total_reads = seqExp.total_reads,
+      mean_read_length = seqExp.mean_read_length,
+      external_id = seqExp.external_id
     )
   }
   
   def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
     FileCentric_ES(
       acl = genomicFile.acl,
-      access_urls = genomicFile.accessUrls,
+      access_urls = genomicFile.access_urls,
       availability = genomicFile.availability,
-      controlled_access = genomicFile.controlledAccess,
-      data_type = genomicFile.dataType,
-      external_id = genomicFile.externalId,
-      file_format = genomicFile.fileFormat,
-      file_name = genomicFile.fileName,
-      instrument_models = genomicFile.instrumentModels,
-      is_harmonized = genomicFile.isHarmonized,
-      is_paired_end = genomicFile.isPairedEnd,
-      kf_id = genomicFile.kfId,
-      latest_did = genomicFile.latestDid,
+      controlled_access = genomicFile.controlled_access,
+      data_type = genomicFile.data_type,
+      external_id = genomicFile.external_id,
+      file_format = genomicFile.file_format,
+      file_name = genomicFile.file_name,
+      instrument_models = genomicFile.instrument_models,
+      is_harmonized = genomicFile.is_harmonized,
+      is_paired_end = genomicFile.is_paired_end,
+      kf_id = genomicFile.kf_id,
+      latest_did = genomicFile.latest_did,
       participants = participants,
       platforms = genomicFile.platforms,
-      reference_genome = genomicFile.referenceGenome,
+      reference_genome = genomicFile.reference_genome,
       repository = genomicFile.repository,
       sequencing_experiments = seqExps,
       size = genomicFile.size

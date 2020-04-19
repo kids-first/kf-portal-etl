@@ -19,10 +19,10 @@ object MergePhenotype {
       }}
 
     val phenotype_hpo_ancestor_parents =
-      OntologyUtil.mapOntologyTermsToObservable(filteredPhenotypes, "hpoIdPhenotype")(hpoTerms)
+      OntologyUtil.mapOntologyTermsToObservable(filteredPhenotypes, "hpo_id_phenotype")(hpoTerms)
 
     phenotype_hpo_ancestor_parents.flatMap {
-      case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participantId.isDefined => {
+      case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participant_id.isDefined => {
         val observed = phenotype.observed.map(_.toLowerCase)
 
         val (hpoObserved, hpoNotObserved) = observed match {
@@ -32,8 +32,8 @@ object MergePhenotype {
         }
 
         val (snomedObserved, snomedNotObserved) = observed match {
-          case Some("positive") => (phenotype.snomedIdPhenotype, None)
-          case Some("negative") => (None, phenotype.snomedIdPhenotype)
+          case Some("positive") => (phenotype.snomed_id_phenotype, None)
+          case Some("negative") => (None, phenotype.snomed_id_phenotype)
           case _ => (None, None)
         }
 
@@ -44,11 +44,11 @@ object MergePhenotype {
         }
 
         // Only append to source text in the positive case for observed
-        val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.sourceTextPhenotype else None
+        val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.source_text_phenotype else None
 
         val p = Phenotype_ES(
-          age_at_event_days = phenotype.ageAtEventDays,
-          external_id = phenotype.externalId,
+          age_at_event_days = phenotype.age_at_event_days,
+          external_id = phenotype.external_id,
           hpo_phenotype_observed = hpoObserved,
           hpo_phenotype_observed_text = hpoObserved,
           hpo_phenotype_not_observed = hpoNotObserved,
@@ -58,13 +58,13 @@ object MergePhenotype {
           observed = observedOpt
         )
         Some((
-          phenotype.participantId.get,
+          phenotype.participant_id.get,
           p,
           if(hpoTerm != null){
             OntologicalTermWithParents_ES(
               name = hpoTerm.toString,
               parents = hpoTerm.parents,
-              age_at_event_days = if(phenotype.ageAtEventDays.isDefined) Set(phenotype.ageAtEventDays.get) else Set.empty[Int],
+              age_at_event_days = if(phenotype.age_at_event_days.isDefined) Set(phenotype.age_at_event_days.get) else Set.empty[Int],
               is_leaf = hpoTerm.is_leaf) +: phenotypeWParentsAtAge
           } else Nil
         ))

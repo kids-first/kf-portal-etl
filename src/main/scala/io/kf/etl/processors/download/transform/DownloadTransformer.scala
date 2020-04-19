@@ -43,7 +43,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
     // Repository values are derived from the accessUrl
     // The host of the URL will match to "dcf" or "gen3", which are the repository values
     var repo: Option[String] = None
-    file.accessUrls.headOption match {
+    file.access_urls.headOption match {
       case Some(url) =>
         if (url.contains(dataService.dcfHost)) {
           repo = Some("dcf")
@@ -64,7 +64,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
     file.repository match {
       case Some(repo) => repo match {
-        case "dcf" => file.copy(latestDid = file.externalId)
+        case "dcf" => file.copy(latest_did = file.external_id)
         case "gen3" => file
         case _ => file
       }
@@ -149,7 +149,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
 object DownloadTransformer {
   def filterGenomicFile(f: EGenomicFile): Boolean = {
-    f.dataType match {
+    f.data_type match {
       case Some(data_type) =>
         !data_type.toLowerCase.split(' ').takeRight(1)(0).equals("index")
       case None => true
@@ -158,35 +158,40 @@ object DownloadTransformer {
 
   def loadTermsBasic(path: String, spark: SparkSession): Dataset[OntologyTermBasic] = {
     import spark.implicits._
-    spark.sparkContext.addFile(path)
     val schema = StructType(Seq(
       StructField("id", StringType, nullable = true),
       StructField("name", StringType, nullable = true)
     )
     )
-    val filename = path.split("/").last
-    spark.read.option("sep", "\t").schema(schema).csv(SparkFiles.get(filename)).withColumn("parents", lit(null).cast(ArrayType(StringType))).as[OntologyTermBasic]
+    val p = withLoadedPath(path, spark)
+    spark.read.option("sep", "\t").schema(schema).csv(p).withColumn("parents", lit(null).cast(ArrayType(StringType))).as[OntologyTermBasic]
   }
 
   def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
     import spark.implicits._
-    spark.sparkContext.addFile(path)
+    val p = withLoadedPath(path, spark)
+    spark.read.json(p).as[OntologyTerm]
 
-    val filename = path.split("/").last
-    spark.read.json(SparkFiles.get(filename)).as[OntologyTerm]
   }
 
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {
     import spark.implicits._
-    spark.sparkContext.addFile(path, recursive = true)
     val schema = StructType(Seq(
       StructField("id", StringType, nullable = false),
       StructField("shorthand", StringType),
       StructField("label", StringType, nullable = false),
       StructField("description", StringType)
     ))
-    val filename = path.split("/").last
-    spark.read.option("sep", ",").option("header", value = true).schema(schema).csv(SparkFiles.get(filename)).as[DuoCode]
+    val p = withLoadedPath(path, spark)
+    spark.read.option("sep", ",").option("header", value = true).schema(schema).csv(p).as[DuoCode]
+  }
+
+  private def withLoadedPath(path: String, spark: SparkSession) = {
+    if (path.startsWith("http")) {
+      spark.sparkContext.addFile(path)
+      val filename = path.split("/").last
+      SparkFiles.get(filename)
+    } else path
   }
 
   def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {
@@ -194,18 +199,18 @@ object DownloadTransformer {
     import spark.implicits._
     val diagnosesDS = spark.createDataset(diagnoses)
     diagnosesDS
-      .joinWith(ontology.mondoTerms, diagnosesDS("mondoIdDiagnosis") === ontology.mondoTerms("id"), "left_outer")
+      .joinWith(ontology.mondoTerms, diagnosesDS("mondo_id_diagnosis") === ontology.mondoTerms("id"), "left_outer")
       .as[(EDiagnosis, Option[OntologyTermBasic])]
-      .joinWith(ontology.ncitTerms, $"_1.ncitIdDiagnosis" === ontology.ncitTerms("id"), "left_outer")
+      .joinWith(ontology.ncitTerms, $"_1.ncit_id_diagnosis" === ontology.ncitTerms("id"), "left_outer")
       .map { case ((d, m), n) => (d, m, Option(n)) }
       .map {
         case (d, optMondoTerm, optNcitTerm) if optMondoTerm.isDefined && optNcitTerm.isDefined =>
-          d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = optMondoTerm.map(_.id), ncitIdDiagnosis = formatTerm(optNcitTerm))
+          d.copy(diagnosis_text = optMondoTerm.map(_.name), mondo_id_diagnosis = optMondoTerm.map(_.id), ncit_id_diagnosis = formatTerm(optNcitTerm))
         case (d, optMondoTerm, _) if optMondoTerm.isDefined =>
-          d.copy(diagnosisText = optMondoTerm.map(_.name), mondoIdDiagnosis = optMondoTerm.map(_.id), ncitIdDiagnosis = None)
+          d.copy(diagnosis_text = optMondoTerm.map(_.name), mondo_id_diagnosis = optMondoTerm.map(_.id), ncit_id_diagnosis = None)
         case (d, _, optNcitTerm) if optNcitTerm.isDefined =>
-          d.copy(diagnosisText = optNcitTerm.map(_.name), mondoIdDiagnosis = None, ncitIdDiagnosis = formatTerm(optNcitTerm))
-        case (d, _, _) => d.copy(diagnosisText = d.sourceTextDiagnosis, mondoIdDiagnosis = None, ncitIdDiagnosis = None)
+          d.copy(diagnosis_text = optNcitTerm.map(_.name), mondo_id_diagnosis = None, ncit_id_diagnosis = formatTerm(optNcitTerm))
+        case (d, _, _) => d.copy(diagnosis_text = d.source_text_diagnosis, mondo_id_diagnosis = None, ncit_id_diagnosis = None)
       }
   }
 

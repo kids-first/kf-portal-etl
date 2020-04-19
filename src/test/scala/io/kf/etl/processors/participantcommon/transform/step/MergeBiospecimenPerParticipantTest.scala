@@ -21,15 +21,15 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
   "process" should "join biospecimen and participant and enrich the ncid tissue type, anatomical site and diagnoses" in {
 
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
-    val bioSpecimen1 = EBiospecimen(kfId = Some("biospecimen_id_1"), participantId = Some("participant_id_1"), ncitIdAnatomicalSite = Some("NCIT:unknown"), duoIds = Seq("duoCodeId1", "duoCodeId2", "duoCodeId_NoLabel"))
-    val diagnosis = EDiagnosis(kfId = Some("diagnosis_id_1"))
-    val biospecimenDiagnosis = EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_1"), biospecimenId = Some("biospecimen_id_1"))
+    val bioSpecimen1 = EBiospecimen(kf_id = Some("biospecimen_id_1"), participant_id = Some("participant_id_1"), ncit_id_anatomical_site = Some("NCIT:unknown"), duo_ids = Seq("duoCodeId1", "duoCodeId2", "duoCodeId_NoLabel"))
+    val diagnosis = EDiagnosis(kf_id = Some("diagnosis_id_1"))
+    val biospecimenDiagnosis = EBiospecimenDiagnosis(kf_id = Some("bd1"), diagnosis_id = Some("diagnosis_id_1"), biospecimen_id = Some("biospecimen_id_1"))
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val bioSpecimen21 = EBiospecimen(kfId = Some("biospecimen_id_21"), participantId = Some("participant_id_2"), ncitIdAnatomicalSite = Some("NCIT:C12438"), ncitIdTissueType = Some("NCIT:C14165"), duoIds = Seq("duoCodeId21"))
-    val bioSpecimen22 = EBiospecimen(kfId = Some("biospecimen_id_22"), participantId = Some("participant_id_2"))
+    val bioSpecimen21 = EBiospecimen(kf_id = Some("biospecimen_id_21"), participant_id = Some("participant_id_2"), ncit_id_anatomical_site = Some("NCIT:C12438"), ncit_id_tissue_type = Some("NCIT:C14165"), duo_ids = Seq("duoCodeId21"))
+    val bioSpecimen22 = EBiospecimen(kf_id = Some("biospecimen_id_22"), participant_id = Some("participant_id_2"))
 
-    val bioSpecimen3 = EBiospecimen(kfId = Some("biospecimen_id_3"), participantId = None) //should be ignore, no participants
+    val bioSpecimen3 = EBiospecimen(kf_id = Some("biospecimen_id_3"), participant_id = None) //should be ignore, no participants
 
     val p3 = Participant_ES(kf_id = Some("participant_id_3"))
 
@@ -68,29 +68,29 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
 
   "enrichBiospecimenWithDiagnoses" should "join biospecimens with diagnoses" in {
     val bioSpecimens = Seq(
-      EBiospecimen(kfId = Some("biospecimen_id_1")),
-      EBiospecimen(kfId = Some("biospecimen_id_2")),
-      EBiospecimen(kfId = Some("biospecimen_id_3"))
+      EBiospecimen(kf_id = Some("biospecimen_id_1")),
+      EBiospecimen(kf_id = Some("biospecimen_id_2")),
+      EBiospecimen(kf_id = Some("biospecimen_id_3"))
 
     )
 
     val diagnoses = Seq(
-      EDiagnosis(kfId = Some("diagnosis_id_1")),
-      EDiagnosis(kfId = Some("diagnosis_id_2")),
-      EDiagnosis(kfId = Some("diagnosis_id_3"))
+      EDiagnosis(kf_id = Some("diagnosis_id_1")),
+      EDiagnosis(kf_id = Some("diagnosis_id_2")),
+      EDiagnosis(kf_id = Some("diagnosis_id_3"))
     )
 
     val biospecimensDiagnosis = Seq(
-      EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_1"), biospecimenId = Some("biospecimen_id_1")),
-      EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_2"), biospecimenId = Some("biospecimen_id_1")),
-      EBiospecimenDiagnosis(kfId = Some("bd1"), diagnosisId = Some("diagnosis_id_3"), biospecimenId = Some("biospecimen_id_2"))
+      EBiospecimenDiagnosis(kf_id = Some("bd1"), diagnosis_id = Some("diagnosis_id_1"), biospecimen_id = Some("biospecimen_id_1")),
+      EBiospecimenDiagnosis(kf_id = Some("bd1"), diagnosis_id = Some("diagnosis_id_2"), biospecimen_id = Some("biospecimen_id_1")),
+      EBiospecimenDiagnosis(kf_id = Some("bd1"), diagnosis_id = Some("diagnosis_id_3"), biospecimen_id = Some("biospecimen_id_2"))
     )
 
     val result = MergeBiospecimenPerParticipant.enrichBiospecimenWithDiagnoses(bioSpecimens.toDS(), biospecimensDiagnosis.toDS(), diagnoses.toDS())(spark).collect()
     result should contain theSameElementsAs Seq(
-      EBiospecimen(kfId = Some("biospecimen_id_1"), diagnoses = Seq(EDiagnosis(kfId = Some("diagnosis_id_2")), EDiagnosis(kfId = Some("diagnosis_id_1")))),
-      EBiospecimen(kfId = Some("biospecimen_id_2"), diagnoses = Seq(EDiagnosis(kfId = Some("diagnosis_id_3")))),
-      EBiospecimen(kfId = Some("biospecimen_id_3"), diagnoses = Nil)
+      EBiospecimen(kf_id = Some("biospecimen_id_1"), diagnoses = Seq(EDiagnosis(kf_id = Some("diagnosis_id_2")), EDiagnosis(kf_id = Some("diagnosis_id_1")))),
+      EBiospecimen(kf_id = Some("biospecimen_id_2"), diagnoses = Seq(EDiagnosis(kf_id = Some("diagnosis_id_3")))),
+      EBiospecimen(kf_id = Some("biospecimen_id_3"), diagnoses = Nil)
     )
   }
 }

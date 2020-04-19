@@ -6,26 +6,22 @@ import org.apache.spark.sql.SaveMode
 
 object DownloadSink {
 
-  def apply(data: EntityDataSet)(implicit config: Config): Unit = {
+  def apply(data: EntityDataSet, studyId:String)(implicit config: Config): Unit = {
 
     val sinkPath = config.getString("processors.download.data_path")
 
-    data.participants.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/participant")
-    data.families.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/family")
-    data.biospecimens.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/biospecimen")
-    data.diagnoses.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/diagnosis")
-    data.familyRelationships.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"family_relationship")
-    data.genomicFiles.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/genomic_file")
-    data.sequencingExperiments.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/sequencing_experiment")
-    data.studies.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/study")
-    data.studyFiles.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/study_file")
-    data.investigators.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/investigator")
-    data.outcomes.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/outcome")
-    data.phenotypes.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/phenotype")
-    data.ontologyData.hpoTerms.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/hpo")
-    data.ontologyData.mondoTerms.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/mondo")
-    data.ontologyData.ncitTerms.write.mode(SaveMode.Overwrite).mode(SaveMode.Overwrite).parquet(s"$sinkPath/ncit")
-
+    data.participants.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/participants/$studyId")
+    data.families.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/families/$studyId")
+    data.biospecimens.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/biospecimens/$studyId")
+    data.diagnoses.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/diagnoses/$studyId")
+    data.familyRelationships.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/family_relationships/$studyId")
+    data.genomicFiles.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/genomic_files/$studyId")
+    data.sequencingExperiments.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/sequencing_experiments/$studyId")
+    data.studies.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/studies/$studyId")
+    data.studyFiles.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/study_files/$studyId")
+    data.investigators.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/investigators/$studyId")
+    data.outcomes.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/outcomes/$studyId")
+    data.phenotypes.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/phenotypes/$studyId")
 
   }
 }

@@ -2,5 +2,5 @@ package io.kf.etl.models.es
 
 
 trait ObservableAtAge {
-  val ageAtEventDays: Option[Int]
+  val age_at_event_days: Option[Int]
 }

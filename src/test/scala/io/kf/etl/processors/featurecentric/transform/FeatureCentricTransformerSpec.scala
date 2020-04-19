@@ -32,7 +32,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
   "fileCentric" should "return the proper Sequence of FileCentric_ES" in {
 
     //Add biospecimens to participants beforehand to be passed to the service to be tested
-    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participantId.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenES(b, Nil)))}
+    val participantId_Bios: Map[String, Seq[Biospecimen_ES]] = data.bioSpecimens.groupBy(_.participant_id.orNull).collect{ case(s, list) => (s, list.map(b => EntityConverter.EBiospecimenToBiospecimenES(b, Nil)))}
 
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)
@@ -189,7 +189,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val participant_ES =
       entityDataSet
         .participants
-        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))), phenotype = if (p.kfId.get == "participant_id_4") phenotypes_ES else Nil))
+        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))), phenotype = if (p.kf_id.get == "participant_id_4") phenotypes_ES else Nil))
 
     val result = FeatureCentricTransformer.participantCentric(
       entityDataSet,
