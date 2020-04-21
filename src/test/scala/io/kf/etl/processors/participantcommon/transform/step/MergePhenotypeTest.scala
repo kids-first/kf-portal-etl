@@ -186,21 +186,35 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     val result = step.MergePhenotype(entityDataset,Seq(p1).toDS()).collect()
+    val resultSorted = result.map(p =>
+      p.copy(non_observed_phenotypes = p.non_observed_phenotypes.sorted)
+    )
 
-    result should contain theSameElementsAs Seq(
+    resultSorted should contain theSameElementsAs Seq(
       Participant_ES(kf_id = Some("participant_id_1"),
         phenotype = Seq(Phenotype_ES(
           hpo_phenotype_not_observed = Some(hpo_0001166.toString),
           observed = Some(false)
         )),
         non_observed_phenotypes = Seq(
-          OntologicalTermWithParents_ES(
-            name = hpo_0001166.toString,
-            parents = Seq(hpo_0001238.toString, hpo_0100807.toString), // FIXME sorted
-            age_at_event_days = Set.empty[Int],
-            is_leaf = true
-          )
-        )
+          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set.empty[Int], is_leaf = true),
+          OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set.empty[Int]),
+
+          OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set.empty[Int]),
+
+          OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set.empty[Int])
+        ).sorted
       )
     )
   }
@@ -221,29 +235,31 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       ontologyData = Some(ontologiesDataSet)
     )
 
-    MergePhenotype.transformPhenotypes(entityDataset).collect().sortBy(_._1) should contain theSameElementsAs Seq(
+    MergePhenotype
+      .transformPhenotypes(entityDataset)
+      .collect()
+      .sortBy(_._1)
+      .map{ case(participantId, phentype, _) => (participantId, phentype) } should contain theSameElementsAs Seq(
       ("participant_id_1",
         Phenotype_ES(
           hpo_phenotype_not_observed = Some(hpo_0001166.toString),
           external_id = Some("1"),
           observed = Some(false)
-        ),
-        Seq(OntologicalTermWithParents_ES(hpo_0001166.toString, Seq(hpo_0001238.toString, hpo_0100807.toString), is_leaf = true))),
-      ("participant_id_1", Phenotype_ES(external_id = Some("3"), snomed_phenotype_not_observed = Some("SNOMED:1"), observed = Some(false)), Nil),
+        )),
+      ("participant_id_1", Phenotype_ES(external_id = Some("3"), snomed_phenotype_not_observed = Some("SNOMED:1"), observed = Some(false))),
       ("participant_id_2",
         Phenotype_ES(
           hpo_phenotype_observed = Some(hpo_0000924.toString),
           hpo_phenotype_observed_text = Some(hpo_0000924.toString),
           external_id = Some("2"),
           source_text_phenotype = Some("source"),
-          observed = Some(true)),
-        Seq(OntologicalTermWithParents_ES(hpo_0000924.toString, Seq(hpo_0000118.toString), is_leaf = false))
+          observed = Some(true))
       ),
-      ("participant_id_2", Phenotype_ES(external_id = Some("4"), snomed_phenotype_observed = Some("SNOMED:1"), source_text_phenotype = Some("source"), observed = Some(true)), Nil),
+      ("participant_id_2", Phenotype_ES(external_id = Some("4"), snomed_phenotype_observed = Some("SNOMED:1"), source_text_phenotype = Some("source"), observed = Some(true))),
 //      ("participant_id_3", Phenotype_ES(external_id = Some("5")), Nil), observed is None
 //      ("participant_id_4", Phenotype_ES(external_id = Some("6")), Nil), observed is None
-      ("participant_id_5", Phenotype_ES(external_id = Some("7"), observed = Some(true)), Nil),
-      ("participant_id_6", Phenotype_ES(external_id = Some("8"), observed = Some(false)), Nil)
+      ("participant_id_5", Phenotype_ES(external_id = Some("7"), observed = Some(true))),
+      ("participant_id_6", Phenotype_ES(external_id = Some("8"), observed = Some(false)))
     )
 
     //Array(
