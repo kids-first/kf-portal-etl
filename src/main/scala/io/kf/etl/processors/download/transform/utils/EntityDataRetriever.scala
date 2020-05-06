@@ -40,10 +40,10 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
 
     val url = s"${config.url}$endpoint&limit=100&$filterQueryString"
 
-    wsClient.url(url).get().flatMap { response =>
+    wsClient.url(url).withHttpHeaders("User-Agent" -> "PortalETL").get().flatMap { response =>
       if (response.status != 200) {
         if (retries > 0) {
-          val delay = (10 - retries) * 100.millisecond
+          val delay = (scala.math.pow(2, 10 - retries) * 300).millisecond
           val remainingTry = retries - 1
           println(s"Error ${response.status}, retrying $url in $delay ms, remaining try = ${remainingTry})")
           after(delay, scheduler, ec, Future.successful(1)).flatMap { _ =>
