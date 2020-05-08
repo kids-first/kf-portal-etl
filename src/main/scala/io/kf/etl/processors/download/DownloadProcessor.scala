@@ -3,7 +3,6 @@ package io.kf.etl.processors.download
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
-import io.kf.etl.processors.download.sink.DownloadSink
 import io.kf.etl.processors.download.source.DownloadSource
 import io.kf.etl.processors.download.transform.DownloadTransformer
 import org.apache.spark.sql.SparkSession
@@ -16,7 +15,7 @@ object DownloadProcessor {
     val source = DownloadSource.getEntitySet(studyId)
     val transformer = new DownloadTransformer()
     val transformed = transformer.transform(source)
-    DownloadSink(transformed, studyId)
+    //    DownloadSink(transformed, studyId)
     transformed
 
   }
