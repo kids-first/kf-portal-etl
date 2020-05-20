@@ -65,7 +65,8 @@ object MergePhenotype {
               name = hpoTerm.toString,
               parents = hpoTerm.parents,
               age_at_event_days = if(phenotype.age_at_event_days.isDefined) Set(phenotype.age_at_event_days.get) else Set.empty[Int],
-              is_leaf = hpoTerm.is_leaf) +: phenotypeWParentsAtAge
+              is_leaf = hpoTerm.is_leaf,
+              is_tagged = true) +: phenotypeWParentsAtAge
           } else Nil
         ))
       }
