@@ -160,7 +160,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(100)),
-          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), is_leaf = true),
+          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), is_leaf = true, is_tagged = true),
           OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set(100)),
@@ -197,7 +197,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           observed = Some(false)
         )),
         non_observed_phenotypes = Seq(
-          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set.empty[Int], is_leaf = true),
+          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set.empty[Int], is_leaf = true, is_tagged = true),
           OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
           OntologicalTermWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
           OntologicalTermWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set.empty[Int]),
@@ -311,7 +311,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       case None => Nil
     }) should contain theSameElementsAs Seq(
 //      No age_at_event_days (but observed)
-      OntologicalTermWithParents_ES(name = hpo_0000175.toString, parents = Seq(hpo_0000202.toString, hpo_0100737.toString), age_at_event_days = Set.empty[Int]),
+      OntologicalTermWithParents_ES(name = hpo_0000175.toString, parents = Seq(hpo_0000202.toString, hpo_0100737.toString), age_at_event_days = Set.empty[Int], is_tagged = true),
       OntologicalTermWithParents_ES(name = hpo_0000202.toString, parents = Seq(hpo_0000163.toString), age_at_event_days = Set.empty[Int]),
       OntologicalTermWithParents_ES(name = hpo_0000163.toString, parents = Seq(hpo_0031816.toString), age_at_event_days = Set.empty[Int]),
       OntologicalTermWithParents_ES(name = hpo_0031816.toString, parents = Seq(hpo_0000153.toString), age_at_event_days = Set.empty[Int]),
@@ -325,7 +325,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 //      OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set.empty[Int]),
 
       //15 only
-      OntologicalTermWithParents_ES(name = hpo_0009654.toString, parents = Seq(hpo_0009602.toString, hpo_0009771.toString), age_at_event_days = Set(15)),
+      OntologicalTermWithParents_ES(name = hpo_0009654.toString, parents = Seq(hpo_0009602.toString, hpo_0009771.toString), age_at_event_days = Set(15), is_tagged = true),
       OntologicalTermWithParents_ES(name = hpo_0009602.toString, parents = Seq(hpo_0001172.toString, hpo_0009774.toString), age_at_event_days = Set(15)),
       OntologicalTermWithParents_ES(name = hpo_0009771.toString, parents = Seq(hpo_0005918.toString, hpo_0009699.toString), age_at_event_days = Set(15)),
       OntologicalTermWithParents_ES(name = hpo_0001172.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(15)),
@@ -340,7 +340,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       OntologicalTermWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Set(15)),
 
       //18 only
-      OntologicalTermWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Set(18)),
+      OntologicalTermWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Set(18), is_tagged = true),
       OntologicalTermWithParents_ES(name = hpo_0002818.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
       OntologicalTermWithParents_ES(name = hpo_0011314.toString, parents = Seq(hpo_0011844.toString), age_at_event_days = Set(18)),
       OntologicalTermWithParents_ES(name = hpo_0040073.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
@@ -365,7 +365,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       case None => Nil
     }) should contain theSameElementsAs Seq(
       //22 only
-      OntologicalTermWithParents_ES(name = hpo_0011879.toString, parents = Seq(hpo_0011878.toString), age_at_event_days = Set(22), is_leaf = true),
+      OntologicalTermWithParents_ES(name = hpo_0011879.toString, parents = Seq(hpo_0011878.toString), age_at_event_days = Set(22), is_leaf = true, is_tagged = true),
       OntologicalTermWithParents_ES(name = hpo_0011878.toString, parents = Seq(hpo_0011869.toString), age_at_event_days = Set(22)),
       OntologicalTermWithParents_ES(name = hpo_0011869.toString, parents = Seq(hpo_0001872.toString), age_at_event_days = Set(22)),
       OntologicalTermWithParents_ES(name = hpo_0001872.toString, parents = Seq(hpo_0001871.toString), age_at_event_days = Set(22)),

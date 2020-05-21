@@ -4,7 +4,8 @@ final case class OntologicalTermWithParents_ES(
                                                 name: String,
                                                 parents: Seq[String] = Nil,
                                                 age_at_event_days: Set[Int] = Set.empty[Int],
-                                                is_leaf: Boolean = false
+                                                is_leaf: Boolean = false,
+                                                is_tagged: Boolean = false
                                          ) extends Ordered[OntologicalTermWithParents_ES] {
 
 

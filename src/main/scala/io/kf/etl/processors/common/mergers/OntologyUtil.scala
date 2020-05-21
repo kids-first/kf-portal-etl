@@ -59,6 +59,7 @@ object OntologyUtil {
           name = p.head.name,
           parents = p.head.parents,
           is_leaf = p.head.is_leaf,
+          is_tagged = p.head.is_tagged,
           age_at_event_days = p.flatMap(_.age_at_event_days).toSet))
       .values.toSeq
 }
