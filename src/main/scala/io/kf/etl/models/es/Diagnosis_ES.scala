@@ -1,7 +1,7 @@
 package io.kf.etl.models.es
 
 final case class Diagnosis_ES(
-                               age_at_event_days: Option[Int] = None,
+                               age_at_event_days: Option[Int] = None, //parents
                                diagnosis_category: Option[String] = None,
                                external_id: Option[String] = None,
                                icd_id_diagnosis: Option[String] = None,
@@ -13,5 +13,8 @@ final case class Diagnosis_ES(
                                ncit_id_diagnosis: Option[String] = None,
                                spatial_descriptor: Option[String] = None,
                                diagnosis: Option[String] = None,
-                               biospecimens: Seq[String] = Seq.empty
+                               biospecimens: Seq[String] = Seq.empty,
+                               is_tagged: Boolean = false, //parents
+                               mondo: Option[DiagnosisTermWithParents_ES] = None //parents
                              )
+

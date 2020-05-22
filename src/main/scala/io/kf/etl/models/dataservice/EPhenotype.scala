@@ -1,7 +1,5 @@
 package io.kf.etl.models.dataservice
 
-import io.kf.etl.models.es.ObservableAtAge
-
 case class EPhenotype(
                        kf_id: Option[String] = None,
                        modified_at: Option[String] = None,

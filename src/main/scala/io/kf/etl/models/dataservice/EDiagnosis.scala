@@ -1,7 +1,5 @@
 package io.kf.etl.models.dataservice
 
-import io.kf.etl.models.es.ObservableAtAge
-
 case class EDiagnosis(
                        age_at_event_days: Option[Int] = None,
                        created_at: Option[String] = None,

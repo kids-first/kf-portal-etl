@@ -216,7 +216,6 @@ object FeatureCentricTransformer {
       phenotype = participant.phenotype,
       observed_phenotype = participant.observed_phenotypes,
       non_observed_phenotype = participant.non_observed_phenotypes,
-      mondo_diagnosis = participant.mondo_diagnosis,
       race = participant.race,
       study = participant.study
     )
