@@ -57,12 +57,12 @@ object EntityConverter {
       spatial_descriptor = bio.spatial_descriptor,
       uberon_id_anatomical_site = bio.uberon_id_anatomical_site,
       volume_ml = bio.volume_ml,
-      diagnoses = bio.diagnoses.map(EDiagnosisToDiagnosisES),
+      diagnoses = bio.diagnoses.map(d => EDiagnosisToDiagnosisES(d, None)),
       sequencing_center_id = bio.sequencing_center_id
     )
   }
 
-  def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis): Diagnosis_ES = {
+  def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis, diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]): Diagnosis_ES = {
     val mondoIdDiagnosos = (diagnosis.mondo_id_diagnosis, diagnosis.diagnosis_text) match {
       case (Some(id), Some(s)) => Some(s"$s ($id)")
       case (Some(id), None) => Some(s"$id")
@@ -81,7 +81,23 @@ object EntityConverter {
       ncit_id_diagnosis = diagnosis.ncit_id_diagnosis,
       spatial_descriptor = diagnosis.spatial_descriptor,
       diagnosis = diagnosis.diagnosis_text,
-      biospecimens = diagnosis.biospecimens
+      biospecimens = diagnosis.biospecimens,
+      is_tagged = diagnosisTermWithParents_ES match {
+        case Some(d) => d.is_tagged
+        case None => false
+      },
+      mondo = diagnosisTermWithParents_ES
+    )
+  }
+
+  def EDiagnosisToLightDiagnosisES(diagnosis: EDiagnosis, diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]): Diagnosis_ES = {
+    Diagnosis_ES(
+      age_at_event_days = diagnosis.age_at_event_days,
+      is_tagged = diagnosisTermWithParents_ES match {
+        case Some(d) => d.is_tagged
+        case None => false
+      },
+      mondo = diagnosisTermWithParents_ES
     )
   }
   

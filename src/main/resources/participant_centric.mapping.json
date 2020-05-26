@@ -277,6 +277,26 @@
             },
             "uberon_id_tumor_location": {
               "type": "keyword"
+            },
+            "is_tagged": {
+              "type": "boolean"
+            },
+            "mondo": {
+              "properties": {
+                "name": {
+                  "type": "keyword"
+                },
+                "parents": {
+                  "type": "keyword"
+                },
+                "is_leaf": {
+                  "type": "boolean"
+                },
+                "is_tagged": {
+                  "type": "boolean"
+                }
+              },
+              "type": "nested"
             }
           },
           "type": "nested"
@@ -628,23 +648,6 @@
             }
           },
           "type": "nested"
-        },
-        "mondo_diagnosis": {
-          "type": "nested",
-          "properties": {
-            "age_at_event_days": {
-              "type": "long"
-            },
-            "is_leaf": {
-              "type": "boolean"
-            },
-            "name": {
-              "type": "keyword"
-            },
-            "parents": {
-              "type": "keyword"
-            }
-          }
         },
         "phenotype": {
           "properties": {

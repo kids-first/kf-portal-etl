@@ -13,5 +13,8 @@ final case class Diagnosis_ES(
                                ncit_id_diagnosis: Option[String] = None,
                                spatial_descriptor: Option[String] = None,
                                diagnosis: Option[String] = None,
-                               biospecimens: Seq[String] = Seq.empty
+                               biospecimens: Seq[String] = Seq.empty,
+                               is_tagged: Boolean = false,
+                               mondo: Option[DiagnosisTermWithParents_ES] = None
                              )
+

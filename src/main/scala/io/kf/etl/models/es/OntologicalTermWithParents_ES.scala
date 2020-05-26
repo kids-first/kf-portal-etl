@@ -6,15 +6,7 @@ final case class OntologicalTermWithParents_ES(
                                                 age_at_event_days: Set[Int] = Set.empty[Int],
                                                 is_leaf: Boolean = false,
                                                 is_tagged: Boolean = false
-                                         ) extends Ordered[OntologicalTermWithParents_ES] {
-
-
+                                         ) extends TermWithParents_ES with Ordered[OntologicalTermWithParents_ES]
+{
   override def compare(that: OntologicalTermWithParents_ES): Int = this.extractId compare that.extractId
-
-
-  def extractId: String = {
-    val regex(id) = name
-    id
-  }
-  val regex = ".* \\([A-Z]+:([0-9]+)\\)".r //FIXME for mondo terms
 }
