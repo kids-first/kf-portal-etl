@@ -478,6 +478,9 @@
                 },
                 "parents": {
                   "type": "keyword"
+                },
+                "is_tagged": {
+                  "type": "boolean"
                 }
               },
               "type": "nested"
@@ -495,6 +498,9 @@
                 },
                 "parents": {
                   "type": "keyword"
+                },
+                "is_tagged": {
+                  "type": "boolean"
                 }
               },
               "type": "nested"
