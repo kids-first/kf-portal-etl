@@ -86,7 +86,10 @@ object EntityConverter {
         case Some(d) => d.is_tagged
         case None => false
       },
-      mondo = diagnosisTermWithParents_ES
+      mondo = diagnosisTermWithParents_ES match {
+        case Some(d) => Seq(d)
+        case None => Seq.empty[DiagnosisTermWithParents_ES]
+      }
     )
   }
 
@@ -97,7 +100,10 @@ object EntityConverter {
         case Some(d) => d.is_tagged
         case None => false
       },
-      mondo = diagnosisTermWithParents_ES
+      mondo = diagnosisTermWithParents_ES match {
+        case Some(d) => Seq(d)
+        case None => Seq.empty[DiagnosisTermWithParents_ES]
+      }
     )
   }
   

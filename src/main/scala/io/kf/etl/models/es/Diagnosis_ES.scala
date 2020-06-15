@@ -15,6 +15,6 @@ final case class Diagnosis_ES(
                                diagnosis: Option[String] = None,
                                biospecimens: Seq[String] = Seq.empty,
                                is_tagged: Boolean = false,
-                               mondo: Option[DiagnosisTermWithParents_ES] = None
+                               mondo: Seq[DiagnosisTermWithParents_ES] = Seq.empty[DiagnosisTermWithParents_ES]
                              )
 
