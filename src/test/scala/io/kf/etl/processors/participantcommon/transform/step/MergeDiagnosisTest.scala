@@ -75,30 +75,30 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
         Diagnosis_ES(kf_id = Some("diagnosis_21"), mondo_id_diagnosis = Some(mondo_0043197.toString), diagnosis = Some(mondo_0043197.name),
           is_tagged = true,
           age_at_event_days = Some(15),
-          mondo = Some(DiagnosisTermWithParents_ES(
+          mondo = Seq(DiagnosisTermWithParents_ES(
             name = mondo_0043197.toString,
             parents = Seq(mondo_0002254.toString),
             is_leaf = true,
             is_tagged = true
           ))),
-        Diagnosis_ES(age_at_event_days = Some(15), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0002254.toString, parents = Seq(mondo_0000001.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(15), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String]))),
+        Diagnosis_ES(age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0002254.toString, parents = Seq(mondo_0000001.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String]))),
         Diagnosis_ES(kf_id = Some("diagnosis_22"), mondo_id_diagnosis = Some(mondo_0000232.id), biospecimens = Seq("biospecimen_id_3"),
           age_at_event_days = Some(18),
           is_tagged = true,
-          mondo = Some(DiagnosisTermWithParents_ES(
+          mondo = Seq(DiagnosisTermWithParents_ES(
             name = mondo_0000232.toString,
             parents = Seq(mondo_0001195.toString),
             is_leaf = true,
             is_tagged = true
           ))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0001195.toString, parents = Seq(mondo_0006927.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0006927.toString, parents = Seq(mondo_0006956.toString, mondo_0021678.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0006956.toString, parents = Seq(mondo_0005113.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0021678.toString, parents = Seq(mondo_0005113.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0005113.toString, parents = Seq(mondo_0005550.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0005550.toString, parents = Seq(mondo_0000001.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(18), mondo = Some(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String])))
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0001195.toString, parents = Seq(mondo_0006927.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0006927.toString, parents = Seq(mondo_0006956.toString, mondo_0021678.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0006956.toString, parents = Seq(mondo_0005113.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0021678.toString, parents = Seq(mondo_0005113.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0005113.toString, parents = Seq(mondo_0005550.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0005550.toString, parents = Seq(mondo_0000001.toString)))),
+        Diagnosis_ES(age_at_event_days = Some(18), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String])))
       )
       case None => fail("kf_id: participant_id_2 was not found")
     }
