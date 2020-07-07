@@ -112,6 +112,88 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     )
   }
 
+  "process" should "tagged Parent term should not be invalidated by child term" in {
+    val p1 = Participant_ES(kf_id = Some("participant_id_1"))
+    // CHILD
+    val phenotype_1 = EPhenotype(
+      kf_id = Some("phenotype_id_1"),
+      participant_id = Some("participant_id_1"),
+      source_text_phenotype = Some("phenotype source text 1"),
+      observed = Some("positive"),
+      created_at = Some("should be removed"), modified_at = Some("should be removed"),
+      hpo_id_phenotype = Some("HP:0001166"),
+      age_at_event_days = Some(100),
+      snomed_id_phenotype = Some("SNOMED:4"),
+      external_id = Some("external id"),
+      visible = Some(true)
+    )
+    // PARENT
+    val phenotype_2 = EPhenotype(
+      kf_id = Some("phenotype_id_2"),
+      participant_id = Some("participant_id_1"),
+      source_text_phenotype = Some("phenotype source text 1"),
+      observed = Some("positive"),
+      created_at = Some("should be removed"), modified_at = Some("should be removed"),
+      hpo_id_phenotype = Some("HP:0001238"),
+      age_at_event_days = Some(100),
+      snomed_id_phenotype = Some("SNOMED:4"),
+      external_id = Some("external id"),
+      visible = Some(true)
+    )
+
+    val entityDataset = buildEntityDataSet(
+      phenotypes = Seq(phenotype_1, phenotype_2),
+      ontologyData = Some(ontologiesDataSet)
+    )
+
+    val result = step.MergePhenotype(entityDataset, Seq(p1).toDS()).collect()
+    val resultSorted = result.map(p =>
+      p.copy(observed_phenotypes = p.observed_phenotypes.sorted)
+    )
+
+    resultSorted should contain theSameElementsAs Seq(
+      Participant_ES(kf_id = Some("participant_id_1"),
+        phenotype = Seq(
+          Phenotype_ES(
+            source_text_phenotype = Some("phenotype source text 1"),
+            hpo_phenotype_observed = Some("Arachnodactyly (HP:0001166)"),
+            age_at_event_days = Some(100),
+            external_id = Some("external id"),
+            snomed_phenotype_observed = Some("SNOMED:4"),
+            hpo_phenotype_observed_text = Some("Arachnodactyly (HP:0001166)"),
+            observed = Some(true)
+          ),
+          Phenotype_ES(
+            source_text_phenotype = Some("phenotype source text 1"),
+            hpo_phenotype_observed = Some("Slender finger (HP:0001238)"),
+            age_at_event_days = Some(100),
+            external_id = Some("external id"),
+            snomed_phenotype_observed = Some("SNOMED:4"),
+            hpo_phenotype_observed_text = Some("Slender finger (HP:0001238)"),
+            observed = Some(true)
+          )
+        ),
+        observed_phenotypes = Seq(
+          OntologicalTermWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100), is_tagged = true),
+          OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), is_leaf = true, is_tagged = true),
+          OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Set(100))
+        ).sorted
+      )
+    )
+  }
+
   it should "merge phenotypes and participant binding all fields for an observed phenotype" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
     val phenotype_1 = EPhenotype(
