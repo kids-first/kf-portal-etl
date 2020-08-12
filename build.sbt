@@ -9,13 +9,6 @@ version := "1.0.0"
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
-//initialize := {
-//  val _ = initialize.value
-//  val javaVersion = sys.props("java.specification.version")
-//  if (javaVersion != "1.8")
-//    sys.error("Java 1.8 is required for this project. Found " + javaVersion + " instead")
-//}
-
 resolvers ++= Seq(
   clojars,
   maven_local,
@@ -27,23 +20,12 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   spark_sql,
-  reflections,
   es_spark,
   typesafe_config,
   json4s,
-//  "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.10",
   "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.3",
   scalatest % "test",
   asyncHttp % "test"
-)
-
-
-dependencyOverrides ++= Seq(
-  "com.fasterxml.jackson.core" % "jackson-core" % "2.6.5",
-  "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5",
-  "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.6.5",
-  "com.fasterxml.jackson.core" % "jackson-annotation" % "2.6.5",
-  "org.json4s" %% "json4s-jackson" % "3.2.11"
 )
 
 test in assembly := {}
@@ -61,6 +43,7 @@ assemblyMergeStrategy in assembly := {
     oldStrategy(x)
 }
 assemblyJarName in assembly := "kf-portal-etl.jar"
+
 
 
 
