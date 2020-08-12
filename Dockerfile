@@ -21,7 +21,7 @@ RUN apt-get update && \
 ###########################
 ENV SPARK_HOME ${ROOT_DIR}/spark
 ENV SPARK_HASH_TYPE sha512
-ENV SPARK_DOWNLOAD_ROOT_PATH http://apache.mirror.iweb.ca
+ENV SPARK_DOWNLOAD_ROOT_PATH https://archive.apache.org/dist
 ENV SPARK_NAME spark-${SPARK_VERSION}-bin-hadoop2.7
 ENV SPARK_FILENAME ${SPARK_NAME}.tgz
 ENV SPARK_HASH_PATH ${SPARK_DOWNLOAD_ROOT_PATH}/spark/spark-${SPARK_VERSION}/${SPARK_FILENAME}.${SPARK_HASH_TYPE}
