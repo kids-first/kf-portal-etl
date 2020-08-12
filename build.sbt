@@ -29,9 +29,9 @@ libraryDependencies ++= Seq(
   spark_sql,
   reflections,
   es_spark,
-  elasticsearch,
   typesafe_config,
   json4s,
+//  "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.10",
   "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.3",
   scalatest % "test",
   asyncHttp % "test"
