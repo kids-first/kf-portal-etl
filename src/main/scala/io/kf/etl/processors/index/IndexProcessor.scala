@@ -28,8 +28,9 @@ object IndexProcessor {
   private def createMapping(indexName: String, indexType: String)(implicit wsClient: StandaloneWSClient, config: Config): Unit = {
     val content = MappingFiles.getMapping(indexType)
 
+    val elasticSearchUrl = DefaultContext.elasticSearchUrl(config)
     val response = Await.result(wsClient
-      .url(DefaultContext.elasticSearchUrl(config))
+      .url(s"$elasticSearchUrl/$indexName")
       .withHttpHeaders("Content-Type" -> "application/json")
       .put(content), 30 seconds
     )
