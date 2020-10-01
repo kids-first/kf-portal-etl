@@ -19,7 +19,7 @@ object ETLDownloadOnlyMain extends App {
 
         study_ids.foreach { studyId =>
           println(s"Running StudyId $studyId")
-          DownloadProcessor(studyId)
+          DownloadProcessor(studyId, sink = true)
           spark.sqlContext.clearCache()
         }
 
