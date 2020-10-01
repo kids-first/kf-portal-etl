@@ -21,7 +21,7 @@ object DownloadSource {
       phenotypes = makeEndpointSeq(studyId, "/phenotypes"),
       sequencingExperiments = makeEndpointSeq(studyId, "/sequencing-experiments"),
       sequencingExperimentGenomicFiles = makeEndpointSeq(studyId, "/sequencing-experiment-genomic-files"),
-      studies = makeEndpointSeq(studyId, "/studies"),
+      studies = s"/studies/$studyId",
       studyFiles = makeEndpointSeq(studyId, "/study-files")
     )
   }
