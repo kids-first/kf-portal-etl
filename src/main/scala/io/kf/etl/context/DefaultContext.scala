@@ -1,6 +1,7 @@
 package io.kf.etl.context
 
 import java.io.File
+import java.util.Properties
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
@@ -9,6 +10,8 @@ import io.kf.etl.common.Constants._
 import io.kf.etl.context.DefaultContext.elasticSearchUrl
 import org.apache.spark.sql.SparkSession
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
+
+import scala.collection.JavaConverters._
 
 class DefaultContext extends AutoCloseable {
   private var system: ActorSystem = _
@@ -27,14 +30,20 @@ class DefaultContext extends AutoCloseable {
     implicit def actorSystem: ActorSystem = system
   }
 
-  private def init(withES: Boolean): Unit = {
+  private def init(): Unit = {
     system = ActorSystem()
     materializer = ActorMaterializer()(system)
     wsClientMutable = StandaloneAhcWSClient()(materializer)
+    configMutable = initConfig()
+    sparkMutable = initSparkSession()
+  }
+
+  private def initConfig(): Config = {
     val configFileEnv: Option[String] = sys.env.get(CONFIG_FILE_URL)
     val configUrl = configFileEnv.map(c => new File(c))
-    configMutable = configUrl.map(f => ConfigFactory.parseFile(f)).getOrElse(ConfigFactory.parseResources("/kf_etl.conf"))
-    sparkMutable = initSparkSession()
+    val configFromFiles = configUrl
+      .map(f => ConfigFactory.parseFile(f)).getOrElse(ConfigFactory.parseResources("/kf_etl.conf"))
+    ConfigFactory.systemEnvironment().withFallback(configFromFiles)
   }
 
   private def initSparkSession(): SparkSession = {
@@ -48,7 +57,6 @@ class DefaultContext extends AutoCloseable {
   }
 
 
-
   def close(): Unit = {
     println("Close default context")
     wsClientMutable.close()
@@ -59,17 +67,15 @@ class DefaultContext extends AutoCloseable {
 }
 
 object DefaultContext {
-  def withContext[T](withES: Boolean)(f: DefaultContext => T): T = {
+  def withContext[T](f: DefaultContext => T): T = {
     val context = new DefaultContext()
     try {
-      context.init(withES)
+      context.init()
       f(context)
     } finally {
       context.close()
     }
   }
 
-  def withContext[T](f: DefaultContext => T): T = withContext(withES = true)(f)
-
-  def elasticSearchUrl(config : Config): String = s"${config.getString(CONFIG_NAME_ES_SCHEME)}://${config.getString(CONFIG_NAME_ES_HOST)}:${config.getInt(CONFIG_NAME_ES_PORT)}"
+  def elasticSearchUrl(config: Config): String = s"${config.getString(CONFIG_NAME_ES_SCHEME)}://${config.getString(CONFIG_NAME_ES_HOST)}:${config.getInt(CONFIG_NAME_ES_PORT)}"
 }
