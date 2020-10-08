@@ -2,6 +2,7 @@ package io.kf.etl.processors.download.transform.utils
 
 import akka.actor.{ActorSystem, Scheduler}
 import akka.pattern.Patterns.after
+import io.kf.etl.processors.download.transform.utils.EntityDataRetriever.buildUrl
 import org.json4s
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
@@ -38,14 +39,14 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
       Some(entity)
     }
 
-    val url = s"${config.url}$endpoint&limit=100&$filterQueryString"
+    val url = buildUrl(s"${config.url}$endpoint", filters)
 
     wsClient.url(url).withHttpHeaders("User-Agent" -> "PortalETL").get().flatMap { response =>
       if (response.status != 200) {
         if (retries > 0) {
           val delay = (scala.math.pow(2, 10 - retries) * 300).millisecond
           val remainingTry = retries - 1
-          println(s"Error ${response.status}, retrying $url in $delay ms, remaining try = ${remainingTry})")
+          println(s"Error ${response.status}, retrying $url in $delay ms, remaining try = $remainingTry)")
           after(delay, scheduler, ec, Future.successful(1)).flatMap { _ =>
             retrieve(endpoint, data, remainingTry)
           }
@@ -69,4 +70,16 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
   }
 
 
+}
+
+object EntityDataRetriever {
+  def buildUrl(uri: String, filters: Seq[String]): String = {
+    val parameters = (filters :+ "limit=100").mkString("&")
+    if (uri.contains("?")) {
+      s"$uri&$parameters"
+    } else {
+      s"$uri?$parameters"
+    }
+
+  }
 }

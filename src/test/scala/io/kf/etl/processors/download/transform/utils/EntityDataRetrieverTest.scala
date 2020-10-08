@@ -3,6 +3,7 @@ package io.kf.etl.processors.download.transform.utils
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EStudy}
+import io.kf.etl.processors.download.transform.utils.EntityDataRetriever.buildUrl
 import io.kf.etl.processors.test.util.{DataService, jsonHandler, jsonHandlerAfterNRetries}
 import org.scalatest.{AsyncFlatSpec, BeforeAndAfterAll, Matchers}
 import play.api.libs.ws.StandaloneWSClient
@@ -63,7 +64,7 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
     }
   }
 
-  ignore should "return the deserialize data on two pages" in {
+  it should "return the deserialize data on two pages" in {
     val handlerPage1 = jsonHandler(
       """
         |{
@@ -110,7 +111,7 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
       "/studies2" -> handlerPage2
     )) { url =>
 
-      EntityDataRetriever(DataServiceConfig(url, 1, "", "")).retrieve[EStudy]("/studies").map {
+      Await.ready(EntityDataRetriever(DataServiceConfig(url, 1, "", "")).retrieve[EStudy]("/studies").map {
         r =>
           r shouldBe Seq(
             EStudy(kf_id = Some("1"), name = Some("Study 1")),
@@ -118,11 +119,11 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
           )
           handlerPage1.count shouldBe 1
           handlerPage2.count shouldBe 1
-      }
+      },  60.seconds)
     }
   }
 
-  ignore should "return the deserialize data after several retries" in {
+  it should "return the deserialize data after several retries" in {
     val handler = jsonHandlerAfterNRetries(
       """
         |{
@@ -149,6 +150,7 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
       """.stripMargin, 2)
     DataService.withDataService(Map("/studies" -> handler)) {
       url =>
+        Await.ready(
         EntityDataRetriever(DataServiceConfig(url, 100, "", "")).retrieve[EStudy]("/studies", retries = 3).map {
           r =>
             r shouldBe Seq(
@@ -157,7 +159,7 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
 
             )
             handler.count shouldBe 2
-        }
+        },  60.seconds)
 
 
     }
@@ -219,5 +221,13 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
 
 
     }
+  }
+
+  "buildUrl" should "http://kf.org?study_id=1&visible=true&limit=100" in {
+    buildUrl("http://kf.org?study_id=1", Seq("visible=true")) shouldBe "http://kf.org?study_id=1&visible=true&limit=100"
+  }
+
+  it should "http://kf.org?visible=true&limit=100" in {
+    buildUrl("http://kf.org", Seq("visible=true")) shouldBe "http://kf.org?visible=true&limit=100"
   }
 }

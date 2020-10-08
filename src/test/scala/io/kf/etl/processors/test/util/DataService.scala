@@ -6,7 +6,7 @@ import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpServer}
 
 import scala.collection.JavaConverters._
 
-object DataService extends App {
+object DataService {
 
   def withDataService[T](routes: Map[String, HttpHandler])(block: String => T): T = {
     val sunHttpServer: HttpServer = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress, 0), 50)
@@ -19,36 +19,6 @@ object DataService extends App {
       sunHttpServer.stop(0)
     }
   }
-
-
-  withDataService(Map("/studies" -> jsonHandler(
-    """
-      |{
-      |    "_links": {
-      |        "self": "/studies"
-      |    },
-      |    "_status": {
-      |        "code": 200,
-      |        "message": "success"
-      |    },
-      |    "limit": 10,
-      |    "results": [
-      |        {
-      |            "kf_id": "1",
-      |            "name": "Study 1"
-      |        },
-      |        {
-      |            "kf_id": "2",
-      |            "name": "Study 2"
-      |        }
-      | ],
-      | "total":2
-      |}
-    """.stripMargin))) { url =>
-    println(url)
-    while (true) {}
-  }
-
 
 }
 
