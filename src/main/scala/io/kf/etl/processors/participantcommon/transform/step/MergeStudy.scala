@@ -8,8 +8,11 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 object MergeStudy {
   def apply(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[Participant_ES] = {
     import spark.implicits._
+    // Visible studies need to be filtered here because dataservice endpoint /studies/STUDY_ID?visible=true
+    // does not filter only studies are visible
+    val visibleStudies = entityDataset.studies.filter(s => s.visible.getOrElse(false))
     entityDataset.participants.joinWith(
-      entityDataset.studies,
+      visibleStudies,
       entityDataset.participants.col("study_id") === entityDataset.studies.col("kf_id"),
       "left_outer"
     ).map(tuple => {
