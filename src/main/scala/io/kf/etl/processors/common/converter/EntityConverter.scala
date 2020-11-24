@@ -95,6 +95,7 @@ object EntityConverter {
 
   def EDiagnosisToLightDiagnosisES(diagnosis: EDiagnosis, diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]): Diagnosis_ES = {
     Diagnosis_ES(
+      diagnosis_category = diagnosis.diagnosis_category,
       age_at_event_days = diagnosis.age_at_event_days,
       is_tagged = diagnosisTermWithParents_ES match {
         case Some(d) => d.is_tagged
