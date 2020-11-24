@@ -1,7 +1,6 @@
 package io.kf.etl.context
 
 import java.io.File
-import java.util.Properties
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
@@ -10,8 +9,6 @@ import io.kf.etl.common.Constants._
 import io.kf.etl.context.DefaultContext.elasticSearchUrl
 import org.apache.spark.sql.SparkSession
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
-
-import scala.collection.JavaConverters._
 
 class DefaultContext extends AutoCloseable {
   private var system: ActorSystem = _

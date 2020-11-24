@@ -37,7 +37,14 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
 
     val p2 = Participant_ES(kf_id = Some("participant_id_2"))
-    val diagnoses21 = EDiagnosis(kf_id = Some("diagnosis_21"), participant_id = Some("participant_id_2"), mondo_id_diagnosis = Some("MONDO:0043197"),diagnosis_text = Some("ruvalcaba churesigaew myhre syndrome"), age_at_event_days = Some(15))
+    val diagnoses21 = EDiagnosis(
+      kf_id = Some("diagnosis_21"),
+      participant_id = Some("participant_id_2"),
+      mondo_id_diagnosis = Some("MONDO:0043197"),
+      diagnosis_text = Some("ruvalcaba churesigaew myhre syndrome"),
+      age_at_event_days = Some(15),
+      diagnosis_category = Some("awesome")
+    )
     val diagnoses22 = EDiagnosis(kf_id = Some("diagnosis_22"), participant_id = Some("participant_id_2"), mondo_id_diagnosis = Some("MONDO:0000232"), age_at_event_days = Some(18))
 
     val diagnoses3 = EDiagnosis(kf_id = Some("diagnosis_3"))
@@ -72,7 +79,11 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
 
     resultP2 match {
       case Some(p) => p.diagnoses should contain theSameElementsAs Seq(
-        Diagnosis_ES(kf_id = Some("diagnosis_21"), mondo_id_diagnosis = Some(mondo_0043197.toString), diagnosis = Some(mondo_0043197.name),
+        Diagnosis_ES(
+          kf_id = Some("diagnosis_21"),
+          mondo_id_diagnosis = Some(mondo_0043197.toString),
+          diagnosis = Some(mondo_0043197.name),
+          diagnosis_category = Some("awesome"),
           is_tagged = true,
           age_at_event_days = Some(15),
           mondo = Seq(DiagnosisTermWithParents_ES(
@@ -81,9 +92,12 @@ class MergeDiagnosisTest extends FlatSpec with Matchers with WithSparkSession {
             is_leaf = true,
             is_tagged = true
           ))),
-        Diagnosis_ES(age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0002254.toString, parents = Seq(mondo_0000001.toString)))),
-        Diagnosis_ES(age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String]))),
-        Diagnosis_ES(kf_id = Some("diagnosis_22"), mondo_id_diagnosis = Some(mondo_0000232.id), biospecimens = Seq("biospecimen_id_3"),
+        Diagnosis_ES(diagnosis_category = Some("awesome"), age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0002254.toString, parents = Seq(mondo_0000001.toString)))),
+        Diagnosis_ES(diagnosis_category = Some("awesome") ,age_at_event_days = Some(15), mondo = Seq(DiagnosisTermWithParents_ES(name = mondo_0000001.toString, parents = Seq.empty[String]))),
+        Diagnosis_ES(
+          kf_id = Some("diagnosis_22"),
+          mondo_id_diagnosis = Some(mondo_0000232.id),
+          biospecimens = Seq("biospecimen_id_3"),
           age_at_event_days = Some(18),
           is_tagged = true,
           mondo = Seq(DiagnosisTermWithParents_ES(

@@ -47,7 +47,7 @@ object MergeDiagnosis {
           }
         }
         participant.copy(
-          diagnoses = filteredSeq.flatten //FIXME
+          diagnoses = filteredSeq.flatten
         )
       })
   }
