@@ -128,27 +128,12 @@ object MergeFamily {
     familyId match {
 
       case None => family.map(participant => {
-
-        val members = Seq(participant)
-        val sharedHpoIds = getSharedHpoIds(members)
-        val family_availableDataTypes = getAvailableDataTypes(members, mapOfAvailableDataTypes)
-
         val composition = participant.is_proband match {
           case Some(true) => "proband-only"
           case _ => "other"
         }
 
-        val familyMembers = Seq(
-          getFamilyMemberFromParticipant(participant, "", sharedHpoIds, mapOfAvailableDataTypes)
-        )
-
-        val familyComposition =
-          FamilyComposition_ES(
-            composition = Some(composition),
-            shared_hpo_ids = sharedHpoIds,
-            available_data_types = family_availableDataTypes,
-            family_members = familyMembers
-          )
+        val familyComposition = FamilyComposition_ES(composition = Some(composition))
 
         val family =
           Family_ES(
@@ -159,7 +144,6 @@ object MergeFamily {
           family = Some(family),
           available_data_types = getAvailableDataTypes(Seq(participant), mapOfAvailableDataTypes)
         )
-
       })
 
       case Some(_) =>

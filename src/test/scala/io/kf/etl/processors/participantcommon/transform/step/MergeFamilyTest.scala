@@ -2,10 +2,12 @@ package io.kf.etl.processors.participantcommon.transform.step
 
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.es._
+import io.kf.etl.processors.common.converter.EntityConverter.EParticipantToParticipantES
 import io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.processors.participantcommon.transform.step.MergeFamily._
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
+import org.apache.spark.sql.Dataset
 import org.scalatest.{FlatSpec, Matchers}
 
 class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
@@ -263,6 +265,69 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     MergeFamily.getSharedHpoIds(participants) shouldBe empty
+  }
+
+  "getSharedHpoIds" should "return empty empty family composition if no familyId" in {
+    import spark.implicits._
+
+    val participant1 = EParticipant(
+      kf_id = Some("Participant1"),
+      family_id = None,
+      is_proband = Some(true),
+      ethnicity = Some("Not Reported Ethnicity"),
+      race = Some("Not Reported Race")
+    )
+
+    val participant2 = EParticipant(kf_id = Some("Participant2"))
+
+    val participants: Dataset[Participant_ES] = Seq(
+      EParticipantToParticipantES(participant1).copy(available_data_types = Seq("stuff"), phenotype = Seq(Phenotype_ES(hpo_phenotype_observed = Some("pheno1"))) ),
+      EParticipantToParticipantES(participant2)
+    ).toDS()
+
+    val bioSpecimen1 = EBiospecimen(kf_id = Some("biospecimen_id_1"), participant_id = Some("Participant1"))
+    val biospecimenGeniomicFile11 = EBiospecimenGenomicFile(kf_id = Some("biospeciment_genomic_file_id_11"), biospecimen_id = Some("biospecimen_id_1"), genomic_file_id = Some("genomic_file_id_11"))
+    val genomicFile11 = EGenomicFile(kf_id = Some("genomic_file_id_11"), data_type = Some("stuff"))
+
+    val entityDataset = buildEntityDataSet(
+      participants = Seq(participant1, participant2),
+      genomicFiles = Seq(genomicFile11),
+      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11),
+      biospecimens = Seq(bioSpecimen1)
+    )
+
+    val result = MergeFamily(entityDataset, participants)
+
+    val expectedResults = Seq(
+      EParticipantToParticipantES(participant1)
+        .copy(
+          available_data_types = Seq("stuff"),
+          phenotype = Seq(Phenotype_ES(hpo_phenotype_observed = Some("pheno1"))),
+          family = Some(
+            Family_ES(
+              family_compositions = Seq(
+                FamilyComposition_ES(
+                  composition = Some("proband-only")
+                )
+              )
+            )
+          )
+        ),
+      EParticipantToParticipantES(participant2)
+        .copy(
+          family = Some(
+            Family_ES(
+              family_compositions = Seq(
+                FamilyComposition_ES(
+                  composition = Some("other")
+                )
+              )
+            )
+          )
+        )
+    )
+
+    result.collect() should equal(expectedResults)
   }
 
 }
