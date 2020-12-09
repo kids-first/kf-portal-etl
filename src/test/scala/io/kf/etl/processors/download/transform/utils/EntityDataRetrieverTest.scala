@@ -2,7 +2,7 @@ package io.kf.etl.processors.download.transform.utils
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EStudy}
+import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EPhenotype, EStudy}
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever.buildUrl
 import io.kf.etl.processors.test.util.{DataService, jsonHandler, jsonHandlerAfterNRetries}
 import org.scalatest.{AsyncFlatSpec, BeforeAndAfterAll, Matchers}
@@ -230,4 +230,25 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
   it should "http://kf.org?visible=true&limit=100" in {
     buildUrl("http://kf.org", Seq("visible=true")) shouldBe "http://kf.org?visible=true&limit=100"
   }
+
+  it should "clean HPO Ids if not in a standard format" in {
+    val hpoRegex = EntityDataExtractor.hpoRegex //Regex to test
+    val phenotype1 = EPhenotype(kf_id = Some("id"), hpo_id_phenotype = Some("HP_12345"), participant_id = Some("part1"))
+    val phenotype2 = EPhenotype(kf_id = Some("id"), hpo_id_phenotype = Some("HP:12345"), participant_id = Some("part1"))
+
+    val newPhenotype1 = phenotype1.copy(
+      hpo_id_phenotype = phenotype1.hpo_id_phenotype match {
+        case Some(p) => Some(hpoRegex.replaceFirstIn(p, ":"))
+        case None => None
+      })
+    val newPhenotype2 = phenotype2.copy(
+      hpo_id_phenotype = phenotype2.hpo_id_phenotype match {
+        case Some(p) => Some(hpoRegex.replaceFirstIn(p, ":"))
+        case None => None
+      })
+
+    newPhenotype1.hpo_id_phenotype.getOrElse("") should equal("HP:12345")
+    newPhenotype2.hpo_id_phenotype.getOrElse("") should equal("HP:12345")
+  }
+
 }
