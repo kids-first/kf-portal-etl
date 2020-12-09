@@ -4,6 +4,7 @@ import io.kf.etl.models.dataservice._
 import org.json4s.DefaultFormats
 import org.json4s.JsonAST.{JString, JValue}
 
+
 trait EntityDataExtractor[T] {
   def extract(json: JValue): T
 
@@ -17,6 +18,7 @@ trait EntityDataExtractor[T] {
 }
 
 object EntityDataExtractor {
+  val hpoRegex = "(?<=HP)([_:])(?=[0-9]+)".r
   private implicit val formats: DefaultFormats.type = DefaultFormats
   implicit val participant: EntityDataExtractor[EParticipant] = new EntityDataExtractor[EParticipant] {
     override def extract(json: JValue): EParticipant = {
@@ -101,7 +103,11 @@ object EntityDataExtractor {
     override def extract(json: JValue): EPhenotype = {
       val entity = json.extract[EPhenotype]
       entity.copy(
-        participant_id = getIdFromLink("participant", json)
+        participant_id = getIdFromLink("participant", json),
+        hpo_id_phenotype = entity.hpo_id_phenotype match {
+          case Some(p) => Some(hpoRegex.replaceFirstIn(p, ":"))
+          case None => None
+        }
       )
     }
   }

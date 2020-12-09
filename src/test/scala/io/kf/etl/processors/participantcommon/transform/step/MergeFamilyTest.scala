@@ -267,7 +267,7 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
     MergeFamily.getSharedHpoIds(participants) shouldBe empty
   }
 
-  "getSharedHpoIds" should "return empty empty family composition if no familyId" in {
+  "getSharedHpoIds" should "return empty family composition if no familyId" in {
     import spark.implicits._
 
     val participant1 = EParticipant(
