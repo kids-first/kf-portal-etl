@@ -8,5 +8,8 @@ final case class Study_ES(
                            external_id: scala.Option[String] = None,
                            release_status: scala.Option[String] = None,
                            data_access_authority: scala.Option[String] = None,
-                           short_name: scala.Option[String] = None
+                           short_name: scala.Option[String] = None,
+                           code: Option[String] = None,
+                           domain: Option[String] = None,
+                           program: Option[String] = None
                          )

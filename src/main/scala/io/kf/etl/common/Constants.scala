@@ -31,6 +31,8 @@ object Constants {
   val FILE_CENTRIC_MAPPING_FILE_NAME = "file_centric.mapping.json"
   val PARTICIPANT_CENTRIC_MAPPING_FILE_NAME = "participant_centric.mapping.json"
 
+  val STUDIES_EXTRA_PARAMS_PATH = "aws.s3.studies_params_path"
+
 
 
 }

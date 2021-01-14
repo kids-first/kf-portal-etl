@@ -5,6 +5,7 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
+import io.kf.etl.models.internal.StudyExtraParams
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
@@ -37,6 +38,10 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
 
   def downloadDuoCodeLabelMap(): Dataset[DuoCode] = {
     loadDuoLabel(config.getString(CONFIG_NAME_DUOCODE_PATH), spark).cache()
+  }
+
+  def downloadStudiesExtraParams(path: String): Dataset[StudyExtraParams] = {
+    studiesExtraParams(path)(spark).cache()
   }
 
   def setFileRepo(file: EGenomicFile): EGenomicFile = {
@@ -83,6 +88,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
     import spark.implicits._
 
     val ontologyData = downloadOntologyData()
+    val studiesExtraParams = downloadStudiesExtraParams(config.getString(STUDIES_EXTRA_PARAMS_PATH))
     val retriever = EntityDataRetriever(dataService, filters)
     val duoCodeDs = downloadDuoCodeLabelMap()
 
@@ -127,7 +133,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
         phenotypes = spark.createDataset(phenotypes).cache,
         sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
         sequencingExperimentGenomicFiles = spark.createDataset(sequencingExperimentGenomicFiles).cache,
-        studies = spark.createDataset(studies).cache,
+        studies = createStudies(studies, studiesExtraParams)(spark).cache,
         biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
         biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
         diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
@@ -174,6 +180,10 @@ object DownloadTransformer {
 
   }
 
+  def studiesExtraParams(path: String)(spark: SparkSession): Dataset[StudyExtraParams] = {
+    spark.read.format("csv").option("header", "true").load(path).as[StudyExtraParams]
+  }
+
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {
     import spark.implicits._
     val schema = StructType(Seq(
@@ -192,6 +202,15 @@ object DownloadTransformer {
       val filename = path.split("/").last
       SparkFiles.get(filename)
     } else path
+  }
+
+  def createStudies(studies: Seq[EStudy], studiesExtraParams: Dataset[StudyExtraParams]) (spark: SparkSession):  Dataset[EStudy] = {
+    import spark.implicits._
+    val studiesDS = spark.createDataset(studies)
+
+    val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"))
+
+    studies_with_extraParams.map(s => s._1.copy(code = s._2.code, domain = s._2.domain, program = s._2.program))
   }
 
   def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {

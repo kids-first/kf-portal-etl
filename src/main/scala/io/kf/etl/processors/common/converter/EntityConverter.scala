@@ -14,7 +14,10 @@ object EntityConverter {
       external_id = study.external_id,
       release_status = study.release_status,
       data_access_authority = study.data_access_authority,
-      short_name = study.short_name
+      short_name = study.short_name,
+      code = study.code,
+      domain = study.domain,
+      program = study.program
     )
   }
   
