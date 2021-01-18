@@ -27,6 +27,7 @@ object ETLMain extends App {
           val participantCentric = FeatureCentricProcessor.participantCentric(dowloadData, participantCommon)
           IndexProcessor("file_centric", studyId, cliArgs.release_id.get, fileCentric)
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)
+          IndexProcessor("study_centric", studyId, cliArgs.release_id.get, participantCentric)
           spark.sqlContext.clearCache()
 
         }

@@ -181,7 +181,10 @@ object DownloadTransformer {
   }
 
   def studiesExtraParams(path: String)(spark: SparkSession): Dataset[StudyExtraParams] = {
-    spark.read.format("csv").option("header", "true").load(path).as[StudyExtraParams]
+    spark.read.format("csv")
+      .option("delimiter", "\t")
+      .option("header", "true")
+      .load(path).as[StudyExtraParams]
   }
 
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {

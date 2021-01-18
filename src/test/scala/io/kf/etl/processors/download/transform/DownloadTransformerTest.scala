@@ -93,8 +93,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
 
     val studies = Seq(study1, study2)
 
-    val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.csv")(spark)
-    studiesExtraParamsDS.show(false)
+    val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.tsv")(spark)
 
     val result = DownloadTransformer.createStudies(studies, studiesExtraParamsDS)(spark)
 

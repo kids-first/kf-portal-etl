@@ -16,5 +16,5 @@ case class EStudy(
                    code: Option[String] = None,
                    domain: Option[String] = None,
                    program: Option[String] = None,
-                   visible: scala.Option[Boolean] = None
+                   visible: Option[Boolean] = None
     )
