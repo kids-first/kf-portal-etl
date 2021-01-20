@@ -3,6 +3,7 @@ package io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.es._
 import io.kf.etl.processors.common.converter.EntityConverter.EParticipantToParticipantES
+import io.kf.etl.processors.download.transform.DownloadTransformer
 import io.kf.etl.processors.participantcommon.transform.step
 import io.kf.etl.processors.participantcommon.transform.step.MergeFamily._
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
@@ -328,6 +329,45 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
     )
 
     result.collect() should equal(expectedResults)
+  }
+
+  it should "merge data types to participants" in {
+    import spark.implicits._
+
+    val participant1 = EParticipant(
+      kf_id = Some("Participant1"),
+      is_proband = Some(true)
+    )
+
+    val participant2 = EParticipant(kf_id = Some("Participant2"))
+
+    val participants: Dataset[Participant_ES] = Seq(
+      EParticipantToParticipantES(participant1),
+      EParticipantToParticipantES(participant2)
+    ).toDS()
+
+    val bioSpecimen1 = EBiospecimen(kf_id = Some("biospecimen_id_1"), participant_id = Some("Participant1"))
+    val bioSpecimen2 = EBiospecimen(kf_id = Some("biospecimen_id_2"), participant_id = Some("Participant2"))
+    val biospecimenGeniomicFile11 = EBiospecimenGenomicFile(kf_id = Some("biospeciment_genomic_file_id_11"), biospecimen_id = Some("biospecimen_id_1"), genomic_file_id = Some("genomic_file_id_11"))
+    val biospecimenGeniomicFile12 = EBiospecimenGenomicFile(kf_id = Some("biospeciment_genomic_file_id_12"), biospecimen_id = Some("biospecimen_id_1"), genomic_file_id = Some("genomic_file_id_12"))
+    val biospecimenGeniomicFile13 = EBiospecimenGenomicFile(kf_id = Some("biospeciment_genomic_file_id_13"), biospecimen_id = Some("biospecimen_id_1"), genomic_file_id = Some("genomic_file_id_13"))
+    val biospecimenGeniomicFile21 = EBiospecimenGenomicFile(kf_id = Some("biospeciment_genomic_file_id_21"), biospecimen_id = Some("biospecimen_id_2"), genomic_file_id = Some("genomic_file_id_21"))
+    val genomicFile11 = EGenomicFile(kf_id = Some("genomic_file_id_11"), data_type = Some("Aligned Reads"))
+    val genomicFile12 = EGenomicFile(kf_id = Some("genomic_file_id_12"), data_type = Some("Histology Images"))
+    val genomicFile13 = EGenomicFile(kf_id = Some("genomic_file_id_13"), data_type = Some("unaligned Reads"))
+    val genomicFile21 = EGenomicFile(kf_id = Some("genomic_file_id_21"), data_type = Some("nO DaTa "))
+
+    val entityDataset = buildEntityDataSet(
+      participants = Seq(participant1, participant2),
+      genomicFiles = Seq(genomicFile11, genomicFile12, genomicFile13, genomicFile21),
+      biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11, biospecimenGeniomicFile12, biospecimenGeniomicFile13, biospecimenGeniomicFile21),
+      biospecimens = Seq(bioSpecimen1, bioSpecimen2),
+      mapOfDataCategory_ExistingTypes = Some(DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark))
+    )
+
+    val result = MergeFamily(entityDataset, participants)
+
+    result.map(s => s.data_category).collect() should contain theSameElementsAs Seq(Seq("Sequencing Reads", "Pathology"), Seq("DNA Methylation"))
   }
 
 }

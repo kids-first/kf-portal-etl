@@ -24,7 +24,8 @@ object ProcessorCommonDefinitions {
                             studies: Dataset[EStudy],
                             studyFiles: Dataset[EStudyFile],
                             ontologyData: OntologiesDataSet,
-                            duoCodeDataSet: Dataset[DuoCode]
+                            duoCodeDataSet: Dataset[DuoCode],
+                            mapOfDataCategory_ExistingTypes: Dataset[(String, Seq[String])]
   )
 
   case class EntityEndpointSet(
