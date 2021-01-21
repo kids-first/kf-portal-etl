@@ -22,6 +22,8 @@ services:
       - "./kf-portal-etl-docker/mondo_terms.json.gz:/kf-etl/mondo_terms.json.gz"
       - "./kf-portal-etl-docker/ncit.tsv.gz:/kf-etl/ncit.tsv.gz"
       - "./kf-portal-etl-docker/hpo_terms.json.gz:/kf-etl/hpo_terms.json.gz"
+      - "./kf-portal-etl-docker/data_category_existing_data.tsv:/kf-etl/data_category_existing_data.tsv"
+      - "./kf-portal-etl-docker/studies_short_name.tsv:/kf-etl/studies_short_name.tsv"
       - "./kf-portal-etl-docker/duo_code/duo.csv:/kf-etl/duo.csv"
       - "./kf-portal-etl-docker/data:/kf-etl/data"
     ports:

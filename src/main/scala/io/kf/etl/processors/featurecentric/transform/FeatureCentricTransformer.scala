@@ -115,6 +115,28 @@ object FeatureCentricTransformer {
 
   }
 
+  def studyCentric(entityDataset: EntityDataSet, studyId: String, participant_count: Long, file_count: Long, family_count: Long): Dataset[StudyCentric_ES] = {
+    import spark.implicits._
+
+    val study = entityDataset.studies.filter(s => s.kf_id match {
+      case Some(study) => study == studyId
+      case None => false
+    })
+    study.map(s => StudyCentric_ES(
+      kf_id = s.kf_id,
+      name = s.name,
+      external_id = s.external_id,
+      data_access_authority = s.data_access_authority,
+      code = s.code,
+      domain = s.domain,
+      program = s.program,
+      participant_count = Some(participant_count),
+      file_count = Some(file_count),
+      family_count = Some(family_count)
+    ))
+
+  }
+
   private def joinFileIdToSeqExperiments(
                                           eSequencingExperiment: Dataset[ESequencingExperiment],
                                           eSequencingExperimentGenomicFile: Dataset[ESequencingExperimentGenomicFile]
