@@ -12,12 +12,13 @@ object MergeFamily {
 
     val availableDataTypesBroadcast = calculateAvailableDataTypes(entityDataset)
     val flattenedFamilyRelationshipBroadcast = getFlattenedFamilyRelationship(entityDataset)
+    val mapOfDataCategory_ExistingTypes = entityDataset.mapOfDataCategory_ExistingTypes.collect().toMap
 
     participants
       .groupByKey(_.family_id)
       .flatMapGroups((family_id, iterator) => {
         deduceFamilyCompositions(family_id, iterator.toSeq, flattenedFamilyRelationshipBroadcast, availableDataTypesBroadcast)
-      })
+      }).map(p => p.copy(data_category = calculateDataCategory(p.available_data_types, mapOfDataCategory_ExistingTypes).toSeq))
   }
 
   def calculateAvailableDataTypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Broadcast[Map[String, Seq[String]]] = {
@@ -37,6 +38,20 @@ object MergeFamily {
 
     spark.sparkContext.broadcast[Map[String, Seq[String]]](distinctDatatypeByParticipant)
 
+  }
+
+  def calculateDataCategory(
+                             availableDataType: Seq[String],
+                             mapOfDataCategory_ExistingTypes: Map[String, Seq[String]]
+                           ): Set[String] = {
+    val cleanAvailableDataTypes = availableDataType.map(_.toLowerCase.trim)
+    mapOfDataCategory_ExistingTypes.collect { case t if isIncludedInAvailableDt(t._2, cleanAvailableDataTypes) => t }.keySet
+  }
+
+  def isIncludedInAvailableDt(dataCategory: Seq[String], availableDataType: Seq[String]): Boolean = {
+    dataCategory.collectFirst({case d if availableDataType.contains(d) => d}) } match {
+      case Some(_) => true
+      case _ => false
   }
 
   def getFlattenedFamilyRelationship(entityDataset: EntityDataSet)(implicit spark: SparkSession): Broadcast[Map[String, Seq[(String, String)]]] = {

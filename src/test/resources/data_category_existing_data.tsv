@@ -1,0 +1,10 @@
+data_category	available_data_types
+Sequencing Reads	Aligned Reads,Unaligned Reads
+Simple Nucleotide Variation	gVCF,Variant Calls,Annotated Somatic Mutations,Simple Nucleotide Variations
+Copy Number Variation	Somatic Copy Number Variations
+Transcriptome Profiling	Gene Fusions,Gene Expression,Isoform Expression,Expression
+Structural Variation	Somatic Strutural Variations
+DNA Methylation	No data
+Radiology	Radiology Images,Radiology Reports
+Pathology	Pathology Reports,Histology Images
+Other	Operation Reports,Other

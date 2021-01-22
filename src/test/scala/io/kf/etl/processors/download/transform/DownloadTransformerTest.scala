@@ -1,9 +1,9 @@
 package io.kf.etl.processors.download.transform
 
-import io.kf.etl.models.dataservice.EDiagnosis
+import io.kf.etl.models.dataservice.{EDiagnosis, EParticipant, EStudy}
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
-import io.kf.etl.processors.test.util.EntityUtil.buildOntologiesDataSet
+import io.kf.etl.processors.test.util.EntityUtil.{buildEntityDataSet, buildOntologiesDataSet}
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -76,5 +76,44 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
       EDiagnosis(kf_id = Some("diagnosis_6"), source_text_diagnosis = Some("Neuroblastoma source text"), diagnosis_text = Some("Neuroblastoma source text"))
     )
 
+  }
+
+  "createStudies" should "return enriched studies with extra parameters" in {
+    val study1 =  EStudy(
+      kf_id = Some("SD_46SK55A3"),
+      name = Some("Kids First: Congenital Diaphragmatic Hernia"),
+      visible = Some(true)
+    )
+
+    val study2 =  EStudy(
+      kf_id = Some("SD_ZXJFFMEF"),
+      name = Some("Kids First: Osteosarcoma"),
+      visible = Some(true)
+    )
+
+    val studies = Seq(study1, study2)
+
+    val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.tsv")(spark)
+
+    val result = DownloadTransformer.createStudies(studies, studiesExtraParamsDS)(spark)
+
+    result.collect() should contain theSameElementsAs Seq(
+      EStudy(
+        kf_id = Some("SD_ZXJFFMEF"),
+        name = Some("Kids First: Osteosarcoma"),
+        code= Some("KF-OS"),
+        domain= Some("C"),
+        program= Some("Kids First"),
+        visible = Some(true)
+      ),
+      EStudy(
+        kf_id = Some("SD_46SK55A3"),
+        name = Some("Kids First: Congenital Diaphragmatic Hernia"),
+        code= Some("KF-CDH"),
+        domain= Some("BD"),
+        program= Some("Kids First"),
+        visible = Some(true)
+      )
+    )
   }
 }

@@ -13,5 +13,8 @@ case class EStudy(
                    study_files: _root_.scala.collection.Seq[String] = _root_.scala.collection.Seq.empty,
                    version: scala.Option[String] = None,
                    short_name: scala.Option[String] = None,
-                   visible: scala.Option[Boolean] = None
+                   code: Option[String] = None,
+                   domain: Option[String] = None,
+                   program: Option[String] = None,
+                   visible: Option[Boolean] = None
     )

@@ -41,7 +41,7 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
 
     val url = buildUrl(s"${config.url}$endpoint", filters)
 
-    wsClient.url(url).withHttpHeaders("User-Agent" -> "PortalETL").get().flatMap { response =>
+    wsClient.url(url).withRequestTimeout(Duration(200, "seconds")).withHttpHeaders("User-Agent" -> "PortalETL").get().flatMap { response =>
       if (response.status != 200) {
         if (retries > 0) {
           val delay = (scala.math.pow(2, 10 - retries) * 300).millisecond

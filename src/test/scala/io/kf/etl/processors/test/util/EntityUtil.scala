@@ -26,7 +26,8 @@ object EntityUtil {
                           studies: Seq[EStudy] = Nil,
                           studyFiles: Seq[EStudyFile] = Nil,
                           ontologyData: Option[OntologiesDataSet] = None,
-                          duoCodes: Option[Dataset[DuoCode]] = None
+                          duoCodes: Option[Dataset[DuoCode]] = None,
+                          mapOfDataCategory_ExistingTypes: Option[Dataset[(String, Seq[String])]] = None
                         )(implicit spark: SparkSession): EntityDataSet = {
     import spark.implicits._
     EntityDataSet(
@@ -47,7 +48,8 @@ object EntityUtil {
       studies = studies.toDS(),
       studyFiles = studyFiles.toDS(),
       ontologyData = ontologyData.getOrElse(buildOntologiesDataSet()),
-      duoCodeDataSet = duoCodes.getOrElse(spark.emptyDataset[DuoCode])
+      duoCodeDataSet = duoCodes.getOrElse(spark.emptyDataset[DuoCode]),
+      mapOfDataCategory_ExistingTypes = mapOfDataCategory_ExistingTypes.getOrElse(spark.emptyDataset[(String, Seq[String])])
     )
   }
 

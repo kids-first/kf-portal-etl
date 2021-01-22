@@ -4,6 +4,7 @@ final case class Participant_ES(
                                  affected_status: Option[Boolean] = None,
                                  alias_group: Option[String] = None,
                                  available_data_types: Seq[String] = Nil,
+                                 data_category: Seq[String] = Nil,
                                  biospecimens: Seq[Biospecimen_ES] = Nil,
                                  diagnoses: Seq[Diagnosis_ES] = Nil,
                                  diagnosis_category: Option[String] = None,
