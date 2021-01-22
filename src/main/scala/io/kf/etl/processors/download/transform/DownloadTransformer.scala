@@ -233,7 +233,7 @@ object DownloadTransformer {
 
     val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"))
 
-    studies_with_extraParams.map(s => s._1.copy(code = s._2.code, domain = s._2.domain, program = s._2.program))
+    studies_with_extraParams.map{ case (study, param) => study.copy(code = param.code, domain = param.domain, program = param.program) }
   }
 
   def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {

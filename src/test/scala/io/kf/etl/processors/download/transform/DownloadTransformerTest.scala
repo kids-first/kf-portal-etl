@@ -116,17 +116,4 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
       )
     )
   }
-
-  "NAME FUNCTION" should "return xxxxxxx" in {
-
-//    val df = spark.read.csv("./src/test/resources/data_category_existing_data.tsv").as[(String, String)]
-    val df = DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark)
-
-      df.show(false)
-    //    val result = DownloadTransformer.leadDataCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark)
-    //    println("tototoo")
-    //    result.show(false)
-    1 should equal(1)
-
-  }
 }
