@@ -34,6 +34,5 @@ object Constants {
   val STUDIES_EXTRA_PARAMS_PATH = "processors.download.studies_params_path"
   val DATA_CAT_AVAILABLE_DATA_TYPES = "processors.download.data_category_existing_data_path"
 
-
-
+  val JSON_OUTPUT_FILES = "processors.download.data_category_existing_data_path"
 }

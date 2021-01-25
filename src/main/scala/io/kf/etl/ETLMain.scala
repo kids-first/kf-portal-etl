@@ -5,8 +5,10 @@ import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
+import io.kf.etl.processors.tojson.JsonOutputProcessor
 
 object ETLMain extends App {
+  val Array(saveJsonFiles) = args
 
   DefaultContext.withContext { context =>
     import context.implicits._
@@ -34,6 +36,14 @@ object ETLMain extends App {
           IndexProcessor("file_centric", studyId, cliArgs.release_id.get, fileCentric)
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)
           IndexProcessor("study_centric", studyId, cliArgs.release_id.get, studyCentric)
+
+          JsonOutputProcessor(
+            Map(
+              "file_centric" -> fileCentric,
+              "participant_centric" -> participantCentric,
+              "study_centric" -> studyCentric
+            ))
+
           spark.sqlContext.clearCache()
         }
 
