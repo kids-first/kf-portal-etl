@@ -190,18 +190,22 @@ object DownloadTransformer {
   }
 
   def studiesExtraParams(path: String)(spark: SparkSession): Dataset[StudyExtraParams] = {
+
+    val p = withLoadedPath(path, spark)
     spark.read.format("com.databricks.spark.csv")
       .option("delimiter", "\t")
       .option("header", "true")
-      .load(path).as[StudyExtraParams]
+      .load(p).as[StudyExtraParams]
   }
 
   def loadCategory_ExistingDataTypes(path: String)(spark: SparkSession): Dataset[(String, Seq[String])] = {
     import spark.implicits._
+
+    val p = withLoadedPath(path, spark)
     val rawLine = spark.read.format("csv")
       .option("delimiter", "\t")
       .option("header", "true")
-      .load(path).as[(String, String)]
+      .load(p).as[(String, String)]
 
     rawLine.map(t => (t._1, t._2.split(",").map(_.toLowerCase.trim)))
       .as[(String, Seq[String])]

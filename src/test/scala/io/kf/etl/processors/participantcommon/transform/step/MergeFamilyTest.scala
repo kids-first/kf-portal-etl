@@ -362,6 +362,7 @@ class MergeFamilyTest extends FlatSpec with Matchers with WithSparkSession {
       genomicFiles = Seq(genomicFile11, genomicFile12, genomicFile13, genomicFile21),
       biospecimenGenomicFiles = Seq(biospecimenGeniomicFile11, biospecimenGeniomicFile12, biospecimenGeniomicFile13, biospecimenGeniomicFile21),
       biospecimens = Seq(bioSpecimen1, bioSpecimen2),
+      //"https://kf-qa-etl-bucket.s3.amazonaws.com/mapping/data_category_existing_data.tsv"
       mapOfDataCategory_ExistingTypes = Some(DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark))
     )
 
