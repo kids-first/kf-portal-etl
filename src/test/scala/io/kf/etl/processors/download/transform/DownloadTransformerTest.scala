@@ -93,6 +93,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
 
     val studies = Seq(study1, study2)
 
+    //"https://kf-qa-etl-bucket.s3.amazonaws.com/mapping/studies_short_name.tsv"
     val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.tsv")(spark)
 
     val result = DownloadTransformer.createStudies(studies, studiesExtraParamsDS)(spark)
