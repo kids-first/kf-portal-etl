@@ -91,7 +91,13 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
       visible = Some(true)
     )
 
-    val studies = Seq(study1, study2)
+    val study3 =  EStudy(
+      kf_id = Some("SD_FUNNYSTUDY"),
+      name = Some("No Extra Params"),
+      visible = Some(true)
+    )
+
+    val studies = Seq(study1, study2, study3)
 
     //"https://kf-qa-etl-bucket.s3.amazonaws.com/mapping/studies_short_name.tsv"
     val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.tsv")(spark)
@@ -113,6 +119,14 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         code= Some("KF-CDH"),
         domain= Some("BD"),
         program= Some("Kids First"),
+        visible = Some(true)
+      ),
+      EStudy(
+        kf_id = Some("SD_FUNNYSTUDY"),
+        name = Some("No Extra Params"),
+        code= None,
+        domain= None,
+        program= None,
         visible = Some(true)
       )
     )
