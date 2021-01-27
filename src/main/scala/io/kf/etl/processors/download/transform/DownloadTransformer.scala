@@ -235,9 +235,12 @@ object DownloadTransformer {
     import spark.implicits._
     val studiesDS = spark.createDataset(studies)
 
-    val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"))
+    val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"), "left_outer")
 
-    studies_with_extraParams.map{ case (study, param) => study.copy(code = param.code, domain = param.domain, program = param.program) }
+    studies_with_extraParams.map{
+      case (study: EStudy, param: StudyExtraParams) => study.copy(code = param.code, domain = param.domain, program = param.program)
+      case s => s._1
+    }
   }
 
   def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {
