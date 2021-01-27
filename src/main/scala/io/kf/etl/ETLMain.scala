@@ -21,18 +21,15 @@ object ETLMain extends App {
         println(s"Running Pipeline with study IDS {${study_ids.mkString(", ")}}")
 
         study_ids.foreach { studyId =>
-          val dowloadData = DownloadProcessor(studyId)
-          val participantCommon = ParticipantCommonProcessor(dowloadData)
-          val fileCentric = FeatureCentricProcessor.fileCentric(dowloadData, participantCommon)
-          val participantCentric = FeatureCentricProcessor.participantCentric(dowloadData, participantCommon)
+          val downloadData = DownloadProcessor(studyId)
+          val participantCommon = ParticipantCommonProcessor(downloadData)
+          val fileCentric = FeatureCentricProcessor.fileCentric(downloadData, participantCommon)
+          val participantCentric = FeatureCentricProcessor.participantCentric(downloadData, participantCommon)
           val studyCentric = FeatureCentricProcessor.studyCentric(
-            dowloadData,
+            downloadData,
             studyId,
-            participantCentric.count(),
-            fileCentric.count(),
-            participantCentric
-              .filter(f => f.family_id.isDefined)
-              .count()
+            participantCentric,
+            fileCentric
           )
           IndexProcessor("file_centric", studyId, cliArgs.release_id.get, fileCentric)
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)

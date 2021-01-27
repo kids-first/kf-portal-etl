@@ -1,6 +1,7 @@
 package io.kf.etl.processors.featurecentric.transform
 
 import com.typesafe.config.Config
+import io.kf.etl.models.dataservice.EStudy
 import io.kf.etl.models.es._
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
@@ -364,5 +365,57 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         )
       )
     )
+  }
+
+  "studyCentric" should "return the proper Sequence of StudyCentric_ES" in {
+
+    val participants_ds = Seq(
+      ParticipantCentric_ES (
+        kf_id = Some("participant1"),
+        family_id = Some("fam1")
+      ),
+      ParticipantCentric_ES (
+        kf_id = Some("participant2"),
+        family_id = Some("fam1")
+      ),
+      ParticipantCentric_ES (
+        kf_id = Some("participant3"),
+        family_id = Some("fam2")
+      ),
+      ParticipantCentric_ES (
+        kf_id = Some("participant4"),
+        family_id = None
+      )
+    ).toDS()
+
+    val files_ds = Seq(
+      FileCentric_ES (kf_id = Some("file1")),
+      FileCentric_ES (kf_id = Some("file2")),
+      FileCentric_ES (kf_id = Some("file3"))
+    ).toDS()
+
+    val study = "study"
+
+    val studies = Seq(
+      EStudy(kf_id = Some("study")),
+      EStudy(kf_id = None),
+      EStudy(kf_id = Some("other_study"))
+    )
+
+    val entityDataSet = buildEntityDataSet(studies = studies)
+
+    val result = FeatureCentricTransformer.studyCentric(entityDataSet, study, participants_ds, files_ds)
+
+    val expectedResult = Seq(
+      StudyCentric_ES(
+        kf_id = Some("study"),
+        participant_count = Some(4),
+        file_count = Some(3),
+        family_count = Some(2)
+      )
+    )
+
+    result.collect() should contain theSameElementsAs expectedResult
+
   }
 }

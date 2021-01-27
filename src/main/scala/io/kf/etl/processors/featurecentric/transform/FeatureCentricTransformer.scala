@@ -115,13 +115,24 @@ object FeatureCentricTransformer {
 
   }
 
-  def studyCentric(entityDataset: EntityDataSet, studyId: String, participant_count: Long, file_count: Long, family_count: Long): Dataset[StudyCentric_ES] = {
+  def studyCentric(
+                    entityDataset: EntityDataSet,
+                    studyId: String,
+                    participants_ds: Dataset[ParticipantCentric_ES],
+                    files_ds: Dataset[FileCentric_ES]
+                  ): Dataset[StudyCentric_ES] = {
     import spark.implicits._
 
     val study = entityDataset.studies.filter(s => s.kf_id match {
       case Some(study) => study == studyId
       case None => false
     })
+
+    val families_count = participants_ds.map(f => f.family_id).filter(_.isDefined).distinct().count()
+
+    val participants_count: Long = participants_ds.count()
+    val files_count: Long = files_ds.count()
+
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
       name = s.name,
@@ -130,9 +141,9 @@ object FeatureCentricTransformer {
       code = s.code,
       domain = s.domain,
       program = s.program,
-      participant_count = Some(participant_count),
-      file_count = Some(file_count),
-      family_count = Some(family_count)
+      participant_count = Some(participants_count),
+      file_count = Some(files_count),
+      family_count = Some(families_count)
     ))
 
   }

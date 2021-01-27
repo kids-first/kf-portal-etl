@@ -22,10 +22,11 @@ object FeatureCentricProcessor {
   def studyCentric(
                     entityDataSet: EntityDataSet,
                     studyId: String,
-                    participant_count: Long,
-                    file_count: Long,
-                    families_count: Long)(implicit config: Config, spark: SparkSession): Dataset[StudyCentric_ES] = {
-    val transformed = FeatureCentricTransformer.studyCentric(entityDataSet, studyId, participant_count, file_count, families_count)//.cache()
+                    participants_ds: Dataset[ParticipantCentric_ES],
+                    files_ds: Dataset[FileCentric_ES]
+                  )(implicit config: Config, spark: SparkSession): Dataset[StudyCentric_ES] = {
+
+    val transformed = FeatureCentricTransformer.studyCentric(entityDataSet, studyId, participants_ds, files_ds)//.cache()
     transformed
   }
 }
