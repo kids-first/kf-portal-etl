@@ -394,10 +394,10 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       FileCentric_ES (kf_id = Some("file3"))
     ).toDS()
 
-    val study = "study1"
+    val study = "study"
 
     val studies = Seq(
-      EStudy(kf_id = Some("study1")),
+      EStudy(kf_id = Some("study")),
       EStudy(kf_id = None),
       EStudy(kf_id = Some("other_study"))
     )
@@ -408,7 +408,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
     val expectedResult = Seq(
       StudyCentric_ES(
-        kf_id = Some("study1"),
+        kf_id = Some("study"),
         participant_count = Some(4),
         file_count = Some(3),
         family_count = Some(2)
