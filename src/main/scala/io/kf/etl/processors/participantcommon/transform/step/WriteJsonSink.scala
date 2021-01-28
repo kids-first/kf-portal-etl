@@ -18,9 +18,7 @@ object WriteJsonSink {
     }
   }
 
-  def apply[T](sinkPath: String)(input: Dataset[T])(implicit spark: SparkSession): Dataset[T] = {
-    val cached = input.cache()
-    input.write.mode(SaveMode.Overwrite).json(sinkPath)
-    cached
+  def exportDataSetToJsonFile[T](sinkPath: String, partition: String)(input: Dataset[T])(implicit spark: SparkSession): Unit = {
+    input.write.mode(SaveMode.Overwrite).json(s"$sinkPath/$partition")
   }
 }

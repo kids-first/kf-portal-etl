@@ -7,8 +7,11 @@ import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
 import io.kf.etl.processors.tojson.JsonOutputProcessor
 
+import scala.util.Try
+
 object ETLMain extends App {
   val Array(saveJsonFiles) = args
+  val saveJsonToS3: Boolean = Try(saveJsonFiles.toBoolean).getOrElse(false)
 
   DefaultContext.withContext { context =>
     import context.implicits._
@@ -37,12 +40,16 @@ object ETLMain extends App {
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)
           IndexProcessor("study_centric", studyId, cliArgs.release_id.get, studyCentric)
 
-          JsonOutputProcessor(
-            Map(
+
+
+          if (saveJsonToS3) {
+            val datasets = Map (
               "file_centric" -> fileCentric,
               "participant_centric" -> participantCentric,
               "study_centric" -> studyCentric
-            ))
+            )
+            datasets.foreach(d => JsonOutputProcessor(d._1, studyId, cliArgs.release_id.get)(d._2))
+          }
 
           spark.sqlContext.clearCache()
         }
