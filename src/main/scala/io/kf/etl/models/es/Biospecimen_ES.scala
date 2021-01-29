@@ -24,7 +24,7 @@ final case class Biospecimen_ES(
                                  source_text_anatomical_site: Option[String] = None,
                                  spatial_descriptor: Option[String] = None,
                                  uberon_id_anatomical_site: Option[String] = None,
-                                 volume_ml: Option[Double] = None,
+                                 volume_ul: Option[Double] = None,
                                  sequencing_center_id: Option[String] = None,
                                  diagnoses: Seq[Diagnosis_ES] = Nil
                                )
