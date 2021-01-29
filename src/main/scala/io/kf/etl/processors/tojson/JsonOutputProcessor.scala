@@ -3,9 +3,7 @@ package io.kf.etl.processors.tojson
 import com.typesafe.config.Config
 import io.kf.etl.common.Constants.JSON_OUTPUT_FILES
 import io.kf.etl.processors.index.IndexProcessor
-import io.kf.etl.processors.participantcommon.transform.step.WriteJsonSink
-import org.apache.spark.sql.{Dataset, SparkSession}
-import play.api.libs.ws.StandaloneWSClient
+import org.apache.spark.sql.{Dataset, SaveMode}
 
 
 object JsonOutputProcessor {
@@ -13,9 +11,10 @@ object JsonOutputProcessor {
                 indexType: String,
                 studyId: String,
                 releaseId: String
-              ) (dataset: Dataset[T])(implicit wsClient: StandaloneWSClient, config: Config, spark: SparkSession): Unit = {
+              ) (dataset: Dataset[T])(implicit config: Config): Unit = {
     val partition = IndexProcessor.getIndexName(indexType, studyId, releaseId)
-    WriteJsonSink.exportDataSetToJsonFile(config.getString(JSON_OUTPUT_FILES), partition)(dataset)
+
+    dataset.write.mode(SaveMode.Overwrite).json(s"${config.getString(JSON_OUTPUT_FILES)}/$partition")
   }
 
 }

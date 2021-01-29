@@ -1,5 +1,6 @@
 package io.kf.etl
 
+import io.kf.etl.common.Constants.SAVE_JSON_FILES
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
@@ -10,13 +11,14 @@ import io.kf.etl.processors.tojson.JsonOutputProcessor
 import scala.util.Try
 
 object ETLMain extends App {
-  val Array(saveJsonFiles) = args
-  val saveJsonToS3: Boolean = Try(saveJsonFiles.toBoolean).getOrElse(false)
 
   DefaultContext.withContext { context =>
     import context.implicits._
 
     import scala.concurrent.ExecutionContext.Implicits._
+
+    val saveJsonToS3 = Try(config.getBoolean(SAVE_JSON_FILES)).getOrElse(false)
+
     lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
 
     cliArgs.study_ids match {
