@@ -35,5 +35,4 @@ object Constants {
   val DATA_CAT_AVAILABLE_DATA_TYPES = "processors.download.data_category_existing_data_path"
 
   val JSON_OUTPUT_FILES = "aws.s3.json_output_files_path"
-  val SAVE_JSON_FILES = "aws.s3.save_json_files"
 }

@@ -1,6 +1,6 @@
 package io.kf.etl
 
-import io.kf.etl.common.Constants.SAVE_JSON_FILES
+import io.kf.etl.common.Constants.{JSON_OUTPUT_FILES, SAVE_JSON_FILES}
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
@@ -17,7 +17,7 @@ object ETLMain extends App {
 
     import scala.concurrent.ExecutionContext.Implicits._
 
-    val saveJsonToS3 = Try(config.getBoolean(SAVE_JSON_FILES)).getOrElse(false)
+    val saveJsonToS3 = Try(config.getString(JSON_OUTPUT_FILES)).map(s=> s!= null && s.nonEmpty).getOrElse(false)
 
     lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
 
