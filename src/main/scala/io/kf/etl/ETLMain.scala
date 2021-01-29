@@ -1,10 +1,14 @@
 package io.kf.etl
 
+import io.kf.etl.common.Constants.{JSON_OUTPUT_FILES, SAVE_JSON_FILES}
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor
 import io.kf.etl.processors.index.IndexProcessor
 import io.kf.etl.processors.participantcommon.ParticipantCommonProcessor
+import io.kf.etl.processors.tojson.JsonOutputProcessor
+
+import scala.util.Try
 
 object ETLMain extends App {
 
@@ -12,6 +16,9 @@ object ETLMain extends App {
     import context.implicits._
 
     import scala.concurrent.ExecutionContext.Implicits._
+
+    val saveJsonToS3 = Try(config.getString(JSON_OUTPUT_FILES)).map(s=> s!= null && s.nonEmpty).getOrElse(false)
+
     lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
 
     cliArgs.study_ids match {
@@ -34,6 +41,18 @@ object ETLMain extends App {
           IndexProcessor("file_centric", studyId, cliArgs.release_id.get, fileCentric)
           IndexProcessor("participant_centric", studyId, cliArgs.release_id.get, participantCentric)
           IndexProcessor("study_centric", studyId, cliArgs.release_id.get, studyCentric)
+
+
+
+          if (saveJsonToS3) {
+            val datasets = Map (
+              "file_centric" -> fileCentric,
+              "participant_centric" -> participantCentric,
+              "study_centric" -> studyCentric
+            )
+            datasets.foreach(d => JsonOutputProcessor(d._1, studyId, cliArgs.release_id.get)(d._2))
+          }
+
           spark.sqlContext.clearCache()
         }
 
