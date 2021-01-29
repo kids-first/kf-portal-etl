@@ -1,6 +1,6 @@
 package io.kf.etl
 
-import io.kf.etl.common.Constants.{JSON_OUTPUT_FILES, SAVE_JSON_FILES}
+import io.kf.etl.common.Constants.{JSON_OUTPUT_FILES}
 import io.kf.etl.context.{CLIParametersHolder, DefaultContext}
 import io.kf.etl.processors.download.DownloadProcessor
 import io.kf.etl.processors.featurecentric.FeatureCentricProcessor

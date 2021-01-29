@@ -59,7 +59,7 @@ object EntityConverter {
       source_text_anatomical_site = bio.source_text_anatomical_site,
       spatial_descriptor = bio.spatial_descriptor,
       uberon_id_anatomical_site = bio.uberon_id_anatomical_site,
-      volume_ml = bio.volume_ml,
+      volume_ul = bio.volume_ul,
       diagnoses = bio.diagnoses.map(d => EDiagnosisToDiagnosisES(d, None)),
       sequencing_center_id = bio.sequencing_center_id
     )
