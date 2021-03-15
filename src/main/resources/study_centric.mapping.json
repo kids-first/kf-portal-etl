@@ -34,6 +34,15 @@
         },
         "family_count": {
           "type": "long"
+        },
+        "family_data": {
+          "type": "boolean"
+        },
+        "experimental_strategy": {
+          "type": "keyword"
+        },
+        "available_data_types": {
+          "type": "keyword"
         }
       }
     }
