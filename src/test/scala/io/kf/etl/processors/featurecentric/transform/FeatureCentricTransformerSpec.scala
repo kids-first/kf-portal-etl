@@ -8,7 +8,7 @@ import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers, fullstacks}
 
 
 class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSparkSession {
@@ -372,26 +372,46 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val participants_ds = Seq(
       ParticipantCentric_ES (
         kf_id = Some("participant1"),
-        family_id = Some("fam1")
+        family_id = Some("fam1"),
+        available_data_types = Seq("Pathology", "Radiology"),
+        is_proband = Some(true)
       ),
       ParticipantCentric_ES (
         kf_id = Some("participant2"),
-        family_id = Some("fam1")
+        family_id = Some("fam1"),
+        available_data_types = Seq("Sequencing reads", "Radiology"),
+        is_proband = Some(true)
       ),
       ParticipantCentric_ES (
         kf_id = Some("participant3"),
-        family_id = Some("fam2")
+        family_id = Some("fam2"),
+        available_data_types = Seq("Other", "Gene Expression"),
+        is_proband = Some(false)
       ),
       ParticipantCentric_ES (
         kf_id = Some("participant4"),
-        family_id = None
+        family_id = None,
+        available_data_types = Seq("Pathology", "Annotated Somatic Mutations"),
+        is_proband = Some(true)
       )
     ).toDS()
 
     val files_ds = Seq(
-      FileCentric_ES (kf_id = Some("file1")),
-      FileCentric_ES (kf_id = Some("file2")),
-      FileCentric_ES (kf_id = Some("file3"))
+      FileCentric_ES (
+        kf_id = Some("file1"),
+        sequencing_experiments = Seq(SequencingExperiment_ES(experiment_strategy=Some("one")))
+      ),
+      FileCentric_ES (
+        kf_id = Some("file2"),
+        sequencing_experiments = Seq(SequencingExperiment_ES(experiment_strategy=Some("two")))
+      ),
+      FileCentric_ES (
+        kf_id = Some("file3"),
+        sequencing_experiments = Seq(
+          SequencingExperiment_ES(experiment_strategy=Some("three")),
+          SequencingExperiment_ES(experiment_strategy=Some("one"))
+        )
+      )
     ).toDS()
 
     val study = "study"
@@ -411,7 +431,11 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         kf_id = Some("study"),
         participant_count = Some(4),
         file_count = Some(3),
-        family_count = Some(2)
+        family_count = Some(2),
+        family_data = Some(true),
+        available_data_types =
+          Seq("Annotated Somatic Mutations", "Radiology", "Other", "Gene Expression", "Sequencing reads", "Pathology"),
+        experimental_strategy = Seq("one", "two", "three")
       )
     )
 

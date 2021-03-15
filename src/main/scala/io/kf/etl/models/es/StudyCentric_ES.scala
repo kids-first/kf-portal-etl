@@ -10,5 +10,8 @@ final case class StudyCentric_ES(
                                   program: Option[String] = None,
                                   participant_count: Option[Long] = None,
                                   file_count: Option[Long] = None,
-                                  family_count: Option[Long] = None
+                                  family_count: Option[Long] = None,
+                                  family_data: Option[Boolean] = None,
+                                  experimental_strategy: Seq[String] = Nil,
+                                  available_data_types: Seq[String] = Nil
                                 )

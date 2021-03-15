@@ -132,6 +132,12 @@ object FeatureCentricTransformer {
 
     val participants_count: Long = participants_ds.count()
     val files_count: Long = files_ds.count()
+    val study_available_data_types: Set[String] = participants_ds.flatMap(p => p.available_data_types).collect().toSet
+    val study_experiment_strategy: Set[String] = files_ds.flatMap(p => p.sequencing_experiments).flatMap(s => s.experiment_strategy).collect().toSet
+    val family_data: Option[Boolean] = Some(participants_ds.filter(p => p.is_proband match {
+      case Some(true) => false
+      case _ => true
+    }).count() > 0)
 
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
@@ -143,7 +149,10 @@ object FeatureCentricTransformer {
       program = s.program,
       participant_count = Some(participants_count),
       file_count = Some(files_count),
-      family_count = Some(families_count)
+      family_count = Some(families_count),
+      family_data = family_data,
+      available_data_types = study_available_data_types.toSeq,   //study_experiment_strategy.toSeq
+      experimental_strategy = study_experiment_strategy.toSeq
     ))
 
   }
