@@ -6,6 +6,7 @@ import io.kf.etl.models.es._
 import io.kf.etl.processors.Data
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
+import io.kf.etl.processors.download.transform.DownloadTransformer
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.scalatest.{FlatSpec, Matchers, fullstacks}
@@ -373,13 +374,13 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ParticipantCentric_ES (
         kf_id = Some("participant1"),
         family_id = Some("fam1"),
-        available_data_types = Seq("Pathology", "Radiology"),
+        available_data_types = Seq("Pathology Reports", "Radiology Reports"),
         is_proband = Some(true)
       ),
       ParticipantCentric_ES (
         kf_id = Some("participant2"),
         family_id = Some("fam1"),
-        available_data_types = Seq("Sequencing reads", "Radiology"),
+        available_data_types = Seq("Aligned Reads", "Radiology Images"),
         is_proband = Some(true)
       ),
       ParticipantCentric_ES (
@@ -391,7 +392,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ParticipantCentric_ES (
         kf_id = Some("participant4"),
         family_id = None,
-        available_data_types = Seq("Pathology", "Annotated Somatic Mutations"),
+        available_data_types = Seq("Histology Images", "Annotated Somatic Mutations"),
         is_proband = Some(true)
       )
     ).toDS()
@@ -422,9 +423,13 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       EStudy(kf_id = Some("other_study"))
     )
 
-    val entityDataSet = buildEntityDataSet(studies = studies)
+    val mapOfDataCategory_ExistingTypes = Some(DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark))
+    val entityDataSet = buildEntityDataSet(
+      studies = studies,
+      mapOfDataCategory_ExistingTypes = mapOfDataCategory_ExistingTypes
+    )
 
-    val result = FeatureCentricTransformer.studyCentric(entityDataSet, study, participants_ds, files_ds)
+    val result = FeatureCentricTransformer.studyCentric(entityDataSet, study, participants_ds, files_ds).collect()
 
     val expectedResult = Seq(
       StudyCentric_ES(
@@ -433,13 +438,38 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         file_count = Some(3),
         family_count = Some(2),
         family_data = Some(true),
-        available_data_types =
-          Seq("Annotated Somatic Mutations", "Radiology", "Other", "Gene Expression", "Sequencing reads", "Pathology"),
-        experimental_strategy = Seq("one", "two", "three")
+        experimental_strategy = Seq("one", "two", "three"),
+        data_category_count = Seq(
+          DataCategoryWCount_ES(
+            data_category = "Sequencing Reads",
+            count = 1
+          ),
+          DataCategoryWCount_ES(
+            data_category = "Pathology",
+            count = 2
+          ),
+          DataCategoryWCount_ES(
+            data_category = "Other",
+            count = 1
+          ),
+          DataCategoryWCount_ES(
+            data_category = "Simple Nucleotide Variation",
+            count = 1
+          ),
+          DataCategoryWCount_ES(
+            data_category = "Transcriptome Profiling",
+            count = 1
+          ),
+          DataCategoryWCount_ES(
+            data_category = "Radiology",
+            count = 2
+          )
+
+        )
       )
     )
 
-    result.collect() should contain theSameElementsAs expectedResult
+    result should contain theSameElementsAs expectedResult
 
   }
 }

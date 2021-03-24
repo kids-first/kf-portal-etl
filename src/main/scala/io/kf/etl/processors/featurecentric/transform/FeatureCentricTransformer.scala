@@ -5,7 +5,7 @@ import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import org.apache.spark.sql.functions.{collect_list, explode_outer, first}
+import org.apache.spark.sql.functions.{collect_list, explode_outer, first, lower}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
@@ -132,7 +132,10 @@ object FeatureCentricTransformer {
 
     val participants_count: Long = participants_ds.count()
     val files_count: Long = files_ds.count()
-    val study_available_data_types: Set[String] = participants_ds.flatMap(p => p.available_data_types).collect().toSet
+
+    val dataWithCounts =
+      getAvailableDataWithCounts(participants_ds, entityDataset.mapOfDataCategory_ExistingTypes)
+
     val study_experiment_strategy: Set[String] = files_ds.flatMap(p => p.sequencing_experiments).flatMap(s => s.experiment_strategy).collect().toSet
     val family_data: Option[Boolean] = Some(participants_ds.filter(p => p.is_proband match {
       case Some(true) => false
@@ -151,8 +154,8 @@ object FeatureCentricTransformer {
       file_count = Some(files_count),
       family_count = Some(families_count),
       family_data = family_data,
-      available_data_types = study_available_data_types.toSeq,   //study_experiment_strategy.toSeq
-      experimental_strategy = study_experiment_strategy.toSeq
+      experimental_strategy = study_experiment_strategy.toSeq,
+      data_category_count = dataWithCounts
     ))
 
   }
@@ -261,5 +264,38 @@ object FeatureCentricTransformer {
       race = participant.race,
       study = participant.study
     )
+  }
+
+  private def getAvailableDataWithCounts(
+                                          participants_ds: Dataset[ParticipantCentric_ES],
+                                          mapOfDataCategory_ExistingTypes: Dataset[(String, Seq[String])]
+                                        ): Seq[DataCategoryWCount_ES] = {
+
+    val part_available_data_types = participants_ds.map(p => (p.kf_id, p.available_data_types))
+    val part_available_data_types_exploded = part_available_data_types
+      .withColumn("available_data_types_1", explode_outer($"_2"))
+      .withColumnRenamed("_1", "kf_id")
+      .drop("_2")
+
+    val mapOfDataCategory_ExistingTypes_exploded = mapOfDataCategory_ExistingTypes
+      .withColumn("available_data_types_2", explode_outer($"_2"))
+      .withColumnRenamed("_1", "data_category")
+      .drop("_2")
+
+    part_available_data_types_exploded
+      .joinWith(
+        mapOfDataCategory_ExistingTypes_exploded,
+        lower($"available_data_types_1") === lower($"available_data_types_2"),
+        "left"
+      )
+      .as[((String, String),(String, String))]
+      .map(r => (r._1._1, r._2._1))
+      .groupByKey(_._2)
+      .mapGroups(
+        (data_category, iter) => (data_category, iter.length))
+      .withColumnRenamed("_1", "data_category")
+      .withColumnRenamed("_2", "count")
+      .as[DataCategoryWCount_ES]
+      .collect().toSeq
   }
 }
