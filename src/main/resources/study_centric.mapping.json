@@ -41,8 +41,16 @@
         "experimental_strategy": {
           "type": "keyword"
         },
-        "available_data_types": {
-          "type": "keyword"
+        "available_data_category": {
+          "properties": {
+            "data_category": {
+              "type": "keyword"
+            },
+            "count": {
+              "type": "long"
+            }
+          },
+          "type": "nested"
         }
       }
     }
