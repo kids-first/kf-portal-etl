@@ -287,7 +287,7 @@ object FeatureCentricTransformer {
         mapOfDataCategory_ExistingTypes_exploded,
         lower($"available_data_types_1") === lower($"available_data_types_2"),
         "left"
-      )
+      ).filter(_._2 != null)
       .as[((String, String),(String, String))]
       .map(r => (r._1._1, r._2._1))
       .groupByKey(_._2)

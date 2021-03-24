@@ -392,7 +392,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ParticipantCentric_ES (
         kf_id = Some("participant4"),
         family_id = None,
-        available_data_types = Seq("Histology Images", "Annotated Somatic Mutations"),
+        available_data_types = Seq("Histology Images", "Annotated Somatic Mutations", "Toto"),
         is_proband = Some(true)
       )
     ).toDS()
