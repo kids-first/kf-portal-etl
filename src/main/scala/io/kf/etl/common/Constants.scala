@@ -30,6 +30,7 @@ object Constants {
   val DEFAULT_PARTICIPANT_CENTRIC_ALIAS = "participant_centric"
   val FILE_CENTRIC_MAPPING_FILE_NAME = "file_centric.mapping.json"
   val PARTICIPANT_CENTRIC_MAPPING_FILE_NAME = "participant_centric.mapping.json"
+  val STUDY_CENTRIC_MAPPING_FILE_NAME = "study_centric.mapping.json"
 
   val STUDIES_EXTRA_PARAMS_PATH = "processors.download.studies_params_path"
   val DATA_CAT_AVAILABLE_DATA_TYPES = "processors.download.data_category_existing_data_path"
