@@ -74,7 +74,7 @@
           "filter": [
             "lowercase",
             "edge_ngram",
-            "member_ascii_folding"
+            "studies_ascii_folding"
           ],
           "type": "custom",
           "tokenizer": "standard"
@@ -86,6 +86,10 @@
           "min_gram": "1",
           "side": "front",
           "type": "edge_ngram"
+        },
+        "studies_ascii_folding": {
+          "type": "asciifolding",
+          "preserve_original": "true"
         }
       }
     },

@@ -36,7 +36,7 @@ object IndexProcessor {
     )
 
     if (response.status != 200) {
-      throw new IllegalStateException(s"Impossible to create index :${response}")
+      throw new IllegalStateException(s"Impossible to create index :${response} for index:${indexName}")
     }
   }
 }
