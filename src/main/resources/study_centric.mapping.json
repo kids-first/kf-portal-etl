@@ -9,7 +9,13 @@
           "type": "keyword"
         },
         "name": {
-          "type": "keyword"
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          },
+          "analyzer": "autocomplete"
         },
         "external_id": {
           "type": "keyword"
@@ -18,7 +24,13 @@
           "type": "keyword"
         },
         "code": {
-          "type": "keyword"
+          "type": "text",
+          "fields": {
+            "raw": {
+              "type": "keyword"
+            }
+          },
+          "analyzer": "autocomplete"
         },
         "domain": {
           "type": "keyword"
@@ -58,25 +70,14 @@
   "settings": {
     "analysis": {
       "analyzer": {
-        "autocomplete_analyzed": {
+        "autocomplete": {
           "filter": [
             "lowercase",
-            "edge_ngram"
+            "edge_ngram",
+            "member_ascii_folding"
           ],
+          "type": "custom",
           "tokenizer": "standard"
-        },
-        "autocomplete_prefix": {
-          "filter": [
-            "lowercase",
-            "edge_ngram"
-          ],
-          "tokenizer": "keyword"
-        },
-        "lowercase_keyword": {
-          "filter": [
-            "lowercase"
-          ],
-          "tokenizer": "keyword"
         }
       },
       "filter": {
