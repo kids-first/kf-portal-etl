@@ -133,8 +133,9 @@ object FeatureCentricTransformer {
     val participants_count: Long = participants_ds.count()
     val files_count: Long = files_ds.count()
 
-    val dataWithCounts =
+    val dataWithCounts = {
       getAvailableDataWithCounts(participants_ds, entityDataset.mapOfDataCategory_ExistingTypes)
+    }
 
     val study_experiment_strategy: Set[String] = files_ds.flatMap(p => p.sequencing_experiments).flatMap(s => s.experiment_strategy).collect().toSet
     val family_data: Option[Boolean] = Some(participants_ds.filter(p => p.is_proband match {
@@ -155,6 +156,7 @@ object FeatureCentricTransformer {
       family_count = Some(families_count),
       family_data = family_data,
       experimental_strategy = study_experiment_strategy.toSeq,
+      data_categories = dataWithCounts.map(_.data_category),
       data_category_count = dataWithCounts
     ))
 
@@ -290,6 +292,7 @@ object FeatureCentricTransformer {
       ).filter(_._2 != null)
       .as[((String, String),(String, String))]
       .map(r => (r._1._1, r._2._1))
+      .distinct()
       .groupByKey(_._2)
       .mapGroups(
         (data_category, iter) => (data_category, iter.length))
