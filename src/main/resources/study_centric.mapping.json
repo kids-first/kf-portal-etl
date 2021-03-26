@@ -53,6 +53,9 @@
         "experimental_strategy": {
           "type": "keyword"
         },
+        "data_categories": {
+          "type": "keyword"
+        },
         "data_category_count": {
           "properties": {
             "data_category": {

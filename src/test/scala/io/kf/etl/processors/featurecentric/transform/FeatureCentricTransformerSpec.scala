@@ -380,7 +380,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ParticipantCentric_ES (
         kf_id = Some("participant2"),
         family_id = Some("fam1"),
-        available_data_types = Seq("Aligned Reads", "Radiology Images"),
+        available_data_types = Seq("Aligned Reads", "Unaligned Reads", "Radiology Images"),
         is_proband = Some(true)
       ),
       ParticipantCentric_ES (
@@ -444,6 +444,10 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         family_count = Some(2),
         family_data = Some(true),
         experimental_strategy = Seq("one", "two", "three"),
+        data_categories =
+          Seq(
+            "Sequencing Reads", "Pathology", "Other", "Simple Nucleotide Variation", "Transcriptome Profiling", "Radiology"
+          ),
         data_category_count = Seq(
           DataCategoryWCount_ES(
             data_category = "Sequencing Reads",
