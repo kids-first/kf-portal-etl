@@ -28,9 +28,9 @@ object Data {
   val diagnosis2: EDiagnosis = EDiagnosis(kf_id = Some("diagnosis_id_2"), participant_id = Some("participant_id_2"))
   val diagnosis: Seq[EDiagnosis] = Seq(diagnosis1, diagnosis1_2, diagnosis1_3, diagnosis2)
 
-  val genomicFile1: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile1"), data_type = Some("Super Important type 1"), file_name = Some("File1"))
+  val genomicFile1: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile1"), data_type = Some("Aligned Reads"), file_name = Some("File1"))
   val genomicFile2: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile2"), data_type = Some("Super Important type 2"), file_name = Some("File2"))
-  val genomicFile3: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile3"), data_type = Some("Super Important type 3"), file_name = Some("File3"))
+  val genomicFile3: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile3"), data_type = Some("Isoform Expression"), file_name = Some("File3"))
   val genomicFile4: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile4"), data_type = Some("Super Important type 4"), file_name = Some("File4"))
   val genomicFile5: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile5"), data_type = Some("Super Important type 5"), file_name = Some("File5"))
   val genomicFile6: EGenomicFile = EGenomicFile(kf_id = Some("genomicFile6"), data_type = Some("Super Important type 6"), file_name = Some("File6"))
@@ -81,4 +81,9 @@ object Data {
   )
 
   val phenotypes = Seq(phenotype_ES1, phenotype_ES2)
+
+  val available_data_types: Seq[(String, Seq[String])] = Seq(
+    ("participant_id_1", Seq("Aligned Reads", "Radiology Images")),
+    ("participant_id_3", Seq("Annotated Somatic Mutations", "Histology Images"))
+  )
 }

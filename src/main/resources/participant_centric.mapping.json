@@ -14,6 +14,9 @@
         "available_data_types": {
           "type": "keyword"
         },
+        "available_data_categories": {
+          "type": "keyword"
+        },
         "biospecimens": {
           "properties": {
             "age_at_event_days": {

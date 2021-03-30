@@ -1,5 +1,6 @@
 package io.kf.etl.processors.featurecentric.transform
 
+import io.kf.etl.common.Utils.calculateDataCategory
 import io.kf.etl.models.dataservice.{EGenomicFile, ESequencingExperiment, ESequencingExperimentGenomicFile}
 import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
@@ -38,6 +39,8 @@ object FeatureCentricTransformer {
     val participantExploded = participants
       .withColumn("biospecimen", explode_outer($"biospecimens"))
 
+    val mapDataCategoryTypes = entityDataset.mapOfDataCategory_ExistingTypes.collect().toMap
+
     participantExploded.joinWith(
       bioId_GF,
       participantExploded.col("biospecimen.kf_id") === bioId_GF.col("biospecimen_id"),
@@ -58,7 +61,19 @@ object FeatureCentricTransformer {
         collect_list("biospecimens") as "biospecimens")
       .drop("kf_id")
       .as[(Participant_ES, Seq[Seq[GenomicFile_ES]], Seq[Biospecimen_ES])]
-      .map { case (p, gfs, b) => participant_ES_to_ParticipantCentric_ES(p, gfs.flatten.distinct, b) }
+      .map { case (p, gfs, b) =>
+        participant_ES_to_ParticipantCentric_ES(
+          p.copy(
+            data_category =
+              calculateDataCategory(
+                p.available_data_types,
+                mapDataCategoryTypes
+              ).toSeq
+          ),
+          gfs.flatten.distinct,
+          b
+        )
+      }
   }
 
   def fileCentric(entityDataset: EntityDataSet, participants: Dataset[Participant_ES]): Dataset[FileCentric_ES] = {
@@ -71,6 +86,8 @@ object FeatureCentricTransformer {
 
     val participantExploded = participants
       .withColumn("biospecimen", explode_outer($"biospecimens"))
+
+    val mapDataCategoryTypes = entityDataset.mapOfDataCategory_ExistingTypes.collect().toMap
 
     files.joinWith(
       entityDataset.biospecimenGenomicFiles,
@@ -110,7 +127,7 @@ object FeatureCentricTransformer {
       )
       .as[(GenomicFile_ES, Seq[Participant_ES])]
       .map {
-        case (gf, ps) => genomicFile_ES_to_FileCentric(gf, ps)
+        case (gf, ps) => genomicFile_ES_to_FileCentric(gf, ps, mapDataCategoryTypes)
       }
 
   }
@@ -213,7 +230,8 @@ object FeatureCentricTransformer {
 
   private def genomicFile_ES_to_FileCentric(
                                              genomicFile: GenomicFile_ES,
-                                             participants: Seq[Participant_ES]
+                                             participants: Seq[Participant_ES],
+                                             mapDataCategoryTypes: Map[String, Seq[String]] = Map.empty[String, Seq[String]]
                                            ): FileCentric_ES = {
     FileCentric_ES(
       acl = genomicFile.acl,
@@ -221,6 +239,10 @@ object FeatureCentricTransformer {
       access_urls = genomicFile.access_urls,
       controlled_access = genomicFile.controlled_access,
       data_type = genomicFile.data_type,
+      data_category = genomicFile.data_type match {
+        case Some(d) => calculateDataCategory(Seq(d), mapDataCategoryTypes).headOption
+        case _ => None
+      },
       external_id = genomicFile.external_id,
       file_format = genomicFile.file_format,
       file_name = genomicFile.file_name,
@@ -248,6 +270,7 @@ object FeatureCentricTransformer {
       affected_status = participant.affected_status,
       alias_group = participant.alias_group,
       available_data_types = participant.available_data_types,
+      available_data_categories = participant.data_category,
       biospecimens = biospecimens,
       diagnoses = participant.diagnoses,
       diagnosis_category = participant.diagnosis_category,
@@ -290,7 +313,7 @@ object FeatureCentricTransformer {
         lower($"available_data_types_1") === lower($"available_data_types_2"),
         "left"
       ).filter(_._2 != null)
-      .as[((String, String),(String, String))]
+      .as[((String, String), (String, String))]
       .map(r => (r._1._1, r._2._1))
       .distinct()
       .groupByKey(_._2)

@@ -24,6 +24,9 @@
         "data_type": {
           "type": "keyword"
         },
+        "data_category": {
+          "type": "keyword"
+        },
         "external_id": {
           "type": "keyword"
         },

@@ -9,6 +9,7 @@ import io.kf.etl.processors.common.converter.EntityConverter
 import io.kf.etl.processors.download.transform.DownloadTransformer
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
+import org.apache.spark.sql.Dataset
 import org.scalatest.{FlatSpec, Matchers, fullstacks}
 
 
@@ -19,6 +20,9 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
   val data: Data.type = Data
 
+  val mapOfDataCategory_ExistingTypes: Option[Dataset[(String, Seq[String])]] =
+    Some(DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark))
+
   val entityDataSet: EntityDataSet = buildEntityDataSet(
     participants = data.participants,
     biospecimens = data.bioSpecimens,
@@ -28,8 +32,11 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     biospecimenDiagnoses = data.biospecimenDiagnosis,
     sequencingExperiments = data.eSequencingExperiment,
     sequencingExperimentGenomicFiles = data.eSequencingExperimentGenomicFile,
-    duoCodes = Some(data.duoCodes.toDS())
+    duoCodes = Some(data.duoCodes.toDS()),
+    mapOfDataCategory_ExistingTypes = mapOfDataCategory_ExistingTypes
   )
+  val available_data_types: Seq[(String, Seq[String])] = data.available_data_types
+
 
   "fileCentric" should "return the proper Sequence of FileCentric_ES" in {
 
@@ -38,7 +45,9 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
 
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)
-      .map(p => p.copy(biospecimens = if(participantId_Bios.contains(p.kf_id.get)) {participantId_Bios(p.kf_id.orNull)} else Nil))
+      .map(p => p.copy(
+        biospecimens = if(participantId_Bios.contains(p.kf_id.get)) {participantId_Bios(p.kf_id.orNull)} else Nil
+      ))
       .toDS()
 
     val result = FeatureCentricTransformer.fileCentric(entityDataSet, participants)
@@ -46,7 +55,8 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     result.collect() should contain theSameElementsAs Seq(
       FileCentric_ES(
         kf_id = Some("genomicFile1"),
-        data_type = Some("Super Important type 1"),
+        data_type = Some("Aligned Reads"),
+        data_category = Some("Sequencing Reads"),
         file_name = Some("File1"),
         participants = Seq(
           Participant_ES(
@@ -86,7 +96,8 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ),
       FileCentric_ES(
         kf_id = Some("genomicFile3"),
-        data_type = Some("Super Important type 3"),
+        data_type = Some("Isoform Expression"),
+        data_category = Some("Transcriptome Profiling"),
         file_name = Some("File3"),
         participants = Seq(
           Participant_ES(
@@ -191,7 +202,15 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val participant_ES =
       entityDataSet
         .participants
-        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))), phenotype = if (p.kf_id.get == "participant_id_4") phenotypes_ES else Nil))
+        .map(p => EntityConverter.EParticipantToParticipantES(p).copy(
+          biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))),
+          available_data_types = p.kf_id.get match {
+            case "participant_id_1" => Seq("Aligned Reads", "Radiology Images")
+            case "participant_id_3" => Seq("Annotated Somatic Mutations", "Histology Images")
+            case _ => Nil
+          },
+          phenotype = if (p.kf_id.get == "participant_id_4") phenotypes_ES else Nil)
+        )
 
     val result = FeatureCentricTransformer.participantCentric(
       entityDataSet,
@@ -201,13 +220,15 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     result.collect() should contain theSameElementsAs Seq(
       ParticipantCentric_ES(
         kf_id = Some("participant_id_1"),
+        available_data_types = Seq("Aligned Reads", "Radiology Images"),
+        available_data_categories = Seq("Radiology", "Sequencing Reads"),
         biospecimens = Seq(
           Biospecimen_ES(
             kf_id = Some("biospecimen_id_1"),
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile1"),
-                data_type = Some("Super Important type 1"),
+                data_type = Some("Aligned Reads"),
                 file_name = Some("File1")
               ),
               GenomicFile_ES(
@@ -234,7 +255,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile3"),
-                data_type = Some("Super Important type 3"),
+                data_type = Some("Isoform Expression"),
                 file_name = Some("File3")
               )
             ),
@@ -244,7 +265,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         files = Seq(
           GenomicFile_ES(
             kf_id = Some("genomicFile1"),
-            data_type = Some("Super Important type 1"),
+            data_type = Some("Aligned Reads"),
             file_name = Some("File1")
           ),
           GenomicFile_ES(
@@ -259,7 +280,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
           ),
           GenomicFile_ES(
             kf_id = Some("genomicFile3"),
-            data_type = Some("Super Important type 3"),
+            data_type = Some("Isoform Expression"),
             file_name = Some("File3")
           )
         )
@@ -291,13 +312,15 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       ),
       ParticipantCentric_ES(
         kf_id = Some("participant_id_3"),
+        available_data_types = Seq("Annotated Somatic Mutations", "Histology Images"),
+        available_data_categories = Seq("Simple Nucleotide Variation", "Pathology"),
         biospecimens = Seq(
           Biospecimen_ES(
             kf_id = Some("biospecimen_id_3"),
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile1"),
-                data_type = Some("Super Important type 1"),
+                data_type = Some("Aligned Reads"),
                 file_name = Some("File1")
               ),
               GenomicFile_ES(
@@ -311,7 +334,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         files = Seq(
           GenomicFile_ES(
             kf_id = Some("genomicFile1"),
-            data_type = Some("Super Important type 1"),
+            data_type = Some("Aligned Reads"),
             file_name = Some("File1")
           ),
           GenomicFile_ES(
@@ -428,7 +451,6 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       EStudy(kf_id = Some("other_study"))
     )
 
-    val mapOfDataCategory_ExistingTypes = Some(DownloadTransformer.loadCategory_ExistingDataTypes("./src/test/resources/data_category_existing_data.tsv")(spark))
     val entityDataSet = buildEntityDataSet(
       studies = studies,
       mapOfDataCategory_ExistingTypes = mapOfDataCategory_ExistingTypes
