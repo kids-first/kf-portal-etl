@@ -204,8 +204,9 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         .participants
         .map(p => EntityConverter.EParticipantToParticipantES(p).copy(
           biospecimens = biospecimen_ES.filter(b => p.biospecimens.contains(b.kf_id.getOrElse(""))),
-          available_data_types = available_data_types.find(c => c._1 == p.kf_id.orNull) match {
-            case Some(c) => c._2
+          available_data_types = p.kf_id.get match {
+            case "participant_id_1" => Seq("Aligned Reads", "Radiology Images")
+            case "participant_id_3" => Seq("Annotated Somatic Mutations", "Histology Images")
             case _ => Nil
           },
           phenotype = if (p.kf_id.get == "participant_id_4") phenotypes_ES else Nil)
@@ -227,7 +228,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile1"),
-                data_type = Some("Super Important type 1"),
+                data_type = Some("Aligned Reads"),
                 file_name = Some("File1")
               ),
               GenomicFile_ES(
@@ -254,7 +255,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile3"),
-                data_type = Some("Super Important type 3"),
+                data_type = Some("Isoform Expression"),
                 file_name = Some("File3")
               )
             ),
@@ -264,7 +265,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         files = Seq(
           GenomicFile_ES(
             kf_id = Some("genomicFile1"),
-            data_type = Some("Super Important type 1"),
+            data_type = Some("Aligned Reads"),
             file_name = Some("File1")
           ),
           GenomicFile_ES(
@@ -279,7 +280,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
           ),
           GenomicFile_ES(
             kf_id = Some("genomicFile3"),
-            data_type = Some("Super Important type 3"),
+            data_type = Some("Isoform Expression"),
             file_name = Some("File3")
           )
         )
@@ -319,7 +320,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             genomic_files = Seq(
               GenomicFile_ES(
                 kf_id = Some("genomicFile1"),
-                data_type = Some("Super Important type 1"),
+                data_type = Some("Aligned Reads"),
                 file_name = Some("File1")
               ),
               GenomicFile_ES(
@@ -333,7 +334,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         files = Seq(
           GenomicFile_ES(
             kf_id = Some("genomicFile1"),
-            data_type = Some("Super Important type 1"),
+            data_type = Some("Aligned Reads"),
             file_name = Some("File1")
           ),
           GenomicFile_ES(
