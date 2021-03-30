@@ -1,5 +1,6 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
+import io.kf.etl.common.Utils.calculateDataCategory
 import io.kf.etl.models.es.{FamilyComposition_ES, FamilyMember_ES, Family_ES, Participant_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import org.apache.spark.broadcast.Broadcast
@@ -40,19 +41,7 @@ object MergeFamily {
 
   }
 
-  def calculateDataCategory(
-                             availableDataType: Seq[String],
-                             mapOfDataCategory_ExistingTypes: Map[String, Seq[String]]
-                           ): Set[String] = {
-    val cleanAvailableDataTypes = availableDataType.map(_.toLowerCase.trim)
-    mapOfDataCategory_ExistingTypes.collect { case t if isIncludedInAvailableDt(t._2, cleanAvailableDataTypes) => t }.keySet
-  }
 
-  def isIncludedInAvailableDt(dataCategory: Seq[String], availableDataType: Seq[String]): Boolean = {
-    dataCategory.collectFirst({case d if availableDataType.contains(d) => d}) } match {
-      case Some(_) => true
-      case _ => false
-  }
 
   def getFlattenedFamilyRelationship(entityDataset: EntityDataSet)(implicit spark: SparkSession): Broadcast[Map[String, Seq[(String, String)]]] = {
     /**

@@ -4,6 +4,7 @@ final case class ParticipantCentric_ES(
                                         affected_status: Option[Boolean] = None,
                                         alias_group: Option[String] = None,
                                         available_data_types: Seq[String] = Nil,
+                                        available_data_categories: Seq[String] = Nil,
                                         biospecimens: Seq[Biospecimen_ES] = Nil,
                                         diagnoses: Seq[Diagnosis_ES] = Nil,
                                         diagnosis_category: Option[String] = None,

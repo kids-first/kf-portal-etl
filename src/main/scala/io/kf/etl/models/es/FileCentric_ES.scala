@@ -6,6 +6,7 @@ final case class FileCentric_ES(
                                  availability: Option[String] = None,
                                  controlled_access: Option[Boolean] = None,
                                  data_type: Option[String] = None,
+                                 data_category: Option[String] = None,
                                  experiment_strategies: Seq[String] = Nil,
                                  external_id: Option[String] = None,
                                  file_format: Option[String] = None,
