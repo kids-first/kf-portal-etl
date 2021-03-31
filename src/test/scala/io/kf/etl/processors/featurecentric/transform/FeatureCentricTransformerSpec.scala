@@ -10,7 +10,7 @@ import io.kf.etl.processors.download.transform.DownloadTransformer
 import io.kf.etl.processors.test.util.EntityUtil.buildEntityDataSet
 import io.kf.etl.processors.test.util.WithSparkSession
 import org.apache.spark.sql.Dataset
-import org.scalatest.{FlatSpec, Matchers, fullstacks}
+import org.scalatest.{FlatSpec, Matchers}
 
 
 class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSparkSession {
@@ -46,8 +46,16 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val participants = data.participants
       .map(EntityConverter.EParticipantToParticipantES)
       .map(p => p.copy(
-        biospecimens = if(participantId_Bios.contains(p.kf_id.get)) {participantId_Bios(p.kf_id.orNull)} else Nil
-      ))
+        biospecimens = if(participantId_Bios.contains(p.kf_id.get)) {participantId_Bios(p.kf_id.orNull)} else Nil,
+        study = if(p.kf_id.contains("participant_id_1"))
+          Some(Study_ES(
+            kf_id = Some("SD_46SK55A3"),
+            short_name = Some("shart name"),
+            program = Some("Kids First"),
+            domain = Some("Birth Defect"),
+            code = Some("KF-CDH")
+          )) else None
+          ))
       .toDS()
 
     val result = FeatureCentricTransformer.fileCentric(entityDataSet, participants)
@@ -74,7 +82,14 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 kf_id = Some("biospecimen_id_1"),
                 ncit_id_anatomical_site = Some("NCIT:unknown")
               )
-            )
+            ),
+            study = Some(Study_ES(
+              kf_id = Some("SD_46SK55A3"),
+              short_name = Some("shart name"),
+              program = Some("Kids First"),
+              domain = Some("Birth Defect"),
+              code = Some("KF-CDH")
+            ))
           )
         )
       ),
@@ -90,7 +105,14 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 kf_id = Some("biospecimen_id_1_1"),
                 ncit_id_anatomical_site = Some("NCIT:unknown2")
               )
-            )
+            ),
+            study = Some(Study_ES(
+              kf_id = Some("SD_46SK55A3"),
+              short_name = Some("shart name"),
+              program = Some("Kids First"),
+              domain = Some("Birth Defect"),
+              code = Some("KF-CDH")
+            ))
           )
         )
       ),
@@ -107,7 +129,14 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 kf_id = Some("biospecimen_id_1_2"),
                 ncit_id_anatomical_site = Some("NCIT:unknown")
               )
-            )
+            ),
+            study = Some(Study_ES(
+              kf_id = Some("SD_46SK55A3"),
+              short_name = Some("shart name"),
+              program = Some("Kids First"),
+              domain = Some("Birth Defect"),
+              code = Some("KF-CDH")
+            ))
           )
         )
       ),
@@ -156,7 +185,14 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
                 kf_id = Some("biospecimen_id_1"),
                 ncit_id_anatomical_site = Some("NCIT:unknown")
               )
-            )
+            ),
+            study = Some(Study_ES(
+              kf_id = Some("SD_46SK55A3"),
+              short_name = Some("shart name"),
+              program = Some("Kids First"),
+              domain = Some("Birth Defect"),
+              code = Some("KF-CDH")
+            ))
           )
         )
       ),

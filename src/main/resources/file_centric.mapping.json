@@ -537,6 +537,15 @@
                 "short_name": {
                   "type": "keyword"
                 },
+                "code": {
+                  "type": "keyword"
+                },
+                "domain": {
+                  "type": "keyword"
+                },
+                "program": {
+                  "type": "keyword"
+                },
                 "version": {
                   "type": "keyword"
                 }
