@@ -23,6 +23,7 @@ object DownloadSink {
     data.investigators.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/investigators/$studyId")
     data.outcomes.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/outcomes/$studyId")
     data.phenotypes.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/phenotypes/$studyId")
+    data.sequencingExperimentGenomicFiles.write.mode(SaveMode.Overwrite).parquet(s"$sinkPath/sequencing_experiments_genomic_files/$studyId")
 
   }
 }
