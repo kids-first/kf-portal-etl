@@ -1,8 +1,9 @@
 #!/bin/bash
 set -x
-study_ids=$1
+study_ids=${1:-"SD_46SK55A3,SD_7NQ9151J,SD_NMVV8A1Y,SD_BHJXBDQK,SD_EKWJJJQG,SD_YGVA0E1C,SD_9PYZAHHE,SD_ZXJFFMEF,SD_W0V965XZ,SD_DZTB5HRR,SD_6FPYJQBR,SD_DYPMEHHF"}
 release_id=$2
 instance_type=${3:-"m5.xlarge"}
+instance_count=${4:-"1"}
 
 steps=$(cat <<EOF
 [
@@ -43,14 +44,14 @@ steps=$(cat <<EOF
 ]
 EOF
 )
-instance_groups="[{\"InstanceCount\":1,\"InstanceGroupType\":\"CORE\",\"InstanceType\":\"${instance_type}\",\"Name\":\"Core - 2\"},{\"InstanceCount\":1,\"EbsConfiguration\":{\"EbsBlockDeviceConfigs\":[{\"VolumeSpecification\":{\"SizeInGB\":32,\"VolumeType\":\"gp2\"},\"VolumesPerInstance\":2}]},\"InstanceGroupType\":\"MASTER\",\"InstanceType\":\"m5.xlarge\",\"Name\":\"Master - 1\"}]"
+instance_groups="[{\"InstanceCount\":${instance_count},\"InstanceGroupType\":\"CORE\",\"InstanceType\":\"${instance_type}\",\"Name\":\"Core - 2\"},{\"InstanceCount\":1,\"EbsConfiguration\":{\"EbsBlockDeviceConfigs\":[{\"VolumeSpecification\":{\"SizeInGB\":32,\"VolumeType\":\"gp2\"},\"VolumesPerInstance\":2}]},\"InstanceGroupType\":\"MASTER\",\"InstanceType\":\"m5.xlarge\",\"Name\":\"Master - 1\"}]"
 
 aws emr create-cluster --applications Name=Hadoop Name=Spark \
---ec2-attributes '{"KeyName":"flintrock","InstanceProfile":"kf-variant-emr-ec2-prd-profile","ServiceAccessSecurityGroup":"sg-0587a1d20e24f4104","SubnetId":"subnet-00aab84919d5a44e2","EmrManagedSlaveSecurityGroup":"sg-0dc6b48e674070821","EmrManagedMasterSecurityGroup":"sg-0a31895d33d1643da"}' \
+--ec2-attributes '{"KeyName":"flintrock","InstanceProfile":"kf-variant-emr-ec2-prd-profile","SubnetId":"subnet-00aab84919d5a44e2","ServiceAccessSecurityGroup":"sg-0587a1d20e24f4104","EmrManagedSlaveSecurityGroup":"sg-0dc6b48e674070821","EmrManagedMasterSecurityGroup":"sg-0a31895d33d1643da"}' \
 --service-role kf-variant-emr-prd-role \
 --enable-debugging \
 --release-label emr-5.19.0 \
-  --log-uri 's3n://kf-strides-variant-parquet-prd/jobs/elasticmapreduce/' \
+--log-uri 's3n://kf-strides-variant-parquet-prd/jobs/elasticmapreduce/' \
 --steps "${steps}" \
 --name "Download clinical data - Studies ${study_ids} - Release ${release_id}" \
 --instance-groups "${instance_groups}" \
