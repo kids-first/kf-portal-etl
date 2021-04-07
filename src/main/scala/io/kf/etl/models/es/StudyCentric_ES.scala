@@ -6,7 +6,7 @@ final case class StudyCentric_ES(
                                   external_id: Option[String] = None,
                                   data_access_authority: Option[String] = None,
                                   code: Option[String] = None,
-                                  domain: Option[String] = None,
+                                  domain: Seq[String] = Nil,
                                   program: Option[String] = None,
                                   participant_count: Option[Long] = None,
                                   file_count: Option[Long] = None,
