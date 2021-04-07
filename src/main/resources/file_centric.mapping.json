@@ -541,10 +541,7 @@
                   "type": "keyword"
                 },
                 "domain": {
-                  "properties": {
-                    "type": "keyword"
-                  },
-                  "type": "nested"
+                  "type": "keyword"
                 },
                 "program": {
                   "type": "keyword"

@@ -33,10 +33,7 @@
           "analyzer": "autocomplete"
         },
         "domain": {
-          "properties": {
-            "type": "keyword"
-          },
-          "type": "nested"
+          "type": "keyword"
         },
         "program": {
           "type": "keyword"
