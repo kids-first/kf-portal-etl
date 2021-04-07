@@ -97,7 +97,13 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
       visible = Some(true)
     )
 
-    val studies = Seq(study1, study2, study3)
+    val study4 =  EStudy(
+      kf_id = Some("SD_JWS3V24D"),
+      name = Some("Kids First: Genetics at the Intersection of Childhood Cancer and Birth Defects"),
+      visible = Some(true)
+    )
+
+    val studies = Seq(study1, study2, study3, study4)
 
     //"https://kf-qa-etl-bucket.s3.amazonaws.com/mapping/studies_short_name.tsv"
     val studiesExtraParamsDS = DownloadTransformer.studiesExtraParams("./src/test/resources/studies_short_name.tsv")(spark)
@@ -109,7 +115,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_ZXJFFMEF"),
         name = Some("Kids First: Osteosarcoma"),
         code= Some("KF-OS"),
-        domain= Some("C"),
+        domain= Some("Cancer"),
         program= Some("Kids First"),
         visible = Some(true)
       ),
@@ -117,7 +123,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_46SK55A3"),
         name = Some("Kids First: Congenital Diaphragmatic Hernia"),
         code= Some("KF-CDH"),
-        domain= Some("BD"),
+        domain= Some("Birth Defect"),
         program= Some("Kids First"),
         visible = Some(true)
       ),
@@ -127,6 +133,14 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         code= None,
         domain= None,
         program= None,
+        visible = Some(true)
+      ),
+      EStudy(
+        kf_id = Some("SD_JWS3V24D"),
+        name = Some("Kids First: Genetics at the Intersection of Childhood Cancer and Birth Defects"),
+        code= Some("KF-GNINT"),
+        domain= Some("Cancer,Birth Defect"),
+        program= Some("Kids First"),
         visible = Some(true)
       )
     )

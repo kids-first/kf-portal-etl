@@ -52,7 +52,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
             kf_id = Some("SD_46SK55A3"),
             short_name = Some("shart name"),
             program = Some("Kids First"),
-            domain = Some("Birth Defect"),
+            domain = Seq("Birth Defect"),
             code = Some("KF-CDH")
           )) else None
           ))
@@ -87,7 +87,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
               kf_id = Some("SD_46SK55A3"),
               short_name = Some("shart name"),
               program = Some("Kids First"),
-              domain = Some("Birth Defect"),
+              domain = Seq("Birth Defect"),
               code = Some("KF-CDH")
             ))
           )
@@ -110,7 +110,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
               kf_id = Some("SD_46SK55A3"),
               short_name = Some("shart name"),
               program = Some("Kids First"),
-              domain = Some("Birth Defect"),
+              domain = Seq("Birth Defect"),
               code = Some("KF-CDH")
             ))
           )
@@ -134,7 +134,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
               kf_id = Some("SD_46SK55A3"),
               short_name = Some("shart name"),
               program = Some("Kids First"),
-              domain = Some("Birth Defect"),
+              domain = Seq("Birth Defect"),
               code = Some("KF-CDH")
             ))
           )
@@ -190,7 +190,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
               kf_id = Some("SD_46SK55A3"),
               short_name = Some("shart name"),
               program = Some("Kids First"),
-              domain = Some("Birth Defect"),
+              domain = Seq("Birth Defect"),
               code = Some("KF-CDH")
             ))
           )
@@ -482,7 +482,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val study = "study"
 
     val studies = Seq(
-      EStudy(kf_id = Some("study")),
+      EStudy(kf_id = Some("study"), domain = Some("Cancer,Birth Defect")),
       EStudy(kf_id = None),
       EStudy(kf_id = Some("other_study"))
     )
@@ -498,6 +498,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       StudyCentric_ES(
         kf_id = Some("study"),
         participant_count = Some(5),
+        domain = Seq("Cancer", "Birth Defect"),
         file_count = Some(3),
         family_count = Some(2),
         family_data = Some(true),

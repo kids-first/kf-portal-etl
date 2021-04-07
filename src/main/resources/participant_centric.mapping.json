@@ -729,7 +729,10 @@
               "type": "keyword"
             },
             "domain": {
-              "type": "keyword"
+              "properties": {
+                "type": "keyword"
+              },
+              "type": "nested"
             },
             "program": {
               "type": "keyword"
