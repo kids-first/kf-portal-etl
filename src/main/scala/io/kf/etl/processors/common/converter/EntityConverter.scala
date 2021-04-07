@@ -16,10 +16,7 @@ object EntityConverter {
       data_access_authority = study.data_access_authority,
       short_name = study.short_name,
       code = study.code,
-      domain = study.domain match {
-        case Some(x) => x.split(",").toSeq
-        case None => Nil
-      },
+      domain = study.domain.fold(Seq.empty[String])(x => x.split(",")),
       program = study.program
     )
   }
