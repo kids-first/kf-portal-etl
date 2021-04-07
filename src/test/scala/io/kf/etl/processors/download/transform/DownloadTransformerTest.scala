@@ -115,7 +115,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_ZXJFFMEF"),
         name = Some("Kids First: Osteosarcoma"),
         code= Some("KF-OS"),
-        domain= Some("Cancer"),
+        domain= Seq("Cancer"),
         program= Some("Kids First"),
         visible = Some(true)
       ),
@@ -123,7 +123,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_46SK55A3"),
         name = Some("Kids First: Congenital Diaphragmatic Hernia"),
         code= Some("KF-CDH"),
-        domain= Some("Birth Defect"),
+        domain= Seq("Birth Defect"),
         program= Some("Kids First"),
         visible = Some(true)
       ),
@@ -131,7 +131,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_FUNNYSTUDY"),
         name = Some("No Extra Params"),
         code= None,
-        domain= None,
+        domain= Nil,
         program= None,
         visible = Some(true)
       ),
@@ -139,7 +139,7 @@ class DownloadTransformerTest extends FlatSpec with Matchers with WithSparkSessi
         kf_id = Some("SD_JWS3V24D"),
         name = Some("Kids First: Genetics at the Intersection of Childhood Cancer and Birth Defects"),
         code= Some("KF-GNINT"),
-        domain= Some("Cancer,Birth Defect"),
+        domain= Seq("Cancer", "Birth Defect"),
         program= Some("Kids First"),
         visible = Some(true)
       )

@@ -166,7 +166,7 @@ object FeatureCentricTransformer {
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
       code = s.code,
-      domain = s.domain.fold(Seq.empty[String])(x => x.split(",")),
+      domain = s.domain,
       program = s.program,
       participant_count = Some(participants_count),
       file_count = Some(files_count),

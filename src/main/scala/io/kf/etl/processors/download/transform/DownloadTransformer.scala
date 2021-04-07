@@ -238,7 +238,15 @@ object DownloadTransformer {
     val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"), "left_outer")
 
     studies_with_extraParams.map{
-      case (study: EStudy, param: StudyExtraParams) => study.copy(code = param.code, domain = param.domain, program = param.program)
+      case (study: EStudy, param: StudyExtraParams) =>
+        study.copy(
+          code = param.code,
+          domain = param.domain match {
+            case Some(x) => x.split(",").toSeq
+            case None => Nil
+          },
+          program = param.program
+        )
       case s => s._1
     }
   }
