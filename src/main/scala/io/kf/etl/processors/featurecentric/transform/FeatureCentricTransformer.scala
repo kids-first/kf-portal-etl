@@ -48,8 +48,7 @@ object FeatureCentricTransformer {
     ).select($"_1" as "participant", $"_2.genomic_files" as "genomic_files", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
       .map {
-        case (p, gfs, null) => (p, gfs, null)
-        case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
+        case (p, gfs, b) if b != null && gfs.nonEmpty => (p, gfs, b.copy(genomic_files = gfs))
       }
       .withColumnRenamed("_1", "participant")
       .withColumnRenamed("_2", "genomic_files")
@@ -61,7 +60,7 @@ object FeatureCentricTransformer {
         collect_list("biospecimens") as "biospecimens")
       .drop("kf_id")
       .as[(Participant_ES, Seq[Seq[GenomicFile_ES]], Seq[Biospecimen_ES])]
-      .map { case (p, gfs, b) =>
+      .map { case (p, gfs, b) if b.nonEmpty && gfs.nonEmpty =>
         participant_ES_to_ParticipantCentric_ES(
           p.copy(
             data_category =
@@ -116,8 +115,7 @@ object FeatureCentricTransformer {
       .drop("kf_id")
       .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
       .map {
-        case (gf, null, _) => (gf, null)
-        case (gf, p, bs) => (gf, p.copy(biospecimens = bs))
+        case (gf, p, bs) if bs.nonEmpty && p != null => (gf, p.copy(biospecimens = bs))
       }
       .withColumnRenamed("_1", "genomic_file")
       .withColumnRenamed("_2", "participant")
@@ -127,7 +125,7 @@ object FeatureCentricTransformer {
       )
       .as[(GenomicFile_ES, Seq[Participant_ES])]
       .map {
-        case (gf, ps) => genomicFile_ES_to_FileCentric(gf, ps, mapDataCategoryTypes)
+        case (gf, ps) if ps.nonEmpty => genomicFile_ES_to_FileCentric(gf, ps, mapDataCategoryTypes)
       }
 
   }
