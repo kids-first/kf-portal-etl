@@ -10,6 +10,7 @@ import org.apache.spark.sql.functions.{collect_list, explode_outer, first, lower
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
+  import org.apache.spark.sql.functions._
   val spark: SparkSession = SparkSession.builder.getOrCreate()
 
   import spark.implicits._
@@ -47,8 +48,9 @@ object FeatureCentricTransformer {
       "left_outer"
     ).select($"_1" as "participant", $"_2.genomic_files" as "genomic_files", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
+      .filter(""" size(genomic_files) != 0 AND biospecimen is not null""")
       .map {
-        case (p, gfs, b) if b != null && gfs.nonEmpty => (p, gfs, b.copy(genomic_files = gfs))
+        case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
       }
       .withColumnRenamed("_1", "participant")
       .withColumnRenamed("_2", "genomic_files")
@@ -60,7 +62,7 @@ object FeatureCentricTransformer {
         collect_list("biospecimens") as "biospecimens")
       .drop("kf_id")
       .as[(Participant_ES, Seq[Seq[GenomicFile_ES]], Seq[Biospecimen_ES])]
-      .map { case (p, gfs, b) if b.nonEmpty && gfs.nonEmpty =>
+      .map { case (p, gfs, b) =>
         participant_ES_to_ParticipantCentric_ES(
           p.copy(
             data_category =
@@ -114,8 +116,9 @@ object FeatureCentricTransformer {
       )
       .drop("kf_id")
       .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
+      .filter(""" size(biospecimens) != 0 AND participant is not null""")
       .map {
-        case (gf, p, bs) if bs.nonEmpty && p != null => (gf, p.copy(biospecimens = bs))
+        case (gf, p, bs) => (gf, p.copy(biospecimens = bs))
       }
       .withColumnRenamed("_1", "genomic_file")
       .withColumnRenamed("_2", "participant")
@@ -125,7 +128,7 @@ object FeatureCentricTransformer {
       )
       .as[(GenomicFile_ES, Seq[Participant_ES])]
       .map {
-        case (gf, ps) if ps.nonEmpty => genomicFile_ES_to_FileCentric(gf, ps, mapDataCategoryTypes)
+        case (gf, ps) => genomicFile_ES_to_FileCentric(gf, ps, mapDataCategoryTypes)
       }
 
   }
@@ -153,14 +156,10 @@ object FeatureCentricTransformer {
     }
 
     val study_experiment_strategy: Set[String] = files_ds.flatMap(p => p.sequencing_experiments).flatMap(s => s.experiment_strategy).collect().toSet
-    val family_data: Option[Boolean] = Some(participants_ds.filter(p => p.is_proband match {
-      case Some(true) => false
-      case _ => true
-    }).count() > 0)
 
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
-      name = s.name,
+      name = s.short_name,
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
       code = s.code,
@@ -169,12 +168,11 @@ object FeatureCentricTransformer {
       participant_count = Some(participants_count),
       file_count = Some(files_count),
       family_count = Some(families_count),
-      family_data = family_data,
+      family_data = Some(families_count > 0),
       experimental_strategy = study_experiment_strategy.toSeq,
       data_categories = dataWithCounts.map(_.data_category),
       data_category_count = dataWithCounts
     ))
-
   }
 
   private def joinFileIdToSeqExperiments(
