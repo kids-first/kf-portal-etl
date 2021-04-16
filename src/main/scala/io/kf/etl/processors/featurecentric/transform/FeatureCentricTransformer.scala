@@ -6,7 +6,6 @@ import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import org.apache.spark.sql.functions.{collect_list, explode_outer, first, lower}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
@@ -48,8 +47,9 @@ object FeatureCentricTransformer {
       "left_outer"
     ).select($"_1" as "participant", $"_2.genomic_files" as "genomic_files", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
-      .filter(""" size(genomic_files) != 0 AND biospecimen is not null""")
+      //Participants without any files or biospecimens should be kept.
       .map {
+        case (p, gfs, null) => (p, gfs, null)
         case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
       }
       .withColumnRenamed("_1", "participant")
@@ -116,6 +116,7 @@ object FeatureCentricTransformer {
       )
       .drop("kf_id")
       .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
+      //Remove files without biospecimens or any participants
       .filter(""" size(biospecimens) != 0 AND participant is not null""")
       .map {
         case (gf, p, bs) => (gf, p.copy(biospecimens = bs))

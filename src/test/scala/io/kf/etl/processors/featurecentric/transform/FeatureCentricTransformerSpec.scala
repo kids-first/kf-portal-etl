@@ -368,6 +368,23 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         )
       ),
       ParticipantCentric_ES(
+        kf_id = Some("participant_id_4"),
+        phenotype = Seq(
+          Phenotype_ES(
+            age_at_event_days = Some(15),
+            hpo_phenotype_observed = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+            hpo_phenotype_observed_text = Some("Osteolytic defect of thumb phalanx (HP:0009654)"),
+            observed = Some(true)
+          ),
+          Phenotype_ES(
+            age_at_event_days = Some(18),
+            hpo_phenotype_observed = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+            hpo_phenotype_observed_text = Some("Abnormal upper limb bone morphology (HP:0045081)"),
+            observed = Some(true)
+          )
+        )
+      ),
+      ParticipantCentric_ES(
         kf_id = Some("participant_id_5"),
         biospecimens = Seq(
           Biospecimen_ES(
@@ -380,6 +397,10 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
               )
             ),
             duo_code = Seq("duo_id1")
+          ),
+          Biospecimen_ES(
+            kf_id = Some("biospecimen_id_5"),
+            genomic_files = Nil
           )
         ),
         files = Seq(
