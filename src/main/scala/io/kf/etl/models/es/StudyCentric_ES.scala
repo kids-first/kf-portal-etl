@@ -3,6 +3,7 @@ package io.kf.etl.models.es
 final case class StudyCentric_ES(
                                   kf_id: Option[String] = None,
                                   name: Option[String] = None,
+                                  search: Seq[String] = Nil,
                                   external_id: Option[String] = None,
                                   data_access_authority: Option[String] = None,
                                   code: Option[String] = None,

@@ -159,6 +159,7 @@ object FeatureCentricTransformer {
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
       name = s.short_name,
+      search = Seq(s.short_name, s.code) flatten,
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
       code = s.code,

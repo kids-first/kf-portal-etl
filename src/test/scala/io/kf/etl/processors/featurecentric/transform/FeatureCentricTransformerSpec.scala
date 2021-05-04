@@ -498,6 +498,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
       StudyCentric_ES(
         kf_id = Some("study"),
         name = Some("study short name"),
+        search = Seq("study short name"),
         participant_count = Some(5),
         domain = Seq("Cancer", "Birth Defect"),
         file_count = Some(3),
