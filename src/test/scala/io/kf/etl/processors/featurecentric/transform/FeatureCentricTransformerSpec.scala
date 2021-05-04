@@ -482,7 +482,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val study = "study"
 
     val studies = Seq(
-      EStudy(kf_id = Some("study"), domain = Seq("Cancer", "Birth Defect")),
+      EStudy(kf_id = Some("study"), domain = Seq("Cancer", "Birth Defect"), short_name = Some("study short name")),
       EStudy(kf_id = None),
       EStudy(kf_id = Some("other_study"))
     )
@@ -497,6 +497,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val expectedResult = Seq(
       StudyCentric_ES(
         kf_id = Some("study"),
+        name = Some("study short name"),
         participant_count = Some(5),
         domain = Seq("Cancer", "Birth Defect"),
         file_count = Some(3),
