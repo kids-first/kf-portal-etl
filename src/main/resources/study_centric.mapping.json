@@ -9,6 +9,9 @@
           "type": "keyword"
         },
         "name": {
+          "type": "keyword"
+        },
+        "search": {
           "type": "text",
           "fields": {
             "raw": {
@@ -24,13 +27,7 @@
           "type": "keyword"
         },
         "code": {
-          "type": "text",
-          "fields": {
-            "raw": {
-              "type": "keyword"
-            }
-          },
-          "analyzer": "autocomplete"
+          "type": "keyword"
         },
         "domain": {
           "type": "keyword"
