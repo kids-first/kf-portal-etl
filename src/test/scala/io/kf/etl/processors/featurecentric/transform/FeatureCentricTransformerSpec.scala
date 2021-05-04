@@ -197,19 +197,6 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
         )
       ),
       FileCentric_ES(
-        kf_id = Some("genomicFile7"),
-        data_type = Some("Super Important type 7"),
-        file_name = Some("File7"),
-        participants = Nil,
-        sequencing_experiments = Seq(
-          SequencingExperiment_ES(
-            kf_id = Some("eSeqExp1"),
-            library_prep = Some("this_Prep1"),
-            library_selection = Some("this_Selection1")
-          )
-        )
-      ),
-      FileCentric_ES(
         kf_id = Some("genomicFile8"),
         data_type = Some("Super Important type 8"),
         file_name = Some("File8"),
@@ -482,7 +469,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val study = "study"
 
     val studies = Seq(
-      EStudy(kf_id = Some("study"), domain = Seq("Cancer", "Birth Defect")),
+      EStudy(kf_id = Some("study"), domain = Seq("Cancer", "Birth Defect"), short_name = Some("study short name")),
       EStudy(kf_id = None),
       EStudy(kf_id = Some("other_study"))
     )
@@ -497,6 +484,7 @@ class FeatureCentricTransformerSpec extends FlatSpec with Matchers with WithSpar
     val expectedResult = Seq(
       StudyCentric_ES(
         kf_id = Some("study"),
+        name = Some("study short name"),
         participant_count = Some(5),
         domain = Seq("Cancer", "Birth Defect"),
         file_count = Some(3),

@@ -6,10 +6,10 @@ import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
-import org.apache.spark.sql.functions.{collect_list, explode_outer, first, lower}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
 object FeatureCentricTransformer {
+  import org.apache.spark.sql.functions._
   val spark: SparkSession = SparkSession.builder.getOrCreate()
 
   import spark.implicits._
@@ -47,6 +47,7 @@ object FeatureCentricTransformer {
       "left_outer"
     ).select($"_1" as "participant", $"_2.genomic_files" as "genomic_files", $"_1.biospecimen" as "biospecimen")
       .as[(Participant_ES, Seq[GenomicFile_ES], Biospecimen_ES)]
+      //Participants without any files or biospecimens should be kept.
       .map {
         case (p, gfs, null) => (p, gfs, null)
         case (p, gfs, b) => (p, gfs, b.copy(genomic_files = gfs))
@@ -115,8 +116,9 @@ object FeatureCentricTransformer {
       )
       .drop("kf_id")
       .as[(GenomicFile_ES, Participant_ES, Seq[Biospecimen_ES])]
+      //Remove files without biospecimens or any participants
+      .filter(""" size(biospecimens) != 0 AND participant is not null""")
       .map {
-        case (gf, null, _) => (gf, null)
         case (gf, p, bs) => (gf, p.copy(biospecimens = bs))
       }
       .withColumnRenamed("_1", "genomic_file")
@@ -155,14 +157,10 @@ object FeatureCentricTransformer {
     }
 
     val study_experiment_strategy: Set[String] = files_ds.flatMap(p => p.sequencing_experiments).flatMap(s => s.experiment_strategy).collect().toSet
-    val family_data: Option[Boolean] = Some(participants_ds.filter(p => p.is_proband match {
-      case Some(true) => false
-      case _ => true
-    }).count() > 0)
 
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
-      name = s.name,
+      name = s.short_name,
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
       code = s.code,
@@ -171,12 +169,11 @@ object FeatureCentricTransformer {
       participant_count = Some(participants_count),
       file_count = Some(files_count),
       family_count = Some(families_count),
-      family_data = family_data,
+      family_data = Some(families_count > 0),
       experimental_strategy = study_experiment_strategy.toSeq,
       data_categories = dataWithCounts.map(_.data_category),
       data_category_count = dataWithCounts
     ))
-
   }
 
   private def joinFileIdToSeqExperiments(
