@@ -1,5 +1,4 @@
 import Dependencies._
-import Resolvers._
 import sbt.Keys.version
 
 name := "kf-portal-etl"
@@ -8,15 +7,6 @@ organization := "io.kf.etl"
 version := "1.0.0"
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
-
-resolvers ++= Seq(
-  clojars,
-  maven_local,
-  twitter,
-  spark_packages,
-  artima
-)
-
 
 libraryDependencies ++= Seq(
   spark_sql,
