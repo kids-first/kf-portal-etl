@@ -4,7 +4,7 @@ import io.kf.etl.models.dataservice._
 import io.kf.etl.models.es._
 
 object EntityConverter {
-  
+
   def EStudyToStudyES(study: EStudy): Study_ES = {
     Study_ES(
       kf_id = study.kf_id,
@@ -20,7 +20,7 @@ object EntityConverter {
       program = study.program
     )
   }
-  
+
   def EParticipantToParticipantES(participant: EParticipant): Participant_ES = {
     Participant_ES(
       affected_status = participant.affected_status,
@@ -35,8 +35,11 @@ object EntityConverter {
       race = participant.race
     )
   }
-  
-  def EBiospecimenToBiospecimenES(bio: EBiospecimen, gfiles: Seq[GenomicFile_ES] = Nil): Biospecimen_ES = {
+
+  def EBiospecimenToBiospecimenES(
+      bio: EBiospecimen,
+      gfiles: Seq[GenomicFile_ES] = Nil
+  ): Biospecimen_ES = {
     Biospecimen_ES(
       age_at_event_days = bio.age_at_event_days,
       analyte_type = bio.analyte_type,
@@ -61,16 +64,21 @@ object EntityConverter {
       uberon_id_anatomical_site = bio.uberon_id_anatomical_site,
       volume_ul = bio.volume_ul,
       diagnoses = bio.diagnoses.map(d => EDiagnosisToDiagnosisES(d, None)),
-      sequencing_center_id = bio.sequencing_center_id
+      sequencing_center_id = bio.sequencing_center_id,
+      sequencing_center = bio.sequencing_center
     )
   }
 
-  def EDiagnosisToDiagnosisES(diagnosis: EDiagnosis, diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]): Diagnosis_ES = {
-    val mondoIdDiagnosos = (diagnosis.mondo_id_diagnosis, diagnosis.diagnosis_text) match {
-      case (Some(id), Some(s)) => Some(s"$s ($id)")
-      case (Some(id), None) => Some(s"$id")
-      case _ => None
-    }
+  def EDiagnosisToDiagnosisES(
+      diagnosis: EDiagnosis,
+      diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]
+  ): Diagnosis_ES = {
+    val mondoIdDiagnosos =
+      (diagnosis.mondo_id_diagnosis, diagnosis.diagnosis_text) match {
+        case (Some(id), Some(s)) => Some(s"$s ($id)")
+        case (Some(id), None)    => Some(s"$id")
+        case _                   => None
+      }
     Diagnosis_ES(
       age_at_event_days = diagnosis.age_at_event_days,
       diagnosis_category = diagnosis.diagnosis_category,
@@ -87,30 +95,33 @@ object EntityConverter {
       biospecimens = diagnosis.biospecimens,
       is_tagged = diagnosisTermWithParents_ES match {
         case Some(d) => d.is_tagged
-        case None => false
+        case None    => false
       },
       mondo = diagnosisTermWithParents_ES match {
         case Some(d) => Seq(d)
-        case None => Seq.empty[DiagnosisTermWithParents_ES]
+        case None    => Seq.empty[DiagnosisTermWithParents_ES]
       }
     )
   }
 
-  def EDiagnosisToLightDiagnosisES(diagnosis: EDiagnosis, diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]): Diagnosis_ES = {
+  def EDiagnosisToLightDiagnosisES(
+      diagnosis: EDiagnosis,
+      diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]
+  ): Diagnosis_ES = {
     Diagnosis_ES(
       diagnosis_category = diagnosis.diagnosis_category,
       age_at_event_days = diagnosis.age_at_event_days,
       is_tagged = diagnosisTermWithParents_ES match {
         case Some(d) => d.is_tagged
-        case None => false
+        case None    => false
       },
       mondo = diagnosisTermWithParents_ES match {
         case Some(d) => Seq(d)
-        case None => Seq.empty[DiagnosisTermWithParents_ES]
+        case None    => Seq.empty[DiagnosisTermWithParents_ES]
       }
     )
   }
-  
+
   def EOutcomeToOutcomeES(outcome: EOutcome): Outcome_ES = {
     Outcome_ES(
       age_at_event_days = outcome.age_at_event_days,
@@ -124,7 +135,10 @@ object EntityConverter {
     EGenomicFileToGenomicFileES(gf, Seq(SequencingExperiment_ES()))
   }
 
-  def EGenomicFileToGenomicFileES(gf: EGenomicFile, seqExps: Seq[SequencingExperiment_ES]): GenomicFile_ES = {
+  def EGenomicFileToGenomicFileES(
+      gf: EGenomicFile,
+      seqExps: Seq[SequencingExperiment_ES]
+  ): GenomicFile_ES = {
     GenomicFile_ES(
       acl = gf.acl,
       access_urls = gf.access_urls,
@@ -147,7 +161,9 @@ object EntityConverter {
     )
   }
 
-  def ESequencingExperimentToSequencingExperimentES(seqExp: ESequencingExperiment): SequencingExperiment_ES = {
+  def ESequencingExperimentToSequencingExperimentES(
+      seqExp: ESequencingExperiment
+  ): SequencingExperiment_ES = {
     SequencingExperiment_ES(
       kf_id = seqExp.kf_id,
       experiment_date = seqExp.experiment_date,
@@ -168,8 +184,12 @@ object EntityConverter {
       external_id = seqExp.external_id
     )
   }
-  
-  def EGenomicFileToFileCentricES(genomicFile: EGenomicFile, seqExps: Seq[SequencingExperiment_ES], participants: Seq[Participant_ES]): FileCentric_ES = {
+
+  def EGenomicFileToFileCentricES(
+      genomicFile: EGenomicFile,
+      seqExps: Seq[SequencingExperiment_ES],
+      participants: Seq[Participant_ES]
+  ): FileCentric_ES = {
     FileCentric_ES(
       acl = genomicFile.acl,
       access_urls = genomicFile.access_urls,

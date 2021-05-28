@@ -4,14 +4,16 @@ import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityEndpointSet
 
 object DownloadSource {
 
-  def makeEndpointSeq(studyId: String, path: String): String = s"$path?study_id=$studyId"
+  def makeEndpointSeq(studyId: String, path: String): String =
+    s"$path?study_id=$studyId"
 
   def getEntitySet(studyId: String): EntityEndpointSet = {
     EntityEndpointSet(
       participants = makeEndpointSeq(studyId, "/participants"),
       families = makeEndpointSeq(studyId, "/families"),
       biospecimens = makeEndpointSeq(studyId, "/biospecimens"),
-      biospecimenGenomicFiles = makeEndpointSeq(studyId, "/biospecimen-genomic-files"),
+      biospecimenGenomicFiles =
+        makeEndpointSeq(studyId, "/biospecimen-genomic-files"),
       biospecimenDiagnoses = makeEndpointSeq(studyId, "/biospecimen-diagnoses"),
       diagnoses = makeEndpointSeq(studyId, "/diagnoses"),
       familyRelationships = makeEndpointSeq(studyId, "/family-relationships"),
@@ -19,10 +21,13 @@ object DownloadSource {
       investigators = makeEndpointSeq(studyId, "/investigators"),
       outcomes = makeEndpointSeq(studyId, "/outcomes"),
       phenotypes = makeEndpointSeq(studyId, "/phenotypes"),
-      sequencingExperiments = makeEndpointSeq(studyId, "/sequencing-experiments"),
-      sequencingExperimentGenomicFiles = makeEndpointSeq(studyId, "/sequencing-experiment-genomic-files"),
+      sequencingExperiments =
+        makeEndpointSeq(studyId, "/sequencing-experiments"),
+      sequencingExperimentGenomicFiles =
+        makeEndpointSeq(studyId, "/sequencing-experiment-genomic-files"),
       studies = s"/studies/$studyId",
-      studyFiles = makeEndpointSeq(studyId, "/study-files")
+      studyFiles = makeEndpointSeq(studyId, "/study-files"),
+      sequencingCenters = makeEndpointSeq(studyId, "/sequencing-centers")
     )
   }
 }
