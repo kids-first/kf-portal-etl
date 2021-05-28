@@ -7,30 +7,46 @@ import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.internal.StudyExtraParams
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{
+  EntityDataSet,
+  EntityEndpointSet,
+  OntologiesDataSet
+}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
-import io.kf.etl.processors.download.transform.utils.{DataServiceConfig, EntityDataRetriever}
+import io.kf.etl.processors.download.transform.utils.{
+  DataServiceConfig,
+  EntityDataRetriever
+}
 import org.apache.spark.SparkFiles
 import org.apache.spark.sql.functions.lit
-import org.apache.spark.sql.types.{ArrayType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{
+  ArrayType,
+  StringType,
+  StructField,
+  StructType
+}
 import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-
-class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionContext, spark: SparkSession, config: Config, system: ActorSystem) {
+class DownloadTransformer(implicit
+    WSClient: StandaloneWSClient,
+    ec: ExecutionContext,
+    spark: SparkSession,
+    config: Config,
+    system: ActorSystem
+) {
 
   val dataService = DataServiceConfig(config)
   val filters: Seq[String] = Seq("visible=true")
 
-
-
   def downloadOntologyData(): OntologiesDataSet = {
 
     val mondoTerms = loadTerms(config.getString(CONFIG_NAME_MONDO_PATH), spark)
-    val ncitTerms = loadTermsBasic(config.getString(CONFIG_NAME_NCIT_PATH), spark)
+    val ncitTerms =
+      loadTermsBasic(config.getString(CONFIG_NAME_NCIT_PATH), spark)
     val hpoTerms = loadTerms(config.getString(CONFIG_NAME_HPO_PATH), spark)
     OntologiesDataSet(
       hpoTerms = hpoTerms.cache(),
@@ -47,7 +63,9 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
     studiesExtraParams(path)(spark).cache()
   }
 
-  def downloadDataCategory_availableDataTypes(path: String): Dataset[(String, Seq[String])] = {
+  def downloadDataCategory_availableDataTypes(
+      path: String
+  ): Dataset[(String, Seq[String])] = {
     loadCategory_ExistingDataTypes(path)(spark).cache()
   }
 
@@ -66,7 +84,6 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
       case None =>
     }
 
-
     file.copy(
       repository = repo
     )
@@ -75,45 +92,67 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
   def setCavaticaIdForRepo(file: EGenomicFile): EGenomicFile = {
 
     file.repository match {
-      case Some(repo) => repo match {
-        case "dcf" => file.copy(latest_did = file.external_id)
-        case "gen3" => file
-        case _ => file
-      }
+      case Some(repo) =>
+        repo match {
+          case "dcf"  => file.copy(latest_did = file.external_id)
+          case "gen3" => file
+          case _      => file
+        }
       case None => file
     }
   }
 
-  def updateFileRepositoryData(file: EGenomicFile): EGenomicFile = Function.chain(Seq(
-    setFileRepo(_),
-    setCavaticaIdForRepo(_)
-  ))(file)
-
+  def updateFileRepositoryData(file: EGenomicFile): EGenomicFile =
+    Function.chain(
+      Seq(
+        setFileRepo(_),
+        setCavaticaIdForRepo(_)
+      )
+    )(file)
 
   def transform(endpoints: EntityEndpointSet): EntityDataSet = {
 
     import spark.implicits._
 
     val ontologyData = downloadOntologyData()
-    val studiesExtraParams = downloadStudiesExtraParams(config.getString(STUDIES_EXTRA_PARAMS_PATH))
-    val dataCategory_availableDataTypes = downloadDataCategory_availableDataTypes(config.getString(DATA_CAT_AVAILABLE_DATA_TYPES))
+    val studiesExtraParams = downloadStudiesExtraParams(
+      config.getString(STUDIES_EXTRA_PARAMS_PATH)
+    )
+    val dataCategory_availableDataTypes =
+      downloadDataCategory_availableDataTypes(
+        config.getString(DATA_CAT_AVAILABLE_DATA_TYPES)
+      )
     val retriever = EntityDataRetriever(dataService, filters)
     val duoCodeDs = downloadDuoCodeLabelMap()
 
     val participantsF = retriever.retrieve[EParticipant](endpoints.participants)
     val familiesF = retriever.retrieve[EFamily](endpoints.families)
     val biospecimensF = retriever.retrieve[EBiospecimen](endpoints.biospecimens)
-    val diagnosesF: Future[Seq[EDiagnosis]] = retriever.retrieve[EDiagnosis](endpoints.diagnoses)
-    val biospecimenDiagnosesF = retriever.retrieve[EBiospecimenDiagnosis](endpoints.biospecimenDiagnoses)
-    val familyRelationshipsF = retriever.retrieve[EFamilyRelationship](endpoints.familyRelationships)
-    val investigatorsF = retriever.retrieve[EInvestigator](endpoints.investigators)
+    val diagnosesF: Future[Seq[EDiagnosis]] =
+      retriever.retrieve[EDiagnosis](endpoints.diagnoses)
+    val biospecimenDiagnosesF =
+      retriever.retrieve[EBiospecimenDiagnosis](endpoints.biospecimenDiagnoses)
+    val familyRelationshipsF =
+      retriever.retrieve[EFamilyRelationship](endpoints.familyRelationships)
+    val investigatorsF =
+      retriever.retrieve[EInvestigator](endpoints.investigators)
     val outcomesF = retriever.retrieve[EOutcome](endpoints.outcomes)
     val phenotypesF = retriever.retrieve[EPhenotype](endpoints.phenotypes)
-    val sequencingExperimentsF = retriever.retrieve[ESequencingExperiment](endpoints.sequencingExperiments)
-    val sequencingExperimentGenomicFilesF = retriever.retrieve[ESequencingExperimentGenomicFile](endpoints.sequencingExperimentGenomicFiles)
+    val sequencingExperimentsF =
+      retriever.retrieve[ESequencingExperiment](endpoints.sequencingExperiments)
+    val sequencingExperimentGenomicFilesF =
+      retriever.retrieve[ESequencingExperimentGenomicFile](
+        endpoints.sequencingExperimentGenomicFiles
+      )
     val studiesF = retriever.retrieve[EStudy](endpoints.studies)
-    val biospecimenGenomicFilesF = retriever.retrieve[EBiospecimenGenomicFile](endpoints.biospecimenGenomicFiles)
-    val genomicFilesF = retriever.retrieve[EGenomicFile](endpoints.genomicFiles).map(_.map(updateFileRepositoryData))
+    val biospecimenGenomicFilesF = retriever.retrieve[EBiospecimenGenomicFile](
+      endpoints.biospecimenGenomicFiles
+    )
+    val genomicFilesF = retriever
+      .retrieve[EGenomicFile](endpoints.genomicFiles)
+      .map(_.map(updateFileRepositoryData))
+    val sequencingCentersF =
+      retriever.retrieve[ESequencingCenter](endpoints.sequencingCenters)
 
     val dataset = for {
       participants <- participantsF
@@ -130,32 +169,38 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
       biospecimenDiagnoses <- biospecimenDiagnosesF
       diagnoses <- diagnosesF
       genomicFiles <- genomicFilesF
-    } yield
-      EntityDataSet(
-        participants = spark.createDataset(participants).cache,
-        families = spark.createDataset(families).cache,
-        biospecimens = spark.createDataset(biospecimens).cache,
-        familyRelationships = spark.createDataset(familyRelationships).cache,
-        investigators = spark.createDataset(investigators).cache,
-        outcomes = spark.createDataset(outcomes).cache,
-        phenotypes = spark.createDataset(phenotypes).cache,
-        sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
-        sequencingExperimentGenomicFiles = spark.createDataset(sequencingExperimentGenomicFiles).cache,
-        studies = createStudies(studies, studiesExtraParams)(spark).cache,
-        biospecimenGenomicFiles = spark.createDataset(biospecimenGenomicFiles).cache,
-        biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
-        diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
-        genomicFiles = spark.createDataset(genomicFiles)
-          .filter(filterGenomicFile _)
-          .cache(),
-        studyFiles = spark.emptyDataset[EStudyFile],
-
-        // following two (graphPath, hpoTerms) are read from HPO mysql db:
-        ontologyData = ontologyData,
-        duoCodeDataSet = duoCodeDs,
-        mapOfDataCategory_ExistingTypes = dataCategory_availableDataTypes
-      )
-
+      sequencingCenters <- sequencingCentersF
+    } yield EntityDataSet(
+      participants = spark.createDataset(participants).cache,
+      families = spark.createDataset(families).cache,
+      biospecimens = spark.createDataset(biospecimens).cache,
+      familyRelationships = spark.createDataset(familyRelationships).cache,
+      investigators = spark.createDataset(investigators).cache,
+      outcomes = spark.createDataset(outcomes).cache,
+      phenotypes = spark.createDataset(phenotypes).cache,
+      sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
+      sequencingExperimentGenomicFiles =
+        spark.createDataset(sequencingExperimentGenomicFiles).cache,
+      studies = createStudies(studies, studiesExtraParams)(spark).cache,
+      biospecimenGenomicFiles =
+        spark.createDataset(biospecimenGenomicFiles).cache,
+      biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
+      diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
+      genomicFiles = spark
+        .createDataset(genomicFiles)
+        .filter(filterGenomicFile _)
+        .cache(),
+      studyFiles = spark.emptyDataset[EStudyFile],
+      // following two (graphPath, hpoTerms) are read from HPO mysql db:
+      ontologyData = ontologyData,
+      duoCodeDataSet = duoCodeDs,
+      mapOfDataCategory_ExistingTypes = dataCategory_availableDataTypes,
+      sequencingCenters = spark
+        .createDataset(
+          sequencingCenters
+        )
+        .cache
+    )
 
     Await.result(dataset, Duration.Inf)
   }
@@ -171,15 +216,24 @@ object DownloadTransformer {
     }
   }
 
-  def loadTermsBasic(path: String, spark: SparkSession): Dataset[OntologyTermBasic] = {
+  def loadTermsBasic(
+      path: String,
+      spark: SparkSession
+  ): Dataset[OntologyTermBasic] = {
     import spark.implicits._
-    val schema = StructType(Seq(
-      StructField("id", StringType, nullable = true),
-      StructField("name", StringType, nullable = true)
-    )
+    val schema = StructType(
+      Seq(
+        StructField("id", StringType, nullable = true),
+        StructField("name", StringType, nullable = true)
+      )
     )
     val p = withLoadedPath(path, spark)
-    spark.read.option("sep", "\t").schema(schema).csv(p).withColumn("parents", lit(null).cast(ArrayType(StringType))).as[OntologyTermBasic]
+    spark.read
+      .option("sep", "\t")
+      .schema(schema)
+      .csv(p)
+      .withColumn("parents", lit(null).cast(ArrayType(StringType)))
+      .as[OntologyTermBasic]
   }
 
   def loadTerms(path: String, spark: SparkSession): Dataset[OntologyTerm] = {
@@ -189,38 +243,54 @@ object DownloadTransformer {
 
   }
 
-  def studiesExtraParams(path: String)(spark: SparkSession): Dataset[StudyExtraParams] = {
+  def studiesExtraParams(
+      path: String
+  )(spark: SparkSession): Dataset[StudyExtraParams] = {
 
     val p = withLoadedPath(path, spark)
-    spark.read.format("com.databricks.spark.csv")
+    spark.read
+      .format("com.databricks.spark.csv")
       .option("delimiter", "\t")
       .option("header", "true")
-      .load(p).as[StudyExtraParams]
+      .load(p)
+      .as[StudyExtraParams]
   }
 
-  def loadCategory_ExistingDataTypes(path: String)(spark: SparkSession): Dataset[(String, Seq[String])] = {
+  def loadCategory_ExistingDataTypes(
+      path: String
+  )(spark: SparkSession): Dataset[(String, Seq[String])] = {
     import spark.implicits._
 
     val p = withLoadedPath(path, spark)
-    val rawLine = spark.read.format("csv")
+    val rawLine = spark.read
+      .format("csv")
       .option("delimiter", "\t")
       .option("header", "true")
-      .load(p).as[(String, String)]
+      .load(p)
+      .as[(String, String)]
 
-    rawLine.map(t => (t._1, t._2.split(",").map(_.toLowerCase.trim)))
+    rawLine
+      .map(t => (t._1, t._2.split(",").map(_.toLowerCase.trim)))
       .as[(String, Seq[String])]
   }
 
   def loadDuoLabel(path: String, spark: SparkSession): Dataset[DuoCode] = {
     import spark.implicits._
-    val schema = StructType(Seq(
-      StructField("id", StringType, nullable = false),
-      StructField("shorthand", StringType),
-      StructField("label", StringType, nullable = false),
-      StructField("description", StringType)
-    ))
+    val schema = StructType(
+      Seq(
+        StructField("id", StringType, nullable = false),
+        StructField("shorthand", StringType),
+        StructField("label", StringType, nullable = false),
+        StructField("description", StringType)
+      )
+    )
     val p = withLoadedPath(path, spark)
-    spark.read.option("sep", ",").option("header", value = true).schema(schema).csv(p).as[DuoCode]
+    spark.read
+      .option("sep", ",")
+      .option("header", value = true)
+      .schema(schema)
+      .csv(p)
+      .as[DuoCode]
   }
 
   private def withLoadedPath(path: String, spark: SparkSession) = {
@@ -231,19 +301,26 @@ object DownloadTransformer {
     } else path
   }
 
-  def createStudies(studies: Seq[EStudy], studiesExtraParams: Dataset[StudyExtraParams]) (spark: SparkSession):  Dataset[EStudy] = {
+  def createStudies(
+      studies: Seq[EStudy],
+      studiesExtraParams: Dataset[StudyExtraParams]
+  )(spark: SparkSession): Dataset[EStudy] = {
     import spark.implicits._
     val studiesDS = spark.createDataset(studies)
 
-    val studies_with_extraParams = studiesDS.joinWith(studiesExtraParams, studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"), "left_outer")
+    val studies_with_extraParams = studiesDS.joinWith(
+      studiesExtraParams,
+      studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"),
+      "left_outer"
+    )
 
-    studies_with_extraParams.map{
+    studies_with_extraParams.map {
       case (study: EStudy, param: StudyExtraParams) =>
         study.copy(
           code = param.code,
           domain = param.domain match {
             case Some(x) => x.split(",").toSeq
-            case None => Nil
+            case None    => Nil
           },
           program = param.program
         )
@@ -251,26 +328,56 @@ object DownloadTransformer {
     }
   }
 
-  def createDiagnosis(diagnoses: Seq[EDiagnosis], ontology: OntologiesDataSet, spark: SparkSession): Dataset[EDiagnosis] = {
+  def createDiagnosis(
+      diagnoses: Seq[EDiagnosis],
+      ontology: OntologiesDataSet,
+      spark: SparkSession
+  ): Dataset[EDiagnosis] = {
 
     import spark.implicits._
     val diagnosesDS = spark.createDataset(diagnoses)
     diagnosesDS
-      .joinWith(ontology.mondoTerms, diagnosesDS("mondo_id_diagnosis") === ontology.mondoTerms("id"), "left_outer")
+      .joinWith(
+        ontology.mondoTerms,
+        diagnosesDS("mondo_id_diagnosis") === ontology.mondoTerms("id"),
+        "left_outer"
+      )
       .as[(EDiagnosis, Option[OntologyTermBasic])]
-      .joinWith(ontology.ncitTerms, $"_1.ncit_id_diagnosis" === ontology.ncitTerms("id"), "left_outer")
+      .joinWith(
+        ontology.ncitTerms,
+        $"_1.ncit_id_diagnosis" === ontology.ncitTerms("id"),
+        "left_outer"
+      )
       .map { case ((d, m), n) => (d, m, Option(n)) }
       .map {
-        case (d, optMondoTerm, optNcitTerm) if optMondoTerm.isDefined && optNcitTerm.isDefined =>
-          d.copy(diagnosis_text = optMondoTerm.map(_.name), mondo_id_diagnosis = optMondoTerm.map(_.id), ncit_id_diagnosis = formatTerm(optNcitTerm))
+        case (d, optMondoTerm, optNcitTerm)
+            if optMondoTerm.isDefined && optNcitTerm.isDefined =>
+          d.copy(
+            diagnosis_text = optMondoTerm.map(_.name),
+            mondo_id_diagnosis = optMondoTerm.map(_.id),
+            ncit_id_diagnosis = formatTerm(optNcitTerm)
+          )
         case (d, optMondoTerm, _) if optMondoTerm.isDefined =>
-          d.copy(diagnosis_text = optMondoTerm.map(_.name), mondo_id_diagnosis = optMondoTerm.map(_.id), ncit_id_diagnosis = None)
+          d.copy(
+            diagnosis_text = optMondoTerm.map(_.name),
+            mondo_id_diagnosis = optMondoTerm.map(_.id),
+            ncit_id_diagnosis = None
+          )
         case (d, _, optNcitTerm) if optNcitTerm.isDefined =>
-          d.copy(diagnosis_text = optNcitTerm.map(_.name), mondo_id_diagnosis = None, ncit_id_diagnosis = formatTerm(optNcitTerm))
-        case (d, _, _) => d.copy(diagnosis_text = d.source_text_diagnosis, mondo_id_diagnosis = None, ncit_id_diagnosis = None)
+          d.copy(
+            diagnosis_text = optNcitTerm.map(_.name),
+            mondo_id_diagnosis = None,
+            ncit_id_diagnosis = formatTerm(optNcitTerm)
+          )
+        case (d, _, _) =>
+          d.copy(
+            diagnosis_text = d.source_text_diagnosis,
+            mondo_id_diagnosis = None,
+            ncit_id_diagnosis = None
+          )
       }
   }
 
-
-  def formatTerm(term: Option[OntologyTermBasic]): Option[String] = term.map(t => s"${t.name} (${t.id})")
+  def formatTerm(term: Option[OntologyTermBasic]): Option[String] =
+    term.map(t => s"${t.name} (${t.id})")
 }
