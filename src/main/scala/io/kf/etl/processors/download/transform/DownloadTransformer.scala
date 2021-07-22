@@ -11,7 +11,7 @@ import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, En
 import io.kf.etl.processors.download.transform.DownloadTransformer._
 import io.kf.etl.processors.download.transform.utils.{DataServiceConfig, EntityDataRetriever}
 import org.apache.spark.SparkFiles
-import org.apache.spark.sql.functions.lit
+import org.apache.spark.sql.functions.{collect_list, lit}
 import org.apache.spark.sql.types.{ArrayType, StringType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
@@ -130,10 +130,20 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
       biospecimenDiagnoses <- biospecimenDiagnosesF
       diagnoses <- diagnosesF
       genomicFiles <- genomicFilesF
-    } yield
+    } yield {
+      val participants_ids = participants.toDF()
+        .groupBy("family_id")
+        .agg(collect_list($"kf_id") as "participants")
+
+      val familiesWithParticipants = families.toDF()
+        .cache
+        .withColumnRenamed("kf_id", "family_id").drop("participants")
+        .join(participants_ids, Seq("family_id"))
+        .as[EFamily]
+
       EntityDataSet(
         participants = spark.createDataset(participants).cache,
-        families = spark.createDataset(families).cache,
+        families = familiesWithParticipants,
         biospecimens = spark.createDataset(biospecimens).cache,
         familyRelationships = spark.createDataset(familyRelationships).cache,
         investigators = spark.createDataset(investigators).cache,
@@ -155,6 +165,7 @@ class DownloadTransformer(implicit WSClient: StandaloneWSClient, ec: ExecutionCo
         duoCodeDataSet = duoCodeDs,
         mapOfDataCategory_ExistingTypes = dataCategory_availableDataTypes
       )
+    }
 
 
     Await.result(dataset, Duration.Inf)
