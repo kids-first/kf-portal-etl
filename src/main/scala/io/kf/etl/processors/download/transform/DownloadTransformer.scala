@@ -7,24 +7,12 @@ import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
 import io.kf.etl.models.internal.StudyExtraParams
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
-import io.kf.etl.processors.common.ProcessorCommonDefinitions.{
-  EntityDataSet,
-  EntityEndpointSet,
-  OntologiesDataSet
-}
+import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
-import io.kf.etl.processors.download.transform.utils.{
-  DataServiceConfig,
-  EntityDataRetriever
-}
+import io.kf.etl.processors.download.transform.utils.{DataServiceConfig, EntityDataRetriever}
 import org.apache.spark.SparkFiles
-import org.apache.spark.sql.functions.lit
-import org.apache.spark.sql.types.{
-  ArrayType,
-  StringType,
-  StructField,
-  StructType
-}
+import org.apache.spark.sql.functions.{collect_list, lit}
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Dataset, SparkSession}
 import play.api.libs.ws.StandaloneWSClient
 
@@ -170,37 +158,39 @@ class DownloadTransformer(implicit
       diagnoses <- diagnosesF
       genomicFiles <- genomicFilesF
       sequencingCenters <- sequencingCentersF
-    } yield EntityDataSet(
-      participants = spark.createDataset(participants).cache,
-      families = spark.createDataset(families).cache,
-      biospecimens = spark.createDataset(biospecimens).cache,
-      familyRelationships = spark.createDataset(familyRelationships).cache,
-      investigators = spark.createDataset(investigators).cache,
-      outcomes = spark.createDataset(outcomes).cache,
-      phenotypes = spark.createDataset(phenotypes).cache,
-      sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
-      sequencingExperimentGenomicFiles =
-        spark.createDataset(sequencingExperimentGenomicFiles).cache,
-      studies = createStudies(studies, studiesExtraParams)(spark).cache,
-      biospecimenGenomicFiles =
-        spark.createDataset(biospecimenGenomicFiles).cache,
-      biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
-      diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
-      genomicFiles = spark
-        .createDataset(genomicFiles)
-        .filter(filterGenomicFile _)
-        .cache(),
-      studyFiles = spark.emptyDataset[EStudyFile],
-      // following two (graphPath, hpoTerms) are read from HPO mysql db:
-      ontologyData = ontologyData,
-      duoCodeDataSet = duoCodeDs,
-      mapOfDataCategory_ExistingTypes = dataCategory_availableDataTypes,
-      sequencingCenters = spark
-        .createDataset(
-          sequencingCenters
-        )
-        .cache
-    )
+    } yield {
+      EntityDataSet(
+        participants = spark.createDataset(participants).cache,
+        families = joinFamilies(participants, families),
+        biospecimens = spark.createDataset(biospecimens).cache,
+        familyRelationships = spark.createDataset(familyRelationships).cache,
+        investigators = spark.createDataset(investigators).cache,
+        outcomes = spark.createDataset(outcomes).cache,
+        phenotypes = spark.createDataset(phenotypes).cache,
+        sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
+        sequencingExperimentGenomicFiles =
+          spark.createDataset(sequencingExperimentGenomicFiles).cache,
+        studies = createStudies(studies, studiesExtraParams)(spark).cache,
+        biospecimenGenomicFiles =
+          spark.createDataset(biospecimenGenomicFiles).cache,
+        biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
+        diagnoses = createDiagnosis(diagnoses, ontologyData, spark).cache,
+        genomicFiles = spark
+          .createDataset(genomicFiles)
+          .filter(filterGenomicFile _)
+          .cache(),
+        studyFiles = spark.emptyDataset[EStudyFile],
+        // following two (graphPath, hpoTerms) are read from HPO mysql db:
+        ontologyData = ontologyData,
+        duoCodeDataSet = duoCodeDs,
+        mapOfDataCategory_ExistingTypes = dataCategory_availableDataTypes,
+        sequencingCenters = spark
+          .createDataset(
+            sequencingCenters
+          )
+          .cache
+      )
+    }
 
     Await.result(dataset, Duration.Inf)
   }
@@ -208,6 +198,23 @@ class DownloadTransformer(implicit
 }
 
 object DownloadTransformer {
+
+  def joinFamilies(participants: Seq[EParticipant],
+                   families: Seq[EFamily])
+                  (implicit sparkSession: SparkSession): Dataset[EFamily] = {
+    import sparkSession.implicits._
+    val participants_ids = participants.toDF()
+      .groupBy("family_id")
+      .agg(collect_list($"kf_id") as "participants")
+
+    val familiesWithParticipants = families.toDF()
+      .cache
+      .withColumnRenamed("kf_id", "family_id").drop("participants")
+      .join(participants_ids, Seq("family_id"))
+      .as[EFamily]
+    familiesWithParticipants
+  }
+
   def filterGenomicFile(f: EGenomicFile): Boolean = {
     f.data_type match {
       case Some(data_type) =>
