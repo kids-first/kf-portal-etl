@@ -23,7 +23,7 @@ steps=$(cat <<EOF
     },
     {
         "Name":"Cpy congi file",
-        "Args":["aws","s3","cp","s3://kf-strides-variant-parquet-prd/jobs/conf/kf-etl.conf", "/home/hadoop"],
+        "Args":["aws","s3","cp","s3://kf-strides-variant-parquet-prd/jobs/conf/kf-etl-download.conf", "/home/hadoop"],
         "ActionOnFailure":"TERMINATE_CLUSTER",
         "Type":"CUSTOM_JAR",
         "Jar":"command-runner.jar"

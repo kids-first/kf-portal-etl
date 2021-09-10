@@ -1,6 +1,7 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
-import io.kf.etl.models.es.Participant_ES
+import io.kf.etl.models.dataservice.{EParticipant, EStudy}
+import io.kf.etl.models.es.{Participant_ES, Study_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
 import org.apache.spark.sql.{Dataset, SparkSession}
@@ -11,13 +12,14 @@ object MergeStudy {
     // Visible studies need to be filtered here because dataservice endpoint /studies/STUDY_ID?visible=true
     // does not filter only studies are visible
     val visibleStudies = entityDataset.studies.filter(s => s.visible.getOrElse(false))
-    entityDataset.participants.joinWith(
+    val joined: Dataset[(EParticipant, EStudy)] = entityDataset.participants.joinWith(
       visibleStudies,
       entityDataset.participants.col("study_id") === entityDataset.studies.col("kf_id"),
       "left_outer"
-    ).map(tuple => {
-      val study = EntityConverter.EStudyToStudyES(tuple._2)
-      EntityConverter.EParticipantToParticipantES(tuple._1).copy(study = Some(study))
-    })
+    )
+    joined.map { case (participant, study) =>
+      val studyES: Study_ES = EntityConverter.EStudyToStudyES(study)
+      EntityConverter.EParticipantToParticipantES(participant).copy(study = Some(studyES))
+    }
   }
 }

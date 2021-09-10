@@ -32,7 +32,7 @@
       {
         "Classification": "export",
         "Properties": {
-          "ETL_CONF_FILE": "/home/hadoop/kf-etl.conf"
+          "ETL_CONF_FILE": "/home/hadoop/kf-etl-download.conf"
         }
       }
     ]

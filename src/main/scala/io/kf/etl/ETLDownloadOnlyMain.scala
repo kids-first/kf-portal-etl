@@ -5,7 +5,7 @@ import io.kf.etl.processors.download.DownloadProcessor
 
 object ETLDownloadOnlyMain extends App {
 
-  DefaultContext.withContext { context =>
+  DefaultContext.withContext(withES = false){ context =>
     import context.implicits._
 
     import scala.concurrent.ExecutionContext.Implicits._

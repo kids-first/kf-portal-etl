@@ -27,12 +27,12 @@ class DefaultContext extends AutoCloseable {
     implicit def actorSystem: ActorSystem = system
   }
 
-  private def init(): Unit = {
+  private def init(withES: Boolean): Unit = {
     system = ActorSystem()
     materializer = ActorMaterializer()(system)
     wsClientMutable = StandaloneAhcWSClient()(materializer)
     configMutable = initConfig()
-    sparkMutable = initSparkSession()
+    sparkMutable = initSparkSession(withES)
   }
 
   private def initConfig(): Config = {
@@ -43,14 +43,17 @@ class DefaultContext extends AutoCloseable {
     ConfigFactory.systemEnvironment().withFallback(configFromFiles)
   }
 
-  private def initSparkSession(): SparkSession = {
+  private def initSparkSession(withES: Boolean): SparkSession = {
     val session = SparkSession.builder().appName("Kids First Portal ETL")
 
-    session
-      .config("es.nodes", elasticSearchUrl(configMutable))
-      .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
-      .getOrCreate()
-
+    if (withES) {
+      session
+        .config("es.nodes", elasticSearchUrl(configMutable))
+        .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
+        .getOrCreate()
+    } else {
+      session.getOrCreate()
+    }
   }
 
 
@@ -64,10 +67,10 @@ class DefaultContext extends AutoCloseable {
 }
 
 object DefaultContext {
-  def withContext[T](f: DefaultContext => T): T = {
+  def withContext[T](withES: Boolean = true)(f: DefaultContext => T): T = {
     val context = new DefaultContext()
     try {
-      context.init()
+      context.init(withES)
       f(context)
     } finally {
       context.close()

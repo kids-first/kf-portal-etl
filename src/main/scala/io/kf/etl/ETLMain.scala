@@ -12,7 +12,7 @@ import scala.util.Try
 
 object ETLMain extends App {
 
-  DefaultContext.withContext { context =>
+  DefaultContext.withContext() { context =>
     import context.implicits._
 
     import scala.concurrent.ExecutionContext.Implicits._
