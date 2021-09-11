@@ -206,13 +206,12 @@ object DownloadTransformer {
     val participants_ids = participants.toDF()
       .groupBy("family_id")
       .agg(collect_list($"kf_id") as "participants")
-
-    val familiesWithParticipants = families.toDF()
+    val familiesDF =  families.toDF()
+    val familiesWithParticipants = familiesDF
       .cache
-      .withColumnRenamed("kf_id", "family_id").drop("participants")
-      .join(participants_ids, Seq("family_id"))
-      .as[EFamily]
-    familiesWithParticipants
+      .drop("participants")
+      .join(participants_ids, participants_ids("family_id") === familiesDF("kf_id"))
+    familiesWithParticipants.as[EFamily]
   }
 
   def filterGenomicFile(f: EGenomicFile): Boolean = {
