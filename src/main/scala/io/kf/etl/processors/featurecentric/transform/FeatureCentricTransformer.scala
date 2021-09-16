@@ -106,6 +106,8 @@ object FeatureCentricTransformer {
         $"_2" as "participant",
         $"_2.biospecimen" as "biospecimen"
       )
+      .filter("participant is not null")
+      .filter("biospecimen is not null")
       .groupBy(
         "genomic_file", "participant.kf_id"
       )
