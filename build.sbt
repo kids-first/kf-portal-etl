@@ -2,7 +2,7 @@ import Dependencies._
 import sbt.Keys.version
 
 name := "kf-portal-etl"
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.14"
 organization := "io.kf.etl"
 version := "1.0.0"
 
