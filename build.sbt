@@ -28,6 +28,7 @@ assemblyMergeStrategy in assembly := {
   case "overview.html" => MergeStrategy.last
   case "git.properties" => MergeStrategy.discard
   case "mime.types" => MergeStrategy.first
+  case x if x.endsWith("module-info.class") => MergeStrategy.discard
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)

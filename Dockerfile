@@ -3,7 +3,7 @@ FROM openjdk:8
 ###########################
 # Docker Build config
 ###########################
-ARG SPARK_VERSION=2.3.4
+ARG SPARK_VERSION=3.1.2
 EXPOSE 8080 4040 7077 6066 8081
 
 ###########################
@@ -22,7 +22,7 @@ RUN apt-get update && \
 ENV SPARK_HOME ${ROOT_DIR}/spark
 ENV SPARK_HASH_TYPE sha512
 ENV SPARK_DOWNLOAD_ROOT_PATH https://archive.apache.org/dist
-ENV SPARK_NAME spark-${SPARK_VERSION}-bin-hadoop2.7
+ENV SPARK_NAME spark-${SPARK_VERSION}-bin-hadoop3.2
 ENV SPARK_FILENAME ${SPARK_NAME}.tgz
 ENV SPARK_HASH_PATH ${SPARK_DOWNLOAD_ROOT_PATH}/spark/spark-${SPARK_VERSION}/${SPARK_FILENAME}.${SPARK_HASH_TYPE}
 ENV SPARK_DOWNLOAD_PATH ${SPARK_DOWNLOAD_ROOT_PATH}/spark/spark-${SPARK_VERSION}/${SPARK_FILENAME}
@@ -44,7 +44,7 @@ ENV KF_PORTAL_ETL_JAR ${ROOT_DIR}/data/kf-portal-etl.jar
 # WARNING: this must be mounted externally
 ENV ETL_CONF_FILE /kf-etl/conf/kf_etl.conf
 
-ADD target/scala-2.11/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR}
+ADD target/scala-2.12/kf-portal-etl.jar ${KF_PORTAL_ETL_JAR}
 
 ENTRYPOINT ["/kf-etl/bin/kf-etl-submit.sh"]
 

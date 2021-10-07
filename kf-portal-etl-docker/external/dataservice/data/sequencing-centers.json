@@ -1,0 +1,27 @@
+{
+  "_links":{
+    "self":"/sequencing-centers?study_id=SD_B8X3C1MX"
+  },
+  "_status":{
+    "code":200,
+    "message":"success"
+  },
+  "limit":100,
+  "results":[
+    {
+      "_links":{
+        "biospecimens":"/biospecimens?sequencing_center_id=SC_DGDDQVYR",
+        "collection":"/sequencing-centers",
+        "self":"/sequencing-centers/SC_DGDDQVYR",
+        "sequencing_experiments":"/sequencing-experiments?sequencing_center_id=SC_DGDDQVYR"
+      },
+      "created_at":"2018-06-12T15:01:56.094118+00:00",
+      "external_id":null,
+      "kf_id":"SC_DGDDQVYR",
+      "modified_at":"2018-06-12T15:01:56.094124+00:00",
+      "name":"Broad Institute",
+      "visible":true
+    }
+  ],
+  "total":1
+}

@@ -1,9 +1,5 @@
 {
   "mappings": {
-    "study_centric": {
-      "_meta": {
-        "kf-dataservice-version": "1.11.0"
-      },
       "properties": {
         "kf_id": {
           "type": "keyword"
@@ -65,7 +61,7 @@
           "type": "nested"
         }
       }
-    }
+
   },
   "settings": {
     "analysis": {
