@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
   json4s,
   "com.typesafe.play" %% "play-ahc-ws-standalone" % "2.0.3",
   scalatest % "test",
-  asyncHttp % "test"
+  asyncHttp % "test",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.2" % "test",
 )
 
 test in assembly := {}

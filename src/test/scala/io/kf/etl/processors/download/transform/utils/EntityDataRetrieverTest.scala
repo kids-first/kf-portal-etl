@@ -10,7 +10,6 @@ import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 
 import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration.DurationInt
 
 class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAndAfterAll {
