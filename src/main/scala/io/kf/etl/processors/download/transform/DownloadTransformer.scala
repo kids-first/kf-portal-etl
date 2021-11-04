@@ -77,12 +77,23 @@ class DownloadTransformer(implicit
     )
   }
 
+  def getGen3Acl(externalId: String): Option[Seq[String]] = {
+    val retriever = EntityDataRetriever(dataService, filters)
+    retriever.retrieveAclForDCFFiles( s"${config.getString(CONFIG_NAME_MONDO_PATH)}/${externalId}")
+  }
+
   def setCavaticaIdForRepo(file: EGenomicFile): EGenomicFile = {
 
     file.repository match {
       case Some(repo) =>
         repo match {
-          case "dcf"  => file.copy(latest_did = file.external_id)
+          case "dcf"  => file.copy(latest_did = file.external_id, acl = file.external_id match {
+            case Some(id) => getGen3Acl(id) match {
+              case Some(v) => v
+              case None => file.acl
+            }
+            case None => file.acl
+          })
           case "gen3" => file
           case _      => file
         }
