@@ -84,7 +84,10 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
       case 200 =>
         import play.api.libs.ws.DefaultBodyReadables.readableAsString
         val responseBody = JsonMethods.parse(resolvedResponse.body)
-        val acls = (responseBody \ "acl").extract[Seq[String]]
+        val acls = (responseBody \ "acl") match {
+          case JNull | JNothing => Seq.empty
+          case arr => arr.extract[Seq[String]]
+        }
         Some(acls)
       case _ => None
     }
