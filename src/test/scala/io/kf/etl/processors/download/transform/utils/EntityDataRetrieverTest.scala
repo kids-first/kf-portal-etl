@@ -5,15 +5,16 @@ import akka.stream.ActorMaterializer
 import io.kf.etl.models.dataservice.{EBiospecimenDiagnosis, EPhenotype, ESequencingCenter, EStudy}
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever.buildUrl
 import io.kf.etl.processors.test.util.{DataService, jsonHandler, jsonHandlerAfterNRetries}
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{AsyncFlatSpec, BeforeAndAfterAll, Matchers}
 import play.api.libs.ws.StandaloneWSClient
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
 
 import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration.DurationInt
 
-class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAndAfterAll {
+class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with ScalaFutures with BeforeAndAfterAll {
   implicit val system: ActorSystem             = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val wsClient: StandaloneWSClient    = StandaloneAhcWSClient()
@@ -345,5 +346,13 @@ class EntityDataRetrieverTest extends AsyncFlatSpec with Matchers with BeforeAnd
         )
       )
     }
+  }
+  implicit val defaultPatience =
+    PatienceConfig(timeout = Span(5, Seconds), interval = Span(5000, Millis))
+
+  "retrieveAclForDCFFiles" should "return the deserialize data" in {
+    EntityDataRetriever(DataServiceConfig("", 100, "", ""))
+      .retrieveAclForDCFFiles("https://nci-crdc.datacommons.io/index/index/e5d7fd85-e3fd-4b79-bf91-7258e2124a84" )
+      .get shouldEqual Seq("phs000218")
   }
 }

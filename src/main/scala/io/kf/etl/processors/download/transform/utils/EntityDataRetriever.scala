@@ -4,15 +4,17 @@ import akka.actor.{ActorSystem, Scheduler}
 import akka.pattern.Patterns.after
 import io.kf.etl.processors.download.transform.utils.EntityDataRetriever.buildUrl
 import org.json4s
+import org.json4s.DefaultFormats
 import org.json4s.JsonAST._
 import org.json4s.jackson.JsonMethods
 import play.api.libs.ws.StandaloneWSClient
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] = Seq.empty[String])(implicit wsClient: StandaloneWSClient, ec: ExecutionContext, system: ActorSystem) {
   private implicit val scheduler: Scheduler = system.scheduler
+  implicit val formats: DefaultFormats.type = DefaultFormats
   private lazy val filterQueryString = filters.mkString("&")
 
   final def retrieve[T](endpoint: String, data: Seq[T] = Seq.empty[T], retries: Int = 10)(implicit extractor: EntityDataExtractor[T]): Future[Seq[T]] = {
@@ -69,7 +71,28 @@ case class EntityDataRetriever(config: DataServiceConfig, filters: Seq[String] =
 
   }
 
+  final def retrieveAclForDCFFiles[T](url: String): Option[Seq[String]] = {
 
+    val response =
+      wsClient.url(url)
+        .withRequestTimeout(Duration(10, "seconds"))
+        .withHttpHeaders("User-Agent" -> "PortalETL")
+        .get()
+
+    val resolvedResponse = Await.result(response, 10.seconds)
+    resolvedResponse.status match {
+      case 200 =>
+        import play.api.libs.ws.DefaultBodyReadables.readableAsString
+        val responseBody = JsonMethods.parse(resolvedResponse.body)
+        val acls = (responseBody \ "acl") match {
+          case JNull | JNothing => Seq.empty
+          case arr => arr.extract[Seq[String]]
+        }
+        Some(acls)
+      case _ => None
+    }
+
+  }
 }
 
 object EntityDataRetriever {

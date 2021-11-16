@@ -60,6 +60,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
   val hpo_0000234: OntologyTermBasic = OntologyTermBasic("HP:0000234", "Abnormality of the head")
   val hpo_0000152: OntologyTermBasic = OntologyTermBasic("HP:0000152", "Abnormality of head or neck")
   val hpo_0000174: OntologyTermBasic = OntologyTermBasic("HP:0000174", "Abnormal palate morphology")
+  val hpo_0033127: OntologyTermBasic = OntologyTermBasic("HP:0033127", "Abnormality of the musculoskeletal system")
 
   import spark.implicits._
 
@@ -156,20 +157,20 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
         phenotype = Seq(
           Phenotype_ES(
             source_text_phenotype = Some("phenotype source text 1"),
-            hpo_phenotype_observed = Some("Arachnodactyly (HP:0001166)"),
-            age_at_event_days = Some(100),
-            external_id = Some("external id"),
-            snomed_phenotype_observed = Some("SNOMED:4"),
-            hpo_phenotype_observed_text = Some("Arachnodactyly (HP:0001166)"),
-            observed = Some(true)
-          ),
-          Phenotype_ES(
-            source_text_phenotype = Some("phenotype source text 1"),
             hpo_phenotype_observed = Some("Slender finger (HP:0001238)"),
             age_at_event_days = Some(100),
             external_id = Some("external id"),
             snomed_phenotype_observed = Some("SNOMED:4"),
             hpo_phenotype_observed_text = Some("Slender finger (HP:0001238)"),
+            observed = Some(true)
+          ),
+          Phenotype_ES(
+            source_text_phenotype = Some("phenotype source text 1"),
+            hpo_phenotype_observed = Some("Arachnodactyly (HP:0001166)"),
+            age_at_event_days = Some(100),
+            external_id = Some("external id"),
+            snomed_phenotype_observed = Some("SNOMED:4"),
+            hpo_phenotype_observed_text = Some("Arachnodactyly (HP:0001166)"),
             observed = Some(true)
           )
         ),
@@ -181,7 +182,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(100)),
-          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0033127.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0033127.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), is_leaf = true, is_tagged = true),
@@ -239,9 +241,10 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(100)),
-          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0033127.toString), age_at_event_days = Set(100)),
+          OntologicalTermWithParents_ES(name = hpo_0033127.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set(100), is_leaf = true, is_tagged = true),
           OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(100)),
           OntologicalTermWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(100)),
@@ -279,6 +282,7 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
           observed = Some(false)
         )),
         non_observed_phenotypes = Seq(
+
           OntologicalTermWithParents_ES(name = hpo_0001166.toString, parents = Seq(hpo_0001238.toString, hpo_0100807.toString), age_at_event_days = Set.empty[Int], is_leaf = true, is_tagged = true),
           OntologicalTermWithParents_ES(name = hpo_0100807.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
           OntologicalTermWithParents_ES(name = hpo_0001238.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set.empty[Int]),
@@ -289,7 +293,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
 
           OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set.empty[Int]),
           OntologicalTermWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set.empty[Int]),
-          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0033127.toString), age_at_event_days = Set.empty[Int]),
+          OntologicalTermWithParents_ES(name = hpo_0033127.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set.empty[Int]),
 
           OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set.empty[Int]),
           OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set.empty[Int]),
@@ -391,55 +396,56 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     (result.find(_.kf_id.contains("participant_id_1")) match {
       case Some(a) => a.observed_phenotypes
       case None => Nil
-    }) should contain theSameElementsAs Seq(
-//      No age_at_event_days (but observed)
-      OntologicalTermWithParents_ES(name = hpo_0000175.toString, parents = Seq(hpo_0000202.toString, hpo_0100737.toString), age_at_event_days = Set.empty[Int], is_tagged = true),
-      OntologicalTermWithParents_ES(name = hpo_0000202.toString, parents = Seq(hpo_0000163.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000163.toString, parents = Seq(hpo_0031816.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0031816.toString, parents = Seq(hpo_0000153.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000153.toString, parents = Seq(hpo_0000271.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000271.toString, parents = Seq(hpo_0000234.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000234.toString, parents = Seq(hpo_0000152.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000152.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0100737.toString, parents = Seq(hpo_0000174.toString), age_at_event_days = Set.empty[Int]),
-      OntologicalTermWithParents_ES(name = hpo_0000174.toString, parents = Seq(hpo_0000163.toString), age_at_event_days = Set.empty[Int]),
+    }).map(s => (s.name, s.age_at_event_days.toList.sorted)) should contain theSameElementsAs Seq(
+      //      No age_at_event_days (but observed)
+      (hpo_0000175.toString, List.empty[Int]),
+      (hpo_0000202.toString, List.empty[Int]),
+      (hpo_0031816.toString, List.empty[Int]),
+      (hpo_0000163.toString, List.empty[Int]),
+      (hpo_0000153.toString, List.empty[Int]),
+      (hpo_0000271.toString, List.empty[Int]),
+      (hpo_0000234.toString, List.empty[Int]),
+      (hpo_0000152.toString, List.empty[Int]),
+      (hpo_0100737.toString, List.empty[Int]),
+      (hpo_0000174.toString, List.empty[Int]),
 //      OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set.empty[Int]),
 //      OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set.empty[Int]),
 
       //15 only
-      OntologicalTermWithParents_ES(name = hpo_0009654.toString, parents = Seq(hpo_0009602.toString, hpo_0009771.toString), age_at_event_days = Set(15), is_tagged = true),
-      OntologicalTermWithParents_ES(name = hpo_0009602.toString, parents = Seq(hpo_0001172.toString, hpo_0009774.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0009771.toString, parents = Seq(hpo_0005918.toString, hpo_0009699.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0001172.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0009774.toString, parents = Seq(hpo_0005918.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0009699.toString, parents = Seq(hpo_0001155.toString, hpo_0045039.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0045039.toString, parents = Seq(hpo_0002797.toString, hpo_0040070.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0001167.toString, parents = Seq(hpo_0001155.toString, hpo_0011297.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0005918.toString, parents = Seq(hpo_0001167.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0001155.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0011297.toString, parents = Seq(hpo_0002813.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0003330.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(15)),
-      OntologicalTermWithParents_ES(name = hpo_0002797.toString, parents = Seq(hpo_0003330.toString), age_at_event_days = Set(15)),
+      (hpo_0009654.toString, List(15)),
+      (hpo_0009602.toString, List(15)),
+      (hpo_0009771.toString, List(15)),
+      (hpo_0001172.toString, List(15)),
+      (hpo_0009774.toString, List(15)),
+      (hpo_0009699.toString, List(15)),
+      (hpo_0045039.toString, List(15)),
+      (hpo_0001167.toString, List(15)),
+      (hpo_0005918.toString, List(15)),
+      (hpo_0001155.toString, List(15)),
+      (hpo_0011297.toString, List(15)),
+      (hpo_0003330.toString, List(15)),
+      (hpo_0002797.toString, List(15)),
 
       //18 only
-      OntologicalTermWithParents_ES(name = hpo_0045009.toString, parents = Seq(hpo_0002818.toString, hpo_0011314.toString, hpo_0040073.toString), age_at_event_days = Set(18), is_tagged = true),
-      OntologicalTermWithParents_ES(name = hpo_0002818.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
-      OntologicalTermWithParents_ES(name = hpo_0011314.toString, parents = Seq(hpo_0011844.toString), age_at_event_days = Set(18)),
-      OntologicalTermWithParents_ES(name = hpo_0040073.toString, parents = Seq(hpo_0040072.toString), age_at_event_days = Set(18)),
-      OntologicalTermWithParents_ES(name = hpo_0040072.toString, parents = Seq(hpo_0002973.toString, hpo_0040070.toString), age_at_event_days = Set(18)),
-      OntologicalTermWithParents_ES(name = hpo_0002973.toString, parents = Seq(hpo_0002817.toString), age_at_event_days = Set(18)),
+      (hpo_0045009.toString,  List(18)),
+      (hpo_0002818.toString,  List(18)),
+      (hpo_0011314.toString,  List(18)),
+      (hpo_0040073.toString,  List(18)),
+      (hpo_0040072.toString,  List(18)),
+      (hpo_0002973.toString,  List(18)),
 
       //15 & 18
-      OntologicalTermWithParents_ES(name = hpo_0040070.toString, parents = Seq(hpo_0002813.toString, hpo_0002817.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0002817.toString, parents = Seq(hpo_0040064.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0002813.toString, parents = Seq(hpo_0011844.toString, hpo_0040068.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0011844.toString, parents = Seq(hpo_0011842.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0040064.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0040068.toString, parents = Seq(hpo_0000924.toString, hpo_0040064.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0011842.toString, parents = Seq(hpo_0000924.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0000924.toString, parents = Seq(hpo_0000118.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString), age_at_event_days = Set(15, 18)),
-      OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String], age_at_event_days = Set(15, 18))
+      (hpo_0040070.toString, List(15, 18)),
+      (hpo_0002817.toString, List(15, 18)),
+      (hpo_0002813.toString, List(15, 18)),
+      (hpo_0011844.toString, List(15, 18)),
+      (hpo_0040064.toString, List(15, 18)),
+      (hpo_0040068.toString, List(15, 18)),
+      (hpo_0011842.toString, List(15, 18)),
+      (hpo_0000924.toString, List(15, 18)),
+      (hpo_0000118.toString, List(15, 18)),
+      (hpo_0000001.toString, List(15, 18)),
+      (hpo_0033127.toString, List(15, 18)),
     )
 
     (result.find(_.kf_id.contains("participant_id_1")) match {
