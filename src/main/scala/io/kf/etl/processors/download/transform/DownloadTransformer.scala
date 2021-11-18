@@ -79,7 +79,7 @@ class DownloadTransformer(implicit
 
   def getGen3Acl(externalId: String): Option[Seq[String]] = {
     val retriever = EntityDataRetriever(dataService, filters)
-    retriever.retrieveAclForDCFFiles( s"${config.getString(CONFIG_NAME_NCI_CRDR_DATA)}/${externalId}")
+    retriever.retrieveAclForDCFFiles( s"https://${config.getString(CONFIG_NAME_NCI_CRDR_DATA)}/${externalId}")
   }
 
   def setCavaticaIdForRepo(file: EGenomicFile): EGenomicFile = {
