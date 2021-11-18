@@ -17,7 +17,7 @@ object Constants {
   val CONFIG_NAME_DATASERVICE_LIMIT = "dataservice.limit"
   val CONFIG_NAME_DATASERVICE_DOMAIN_DCF = "dataservice.dcf_host"
   val CONFIG_NAME_DATASERVICE_DOMAIN_GEN3 = "dataservice.gen3_host"
-  val CONFIG_NAME_NCI_CRDR_DATA = "nci_crdc_datacommons"
+  val CONFIG_NAME_NCI_CRDR_DATA = "processors.download.nci_crdc_path"
   val CONFIG_NAME_PROCESSORS = "processors"
   val CONFIG_NAME_PIPELINE = "pipeline"
 
