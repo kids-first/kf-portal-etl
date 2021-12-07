@@ -88,7 +88,7 @@ object EntityConverter {
       mondo_id_diagnosis = mondoIdDiagnosos,
       source_text_diagnosis = diagnosis.source_text_diagnosis,
       uberon_id_tumor_location = diagnosis.uberon_id_tumor_location,
-      source_text_tumor_location = diagnosis.source_text_tumor_location,
+      source_text_tumor_location = diagnosis.source_text_tumor_location.map(tumor_location => tumor_location.split(";").toSeq).getOrElse(Seq.empty),
       ncit_id_diagnosis = diagnosis.ncit_id_diagnosis,
       spatial_descriptor = diagnosis.spatial_descriptor,
       diagnosis = diagnosis.diagnosis_text,

@@ -9,7 +9,7 @@ final case class Diagnosis_ES(
                                mondo_id_diagnosis: Option[String] = None,
                                source_text_diagnosis: Option[String] = None,
                                uberon_id_tumor_location: Option[String] = None,
-                               source_text_tumor_location: Option[String] = None,
+                               source_text_tumor_location: Seq[String] = Seq.empty,
                                ncit_id_diagnosis: Option[String] = None,
                                spatial_descriptor: Option[String] = None,
                                diagnosis: Option[String] = None,
