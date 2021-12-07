@@ -1,5 +1,6 @@
 package io.kf.etl.processors.participantcommon.transform.step
 
+import io.kf.etl.models.dataservice.EPhenotype
 import io.kf.etl.models.es.{OntologicalTermWithParents_ES, Participant_ES, Phenotype_ES}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.mergers.OntologyUtil
@@ -7,22 +8,45 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergePhenotype {
 
+  def splitPhenotype(phenotype: EPhenotype): Seq[EPhenotype] = {
+    (phenotype.external_id, phenotype.hpo_id_phenotype, phenotype.source_text_phenotype) match {
+      case (Some(externalId), Some(hpoId), Some(sourceText)) => {
+        val externalIds = externalId.split(";").toSeq
+        val hpoIds = hpoId.split(";").toSeq
+        val sourceTexts = sourceText.split(";").toSeq
+
+        (externalIds, hpoIds, sourceTexts)
+          .zipped
+          .map {
+            (eId, hId, st) => phenotype.copy(
+              external_id = Some(eId.trim),
+              hpo_id_phenotype = Some(hId.trim),
+              source_text_phenotype = Some(st.trim))
+          }
+      }
+      case (_, _, _) => Seq(phenotype)
+    }
+  }
+
   def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES, Seq[OntologicalTermWithParents_ES])] = {
     import entityDataset.ontologyData.hpoTerms
     import entityDataset.phenotypes
     import spark.implicits._
 
-    val filteredPhenotypes = phenotypes
-      .filter { p => p.observed match {
-        case Some(o) => Seq("positive", "negative").contains(o.trim.toLowerCase)
-        case _ => false
-      }}
+    val singlePhenotypes: Dataset[EPhenotype] = phenotypes.map(phenotype => splitPhenotype(phenotype)).flatMap(x => x)
+    val filteredPhenotypes = singlePhenotypes
+      .filter { p =>
+        p.observed match {
+          case Some(o) => Seq("positive", "negative").contains(o.trim.toLowerCase)
+          case _ => false
+        }
+      }
 
     val phenotype_hpo_ancestor_parents =
       OntologyUtil.mapOntologyTermsToObservable(filteredPhenotypes, "hpo_id_phenotype")(hpoTerms)
 
     phenotype_hpo_ancestor_parents.flatMap {
-      case(phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participant_id.isDefined => {
+      case (phenotype, hpoTerm, phenotypeWParentsAtAge) if phenotype.participant_id.isDefined => {
         val observed = phenotype.observed.map(_.toLowerCase)
 
         val (hpoObserved, hpoNotObserved) = observed match {
@@ -60,11 +84,11 @@ object MergePhenotype {
         Some((
           phenotype.participant_id.get,
           p,
-          if(hpoTerm != null){
+          if (hpoTerm != null) {
             OntologicalTermWithParents_ES(
               name = hpoTerm.toString,
               parents = hpoTerm.parents,
-              age_at_event_days = if(phenotype.age_at_event_days.isDefined) Set(phenotype.age_at_event_days.get) else Set.empty[Int],
+              age_at_event_days = if (phenotype.age_at_event_days.isDefined) Set(phenotype.age_at_event_days.get) else Set.empty[Int],
               is_leaf = hpoTerm.is_leaf,
               is_tagged = true) +: phenotypeWParentsAtAge
           } else Nil
@@ -84,9 +108,9 @@ object MergePhenotype {
       transformedPhenotypes,
       participants.col("kf_id") === transformedPhenotypes.col("_1"),
       "left_outer"
-    ).map{
+    ).map {
       case (participant_ES, (_, phenotype_ES, seqPhenotypeWParents_ES)) =>
-        (participant_ES,  (phenotype_ES, seqPhenotypeWParents_ES) )
+        (participant_ES, (phenotype_ES, seqPhenotypeWParents_ES))
       case (participant_ES, _) => (participant_ES, (null, null))
     }
       .groupByKey { case (participant, _) => participant.kf_id.get }
@@ -94,7 +118,7 @@ object MergePhenotype {
         val groups = groupsIterator.toSeq
         val participant = groups.head._1
         val filteredSeq: Seq[(Phenotype_ES, (Seq[OntologicalTermWithParents_ES], Option[Boolean]))] =
-          groups.filter(_._2._1 != null).map{ case(_, (phenotype_ES, phenotypeWParents_ES)) =>
+          groups.filter(_._2._1 != null).map { case (_, (phenotype_ES, phenotypeWParents_ES)) =>
             phenotype_ES -> (phenotypeWParents_ES, phenotype_ES.observed)
           }
         participant.copy(
