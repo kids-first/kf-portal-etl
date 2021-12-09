@@ -1,5 +1,9 @@
 {
   "mappings": {
+    "participant_centric": {
+      "_meta": {
+        "kf-dataservice-version": "1.11.0"
+      },
       "properties": {
         "affected_status": {
           "type": "boolean"
@@ -733,6 +737,7 @@
           }
         }
       }
+    }
   },
   "settings": {
     "analysis": {
