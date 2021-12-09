@@ -17,7 +17,7 @@ object EntityConverter {
     Study_ES(
       kf_id = study.kf_id,
       attribution = study.attribution,
-      name = study.name,
+      name = study.program.map(program => s"$program: ${study.name}").orElse(study.name),
       version = study.version,
       external_id = study.external_id,
       release_status = study.release_status,
