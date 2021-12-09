@@ -16,8 +16,8 @@ object IndexProcessor {
   def apply[T](indexType: String, studyId: String, releaseId: String, dataset: Dataset[T])(implicit wsClient: StandaloneWSClient, config: Config): Unit = {
     val indexName = getIndexName(indexType, studyId, releaseId)
     createMapping(indexName, indexType)
-    dataset.toDF().saveToEs(s"$indexName/$indexType", Map("es.mapping.id" -> "kf_id"))
-//    dataset.toDF().saveToEs(s"$indexName", Map("es.mapping.id" -> "kf_id"))
+//    dataset.toDF().saveToEs(s"$indexName/$indexType", Map("es.mapping.id" -> "kf_id"))
+    dataset.toDF().saveToEs(s"$indexName", Map("es.mapping.id" -> "kf_id"))
 
   }
 

@@ -1,5 +1,9 @@
 {
   "mappings": {
+    "file_centric": {
+      "_meta": {
+        "kf-dataservice-version": "1.11.0"
+      },
       "properties": {
         "access_urls": {
           "type": "keyword"
@@ -616,6 +620,7 @@
           "type": "long"
         }
       }
+    }
   },
   "settings": {
     "analysis": {
