@@ -14,7 +14,7 @@ case class EStudy(
                    version: scala.Option[String] = None,
                    short_name: scala.Option[String] = None,
                    code: Option[String] = None,
-                   domain: Seq[String] = Nil,
+                   domain: Option[String] = None,
                    program: Option[String] = None,
                    visible: Option[Boolean] = None
     )

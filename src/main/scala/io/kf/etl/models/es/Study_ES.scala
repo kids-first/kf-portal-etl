@@ -10,6 +10,6 @@ final case class Study_ES(
                            data_access_authority: scala.Option[String] = None,
                            short_name: scala.Option[String] = None,
                            code: Option[String] = None,
-                           domain: Seq[String] = Nil,
+                           domain: Seq[String] = Seq.empty,
                            program: Option[String] = None
                          )

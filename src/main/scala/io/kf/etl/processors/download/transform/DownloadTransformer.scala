@@ -114,9 +114,6 @@ class DownloadTransformer(implicit
     import spark.implicits._
 
     val ontologyData = downloadOntologyData()
-    val studiesExtraParams = downloadStudiesExtraParams(
-      config.getString(STUDIES_EXTRA_PARAMS_PATH)
-    )
     val dataCategory_availableDataTypes =
       downloadDataCategory_availableDataTypes(
         config.getString(DATA_CAT_AVAILABLE_DATA_TYPES)
@@ -181,7 +178,7 @@ class DownloadTransformer(implicit
         sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
         sequencingExperimentGenomicFiles =
           spark.createDataset(sequencingExperimentGenomicFiles).cache,
-        studies = createStudies(studies, studiesExtraParams)(spark).cache,
+        studies = spark.createDataset(studies).cache,
         biospecimenGenomicFiles =
           spark.createDataset(biospecimenGenomicFiles).cache,
         biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
@@ -316,33 +313,6 @@ object DownloadTransformer {
       val filename = path.split("/").last
       SparkFiles.get(filename)
     } else path
-  }
-
-  def createStudies(
-      studies: Seq[EStudy],
-      studiesExtraParams: Dataset[StudyExtraParams]
-  )(spark: SparkSession): Dataset[EStudy] = {
-    import spark.implicits._
-    val studiesDS = spark.createDataset(studies)
-
-    val studies_with_extraParams = studiesDS.joinWith(
-      studiesExtraParams,
-      studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"),
-      "left_outer"
-    )
-
-    studies_with_extraParams.map {
-      case (study: EStudy, param: StudyExtraParams) =>
-        study.copy(
-          code = param.code,
-          domain = param.domain match {
-            case Some(x) => x.split(",").toSeq
-            case None    => Nil
-          },
-          program = param.program
-        )
-      case s => s._1
-    }
   }
 
   def createDiagnosis(

@@ -5,6 +5,14 @@ import io.kf.etl.models.es._
 
 object EntityConverter {
 
+  val domainMappingTable: Map[String, String] = Map(
+    "UNKNOWN" -> "Unknown",
+    "CANCER" -> "Cancer",
+    "BIRTHDEFECT" -> "Birth Defect",
+    "COVID19" -> "COVID-19",
+    "OTHER" -> "Other"
+  )
+
   def EStudyToStudyES(study: EStudy): Study_ES = {
     Study_ES(
       kf_id = study.kf_id,
@@ -16,7 +24,7 @@ object EntityConverter {
       data_access_authority = study.data_access_authority,
       short_name = study.short_name,
       code = study.code,
-      domain = study.domain,
+      domain = study.domain.map(_.split("AND").map(domain => domainMappingTable(domain)).toSeq).getOrElse(Seq.empty),
       program = study.program
     )
   }
