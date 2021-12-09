@@ -6,6 +6,7 @@ import io.kf.etl.models.es._
 import io.kf.etl.models.internal._
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.EntityDataSet
 import io.kf.etl.processors.common.converter.EntityConverter
+import io.kf.etl.processors.common.converter.EntityConverter.domainMappingTable
 import org.apache.spark.sql.functions.{collect_list, explode_outer, first, lower}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
@@ -165,7 +166,7 @@ object FeatureCentricTransformer {
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
       code = s.code,
-      domain = s.domain,
+      domain = s.domain.map(_.split("AND").map(domain => domainMappingTable(domain)).toSeq).getOrElse(Seq.empty),
       program = s.program,
       participant_count = Some(participants_count),
       file_count = Some(files_count),
