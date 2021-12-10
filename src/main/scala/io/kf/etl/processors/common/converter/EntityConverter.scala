@@ -23,7 +23,7 @@ object EntityConverter {
       release_status = study.release_status,
       data_access_authority = study.data_access_authority,
       short_name = study.short_name,
-      code = study.code,
+      code = study.short_code,
       domain = study.domain.map(_.split("AND").map(domain => domainMappingTable(domain)).toSeq).getOrElse(Seq.empty),
       program = study.program
     )

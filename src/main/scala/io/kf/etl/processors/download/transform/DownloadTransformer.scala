@@ -5,7 +5,6 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.internal.StudyExtraParams
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
@@ -45,10 +44,6 @@ class DownloadTransformer(implicit
 
   def downloadDuoCodeLabelMap(): Dataset[DuoCode] = {
     loadDuoLabel(config.getString(CONFIG_NAME_DUOCODE_PATH), spark).cache()
-  }
-
-  def downloadStudiesExtraParams(path: String): Dataset[StudyExtraParams] = {
-    studiesExtraParams(path)(spark).cache()
   }
 
   def downloadDataCategory_availableDataTypes(
@@ -255,19 +250,6 @@ object DownloadTransformer {
     val p = withLoadedPath(path, spark)
     spark.read.json(p).as[OntologyTerm]
 
-  }
-
-  def studiesExtraParams(
-      path: String
-  )(spark: SparkSession): Dataset[StudyExtraParams] = {
-
-    val p = withLoadedPath(path, spark)
-    spark.read
-      .format("com.databricks.spark.csv")
-      .option("delimiter", "\t")
-      .option("header", "true")
-      .load(p)
-      .as[StudyExtraParams]
   }
 
   def loadCategory_ExistingDataTypes(

@@ -162,10 +162,10 @@ object FeatureCentricTransformer {
     study.map(s => StudyCentric_ES(
       kf_id = s.kf_id,
       name = s.short_name,
-      search = Seq(s.short_name, s.code) flatten,
+      search = Seq(s.short_name, s.short_code) flatten,
       external_id = s.external_id,
       data_access_authority = s.data_access_authority,
-      code = s.code,
+      code = s.short_code,
       domain = s.domain.map(_.split("AND").map(domain => domainMappingTable(domain)).toSeq).getOrElse(Seq.empty),
       program = s.program,
       participant_count = Some(participants_count),
