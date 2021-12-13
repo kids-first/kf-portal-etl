@@ -19,7 +19,7 @@ final case class Biospecimen_ES(
     genomic_files: Seq[GenomicFile_ES] = Nil,
     source_text_tumor_descriptor: Option[String] = None,
     source_text_tissue_type: Option[String] = None,
-    source_text_anatomical_site: Option[String] = None,
+    source_text_anatomical_site: Seq[String] = Seq.empty,
     spatial_descriptor: Option[String] = None,
     uberon_id_anatomical_site: Option[String] = None,
     volume_ul: Option[Double] = None,

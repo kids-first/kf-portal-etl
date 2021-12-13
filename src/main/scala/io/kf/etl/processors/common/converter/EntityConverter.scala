@@ -67,7 +67,7 @@ object EntityConverter {
       genomic_files = gfiles,
       source_text_tumor_descriptor = bio.source_text_tumor_descriptor,
       source_text_tissue_type = bio.source_text_tissue_type,
-      source_text_anatomical_site = bio.source_text_anatomical_site,
+      source_text_anatomical_site = bio.source_text_anatomical_site.map(_.split(";").toSeq).getOrElse(Seq.empty),
       spatial_descriptor = bio.spatial_descriptor,
       uberon_id_anatomical_site = bio.uberon_id_anatomical_site,
       volume_ul = bio.volume_ul,
@@ -116,9 +116,19 @@ object EntityConverter {
       diagnosis: EDiagnosis,
       diagnosisTermWithParents_ES: Option[DiagnosisTermWithParents_ES]
   ): Diagnosis_ES = {
+    val mondoIdDiagnosos =
+      (diagnosis.mondo_id_diagnosis, diagnosis.diagnosis_text) match {
+        case (Some(id), Some(s)) => Some(s"$s ($id)")
+        case (Some(id), None)    => Some(s"$id")
+        case _                   => None
+      }
     Diagnosis_ES(
       diagnosis_category = diagnosis.diagnosis_category,
       age_at_event_days = diagnosis.age_at_event_days,
+      source_text_tumor_location = diagnosis.source_text_tumor_location.map(_.split(";").toSeq).getOrElse(Seq.empty),
+      ncit_id_diagnosis = diagnosis.ncit_id_diagnosis,
+      source_text_diagnosis = diagnosis.source_text_diagnosis,
+      mondo_id_diagnosis = mondoIdDiagnosos,
       is_tagged = diagnosisTermWithParents_ES match {
         case Some(d) => d.is_tagged
         case None    => false
