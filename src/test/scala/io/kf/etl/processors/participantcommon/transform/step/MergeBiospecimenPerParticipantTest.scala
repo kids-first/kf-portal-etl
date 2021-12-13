@@ -31,7 +31,8 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
       participant_id = Some("participant_id_1"),
       ncit_id_anatomical_site = Some("NCIT:unknown"),
       duo_ids = Seq("duoCodeId1", "duoCodeId2", "duoCodeId_NoLabel"),
-      sequencing_center_id = Some("SC_CATTVETT")
+      sequencing_center_id = Some("SC_CATTVETT"),
+      source_text_anatomical_site = Some("site1;site2")
     )
     val diagnosis = EDiagnosis(kf_id = Some("diagnosis_id_1"))
     val biospecimenDiagnosis = EBiospecimenDiagnosis(
@@ -101,7 +102,8 @@ class MergeBiospecimenPerParticipantTest extends FlatSpec with Matchers with Wit
               "duoCodeId_NoLabel"
             ),
             sequencing_center_id = Some("SC_CATTVETT"),
-            sequencing_center = Some("Feline Diagnostics LLC")
+            sequencing_center = Some("Feline Diagnostics LLC"),
+            source_text_anatomical_site = Seq("site1", "site2")
           )
         )
       ),
