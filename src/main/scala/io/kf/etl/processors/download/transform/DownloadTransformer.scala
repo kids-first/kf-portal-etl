@@ -5,7 +5,6 @@ import com.typesafe.config.Config
 import io.kf.etl.common.Constants._
 import io.kf.etl.models.dataservice._
 import io.kf.etl.models.duocode.DuoCode
-import io.kf.etl.models.internal.StudyExtraParams
 import io.kf.etl.models.ontology.{OntologyTerm, OntologyTermBasic}
 import io.kf.etl.processors.common.ProcessorCommonDefinitions.{EntityDataSet, EntityEndpointSet, OntologiesDataSet}
 import io.kf.etl.processors.download.transform.DownloadTransformer._
@@ -45,10 +44,6 @@ class DownloadTransformer(implicit
 
   def downloadDuoCodeLabelMap(): Dataset[DuoCode] = {
     loadDuoLabel(config.getString(CONFIG_NAME_DUOCODE_PATH), spark).cache()
-  }
-
-  def downloadStudiesExtraParams(path: String): Dataset[StudyExtraParams] = {
-    studiesExtraParams(path)(spark).cache()
   }
 
   def downloadDataCategory_availableDataTypes(
@@ -114,9 +109,6 @@ class DownloadTransformer(implicit
     import spark.implicits._
 
     val ontologyData = downloadOntologyData()
-    val studiesExtraParams = downloadStudiesExtraParams(
-      config.getString(STUDIES_EXTRA_PARAMS_PATH)
-    )
     val dataCategory_availableDataTypes =
       downloadDataCategory_availableDataTypes(
         config.getString(DATA_CAT_AVAILABLE_DATA_TYPES)
@@ -181,7 +173,7 @@ class DownloadTransformer(implicit
         sequencingExperiments = spark.createDataset(sequencingExperiments).cache,
         sequencingExperimentGenomicFiles =
           spark.createDataset(sequencingExperimentGenomicFiles).cache,
-        studies = createStudies(studies, studiesExtraParams)(spark).cache,
+        studies = spark.createDataset(studies).cache,
         biospecimenGenomicFiles =
           spark.createDataset(biospecimenGenomicFiles).cache,
         biospecimenDiagnoses = spark.createDataset(biospecimenDiagnoses).cache,
@@ -260,19 +252,6 @@ object DownloadTransformer {
 
   }
 
-  def studiesExtraParams(
-      path: String
-  )(spark: SparkSession): Dataset[StudyExtraParams] = {
-
-    val p = withLoadedPath(path, spark)
-    spark.read
-      .format("com.databricks.spark.csv")
-      .option("delimiter", "\t")
-      .option("header", "true")
-      .load(p)
-      .as[StudyExtraParams]
-  }
-
   def loadCategory_ExistingDataTypes(
       path: String
   )(spark: SparkSession): Dataset[(String, Seq[String])] = {
@@ -316,33 +295,6 @@ object DownloadTransformer {
       val filename = path.split("/").last
       SparkFiles.get(filename)
     } else path
-  }
-
-  def createStudies(
-      studies: Seq[EStudy],
-      studiesExtraParams: Dataset[StudyExtraParams]
-  )(spark: SparkSession): Dataset[EStudy] = {
-    import spark.implicits._
-    val studiesDS = spark.createDataset(studies)
-
-    val studies_with_extraParams = studiesDS.joinWith(
-      studiesExtraParams,
-      studiesDS.col("kf_id") === studiesExtraParams.col("kf_id"),
-      "left_outer"
-    )
-
-    studies_with_extraParams.map {
-      case (study: EStudy, param: StudyExtraParams) =>
-        study.copy(
-          code = param.code,
-          domain = param.domain match {
-            case Some(x) => x.split(",").toSeq
-            case None    => Nil
-          },
-          program = param.program
-        )
-      case s => s._1
-    }
   }
 
   def createDiagnosis(

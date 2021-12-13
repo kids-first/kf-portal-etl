@@ -92,7 +92,7 @@ class StudyCentricTransformerSpec extends FlatSpec with Matchers with WithSparkS
     val study = "study"
 
     val studies = Seq(
-      EStudy(kf_id = Some("study"), domain = Seq("Cancer", "Birth Defect"), short_name = Some("study short name")),
+      EStudy(kf_id = Some("study"), domain = Some("CANCERANDBIRTHDEFECT"), short_name = Some("study short name")),
       EStudy(kf_id = None),
       EStudy(kf_id = Some("other_study"))
     )
