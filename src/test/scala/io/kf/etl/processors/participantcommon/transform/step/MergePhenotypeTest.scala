@@ -113,61 +113,6 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
     )
   }
 
-  it should "split external id hpo id and source text if they contain ;" in {
-    val phenotype = EPhenotype(
-      kf_id = Some("phenotype_id_1"),
-      participant_id = Some("participant_id"),
-      external_id = Some("phenotype 11; phenotype 12; phenotype 13"),
-      hpo_id_phenotype = Some("HP:0000175; HP:0000202; HP:0100737"),
-      source_text_phenotype = Some("Achalasia; Enchondromas; Hemangiomas"),
-      observed = Some("positive"))
-
-    val p = Participant_ES(kf_id = Some("participant_id"))
-
-    val entityDataset = buildEntityDataSet(
-      phenotypes = Seq(phenotype),
-      ontologyData = Some(ontologiesDataSet)
-    )
-    val result = MergePhenotype(entityDataset, Seq(p).toDS()).collect()
-
-    result.length should equal(1)
-    result(0).kf_id should equal(Some("participant_id"))
-    result(0).phenotype should contain theSameElementsAs Seq(
-      Phenotype_ES(
-        external_id = Some("phenotype 11"),
-        source_text_phenotype = Some("Achalasia"),
-        hpo_phenotype_observed = Some(hpo_0000175.toString),
-        hpo_phenotype_observed_text = Some(hpo_0000175.toString),
-        observed = Some(true)),
-      Phenotype_ES(
-        external_id = Some("phenotype 12"),
-        source_text_phenotype = Some("Enchondromas"),
-        hpo_phenotype_observed = Some(hpo_0000202.toString),
-        hpo_phenotype_observed_text = Some(hpo_0000202.toString),
-        observed = Some(true)),
-      Phenotype_ES(
-        external_id = Some("phenotype 13"),
-        source_text_phenotype = Some("Hemangiomas"),
-        hpo_phenotype_observed = Some(hpo_0100737.toString),
-        hpo_phenotype_observed_text = Some(hpo_0100737.toString),
-        observed = Some(true)),
-    )
-    result(0).observed_phenotypes should contain theSameElementsAs Seq(
-      OntologicalTermWithParents_ES(name = hpo_0000234.toString, parents = Seq(hpo_0000152.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000174.toString, parents = Seq(hpo_0000163.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000271.toString, parents = Seq(hpo_0000234.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000152.toString, parents = Seq(hpo_0000118.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000202.toString, parents = Seq(hpo_0000163.toString), is_tagged = true),
-      OntologicalTermWithParents_ES(name = hpo_0000163.toString, parents = Seq(hpo_0031816.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0031816.toString, parents = Seq(hpo_0000153.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0100737.toString, parents = Seq(hpo_0000174.toString), is_tagged = true),
-      OntologicalTermWithParents_ES(name = hpo_0000153.toString, parents = Seq(hpo_0000271.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000118.toString, parents = Seq(hpo_0000001.toString)),
-      OntologicalTermWithParents_ES(name = hpo_0000001.toString, parents = Seq.empty[String]),
-      OntologicalTermWithParents_ES(name = hpo_0000175.toString, parents = Seq(hpo_0000202.toString, hpo_0100737.toString), is_tagged = true)
-    )
-  }
-
   "process" should "tagged Parent term should not be invalidated by child term" in {
     val p1 = Participant_ES(kf_id = Some("participant_id_1"))
     // CHILD

@@ -8,33 +8,12 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object MergePhenotype {
 
-  def splitPhenotype(phenotype: EPhenotype): Seq[EPhenotype] = {
-    (phenotype.external_id, phenotype.hpo_id_phenotype, phenotype.source_text_phenotype) match {
-      case (Some(externalId), Some(hpoId), Some(sourceText)) => {
-        val externalIds = externalId.split(";").toSeq
-        val hpoIds = hpoId.split(";").toSeq
-        val sourceTexts = sourceText.split(";").toSeq
-
-        (externalIds, hpoIds, sourceTexts)
-          .zipped
-          .map {
-            (eId, hId, st) => phenotype.copy(
-              external_id = Some(eId.trim),
-              hpo_id_phenotype = Some(hId.trim),
-              source_text_phenotype = Some(st.trim))
-          }
-      }
-      case (_, _, _) => Seq(phenotype)
-    }
-  }
-
   def transformPhenotypes(entityDataset: EntityDataSet)(implicit spark: SparkSession): Dataset[(String, Phenotype_ES, Seq[OntologicalTermWithParents_ES])] = {
     import entityDataset.ontologyData.hpoTerms
     import entityDataset.phenotypes
     import spark.implicits._
 
-    val singlePhenotypes: Dataset[EPhenotype] = phenotypes.map(phenotype => splitPhenotype(phenotype)).flatMap(x => x)
-    val filteredPhenotypes = singlePhenotypes
+    val filteredPhenotypes = phenotypes
       .filter { p =>
         p.observed match {
           case Some(o) => Seq("positive", "negative").contains(o.trim.toLowerCase)
