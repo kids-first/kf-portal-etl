@@ -158,7 +158,7 @@ object EntityConverter {
       seqExps: Seq[SequencingExperiment_ES]
   ): GenomicFile_ES = {
     GenomicFile_ES(
-      acl = gf.acl,
+      acl = gf.acl.map( x => if (x == "*") "open_access" else x),
       access_urls = gf.access_urls,
       availability = gf.availability,
       controlled_access = gf.controlled_access,
