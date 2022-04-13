@@ -1,14 +1,15 @@
 package io.kf.etl.context
 
-import java.io.File
-
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import io.kf.etl.common.Constants._
+import io.kf.etl.common.Utils.getOptionalConfig
 import io.kf.etl.context.DefaultContext.elasticSearchUrl
 import org.apache.spark.sql.SparkSession
 import play.api.libs.ws.ahc.StandaloneAhcWSClient
+
+import java.io.File
 
 class DefaultContext extends AutoCloseable {
   private var system: ActorSystem = _
@@ -46,11 +47,23 @@ class DefaultContext extends AutoCloseable {
   private def initSparkSession(withES: Boolean): SparkSession = {
     val session = SparkSession.builder().appName("Kids First Portal ETL")
 
+    val user = getOptionalConfig(CONFIG_NAME_ES_USER, configMutable)
+    val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, configMutable)
+
     if (withES) {
-      session
-        .config("es.nodes", elasticSearchUrl(configMutable))
-        .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
-        .getOrCreate()
+      if (user.isDefined && pwd.isDefined) {
+        session
+          .config("es.nodes", elasticSearchUrl(configMutable))
+          .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
+          .config("es.net.http.auth.user", user.get)
+          .config("es.net.http.auth.pass", pwd.get)
+          .getOrCreate()
+      } else {
+        session
+          .config("es.nodes", elasticSearchUrl(configMutable))
+          .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
+          .getOrCreate()
+      }
     } else {
       session.getOrCreate()
     }
