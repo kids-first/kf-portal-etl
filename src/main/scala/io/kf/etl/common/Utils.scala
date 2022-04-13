@@ -1,5 +1,8 @@
 package io.kf.etl.common
 
+import com.typesafe.config.Config
+import io.kf.etl.common.Constants._
+
 object Utils {
 
   def calculateDataCategory(
@@ -12,4 +15,11 @@ object Utils {
     }.toSet
   }
 
+  def getOptionalConfig(value: String, conf: Config) = {
+    try {
+      Some(conf.getString(value))
+    } catch {
+      case e: Exception => None
+    }
+  }
 }

@@ -13,6 +13,8 @@ object Constants {
   val CONFIG_NAME_ES_PORT = "elasticsearch.port"
   val CONFIG_NAME_ES_SCHEME = "elasticsearch.scheme"
   val CONFIG_NAME_ES_CONFIGS = "elasticsearch.configs"
+  val CONFIG_NAME_ES_USER = "elasticsearch.user"
+  val CONFIG_NAME_ES_PASS = "elasticsearch.pwd"
   val CONFIG_NAME_DATASERVICE_URL = "dataservice.url"
   val CONFIG_NAME_DATASERVICE_LIMIT = "dataservice.limit"
   val CONFIG_NAME_DATASERVICE_DOMAIN_DCF = "dataservice.dcf_host"
