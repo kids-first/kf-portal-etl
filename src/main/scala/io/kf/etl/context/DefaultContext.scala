@@ -47,21 +47,26 @@ class DefaultContext extends AutoCloseable {
   private def initSparkSession(withES: Boolean): SparkSession = {
     val session = SparkSession.builder().appName("Kids First Portal ETL")
 
+    val user = getOptionalConfig(CONFIG_NAME_ES_USER, configMutable)
+    val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, configMutable)
+
     if (withES) {
-      session
-        .config("es.nodes", elasticSearchUrl(configMutable))
-        .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
-
-      val user = getOptionalConfig(CONFIG_NAME_ES_USER, configMutable)
-      val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, configMutable)
-
       if (user.isDefined && pwd.isDefined) {
         session
+          .config("es.nodes", elasticSearchUrl(configMutable))
+          .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
           .config("es.net.http.auth.user", user.get)
           .config("es.net.http.auth.pass", pwd.get)
+          .getOrCreate()
+      } else {
+        session
+          .config("es.nodes", elasticSearchUrl(configMutable))
+          .config("es.nodes.wan.only", Option(configMutable.getBoolean(CONFIG_NAME_ES_NODES_WAN_ONLY)).getOrElse(false))
+          .getOrCreate()
       }
+    } else {
+      session.getOrCreate()
     }
-    session.getOrCreate()
   }
 
 
