@@ -34,6 +34,11 @@ object IndexProcessor {
 
     val user = getOptionalConfig(CONFIG_NAME_ES_USER, config)
     val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, config)
+    println(s"user:${user}")
+    println(s"config:${config}")
+    println(s"content:${content}")
+    println(s"pwd.isDefined:${pwd.isDefined}")
+    println(s"elasticSearchUrl:${elasticSearchUrl}")
 
     val response = if(user.isDefined && pwd.isDefined){
       Await.result(wsClient
