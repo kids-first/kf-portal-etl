@@ -17,6 +17,8 @@ libraryDependencies ++= Seq(
   scalatest % "test",
   asyncHttp % "test",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.12.2" % "test",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
+  "org.slf4j" % "slf4j-api" % "1.7.10"
 )
 
 test in assembly := {}

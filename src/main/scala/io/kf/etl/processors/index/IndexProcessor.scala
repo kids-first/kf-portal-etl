@@ -9,6 +9,8 @@ import org.apache.spark.sql.Dataset
 import org.elasticsearch.spark.sql._
 import play.api.libs.ws.DefaultBodyWritables.writeableOf_String
 import play.api.libs.ws.{StandaloneWSClient, WSAuthScheme}
+import com.typesafe.scalalogging._
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
@@ -34,11 +36,13 @@ object IndexProcessor {
 
     val user = getOptionalConfig(CONFIG_NAME_ES_USER, config)
     val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, config)
-    println(s"user:${user}")
-    println(s"config:${config}")
-    println(s"content:${content}")
-    println(s"pwd.isDefined:${pwd.isDefined}")
-    println(s"elasticSearchUrl:${elasticSearchUrl}")
+    val logger = Logger(LoggerFactory.getLogger(this.getClass))
+
+    logger.debug(s"user:${user}")
+    logger.debug(s"config:${config}")
+    logger.debug(s"content:${content}")
+    logger.debug(s"pwd.isDefined:${pwd.isDefined}")
+    logger.debug(s"elasticSearchUrl:${elasticSearchUrl}")
 
     val response = if(user.isDefined && pwd.isDefined){
       Await.result(wsClient
