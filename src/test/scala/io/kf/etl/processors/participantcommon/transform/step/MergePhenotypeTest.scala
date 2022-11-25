@@ -279,7 +279,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       Participant_ES(kf_id = Some("participant_id_1"),
         phenotype = Seq(Phenotype_ES(
           hpo_phenotype_not_observed = Some(hpo_0001166.toString),
-          observed = Some(false)
+          observed = Some(false),
+          source_text_not_observed_phenotype = Some("phenotype source text 1")
         )),
         non_observed_phenotypes = Seq(
 
@@ -331,9 +332,10 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
         Phenotype_ES(
           hpo_phenotype_not_observed = Some(hpo_0001166.toString),
           external_id = Some("1"),
-          observed = Some(false)
+          observed = Some(false),
+          source_text_not_observed_phenotype = Some("source")
         )),
-      ("participant_id_1", Phenotype_ES(external_id = Some("3"), snomed_phenotype_not_observed = Some("SNOMED:1"), observed = Some(false))),
+      ("participant_id_1", Phenotype_ES(external_id = Some("3"), snomed_phenotype_not_observed = Some("SNOMED:1"), observed = Some(false), source_text_not_observed_phenotype = Some("source"))),
       ("participant_id_2",
         Phenotype_ES(
           hpo_phenotype_observed = Some(hpo_0000924.toString),
@@ -345,8 +347,8 @@ class MergePhenotypeTest extends FlatSpec with Matchers with WithSparkSession {
       ("participant_id_2", Phenotype_ES(external_id = Some("4"), snomed_phenotype_observed = Some("SNOMED:1"), source_text_phenotype = Some("source"), observed = Some(true))),
 //      ("participant_id_3", Phenotype_ES(external_id = Some("5")), Nil), observed is None
 //      ("participant_id_4", Phenotype_ES(external_id = Some("6")), Nil), observed is None
-      ("participant_id_5", Phenotype_ES(external_id = Some("7"), observed = Some(true))),
-      ("participant_id_6", Phenotype_ES(external_id = Some("8"), observed = Some(false)))
+      ("participant_id_5", Phenotype_ES(external_id = Some("7"), observed = Some(true), source_text_phenotype = Some("source"))),
+      ("participant_id_6", Phenotype_ES(external_id = Some("8"), observed = Some(false), source_text_not_observed_phenotype = Some("source")))
     )
 
     //Array(

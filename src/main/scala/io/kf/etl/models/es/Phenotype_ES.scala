@@ -11,5 +11,6 @@ final case class Phenotype_ES(
                                snomed_phenotype_not_observed: Option[String] = None,
                                snomed_phenotype_observed: Option[String] = None,
                                source_text_phenotype: Option[String] = None,
+                               source_text_not_observed_phenotype: Option[String] = None,
                                observed: Option[Boolean] = None
                              )

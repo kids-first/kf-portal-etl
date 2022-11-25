@@ -371,6 +371,9 @@
                             },
                             "source_text_phenotype": {
                               "type": "keyword"
+                            },
+                            "source_text_phenotype_non_observed": {
+                              "type": "keyword"
                             }
                           },
                           "type": "nested"
@@ -459,6 +462,9 @@
                   "type": "keyword"
                 },
                 "source_text_phenotype": {
+                  "type": "keyword"
+                },
+                "source_text_phenotype_non_observed": {
                   "type": "keyword"
                 }
               },
