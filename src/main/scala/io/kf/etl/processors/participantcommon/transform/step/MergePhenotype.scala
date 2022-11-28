@@ -47,7 +47,9 @@ object MergePhenotype {
         }
 
         // Only append to source text in the positive case for observed
-        val sourceText = if (snomedObserved.nonEmpty || hpoObserved.nonEmpty) phenotype.source_text_phenotype else None
+        val isPhenotypeObserved = snomedObserved.nonEmpty || hpoObserved.nonEmpty || observedOpt.contains(true)
+        val sourceText = if (isPhenotypeObserved) phenotype.source_text_phenotype else None
+        val sourceTextNonObserved = if (isPhenotypeObserved) None else phenotype.source_text_phenotype
 
         val p = Phenotype_ES(
           age_at_event_days = phenotype.age_at_event_days,
@@ -58,6 +60,7 @@ object MergePhenotype {
           snomed_phenotype_observed = snomedObserved,
           snomed_phenotype_not_observed = snomedNotObserved,
           source_text_phenotype = sourceText,
+          source_text_not_observed_phenotype = sourceTextNonObserved,
           observed = observedOpt
         )
         Some((
