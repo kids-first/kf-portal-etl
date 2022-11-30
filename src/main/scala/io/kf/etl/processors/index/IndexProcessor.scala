@@ -56,6 +56,8 @@ object IndexProcessor {
     }
 
     if (response.status != 200) {
+      println(s"Debug (createMapping): \n${response.toString}")//TODO: remove when debugging s done.
+      println(s"Debug (createMapping): \n${response.body}")//TODO: remove when debugging s done.
       throw new IllegalStateException(s"Impossible to create index :${response} for index:${indexName}")
     }
   }
