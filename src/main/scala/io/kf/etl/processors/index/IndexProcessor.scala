@@ -28,20 +28,27 @@ object IndexProcessor {
 
 
   private def createMapping(indexName: String, indexType: String)(implicit wsClient: StandaloneWSClient, config: Config): Unit = {
+    println(s"Debug (createMapping): indexName=$indexName")//TODO: remove when debugging s done.
+    println(s"Debug (createMapping): indexType=$indexType")//TODO: remove when debugging s done.
+    println(s"Debug (createMapping): config=\n${config.toString}")//TODO: remove when debugging s done.
     val content = MappingFiles.getMapping(indexType)
+    println(s"Debug (createMapping): content=\n${content}")//TODO: remove when debugging s done.
 
     val elasticSearchUrl = DefaultContext.elasticSearchUrl(config)
+    println(s"Debug (createMapping): elasticSearchUrl=${elasticSearchUrl}")//TODO: remove when debugging s done.
 
     val user = getOptionalConfig(CONFIG_NAME_ES_USER, config)
     val pwd = getOptionalConfig(CONFIG_NAME_ES_PASS, config)
 
     val response = if(user.isDefined && pwd.isDefined){
+      println(s"Debug (createMapping): in user + pwd branch")//TODO: remove when debugging s done.
       Await.result(wsClient
         .url(s"$elasticSearchUrl/$indexName")
         .withHttpHeaders("Content-Type" -> "application/json")
         .withAuth(user.get, pwd.get, WSAuthScheme.BASIC)
         .put(content), 30 seconds)
     } else {
+      println(s"Debug (createMapping): in auth less branch")//TODO: remove when debugging s done.
       Await.result(wsClient
         .url(s"$elasticSearchUrl/$indexName")
         .withHttpHeaders("Content-Type" -> "application/json")
