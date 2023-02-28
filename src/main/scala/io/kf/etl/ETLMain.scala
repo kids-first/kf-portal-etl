@@ -21,6 +21,8 @@ object ETLMain extends App {
 
     lazy val cliArgs: CLIParametersHolder = new CLIParametersHolder(args)
 
+    println(s"releaseId is: ${cliArgs.release_id}")
+
     cliArgs.study_ids match {
 
       // Requires study_ids to run
